@@ -1,11 +1,11 @@
-package size
+package shape
 
 import "testing"
 
-func TestSize_String(t *testing.T) {
+func TestShape_String(t *testing.T) {
 	tests := []struct {
 		name string
-		s    Size
+		s    Shape
 		want string
 	}{
 		{

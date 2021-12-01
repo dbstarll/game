@@ -1,16 +1,16 @@
-package size
+package shape
 
 //体型
-type Size int
+type Shape int
 
 const (
-	Unlimited Size = iota
-	Small          // 小型
-	Medium         // 中型
-	Large          // 大型
+	Unlimited Shape = iota
+	Small           // 小型
+	Medium          // 中型
+	Large           // 大型
 )
 
-func (s Size) String() string {
+func (s Shape) String() string {
 	switch s {
 	case Unlimited:
 		return "不限"
