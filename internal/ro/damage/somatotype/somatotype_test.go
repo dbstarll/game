@@ -1,4 +1,4 @@
-package damage
+package somatotype
 
 import "testing"
 
@@ -10,22 +10,22 @@ func TestSomatotype_String(t *testing.T) {
 	}{
 		{
 			name: "unlimited",
-			s:    UnlimitedSized,
+			s:    Unlimited,
 			want: "不限",
 		},
 		{
 			name: "small",
-			s:    SmallSized,
+			s:    Small,
 			want: "小型",
 		},
 		{
 			name: "medium",
-			s:    MediumSized,
+			s:    Medium,
 			want: "中型",
 		},
 		{
 			name: "large",
-			s:    LargeSized,
+			s:    Large,
 			want: "大型",
 		},
 		{

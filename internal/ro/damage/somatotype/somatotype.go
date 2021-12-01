@@ -1,24 +1,24 @@
-package damage
+package somatotype
 
 //体型
 type Somatotype int
 
 const (
-	UnlimitedSized Somatotype = iota
-	SmallSized
-	MediumSized
-	LargeSized
+	Unlimited Somatotype = iota
+	Small
+	Medium
+	Large
 )
 
 func (s Somatotype) String() string {
 	switch s {
-	case UnlimitedSized:
+	case Unlimited:
 		return "不限"
-	case SmallSized:
+	case Small:
 		return "小型"
-	case MediumSized:
+	case Medium:
 		return "中型"
-	case LargeSized:
+	case Large:
 		return "大型"
 	default:
 		return "未知"
