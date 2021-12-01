@@ -1,16 +1,16 @@
-package somatotype
+package size
 
 //体型
-type Somatotype int
+type Size int
 
 const (
-	Unlimited Somatotype = iota
+	Unlimited Size = iota
 	Small
 	Medium
 	Large
 )
 
-func (s Somatotype) String() string {
+func (s Size) String() string {
 	switch s {
 	case Unlimited:
 		return "不限"

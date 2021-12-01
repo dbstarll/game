@@ -1,11 +1,11 @@
-package somatotype
+package size
 
 import "testing"
 
-func TestSomatotype_String(t *testing.T) {
+func TestSize_String(t *testing.T) {
 	tests := []struct {
 		name string
-		s    Somatotype
+		s    Size
 		want string
 	}{
 		{
