@@ -5,9 +5,9 @@ type Size int
 
 const (
 	Unlimited Size = iota
-	Small
-	Medium
-	Large
+	Small          // 小型
+	Medium         // 中型
+	Large          // 大型
 )
 
 func (s Size) String() string {
