@@ -9,18 +9,23 @@ func TestSomatotype_String(t *testing.T) {
 		want string
 	}{
 		{
+			name: "unlimited",
+			s:    UnlimitedSized,
+			want: "不限",
+		},
+		{
 			name: "small",
-			s:    Small,
+			s:    SmallSized,
 			want: "小型",
 		},
 		{
 			name: "medium",
-			s:    Medium,
+			s:    MediumSized,
 			want: "中型",
 		},
 		{
 			name: "large",
-			s:    Large,
+			s:    LargeSized,
 			want: "大型",
 		},
 		{
