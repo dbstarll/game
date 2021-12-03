@@ -7,12 +7,44 @@ import (
 )
 
 type Character struct {
-	_nature          nature.Nature
-	_race            race.Race
-	_shape           shape.Shape
+	nature           nature.Nature
+	race             race.Race
+	shape            shape.Shape
 	level            Level
 	quality          Quality
 	equipmentProfits Profits
+}
+
+type CharacterModifier func(character *Character)
+
+func NewCharacter(nature nature.Nature, race race.Race, shape shape.Shape, modifiers ...CharacterModifier) *Character {
+	c := &Character{
+		nature: nature,
+		race:   race,
+		shape:  shape,
+	}
+	for _, f := range modifiers {
+		f(c)
+	}
+	return c
+}
+
+func AddQuality(quality *Quality) CharacterModifier {
+	return func(character *Character) {
+		character.quality.Add(quality)
+	}
+}
+
+func AddLevel(level *Level) CharacterModifier {
+	return func(character *Character) {
+		character.level.Add(level)
+	}
+}
+
+func AddGains(magic bool, gains *Gains) CharacterModifier {
+	return func(character *Character) {
+		character.equipmentProfits.Add(magic, gains)
+	}
 }
 
 //素质攻击
