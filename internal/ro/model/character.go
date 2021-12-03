@@ -76,3 +76,7 @@ func (c *Character) Attack(magic, remote bool) int {
 func (c *Character) Defence(magic bool) int {
 	return c.QualityDefence(magic) + c.EquipmentDefence(magic)
 }
+
+func (c *Character) PanelDefence(magic bool) float64 {
+	return float64(c.Defence(magic)) * (1 + c.equipmentProfits.DefencePer(magic)/100)
+}

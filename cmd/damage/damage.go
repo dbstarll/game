@@ -15,18 +15,10 @@ import (
 func main() {
 	player := model.NewPlayer(job.Crusader4,
 		model.AddQuality(&model.Quality{
-			Str: 0,
-			Agi: 0,
-			Vit: 0,
-			Int: 0,
-			Dex: 0,
-			Luk: 0,
-		}), model.AddLevel(&model.Level{
-			Base: 170,
-			Job:  70,
+			Vit: 402,
 		}), model.AddGains(false, &model.Gains{
-			Attack:  0,
-			Defence: 0,
+			Defence:    3246,
+			DefencePer: 112.5,
 		}))
-	fmt.Printf("%+v\n", player.Defence(false))
+	fmt.Printf("%+v\n", player.PanelDefence(false))
 }
