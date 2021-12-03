@@ -1,4 +1,4 @@
-package dimension
+package model
 
 import (
 	"github.com/dbstarll/game/internal/ro/dimension/job"

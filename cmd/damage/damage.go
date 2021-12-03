@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/dbstarll/game/internal/ro/dimension"
 	"github.com/dbstarll/game/internal/ro/dimension/job"
+	"github.com/dbstarll/game/internal/ro/model"
 )
 
 //最终伤害 = 基础伤害 * 元素加伤 * 状态加伤 *(1+真实伤害)
@@ -13,18 +13,18 @@ import (
 //魔法攻击 = 素质魔法攻击 + 装备魔法攻击
 //*面板魔法攻击 = 魔法攻击 * (1+魔法攻击%)
 func main() {
-	player := dimension.NewPlayer(job.Crusader4,
-		dimension.AddQuality(&dimension.Quality{
+	player := model.NewPlayer(job.Crusader4,
+		model.AddQuality(&model.Quality{
 			Str: 0,
 			Agi: 0,
 			Vit: 0,
 			Int: 0,
 			Dex: 0,
 			Luk: 0,
-		}), dimension.AddLevel(&dimension.Level{
+		}), model.AddLevel(&model.Level{
 			Base: 170,
 			Job:  70,
-		}), dimension.AddGains(false, &dimension.Gains{
+		}), model.AddGains(false, &model.Gains{
 			Attack:  0,
 			Defence: 0,
 		}))

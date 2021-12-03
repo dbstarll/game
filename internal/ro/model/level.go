@@ -1,4 +1,4 @@
-package dimension
+package model
 
 //等级
 type Level struct {
