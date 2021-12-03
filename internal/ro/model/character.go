@@ -1,9 +1,11 @@
 package model
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
+	"math"
 )
 
 type Character struct {
@@ -47,6 +49,13 @@ func AddGains(magic bool, gains *Gains) CharacterModifier {
 	}
 }
 
+func DetectDefenceByPanel(expectPhysicalPanel, expectMagicalPanel float64) CharacterModifier {
+	return func(character *Character) {
+		character.detectDefenceByPanel(false, expectPhysicalPanel)
+		character.detectDefenceByPanel(true, expectMagicalPanel)
+	}
+}
+
 //素质攻击
 func (c *Character) QualityAttack(magic, remote bool) int {
 	return c.quality.Attack(magic, remote)
@@ -79,4 +88,32 @@ func (c *Character) Defence(magic bool) int {
 
 func (c *Character) PanelDefence(magic bool) float64 {
 	return float64(c.Defence(magic)) * (1 + c.equipmentProfits.DefencePer(magic)/100)
+}
+
+func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDefence int, optimumPanel float64) {
+	for min, max, current := 0, 100000, c.equipmentProfits.Defence(magic); ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
+		if magic {
+			c.equipmentProfits.magical.Defence = current
+		} else {
+			c.equipmentProfits.physical.Defence = current
+		}
+		actual := c.PanelDefence(magic)
+
+		if math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
+			optimumDefence, optimumPanel = current, actual
+		}
+		if actual > expect {
+			if max == current && max-min == 1 {
+				break
+			} else {
+				max = current
+			}
+		} else if min == current && max-min == 1 {
+			break
+		} else {
+			min = current
+		}
+	}
+	fmt.Printf("detectDefenceByPanel[magic=%t]: optimumDefence=%d, optimumPanel=%f\n", magic, optimumDefence, optimumPanel)
+	return
 }

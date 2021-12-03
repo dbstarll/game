@@ -15,10 +15,9 @@ import (
 func main() {
 	player := model.NewPlayer(job.Crusader4,
 		model.AddQuality(&model.Quality{
-			Vit: 402,
+			Vit: 412,
 		}), model.AddGains(false, &model.Gains{
-			Defence:    3246,
 			DefencePer: 112.5,
-		}))
+		}), model.DetectDefenceByPanel(8283, 3000))
 	fmt.Printf("%+v\n", player.PanelDefence(false))
 }
