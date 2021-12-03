@@ -11,7 +11,7 @@ type Quality struct {
 }
 
 //素质攻击
-func (q *Quality) Attack(magic bool, remote bool) int {
+func (q *Quality) Attack(magic, remote bool) int {
 	if magic {
 		//魔法素质攻击 = 智力*2 + 取整(智力*智力/100)
 		return q.int*2 + q.int*q.int/100
