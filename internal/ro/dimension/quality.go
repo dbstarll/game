@@ -1,4 +1,4 @@
-package damage
+package dimension
 
 //素质属性
 type Quality struct {
