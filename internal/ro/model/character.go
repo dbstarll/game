@@ -92,11 +92,7 @@ func (c *Character) PanelDefence(magic bool) float64 {
 
 func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDefence int, optimumPanel float64) {
 	for min, max, current := 0, 100000, c.equipmentProfits.Defence(magic); ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
-		if magic {
-			c.equipmentProfits.magical.Defence = current
-		} else {
-			c.equipmentProfits.physical.Defence = current
-		}
+		c.equipmentProfits.setDefence(magic, current)
 		actual := c.PanelDefence(magic)
 
 		if math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
@@ -114,6 +110,7 @@ func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDef
 			min = current
 		}
 	}
+	c.equipmentProfits.setDefence(magic, optimumDefence)
 	fmt.Printf("detectDefenceByPanel[magic=%t]: optimumDefence=%d, optimumPanel=%f\n", magic, optimumDefence, optimumPanel)
 	return
 }

@@ -59,6 +59,14 @@ func (p *Profits) Defence(magic bool) int {
 	}
 }
 
+func (p *Profits) setDefence(magic bool, defence int) {
+	if magic {
+		p.magical.Defence = defence
+	} else {
+		p.physical.Defence = defence
+	}
+}
+
 //防御%
 func (p *Profits) DefencePer(magic bool) float64 {
 	if magic {
