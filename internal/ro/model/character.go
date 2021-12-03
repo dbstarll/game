@@ -9,12 +9,12 @@ import (
 )
 
 type Character struct {
-	nature           nature.Nature
-	race             race.Race
-	shape            shape.Shape
-	level            Level
-	quality          Quality
-	equipmentProfits Profits
+	nature  nature.Nature
+	race    race.Race
+	shape   shape.Shape
+	level   Level
+	quality Quality
+	profits Profits
 }
 
 type CharacterModifier func(character *Character)
@@ -25,10 +25,18 @@ func NewCharacter(nature nature.Nature, race race.Race, shape shape.Shape, modif
 		race:   race,
 		shape:  shape,
 	}
-	for _, f := range modifiers {
-		f(c)
+	for _, modifier := range modifiers {
+		modifier(c)
 	}
 	return c
+}
+
+func Merge(modifiers ...CharacterModifier) CharacterModifier {
+	return func(character *Character) {
+		for _, modifier := range modifiers {
+			modifier(character)
+		}
+	}
 }
 
 func AddQuality(quality *Quality) CharacterModifier {
@@ -45,7 +53,37 @@ func AddLevel(level *Level) CharacterModifier {
 
 func AddGains(magic bool, gains *Gains) CharacterModifier {
 	return func(character *Character) {
-		character.equipmentProfits.Add(magic, gains)
+		character.profits.AddGains(magic, gains)
+	}
+}
+
+func AddDamage(incr *Damage) CharacterModifier {
+	return func(character *Character) {
+		character.profits.AddDamage(incr)
+	}
+}
+
+func AddNatureAttack(incr *map[nature.Nature]float64) CharacterModifier {
+	return func(character *Character) {
+		character.profits.AddNatureAttack(incr)
+	}
+}
+
+func AddRaceDamage(incr *map[race.Race]float64) CharacterModifier {
+	return func(character *Character) {
+		character.profits.AddRaceDamage(incr)
+	}
+}
+
+func AddShapeDamage(incr *map[shape.Shape]float64) CharacterModifier {
+	return func(character *Character) {
+		character.profits.AddShapeDamage(incr)
+	}
+}
+
+func AddNatureDamage(incr *map[nature.Nature]float64) CharacterModifier {
+	return func(character *Character) {
+		character.profits.AddNatureDamage(incr)
 	}
 }
 
@@ -68,12 +106,12 @@ func (c *Character) QualityDefence(magic bool) int {
 
 //装备攻击
 func (c *Character) EquipmentAttack(magic bool) int {
-	return c.equipmentProfits.Attack(magic)
+	return c.profits.Attack(magic)
 }
 
 //装备防御
 func (c *Character) EquipmentDefence(magic bool) int {
-	return c.equipmentProfits.Defence(magic)
+	return c.profits.Defence(magic)
 }
 
 //攻击 = 素质攻击 + 装备攻击
@@ -87,12 +125,18 @@ func (c *Character) Defence(magic bool) int {
 }
 
 func (c *Character) PanelDefence(magic bool) float64 {
-	return float64(c.Defence(magic)) * (1 + c.equipmentProfits.DefencePer(magic)/100)
+	return float64(c.Defence(magic)) * (1 + c.profits.DefencePer(magic)/100)
+}
+
+func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
+	rate = c.profits.SkillDamageRate(target, magic, skillNature)
+	rate *= skillNature.Restraint(target.nature) //*属性克制
+	return
 }
 
 func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDefence int, optimumPanel float64) {
-	for min, max, current := 0, 100000, c.equipmentProfits.Defence(magic); ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
-		c.equipmentProfits.setDefence(magic, current)
+	for min, max, current := 0, 100000, c.profits.Defence(magic); ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
+		c.profits.setDefence(magic, current)
 		actual := c.PanelDefence(magic)
 
 		if math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
@@ -110,7 +154,7 @@ func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDef
 			min = current
 		}
 	}
-	c.equipmentProfits.setDefence(magic, optimumDefence)
+	c.profits.setDefence(magic, optimumDefence)
 	fmt.Printf("detectDefenceByPanel[magic=%t]: optimumDefence=%d, optimumPanel=%f\n", magic, optimumDefence, optimumPanel)
 	return
 }

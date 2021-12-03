@@ -17,7 +17,7 @@ const (
 	Poison           // 毒
 )
 
-var restraints = [][]float32{
+var restraints = [][]float64{
 	//{无,地,风,水,火,圣,暗,不死,念,毒}
 	{1, 1, 1, 1, 1, 1, 1, 1, 0.25, 1},                    //无
 	{1, 0.25, 2, 1, 0.5, 0.75, 1, 1, 1, 0.75},            //地
@@ -60,7 +60,7 @@ func (n Nature) String() string {
 	}
 }
 
-func (n Nature) Restraint(defence Nature) float32 {
+func (n Nature) Restraint(defence Nature) float64 {
 	if n > Unlimited && n <= Poison {
 		if defence > Unlimited && defence <= Poison {
 			return restraints[n-1][defence-1]

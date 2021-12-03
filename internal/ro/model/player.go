@@ -28,3 +28,20 @@ func (p *Player) EquipmentAttack(magic bool) int {
 		return p.Character.EquipmentAttack(magic) + p.job.BaseLvAtkRate()*p.level.Base
 	}
 }
+
+func (p *Player) SkillDamageRate(target *Monster, magic bool, skillNature nature.Nature) (rate float64) {
+	rate = p.Character.SkillDamageRate(target.Character, magic, skillNature)
+	if target.types.IsBoss() {
+		rate *= 1 + p.profits.damage.MVP/100 //*(1+MVP增伤%)
+	}
+	return
+}
+
+func (p *Player) SkillEarth() (damage float64) {
+	damage = float64(p.quality.Vit*p.quality.Vit) *
+		p.PanelDefence(false) / 10000 *
+		9.6 //基础技能倍率
+	damage *= 1 + 10.0/100 //*(1+守护之盾技能增伤%)
+	damage *= 1 + 16.2/100 //*(1+铁蹄直驱符文增伤%)
+	return
+}
