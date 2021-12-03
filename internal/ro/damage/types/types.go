@@ -1,19 +1,19 @@
-package _type
+package types
 
 //类型
-type Type int
+type Types int
 
 const (
-	Unlimited Type = iota
-	Ordinary       // 普通魔物
-	Star           // 星怪
-	Special        // 特殊
-	MINI           // MINI Boss
-	MVP            // MVP Boss
-	DEAD           // 亡者 Boss
+	Unlimited Types = iota
+	Ordinary        // 普通魔物
+	Star            // 星怪
+	Special         // 特殊
+	MINI            // MINI Boss
+	MVP             // MVP Boss
+	DEAD            // 亡者 Boss
 )
 
-func (t Type) String() string {
+func (t Types) String() string {
 	switch t {
 	case Unlimited:
 		return "不限"
@@ -34,7 +34,7 @@ func (t Type) String() string {
 	}
 }
 
-func (t Type) IsBoss() bool {
+func (t Types) IsBoss() bool {
 	switch t {
 	case MINI, MVP, DEAD:
 		return true
