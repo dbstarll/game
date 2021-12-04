@@ -19,7 +19,7 @@ import (
 func main() {
 	player := model.NewPlayer(job.Crusader4,
 		model.AddQuality(&model.Quality{Str: 103, Agi: 131, Vit: 402, Int: 196, Dex: 78, Luk: 42}),
-		model.AddGains(false, &model.Gains{AttackPer: 31, Spike: 37 - 30, Damage: 70.5, DefencePer: 112.5}),
+		model.AddGains(false, &model.Gains{AttackPer: 31, Spike: 37, Damage: 70.5, DefencePer: 112.5}),
 		model.AddGains(true, &model.Gains{AttackPer: 31, Spike: 5, DefencePer: 60}),
 		model.AddNatureAttack(&map[nature.Nature]float64{
 			nature.Wind: 21, nature.Earth: 20, nature.Fire: 21, nature.Water: 1, nature.Neutral: 2, nature.Holy: 28,
@@ -39,8 +39,10 @@ func main() {
 			MVP: 28,
 		}), model.DetectDefenceByPanel(7766, 3308))
 
-	monster := model.NewMonster(types.MVP, race.Demon, nature.Dark, shape.Large)
-	skillEarth, rate := player.SkillEarth(), player.SkillDamageRate(monster, false, nature.Earth)*0.7
+	monster := model.NewMonster(types.MVP, race.Demon, nature.Dark, shape.Large,
+		model.AddGains(false, &model.Gains{Resist: 30}),
+		model.AddRaceResist(&map[race.Race]float64{race.Human: 30}))
+	skillEarth, rate := player.SkillEarth(), player.SkillDamageRate(monster, false, nature.Earth)
 	fmt.Printf("%f * %f = %f\n", skillEarth, rate, rate*skillEarth)
 	//5631426
 }

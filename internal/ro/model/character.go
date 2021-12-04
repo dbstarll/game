@@ -75,15 +75,33 @@ func AddRaceDamage(incr *map[race.Race]float64) CharacterModifier {
 	}
 }
 
+func AddRaceResist(incr *map[race.Race]float64) CharacterModifier {
+	return func(character *Character) {
+		character.profits.AddRaceResist(incr)
+	}
+}
+
 func AddShapeDamage(incr *map[shape.Shape]float64) CharacterModifier {
 	return func(character *Character) {
 		character.profits.AddShapeDamage(incr)
 	}
 }
 
+func AddShapeResist(incr *map[shape.Shape]float64) CharacterModifier {
+	return func(character *Character) {
+		character.profits.AddShapeResist(incr)
+	}
+}
+
 func AddNatureDamage(incr *map[nature.Nature]float64) CharacterModifier {
 	return func(character *Character) {
 		character.profits.AddNatureDamage(incr)
+	}
+}
+
+func AddNatureResist(incr *map[nature.Nature]float64) CharacterModifier {
+	return func(character *Character) {
+		character.profits.AddNatureResist(incr)
 	}
 }
 
@@ -130,7 +148,8 @@ func (c *Character) PanelDefence(magic bool) float64 {
 
 func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
 	rate = c.profits.SkillDamageRate(target, magic, skillNature)
-	rate *= skillNature.Restraint(target.nature) //*属性克制
+	rate *= 1 - target.profits.raceResist[c.race]/100 //*(1-种族减伤%)
+	rate *= skillNature.Restraint(target.nature)      //*属性克制
 	return
 }
 

@@ -15,6 +15,7 @@ type Gains struct {
 
 	Defence    int
 	DefencePer float64
+	Resist     float64 //伤害减免%
 }
 
 type Damage struct {
@@ -28,8 +29,11 @@ type Profits struct {
 	damage       Damage
 	natureAttack map[nature.Nature]float64 //属性攻击%
 	raceDamage   map[race.Race]float64     //种族增伤%
+	raceResist   map[race.Race]float64     //种族减伤%
 	shapeDamage  map[shape.Shape]float64   //体型增伤%
+	shapeResist  map[shape.Shape]float64   //体型减伤%
 	natureDamage map[nature.Nature]float64 //属性增伤%
+	natureResist map[nature.Nature]float64 //属性减伤%
 }
 
 func (g *Gains) Add(incr *Gains) {
@@ -41,6 +45,7 @@ func (g *Gains) Add(incr *Gains) {
 
 		g.Defence += incr.Defence
 		g.DefencePer += incr.DefencePer
+		g.Resist += incr.Resist
 	}
 }
 
@@ -93,6 +98,21 @@ func (p *Profits) AddRaceDamage(incr *map[race.Race]float64) {
 	}
 }
 
+func (p *Profits) AddRaceResist(incr *map[race.Race]float64) {
+	if incr != nil {
+		if p.raceResist == nil {
+			p.raceResist = make(map[race.Race]float64)
+		}
+		for n, v := range *incr {
+			if ov, exist := p.raceResist[n]; exist {
+				p.raceResist[n] = ov + v
+			} else {
+				p.raceResist[n] = v
+			}
+		}
+	}
+}
+
 func (p *Profits) AddShapeDamage(incr *map[shape.Shape]float64) {
 	if incr != nil {
 		if p.shapeDamage == nil {
@@ -108,6 +128,21 @@ func (p *Profits) AddShapeDamage(incr *map[shape.Shape]float64) {
 	}
 }
 
+func (p *Profits) AddShapeResist(incr *map[shape.Shape]float64) {
+	if incr != nil {
+		if p.shapeResist == nil {
+			p.shapeResist = make(map[shape.Shape]float64)
+		}
+		for n, v := range *incr {
+			if ov, exist := p.shapeResist[n]; exist {
+				p.shapeResist[n] = ov + v
+			} else {
+				p.shapeResist[n] = v
+			}
+		}
+	}
+}
+
 func (p *Profits) AddNatureDamage(incr *map[nature.Nature]float64) {
 	if incr != nil {
 		if p.natureDamage == nil {
@@ -118,6 +153,21 @@ func (p *Profits) AddNatureDamage(incr *map[nature.Nature]float64) {
 				p.natureDamage[n] = ov + v
 			} else {
 				p.natureDamage[n] = v
+			}
+		}
+	}
+}
+
+func (p *Profits) AddNatureResist(incr *map[nature.Nature]float64) {
+	if incr != nil {
+		if p.natureResist == nil {
+			p.natureResist = make(map[nature.Nature]float64)
+		}
+		for n, v := range *incr {
+			if ov, exist := p.natureResist[n]; exist {
+				p.natureResist[n] = ov + v
+			} else {
+				p.natureResist[n] = v
 			}
 		}
 	}
@@ -167,6 +217,15 @@ func (p *Profits) DefencePer(magic bool) float64 {
 	}
 }
 
+//伤害减免%
+func (p *Profits) Resist(magic bool) float64 {
+	if magic {
+		return p.magical.Resist
+	} else {
+		return p.physical.Resist
+	}
+}
+
 //穿刺
 func (p *Profits) Spike(magic bool) float64 {
 	if magic {
@@ -186,12 +245,12 @@ func (p *Profits) Damage(magic bool) float64 {
 }
 
 func (p *Profits) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
-	rate = 1 + p.damage.Skill/100                 //*(1+技能伤害加成%)
-	rate *= 1 + p.shapeDamage[target.shape]/100   //*(1+体型增伤%)
-	rate *= 1 + p.raceDamage[target.race]/100     //*(1+种族增伤%)
-	rate *= 1 + p.natureDamage[target.nature]/100 //*(1+属性魔物增伤%)
-	rate *= 1 + p.natureAttack[skillNature]/100   //*(1+属性攻击%)
-	rate *= 1 + p.Damage(magic)/100               //*(1+伤害加成%)
-	rate *= 1.027 + p.Spike(magic)/100            //*(1.027+穿刺%)
+	rate = 1 + p.damage.Skill/100                                         //*(1+技能伤害加成%)
+	rate *= 1 + p.shapeDamage[target.shape]/100                           //*(1+体型增伤%)
+	rate *= 1 + p.raceDamage[target.race]/100                             //*(1+种族增伤%)
+	rate *= 1 + p.natureDamage[target.nature]/100                         //*(1+属性魔物增伤%)
+	rate *= 1 + p.natureAttack[skillNature]/100                           //*(1+属性攻击%)
+	rate *= 1 + p.Damage(magic)/100                                       //*(1+伤害加成%)
+	rate *= 1.027 + p.Spike(magic)/100 - target.profits.Resist(magic)/100 //*(1.027+穿刺%-伤害减免%)
 	return
 }
