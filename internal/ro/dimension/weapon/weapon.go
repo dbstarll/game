@@ -1,6 +1,9 @@
 package weapon
 
-import "github.com/dbstarll/game/internal/ro/dimension/shape"
+import (
+	"github.com/dbstarll/game/internal/ro/dimension/job"
+	"github.com/dbstarll/game/internal/ro/dimension/shape"
+)
 
 //武器类型
 type Weapon int
@@ -61,4 +64,24 @@ func (w Weapon) Restraint(s shape.Shape) float64 {
 		}
 	}
 	return 1
+}
+
+func (w Weapon) IsMagic(j job.Job) bool {
+	switch w {
+	case 书, 法杖:
+		return true
+	case 钝器:
+		return j >= job.Acolyte && j <= job.Priest4
+	default:
+		return false
+	}
+}
+
+func (w Weapon) IsRemote(j job.Job) bool {
+	switch w {
+	case 书, 法杖, 弓, 乐器, 鞭子, 手枪, 来复枪:
+		return true
+	default:
+		return false
+	}
 }

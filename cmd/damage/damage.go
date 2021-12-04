@@ -16,7 +16,7 @@ func main() {
 }
 
 func Hunter() {
-	player := model.NewPlayer(job.Crusader4,
+	player := model.NewPlayer(job.Hunter3,
 		model.AddQuality(&model.Quality{Str: 15, Agi: 159, Vit: 34, Int: 42, Dex: 264, Luk: 73}),
 		model.AddGains(false, &model.Gains{AttackPer: 20, DefencePer: 5, Refine: 58}),
 		model.AddGains(true, &model.Gains{AttackPer: 19, DefencePer: 5}),

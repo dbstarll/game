@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/dbstarll/game/internal/ro/dimension/job"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
@@ -10,6 +11,7 @@ import (
 )
 
 type Character struct {
+	job     job.Job
 	nature  nature.Nature
 	race    race.Race
 	shape   shape.Shape
@@ -37,6 +39,12 @@ func Merge(modifiers ...CharacterModifier) CharacterModifier {
 		for _, modifier := range modifiers {
 			modifier(character)
 		}
+	}
+}
+
+func Job(job job.Job) CharacterModifier {
+	return func(character *Character) {
+		character.job = job
 	}
 }
 
@@ -127,7 +135,12 @@ func (c *Character) QualityAttack(magic, remote bool) int {
 
 //装备攻击
 func (c *Character) EquipmentAttack(magic bool) int {
-	return c.profits.Attack(magic)
+	if magic {
+		return c.profits.Attack(magic)
+	} else {
+		//装备物理攻击 = (装备，强化，附魔，卡片，头饰，祈祷，buff等合计)+ BaseLvAtkRate*人物等级
+		return c.profits.Attack(magic) + c.job.BaseLvAtkRate()*c.level.Base
+	}
 }
 
 //攻击 = 素质攻击 + 装备攻击
@@ -172,7 +185,8 @@ func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature n
 }
 
 //最终物攻/最终魔攻
-func (c *Character) finalAttack(target *Character, magic, remote, skill bool, attackNature nature.Nature, weapon weapon.Weapon) (damage float64) {
+func (c *Character) finalAttack(target *Character, skill bool, attackNature nature.Nature, weapon weapon.Weapon) (damage float64) {
+	magic, remote := weapon.IsMagic(c.job), weapon.IsRemote(c.job)
 	damage = float64(c.EquipmentAttack(magic)) //装备攻击
 	if !skill {
 		damage += float64(c.quality.GeneralAttack(magic, remote)) //普攻攻击力
@@ -180,7 +194,7 @@ func (c *Character) finalAttack(target *Character, magic, remote, skill bool, at
 	damage *= 1 + c.profits.AttackPer(magic)/100 //*(1+攻击%)
 
 	if magic {
-		damage += float64(c.quality.Int) * (1 + c.profits.AttackPer(magic)/100) //+智力*魔法攻击%
+		damage += float64(c.quality.Int) * c.profits.AttackPer(magic) / 100 //+智力*魔法攻击%
 	} else {
 		damage *= weapon.Restraint(target.shape)                                                        //*武器体型修正
 		damage *= 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
