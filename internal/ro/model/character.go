@@ -173,6 +173,15 @@ func (c *Character) PanelDefence(magic bool) float64 {
 	return float64(c.Defence(magic)) * (1 + c.profits.DefencePer(magic)/100)
 }
 
+func (c *Character) AttackWithWeapon(weapon weapon.Weapon) *Attack {
+	return &Attack{
+		weapon: weapon,
+		magic:  weapon.IsMagic(c.job),
+		remote: weapon.IsRemote(c.job),
+		nature: nature.Neutral,
+	}
+}
+
 func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
 	rate = c.profits.SkillDamageRate(target, magic, skillNature)
 	rate *= 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
@@ -184,25 +193,53 @@ func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature n
 	return
 }
 
-//最终物攻/最终魔攻
-func (c *Character) finalAttack(target *Character, skill bool, attackNature nature.Nature, weapon weapon.Weapon) (damage float64) {
-	magic, remote := weapon.IsMagic(c.job), weapon.IsRemote(c.job)
-	damage = float64(c.EquipmentAttack(magic)) //装备攻击
-	if !skill {
-		damage += float64(c.quality.GeneralAttack(magic, remote)) //普攻攻击力
+//基础伤害
+func (c *Character) baseDamage(target *Character, attack *Attack) (damage float64) {
+	damage = c.finalAttack(target, attack) //最终物攻/最终魔攻
+	if attack.magic {
+		//TODO *魔防乘数
+		damage *= 1 - target.profits.Resist(attack.magic)/100 //*(1-魔伤减免)
+		damage += c.profits.Refine(attack.magic)              //+精炼魔攻
+		//TODO *技能倍率
+		damage *= 1 + c.profits.Damage(attack.magic)                 //*(1+魔伤加成)
+		damage *= attack.nature.Restraint(target.nature)             //*属性克制
+		damage *= 1 - target.profits.natureResist[attack.nature]/100 //*(1-属性减伤)
+		damage -= float64(target.QualityDefence(attack.magic))       //-素质魔防
+		damage -= float64(target.QualityDefence(!attack.magic))      //-素质物防/2
+	} else if attack.critical { //普攻暴击
+		damage *= 1 - target.profits.Resist(attack.magic)/100   //*(1-物伤减免)
+		damage += c.profits.Refine(attack.magic)                //+精炼物攻
+		damage *= 1.5 + c.profits.CriticalPer(attack.magic)/100 //*(1+暴伤%)
+		damage *= 1 + c.profits.Damage(attack.magic)/100        //*(1+物伤加成)
+	} else { // 普攻未暴击或技能
+		//TODO *物防乘数
+		damage *= 1 - target.profits.Resist(attack.magic)/100 //*(1-物伤减免)
+		damage += c.profits.Refine(attack.magic)              //+精炼物攻
+		//TODO *技能倍率
+		damage -= float64(target.QualityDefence(attack.magic)) //-素质物防
+		damage *= 1 + c.profits.Damage(attack.magic)/100       //*(1+物伤加成)
 	}
-	damage *= 1 + c.profits.AttackPer(magic)/100 //*(1+攻击%)
+	return
+}
 
-	if magic {
-		damage += float64(c.quality.Int) * c.profits.AttackPer(magic) / 100 //+智力*魔法攻击%
-	} else {
-		damage *= weapon.Restraint(target.shape)                                                        //*武器体型修正
-		damage *= 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
-		damage *= attackNature.Restraint(target.nature)                                                 //*属性克制
-		damage *= 1 + c.profits.natureDamage[target.nature]/100                                         //*(1+属性魔物增伤%)
-		damage *= 1 - target.profits.natureResist[attackNature]/100                                     //*(1-属性减伤%)
+//最终物攻/最终魔攻
+func (c *Character) finalAttack(target *Character, attack *Attack) (damage float64) {
+	damage = float64(c.EquipmentAttack(attack.magic)) //装备攻击
+	if !attack.skill {
+		damage += float64(c.quality.GeneralAttack(attack.magic, attack.remote)) //普攻攻击力
 	}
-	damage += float64(c.QualityAttack(magic, remote))                                           //+素质攻击
+	damage *= 1 + c.profits.AttackPer(attack.magic)/100 //*(1+攻击%)
+
+	if attack.magic {
+		damage += float64(c.quality.Int) * c.profits.AttackPer(attack.magic) / 100 //+智力*魔法攻击%
+	} else {
+		damage *= attack.weapon.Restraint(target.shape)                                                 //*武器体型修正
+		damage *= 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
+		damage *= attack.nature.Restraint(target.nature)                                                //*属性克制
+		damage *= 1 + c.profits.natureDamage[target.nature]/100                                         //*(1+属性魔物增伤%)
+		damage *= 1 - target.profits.natureResist[attack.nature]/100                                    //*(1-属性减伤%)
+	}
+	damage += float64(c.QualityAttack(attack.magic, attack.remote))                             //+素质攻击
 	damage *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
 	return
 }

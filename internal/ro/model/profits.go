@@ -8,11 +8,13 @@ import (
 
 //装备，强化，附魔，卡片，头饰，祈祷，buff等合计
 type Gains struct {
-	Attack    int     //攻击
-	AttackPer float64 //攻击%
-	Spike     float64 //穿刺
-	Damage    float64 //伤害%
-	Refine    float64 //精炼攻击
+	Attack      int     //攻击
+	AttackPer   float64 //攻击%
+	Spike       float64 //穿刺
+	Damage      float64 //伤害%
+	Refine      float64 //精炼攻击
+	Critical    float64 //暴击
+	CriticalPer float64 //暴伤%
 
 	Defence    int
 	DefencePer float64
@@ -44,6 +46,8 @@ func (g *Gains) Add(incr *Gains) {
 		g.Spike += incr.Spike
 		g.Damage += incr.Damage
 		g.Refine += incr.Refine
+		g.Critical += incr.Critical
+		g.CriticalPer += incr.CriticalPer
 
 		g.Defence += incr.Defence
 		g.DefencePer += incr.DefencePer
@@ -262,6 +266,25 @@ func (p *Profits) Refine(magic bool) float64 {
 		return p.physical.Refine
 	}
 }
+
+//暴击
+func (p *Profits) Critical(magic bool) float64 {
+	if magic {
+		return p.magical.Critical
+	} else {
+		return p.physical.Critical
+	}
+}
+
+//暴伤%
+func (p *Profits) CriticalPer(magic bool) float64 {
+	if magic {
+		return p.magical.CriticalPer
+	} else {
+		return p.physical.CriticalPer
+	}
+}
+
 func (p *Profits) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
 	rate = 1 + p.damage.Skill/100                                         //*(1+技能伤害加成%)
 	rate *= 1 + p.natureDamage[target.nature]/100                         //*(1+属性魔物增伤%)

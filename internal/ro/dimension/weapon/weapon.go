@@ -10,22 +10,22 @@ type Weapon int
 
 const (
 	Unlimited Weapon = iota
-	空手
-	短剑
-	长剑
-	长矛
-	拳刃
-	拳套
-	钝器
-	斧子
-	法杖
-	书
-	弓
-	乐器
-	鞭子
-	风魔
-	手枪
-	来复枪
+	Empty            //空手
+	Dagger           //短剑
+	Sword            //长剑
+	Spear            //长矛
+	Katar            //拳刃
+	Glove            //拳套
+	Blunt            //钝器
+	Axe              //斧子
+	Wand             //法杖
+	Book             //书
+	Bow              //弓
+	Musical          //乐器
+	Whip             //鞭子
+	Dart             //风魔
+	Pistol           //手枪
+	Rifle            //来复枪
 )
 
 var restraints = [][]float64{
@@ -58,7 +58,7 @@ func (w Weapon) String() string {
 }
 
 func (w Weapon) Restraint(s shape.Shape) float64 {
-	if w > Unlimited && w <= 来复枪 {
+	if w > Unlimited && w <= Rifle {
 		if s > shape.Unlimited && s <= shape.Large {
 			return restraints[w-1][s-1]
 		}
@@ -68,9 +68,9 @@ func (w Weapon) Restraint(s shape.Shape) float64 {
 
 func (w Weapon) IsMagic(j job.Job) bool {
 	switch w {
-	case 书, 法杖:
+	case Book, Wand:
 		return true
-	case 钝器:
+	case Blunt:
 		return j >= job.Acolyte && j <= job.Priest4
 	default:
 		return false
@@ -79,7 +79,7 @@ func (w Weapon) IsMagic(j job.Job) bool {
 
 func (w Weapon) IsRemote(j job.Job) bool {
 	switch w {
-	case 书, 法杖, 弓, 乐器, 鞭子, 手枪, 来复枪:
+	case Book, Wand, Bow, Musical, Whip, Dart, Pistol, Rifle:
 		return true
 	default:
 		return false

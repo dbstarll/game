@@ -7,6 +7,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
 	"github.com/dbstarll/game/internal/ro/dimension/types"
+	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/dbstarll/game/internal/ro/model"
 )
 
@@ -18,7 +19,7 @@ func main() {
 func Hunter() {
 	player := model.NewPlayer(job.Hunter3,
 		model.AddQuality(&model.Quality{Str: 15, Agi: 159, Vit: 34, Int: 42, Dex: 264, Luk: 73}),
-		model.AddGains(false, &model.Gains{AttackPer: 20, DefencePer: 5, Refine: 58}),
+		model.AddGains(false, &model.Gains{AttackPer: 20, DefencePer: 5, Refine: 58, CriticalPer: 13}),
 		model.AddGains(true, &model.Gains{AttackPer: 19, DefencePer: 5}),
 		model.AddNatureAttack(&map[nature.Nature]float64{nature.Fire: 1, nature.Water: 1, nature.Holy: 1}),
 		model.AddNatureDamage(&map[nature.Nature]float64{
@@ -30,8 +31,12 @@ func Hunter() {
 		model.DetectAttackByPanel(true, 3295, 1117))
 
 	monster := model.NewMonster(types.Ordinary, race.Plant, nature.Neutral, shape.Medium)
-	generalAttack := player.GeneralAttack(monster, false, true, nature.Neutral)
-	fmt.Printf("%f\n", generalAttack)
+	attack := player.AttackWithWeapon(weapon.Bow)
+	generalAttack := player.GeneralAttack(monster, attack)
+	fmt.Printf("%f, %f\n", generalAttack, player.FinalDamage(monster, attack))
+	attack.WithCritical()
+	fmt.Printf("%f, %f\n", generalAttack, player.FinalDamage(monster, attack))
+	//4055 	6610
 }
 
 func EarthBash() {

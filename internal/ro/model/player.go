@@ -5,7 +5,6 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
-	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 )
 
 type Player struct {
@@ -35,7 +34,8 @@ func (p *Player) SkillEarth() (damage float64) {
 	return
 }
 
-func (p *Player) GeneralAttack(target *Monster, magic, remote bool, nature nature.Nature) (damage float64) {
+func (p *Player) GeneralAttack(target *Monster, attack *Attack) (damage float64) {
+	magic, remote, nature := attack.magic, attack.remote, attack.nature
 	//最终物攻
 	damage = float64(p.EquipmentAttack(magic) + p.quality.GeneralAttack(magic, remote)) //装备攻击
 	damage *= 1 + p.Character.profits.AttackPer(magic)/100                              //*(1+攻击%)
@@ -64,26 +64,14 @@ func (p *Player) GeneralAttack(target *Monster, magic, remote bool, nature natur
 }
 
 //最终伤害
-func (p *Player) finalDamage(base float64, target *Monster, attackNature nature.Nature) (damage float64) {
-	//最终伤害 = 基础伤害 * 元素加伤 * (1+MVP增伤%) * 状态加伤 * (1+真实伤害)
-	damage = base                                          //基础伤害
-	damage *= 1 + p.profits.natureAttack[attackNature]/100 //*元素加伤
+func (p *Player) FinalDamage(target *Monster, attack *Attack) (damage float64) {
+	//最终伤害 = 基础伤害 * (1+元素加伤) * (1+MVP增伤%) * 状态加伤 * (1+真实伤害)
+	damage = p.baseDamage(target.Character, attack)         //基础伤害
+	damage *= 1 + p.profits.natureAttack[attack.nature]/100 //*(1+属性攻击%)
 	if target.types.IsBoss() {
 		damage *= 1 + p.profits.damage.MVP/100 //*(1+MVP增伤%)
 	}
 	// TODO *状态加伤
 	// TODO *(1+真实伤害)
 	return
-}
-
-//基础伤害
-func (p *Player) baseDamage(target *Monster, magic, remote bool, attackNature nature.Nature, weapon weapon.Weapon) float64 {
-	//如果普攻暴击：
-	//基础伤害 = (最终物攻*(1-物伤减免)+精炼物攻)*(1+暴伤%)*(1+物伤加成)
-	//
-	//如果普攻未暴击或技能：
-	//基础伤害 = ((最终物攻 * 物防乘数 *(1-物伤减免)+精炼物攻)*技能倍率 -素质物防)*(1+物伤加成)
-
-	//基础伤害 = (最终魔攻* 魔防乘数*(1-魔伤减免)+精炼魔攻)*技能倍率*(1+魔伤加成)*属性克制*(1-属性减伤) - 素质魔防 - 素质物防/2
-	return 0
 }
