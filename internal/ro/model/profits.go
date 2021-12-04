@@ -12,6 +12,7 @@ type Gains struct {
 	AttackPer float64 //攻击%
 	Spike     float64 //穿刺
 	Damage    float64 //伤害%
+	Refine    float64 //精炼攻击
 
 	Defence    int
 	DefencePer float64
@@ -42,6 +43,7 @@ func (g *Gains) Add(incr *Gains) {
 		g.AttackPer += incr.AttackPer
 		g.Spike += incr.Spike
 		g.Damage += incr.Damage
+		g.Refine += incr.Refine
 
 		g.Defence += incr.Defence
 		g.DefencePer += incr.DefencePer
@@ -252,11 +254,18 @@ func (p *Profits) Damage(magic bool) float64 {
 	}
 }
 
+//精炼攻击
+func (p *Profits) Refine(magic bool) float64 {
+	if magic {
+		return p.magical.Refine
+	} else {
+		return p.physical.Refine
+	}
+}
 func (p *Profits) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
 	rate = 1 + p.damage.Skill/100                                         //*(1+技能伤害加成%)
-	rate *= 1 + p.shapeDamage[target.shape]/100                           //*(1+体型增伤%)
-	rate *= 1 + p.raceDamage[target.race]/100                             //*(1+种族增伤%)
 	rate *= 1 + p.natureDamage[target.nature]/100                         //*(1+属性魔物增伤%)
+	rate *= 1 - target.profits.natureResist[skillNature]/100              //*(1-属性减伤%)
 	rate *= 1 + p.natureAttack[skillNature]/100                           //*(1+属性攻击%)
 	rate *= 1 + p.Damage(magic)/100                                       //*(1+伤害加成%)
 	rate *= 1.027 + p.Spike(magic)/100 - target.profits.Resist(magic)/100 //*(1.027+穿刺%-伤害减免%)

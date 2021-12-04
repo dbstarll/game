@@ -5,6 +5,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
+	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"math"
 )
 
@@ -161,8 +162,34 @@ func (c *Character) PanelDefence(magic bool) float64 {
 
 func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
 	rate = c.profits.SkillDamageRate(target, magic, skillNature)
+	rate *= 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
+	//TODO 种族减伤待验证，是加算还是乘算
+	//rate *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
+	rate *= 1 + c.profits.raceDamage[target.race]/100 //*(1+种族增伤%)
 	rate *= 1 - target.profits.raceResist[c.race]/100 //*(1-种族减伤%)
 	rate *= skillNature.Restraint(target.nature)      //*属性克制
+	return
+}
+
+//最终物攻/最终魔攻
+func (c *Character) finalAttack(target *Character, magic, remote, skill bool, attackNature nature.Nature, weapon weapon.Weapon) (damage float64) {
+	damage = float64(c.EquipmentAttack(magic)) //装备攻击
+	if !skill {
+		damage += float64(c.quality.GeneralAttack(magic, remote)) //普攻攻击力
+	}
+	damage *= 1 + c.profits.AttackPer(magic)/100 //*(1+攻击%)
+
+	if magic {
+		damage += float64(c.quality.Int) * (1 + c.profits.AttackPer(magic)/100) //+智力*魔法攻击%
+	} else {
+		damage *= weapon.Restraint(target.shape)                                                        //*武器体型修正
+		damage *= 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
+		damage *= attackNature.Restraint(target.nature)                                                 //*属性克制
+		damage *= 1 + c.profits.natureDamage[target.nature]/100                                         //*(1+属性魔物增伤%)
+		damage *= 1 - target.profits.natureResist[attackNature]/100                                     //*(1-属性减伤%)
+	}
+	damage += float64(c.QualityAttack(magic, remote))                                           //+素质攻击
+	damage *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
 	return
 }
 
@@ -171,7 +198,7 @@ func (c *Character) detectAttackByPanel(magic, remote bool, expect float64) (opt
 		c.profits.setAttack(magic, current)
 		actual := c.PanelAttack(magic, remote)
 
-		if math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
+		if actual >= expect && math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
 			optimumAttack, optimumPanel = current, actual
 		}
 		if actual > expect {
@@ -187,7 +214,7 @@ func (c *Character) detectAttackByPanel(magic, remote bool, expect float64) (opt
 		}
 	}
 	c.profits.setAttack(magic, optimumAttack)
-	fmt.Printf("detectAttackByPanel[magic=%t,remote=%t]: optimumAttack=%d, optimumPanel=%f\n", magic, remote, optimumAttack, optimumPanel)
+	fmt.Printf("detectAttackByPanel[magic=%t]: optimumAttack=%d, optimumPanel=%f\n", magic, optimumAttack, optimumPanel)
 	return
 }
 
@@ -196,7 +223,7 @@ func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDef
 		c.profits.setDefence(magic, current)
 		actual := c.PanelDefence(magic)
 
-		if math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
+		if actual >= expect && math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
 			optimumDefence, optimumPanel = current, actual
 		}
 		if actual > expect {

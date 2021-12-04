@@ -18,23 +18,20 @@ func main() {
 func Hunter() {
 	player := model.NewPlayer(job.Crusader4,
 		model.AddQuality(&model.Quality{Str: 15, Agi: 159, Vit: 34, Int: 42, Dex: 264, Luk: 73}),
-		model.AddGains(false, &model.Gains{AttackPer: 20, DefencePer: 5}),
+		model.AddGains(false, &model.Gains{AttackPer: 20, DefencePer: 5, Refine: 58}),
 		model.AddGains(true, &model.Gains{AttackPer: 19, DefencePer: 5}),
-		model.AddNatureAttack(&map[nature.Nature]float64{
-			nature.Wind: 1.6, nature.Earth: 1.6, nature.Fire: 2.6, nature.Water: 2.6, nature.Neutral: 1.6,
-			nature.Holy: 2.6, nature.Dark: 1.6, nature.Ghost: 1.6, nature.Poison: 1.6, nature.Undead: 1.6,
-		}),
+		model.AddNatureAttack(&map[nature.Nature]float64{nature.Fire: 1, nature.Water: 1, nature.Holy: 1}),
 		model.AddNatureDamage(&map[nature.Nature]float64{
 			nature.Wind: 6, nature.Earth: 7, nature.Water: 8, nature.Fire: 7, nature.Holy: 6, nature.Ghost: 2, nature.Poison: 1,
 		}),
 		model.AddRaceDamage(&map[race.Race]float64{
 			race.Animal: 4, race.Human: 1, race.Demon: 2, race.Undead: 6, race.Fish: 5, race.Insect: 13, race.Dragon: 2,
-		}), model.DetectDefenceByPanel(491, 393),
-		model.DetectAttackByPanel(true, 3060, 1117))
+		}), model.DetectDefenceByPanel(494, 396),
+		model.DetectAttackByPanel(true, 3295, 1117))
 
-	monster := model.NewMonster(types.Ordinary, race.Animal, nature.Water, shape.Medium)
-	skillEarth, rate := player.SkillEarth(), player.SkillDamageRate(monster, false, nature.Earth)
-	fmt.Printf("%f * %f = %f\n", skillEarth, rate, rate*skillEarth)
+	monster := model.NewMonster(types.Ordinary, race.Plant, nature.Neutral, shape.Medium)
+	generalAttack := player.GeneralAttack(monster, false, true, nature.Neutral)
+	fmt.Printf("%f\n", generalAttack)
 }
 
 func EarthBash() {
