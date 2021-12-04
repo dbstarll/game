@@ -182,6 +182,14 @@ func (p *Profits) Attack(magic bool) int {
 	}
 }
 
+func (p *Profits) setAttack(magic bool, attack int) {
+	if magic {
+		p.magical.Attack = attack
+	} else {
+		p.physical.Attack = attack
+	}
+}
+
 //攻击%
 func (p *Profits) AttackPer(magic bool) float64 {
 	if magic {

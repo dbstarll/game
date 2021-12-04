@@ -105,6 +105,13 @@ func AddNatureResist(incr *map[nature.Nature]float64) CharacterModifier {
 	}
 }
 
+func DetectAttackByPanel(remote bool, expectPhysicalPanel, expectMagicalPanel float64) CharacterModifier {
+	return func(character *Character) {
+		character.detectAttackByPanel(false, remote, expectPhysicalPanel)
+		character.detectAttackByPanel(true, remote, expectMagicalPanel)
+	}
+}
+
 func DetectDefenceByPanel(expectPhysicalPanel, expectMagicalPanel float64) CharacterModifier {
 	return func(character *Character) {
 		character.detectDefenceByPanel(false, expectPhysicalPanel)
@@ -117,19 +124,9 @@ func (c *Character) QualityAttack(magic, remote bool) int {
 	return c.quality.Attack(magic, remote)
 }
 
-//素质防御
-func (c *Character) QualityDefence(magic bool) int {
-	return c.quality.Defence(magic)
-}
-
 //装备攻击
 func (c *Character) EquipmentAttack(magic bool) int {
 	return c.profits.Attack(magic)
-}
-
-//装备防御
-func (c *Character) EquipmentDefence(magic bool) int {
-	return c.profits.Defence(magic)
 }
 
 //攻击 = 素质攻击 + 装备攻击
@@ -137,11 +134,27 @@ func (c *Character) Attack(magic, remote bool) int {
 	return c.QualityAttack(magic, remote) + c.EquipmentAttack(magic)
 }
 
+//面板攻击 = 攻击 * (1 + 攻击%)
+func (c *Character) PanelAttack(magic, remote bool) float64 {
+	return float64(c.Attack(magic, remote)) * (1 + c.profits.AttackPer(magic)/100)
+}
+
+//素质防御
+func (c *Character) QualityDefence(magic bool) int {
+	return c.quality.Defence(magic)
+}
+
+//装备防御
+func (c *Character) EquipmentDefence(magic bool) int {
+	return c.profits.Defence(magic)
+}
+
 //防御 = 素质防御 + 装备防御
 func (c *Character) Defence(magic bool) int {
 	return c.QualityDefence(magic) + c.EquipmentDefence(magic)
 }
 
+//面板防御 = 防御 * (1 + 防御%)
 func (c *Character) PanelDefence(magic bool) float64 {
 	return float64(c.Defence(magic)) * (1 + c.profits.DefencePer(magic)/100)
 }
@@ -150,6 +163,31 @@ func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature n
 	rate = c.profits.SkillDamageRate(target, magic, skillNature)
 	rate *= 1 - target.profits.raceResist[c.race]/100 //*(1-种族减伤%)
 	rate *= skillNature.Restraint(target.nature)      //*属性克制
+	return
+}
+
+func (c *Character) detectAttackByPanel(magic, remote bool, expect float64) (optimumAttack int, optimumPanel float64) {
+	for min, max, current := 0, 100000, c.profits.Attack(magic); ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
+		c.profits.setAttack(magic, current)
+		actual := c.PanelAttack(magic, remote)
+
+		if math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
+			optimumAttack, optimumPanel = current, actual
+		}
+		if actual > expect {
+			if max == current && max-min == 1 {
+				break
+			} else {
+				max = current
+			}
+		} else if min == current && max-min == 1 {
+			break
+		} else {
+			min = current
+		}
+	}
+	c.profits.setAttack(magic, optimumAttack)
+	fmt.Printf("detectAttackByPanel[magic=%t,remote=%t]: optimumAttack=%d, optimumPanel=%f\n", magic, remote, optimumAttack, optimumPanel)
 	return
 }
 
