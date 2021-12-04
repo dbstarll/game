@@ -12,9 +12,9 @@ type Monster struct {
 	*Character
 }
 
-func NewMonster(types types.Types, nature nature.Nature, race race.Race, shape shape.Shape, modifiers ...CharacterModifier) *Monster {
+func NewMonster(types types.Types, race race.Race, nature nature.Nature, shape shape.Shape, modifiers ...CharacterModifier) *Monster {
 	return &Monster{
 		types:     types,
-		Character: NewCharacter(nature, race, shape, modifiers...),
+		Character: NewCharacter(race, nature, shape, modifiers...),
 	}
 }

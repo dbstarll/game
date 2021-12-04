@@ -15,7 +15,7 @@ type Player struct {
 func NewPlayer(job job.Job, modifiers ...CharacterModifier) *Player {
 	return &Player{
 		job:       job,
-		Character: NewCharacter(nature.Neutral, race.Human, shape.Medium, modifiers...),
+		Character: NewCharacter(race.Human, nature.Neutral, shape.Medium, modifiers...),
 	}
 }
 

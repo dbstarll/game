@@ -19,7 +19,7 @@ type Character struct {
 
 type CharacterModifier func(character *Character)
 
-func NewCharacter(nature nature.Nature, race race.Race, shape shape.Shape, modifiers ...CharacterModifier) *Character {
+func NewCharacter(race race.Race, nature nature.Nature, shape shape.Shape, modifiers ...CharacterModifier) *Character {
 	c := &Character{
 		nature: nature,
 		race:   race,
