@@ -28,10 +28,17 @@ type Damage struct {
 	MVP   float64 //MVP增伤%
 }
 
+type Refine struct {
+	Weapon int //武器精炼等级
+	Ring1  int //饰品1精炼等级
+	Ring2  int //饰品2精炼等级
+}
+
 type Profits struct {
 	physical     Gains
 	magical      Gains
 	damage       Damage
+	refine       Refine
 	natureAttack map[nature.Nature]float64 //属性攻击%
 	raceDamage   map[race.Race]float64     //种族增伤%
 	raceResist   map[race.Race]float64     //种族减伤%
@@ -287,13 +294,34 @@ func (p *Profits) CriticalPer(magic bool) float64 {
 	}
 }
 
+func (p *Profits) weaponSpikes() float64 {
+	return p.refine.weaponSpikes()
+}
+
+func (r *Refine) weaponSpikes() float64 {
+	return r.weaponSpike(r.Weapon) + r.weaponSpike(r.Ring1) + r.weaponSpike(r.Ring2)
+}
+
+func (r *Refine) weaponSpike(lvl int) float64 {
+	switch {
+	case lvl >= 15:
+		return 3.6
+	case lvl >= 10:
+		return 1.8
+	case lvl >= 5:
+		return 0.9
+	default:
+		return 0.0
+	}
+}
+
 func (p *Profits) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
-	rate = 1 + p.damage.Skill/100                                         //*(1+技能伤害加成%)
-	rate *= 1 + p.natureDamage[target.nature]/100                         //*(1+属性魔物增伤%)
-	rate *= 1 - target.profits.natureResist[skillNature]/100              //*(1-属性减伤%)
-	rate *= 1 + p.natureAttack[skillNature]/100                           //*(1+属性攻击%)
-	rate *= 1 + p.Damage(magic)/100                                       //*(1+伤害加成%)
-	rate *= 1.027 + p.Spike(magic)/100 - target.profits.Resist(magic)/100 //*(1.027+穿刺%-伤害减免%)
+	rate = 1 + p.damage.Skill/100                                                            //*(1+技能伤害加成%)
+	rate *= 1 + p.natureDamage[target.nature]/100                                            //*(1+属性魔物增伤%)
+	rate *= 1 - target.profits.natureResist[skillNature]/100                                 //*(1-属性减伤%)
+	rate *= 1 + p.natureAttack[skillNature]/100                                              //*(1+属性攻击%)
+	rate *= 1 + p.Damage(magic)/100                                                          //*(1+伤害加成%)
+	rate *= 1 + p.weaponSpikes()/100 + p.Spike(magic)/100 - target.profits.Resist(magic)/100 //*(1+装备穿刺%+穿刺%-伤害减免%)
 	return
 }
 
@@ -315,6 +343,10 @@ func (p *Profits) UnmarshalYAML(value *yaml.Node) (err error) {
 					}
 				case "damage":
 					if err = sub.Decode(&p.damage); err != nil {
+						return
+					}
+				case "refine":
+					if err = sub.Decode(&p.refine); err != nil {
 						return
 					}
 				case "natureAttack":

@@ -36,6 +36,10 @@ character:
     damage:
       #      skill: 0
       mvp: 28
+    refine:
+      weapon: 10
+      ring1: 0
+      ring2: 8
     natureAttack: #属性攻击%
       无: 2
       地: 20
