@@ -1,5 +1,7 @@
 package race
 
+import "gopkg.in/yaml.v3"
+
 //种族
 type Race int
 
@@ -44,4 +46,14 @@ func (r Race) String() string {
 	default:
 		return "未知"
 	}
+}
+
+func (r *Race) UnmarshalYAML(value *yaml.Node) error {
+	for i := Unlimited; i <= Dragon; i++ {
+		if i.String() == value.Value {
+			*r = i
+			break
+		}
+	}
+	return nil
 }

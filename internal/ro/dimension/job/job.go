@@ -1,5 +1,9 @@
 package job
 
+import (
+	"gopkg.in/yaml.v3"
+)
+
 //职业
 type Job int
 
@@ -249,4 +253,14 @@ func (j Job) BaseLvAtkRate() int {
 	default:
 		return 0
 	}
+}
+
+func (j *Job) UnmarshalYAML(value *yaml.Node) error {
+	for i := Unlimited; i <= Summoner4; i++ {
+		if i.String() == value.Value {
+			*j = i
+			break
+		}
+	}
+	return nil
 }

@@ -1,5 +1,7 @@
 package shape
 
+import "gopkg.in/yaml.v3"
+
 //体型
 type Shape int
 
@@ -23,4 +25,14 @@ func (s Shape) String() string {
 	default:
 		return "未知"
 	}
+}
+
+func (s *Shape) UnmarshalYAML(value *yaml.Node) error {
+	for i := Unlimited; i <= Large; i++ {
+		if i.String() == value.Value {
+			*s = i
+			break
+		}
+	}
+	return nil
 }

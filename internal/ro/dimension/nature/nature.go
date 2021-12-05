@@ -1,5 +1,7 @@
 package nature
 
+import "gopkg.in/yaml.v3"
+
 //属性
 type Nature int
 
@@ -67,4 +69,14 @@ func (n Nature) Restraint(defence Nature) float64 {
 		}
 	}
 	return 1
+}
+
+func (n *Nature) UnmarshalYAML(value *yaml.Node) error {
+	for i := Unlimited; i <= Poison; i++ {
+		if i.String() == value.Value {
+			*n = i
+			break
+		}
+	}
+	return nil
 }

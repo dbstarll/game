@@ -1,9 +1,11 @@
 package model
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
+	"gopkg.in/yaml.v3"
 )
 
 //装备，强化，附魔，卡片，头饰，祈祷，buff等合计
@@ -292,5 +294,62 @@ func (p *Profits) SkillDamageRate(target *Character, magic bool, skillNature nat
 	rate *= 1 + p.natureAttack[skillNature]/100                           //*(1+属性攻击%)
 	rate *= 1 + p.Damage(magic)/100                                       //*(1+伤害加成%)
 	rate *= 1.027 + p.Spike(magic)/100 - target.profits.Resist(magic)/100 //*(1.027+穿刺%-伤害减免%)
+	return
+}
+
+func (p *Profits) UnmarshalYAML(value *yaml.Node) (err error) {
+	if value.Kind == yaml.MappingNode {
+		var lastAttr string
+		for idx, sub := range value.Content {
+			if sub.Kind == yaml.ScalarNode && idx%2 == 0 {
+				lastAttr = sub.Value
+			} else {
+				switch lastAttr {
+				case "physical":
+					if err = sub.Decode(&p.physical); err != nil {
+						return
+					}
+				case "magical":
+					if err = sub.Decode(&p.magical); err != nil {
+						return
+					}
+				case "damage":
+					if err = sub.Decode(&p.damage); err != nil {
+						return
+					}
+				case "natureAttack":
+					if err = sub.Decode(&p.natureAttack); err != nil {
+						return
+					}
+				case "raceDamage":
+					if err = sub.Decode(&p.raceDamage); err != nil {
+						return
+					}
+				case "raceResist":
+					if err = sub.Decode(&p.raceResist); err != nil {
+						return
+					}
+				case "shapeDamage":
+					if err = sub.Decode(&p.shapeDamage); err != nil {
+						return
+					}
+				case "shapeResist":
+					if err = sub.Decode(&p.shapeResist); err != nil {
+						return
+					}
+				case "natureDamage":
+					if err = sub.Decode(&p.natureDamage); err != nil {
+						return
+					}
+				case "natureResist":
+					if err = sub.Decode(&p.natureResist); err != nil {
+						return
+					}
+				default:
+					fmt.Printf("missing decode Profits.%s: %+v\n", lastAttr, sub)
+				}
+			}
+		}
+	}
 	return
 }

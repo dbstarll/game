@@ -1,14 +1,47 @@
 package model
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ro/dimension/job"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
+	"github.com/pkg/errors"
+	"gopkg.in/yaml.v3"
+	"io/ioutil"
 )
 
 type Player struct {
 	*Character
+}
+
+func LoadPlayerFromYaml(name string, remote bool) (*Player, error) {
+	yamlFile := fmt.Sprintf("configs/player/%s.yaml", name)
+	if data, err := ioutil.ReadFile(yamlFile); err != nil {
+		return nil, errors.WithStack(err)
+	} else {
+		player := &Player{}
+		if err := yaml.Unmarshal(data, player); err != nil {
+			return nil, errors.WithStack(err)
+		} else {
+			player.Character.nature = nature.Neutral
+			player.Character.race = race.Human
+			player.Character.shape = shape.Medium
+			if player.detectByPanel.Atk > 0 {
+				player.detectAttackByPanel(false, remote, player.detectByPanel.Atk)
+			}
+			if player.detectByPanel.MAtk > 0 {
+				player.detectAttackByPanel(true, remote, player.detectByPanel.MAtk)
+			}
+			if player.detectByPanel.Def > 0 {
+				player.detectDefenceByPanel(false, player.detectByPanel.Def)
+			}
+			if player.detectByPanel.MDef > 0 {
+				player.detectDefenceByPanel(true, player.detectByPanel.MDef)
+			}
+			return player, nil
+		}
+	}
 }
 
 func NewPlayer(job job.Job, modifiers ...CharacterModifier) *Player {
@@ -73,5 +106,27 @@ func (p *Player) FinalDamage(target *Monster, attack *Attack) (damage float64) {
 	}
 	// TODO *状态加伤
 	// TODO *(1+真实伤害)
+	return
+}
+
+func (p *Player) UnmarshalYAML(value *yaml.Node) (err error) {
+	if value.Kind == yaml.MappingNode {
+		var lastAttr string
+		for idx, sub := range value.Content {
+			if sub.Kind == yaml.ScalarNode && idx%2 == 0 {
+				lastAttr = sub.Value
+			} else {
+				switch lastAttr {
+				case "character":
+					p.Character = &Character{}
+					if err = sub.Decode(p.Character); err != nil {
+						return
+					}
+				default:
+					fmt.Printf("missing decode Player.%s: %+v\n", lastAttr, sub)
+				}
+			}
+		}
+	}
 	return
 }

@@ -1,0 +1,90 @@
+character:
+  job: 游侠
+  quality:
+    str: 15
+    agi: 159
+    vit: 34
+    int: 42
+    dex: 264
+    luk: 73
+  profits:
+    physical:
+      #      attack: 0
+      attackper: 20
+      #      spike: 37
+      #      damage: 70.5
+      refine: 58
+      #      critical: 0
+      criticalper: 13
+      #      defence: 0
+      defenceper: 5
+      #      resist: 0
+    magical:
+      #      attack: 0
+      attackper: 19
+      #      spike: 5
+      #      damage: 0
+      #      refine: 0
+      #      critical: 0
+      #      criticalper: 0
+      #      defence: 0
+      defenceper: 5
+    #      resist: 0
+    damage:
+    #      skill: 0
+    #      mvp: 28
+    natureAttack: #属性攻击%
+      #      无: 2
+      #      地: 20
+      #      风: 21
+      水: 1
+      火: 1
+      圣: 1
+    #      暗: 0
+    #      不死: 0
+    #      念: 0
+    #      毒: 0
+    raceDamage: #种族增伤%
+      #      无形: 4
+      人形: 1
+      #      植物: 3
+      动物: 4
+      昆虫: 13
+      鱼贝: 5
+      #      天使: 3
+      恶魔: 2
+      不死: 6
+      龙: 2
+    raceResist: #种族减伤%
+    #      无形: 0
+    #      人形: 0
+    #      植物: 0
+    #      动物: 0
+    #      昆虫: 0
+    #      鱼贝: 0
+    #      天使: 0
+    #      恶魔: 0
+    #      不死: 0
+    #      龙: 0
+    shapeDamage: #体型增伤%
+    #      小型: 65
+    #      中型: 6
+    #      大型: 55
+    shapeResist: #体型减伤%
+    natureDamage: #属性增伤%
+      #      无: 0
+      地: 7
+      风: 6
+      水: 8
+      火: 7
+      圣: 6
+      #      暗: 2
+      #      不死: 0
+      念: 2
+      毒: 1
+    natureResist: #属性减伤%
+  detectByPanel: #根据面板预测: 装备攻击/装备防御
+    atk: 3295
+    def: 494
+    matk: 1117
+    mdef: 396

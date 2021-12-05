@@ -7,17 +7,26 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
 	"github.com/dbstarll/game/internal/ro/dimension/weapon"
+	"gopkg.in/yaml.v3"
 	"math"
 )
 
+type DetectByPanel struct {
+	Atk  float64
+	Def  float64
+	MAtk float64
+	MDef float64
+}
+
 type Character struct {
-	job     job.Job
-	nature  nature.Nature
-	race    race.Race
-	shape   shape.Shape
-	level   Level
-	quality Quality
-	profits Profits
+	job           job.Job
+	nature        nature.Nature
+	race          race.Race
+	shape         shape.Shape
+	level         Level
+	quality       Quality
+	profits       Profits
+	detectByPanel DetectByPanel
 }
 
 type CharacterModifier func(character *Character)
@@ -291,5 +300,54 @@ func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDef
 	}
 	c.profits.setDefence(magic, optimumDefence)
 	fmt.Printf("detectDefenceByPanel[magic=%t]: optimumDefence=%d, optimumPanel=%f\n", magic, optimumDefence, optimumPanel)
+	return
+}
+
+func (c *Character) UnmarshalYAML(value *yaml.Node) (err error) {
+	if value.Kind == yaml.MappingNode {
+		var lastAttr string
+		for idx, sub := range value.Content {
+			if sub.Kind == yaml.ScalarNode && idx%2 == 0 {
+				lastAttr = sub.Value
+			} else {
+				switch lastAttr {
+				case "job":
+					if err = sub.Decode(&c.job); err != nil {
+						return
+					}
+				case "nature":
+					if err = sub.Decode(&c.nature); err != nil {
+						return
+					}
+				case "race":
+					if err = sub.Decode(&c.race); err != nil {
+						return
+					}
+				case "shape":
+					if err = sub.Decode(&c.shape); err != nil {
+						return
+					}
+				case "level":
+					if err = sub.Decode(&c.level); err != nil {
+						return
+					}
+				case "quality":
+					if err = sub.Decode(&c.quality); err != nil {
+						return
+					}
+				case "profits":
+					if err = sub.Decode(&c.profits); err != nil {
+						return
+					}
+				case "detectByPanel":
+					if err = sub.Decode(&c.detectByPanel); err != nil {
+						return
+					}
+				default:
+					fmt.Printf("missing decode Character.%s: %+v\n", lastAttr, sub)
+				}
+			}
+		}
+	}
 	return
 }
