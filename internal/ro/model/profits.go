@@ -10,17 +10,17 @@ import (
 
 //装备，强化，附魔，卡片，头饰，祈祷，buff等合计
 type Gains struct {
-	Attack      int     //攻击
-	AttackPer   float64 //攻击%
-	Spike       float64 //穿刺
-	Damage      float64 //伤害%
-	Refine      float64 //精炼攻击
-	Critical    float64 //暴击
-	CriticalPer float64 //暴伤%
+	attack      int     //攻击
+	attackPer   float64 //攻击%
+	spike       float64 //穿刺
+	damage      float64 //伤害%
+	refine      float64 //精炼攻击
+	critical    float64 //暴击
+	criticalPer float64 //暴伤%
 
-	Defence    int
-	DefencePer float64
-	Resist     float64 //伤害减免%
+	defence    int     //防御
+	defencePer float64 //防御%
+	resist     float64 //伤害减免%
 }
 
 type Damage struct {
@@ -43,17 +43,17 @@ type Profits struct {
 
 func (g *Gains) Add(incr *Gains) {
 	if incr != nil {
-		g.Attack += incr.Attack
-		g.AttackPer += incr.AttackPer
-		g.Spike += incr.Spike
-		g.Damage += incr.Damage
-		g.Refine += incr.Refine
-		g.Critical += incr.Critical
-		g.CriticalPer += incr.CriticalPer
+		g.attack += incr.attack
+		g.attackPer += incr.attackPer
+		g.spike += incr.spike
+		g.damage += incr.damage
+		g.refine += incr.refine
+		g.critical += incr.critical
+		g.criticalPer += incr.criticalPer
 
-		g.Defence += incr.Defence
-		g.DefencePer += incr.DefencePer
-		g.Resist += incr.Resist
+		g.defence += incr.defence
+		g.defencePer += incr.defencePer
+		g.resist += incr.resist
 	}
 }
 
@@ -184,106 +184,106 @@ func (p *Profits) AddNatureResist(incr *map[nature.Nature]float64) {
 //装备攻击
 func (p *Profits) Attack(magic bool) int {
 	if magic {
-		return p.magical.Attack
+		return p.magical.attack
 	} else {
-		return p.physical.Attack
+		return p.physical.attack
 	}
 }
 
 func (p *Profits) setAttack(magic bool, attack int) {
 	if magic {
-		p.magical.Attack = attack
+		p.magical.attack = attack
 	} else {
-		p.physical.Attack = attack
+		p.physical.attack = attack
 	}
 }
 
 //攻击%
 func (p *Profits) AttackPer(magic bool) float64 {
 	if magic {
-		return p.magical.AttackPer
+		return p.magical.attackPer
 	} else {
-		return p.physical.AttackPer
+		return p.physical.attackPer
 	}
 }
 
 //装备防御
 func (p *Profits) Defence(magic bool) int {
 	if magic {
-		return p.magical.Defence
+		return p.magical.defence
 	} else {
-		return p.physical.Defence
+		return p.physical.defence
 	}
 }
 
 func (p *Profits) setDefence(magic bool, defence int) {
 	if magic {
-		p.magical.Defence = defence
+		p.magical.defence = defence
 	} else {
-		p.physical.Defence = defence
+		p.physical.defence = defence
 	}
 }
 
 //防御%
 func (p *Profits) DefencePer(magic bool) float64 {
 	if magic {
-		return p.magical.DefencePer
+		return p.magical.defencePer
 	} else {
-		return p.physical.DefencePer
+		return p.physical.defencePer
 	}
 }
 
 //伤害减免%
 func (p *Profits) Resist(magic bool) float64 {
 	if magic {
-		return p.magical.Resist
+		return p.magical.resist
 	} else {
-		return p.physical.Resist
+		return p.physical.resist
 	}
 }
 
 //穿刺
 func (p *Profits) Spike(magic bool) float64 {
 	if magic {
-		return p.magical.Spike
+		return p.magical.spike
 	} else {
-		return p.physical.Spike
+		return p.physical.spike
 	}
 }
 
 //伤害%
 func (p *Profits) Damage(magic bool) float64 {
 	if magic {
-		return p.magical.Damage
+		return p.magical.damage
 	} else {
-		return p.physical.Damage
+		return p.physical.damage
 	}
 }
 
 //精炼攻击
 func (p *Profits) Refine(magic bool) float64 {
 	if magic {
-		return p.magical.Refine
+		return p.magical.refine
 	} else {
-		return p.physical.Refine
+		return p.physical.refine
 	}
 }
 
 //暴击
 func (p *Profits) Critical(magic bool) float64 {
 	if magic {
-		return p.magical.Critical
+		return p.magical.critical
 	} else {
-		return p.physical.Critical
+		return p.physical.critical
 	}
 }
 
 //暴伤%
 func (p *Profits) CriticalPer(magic bool) float64 {
 	if magic {
-		return p.magical.CriticalPer
+		return p.magical.criticalPer
 	} else {
-		return p.physical.CriticalPer
+		return p.physical.criticalPer
 	}
 }
 
@@ -347,6 +347,63 @@ func (p *Profits) UnmarshalYAML(value *yaml.Node) (err error) {
 					}
 				default:
 					fmt.Printf("missing decode Profits.%s: %+v\n", lastAttr, sub)
+				}
+			}
+		}
+	}
+	return
+}
+
+func (g *Gains) UnmarshalYAML(value *yaml.Node) (err error) {
+	if value.Kind == yaml.MappingNode {
+		var lastAttr string
+		for idx, sub := range value.Content {
+			if sub.Kind == yaml.ScalarNode && idx%2 == 0 {
+				lastAttr = sub.Value
+			} else {
+				switch lastAttr {
+				case "attack":
+					if err = sub.Decode(&g.attack); err != nil {
+						return
+					}
+				case "attackPer":
+					if err = sub.Decode(&g.attackPer); err != nil {
+						return
+					}
+				case "spike":
+					if err = sub.Decode(&g.spike); err != nil {
+						return
+					}
+				case "damage":
+					if err = sub.Decode(&g.damage); err != nil {
+						return
+					}
+				case "refine":
+					if err = sub.Decode(&g.refine); err != nil {
+						return
+					}
+				case "critical":
+					if err = sub.Decode(&g.critical); err != nil {
+						return
+					}
+				case "criticalPer":
+					if err = sub.Decode(&g.criticalPer); err != nil {
+						return
+					}
+				case "defence":
+					if err = sub.Decode(&g.defence); err != nil {
+						return
+					}
+				case "defencePer":
+					if err = sub.Decode(&g.defencePer); err != nil {
+						return
+					}
+				case "resist":
+					if err = sub.Decode(&g.resist); err != nil {
+						return
+					}
+				default:
+					fmt.Printf("missing decode Gains.%s: %+v\n", lastAttr, sub)
 				}
 			}
 		}
