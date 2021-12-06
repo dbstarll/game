@@ -42,6 +42,25 @@ func (g *Gains) Add(incr *Gains) {
 	}
 }
 
+func (g *Gains) Del(incr *Gains) {
+	if incr != nil {
+		g.attack -= incr.attack
+		g.defence -= incr.defence
+
+		g.spike -= incr.spike
+
+		g.attackPer -= incr.attackPer
+		g.defencePer -= incr.defencePer
+		g.damage -= incr.damage
+		g.ignore -= incr.ignore
+		g.resist -= incr.resist
+		g.nearResist -= incr.nearResist
+		g.remoteResist -= incr.remoteResist
+		g.refine -= incr.refine
+		g.refineResist -= incr.refineResist
+	}
+}
+
 func (g *Gains) UnmarshalYAML(value *yaml.Node) (err error) {
 	if value.Kind == yaml.MappingNode {
 		var lastAttr string

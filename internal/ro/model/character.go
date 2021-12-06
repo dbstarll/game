@@ -29,7 +29,7 @@ type Character struct {
 	detectByPanel DetectByPanel
 }
 
-type CharacterModifier func(character *Character)
+type CharacterModifier func(character *Character) func()
 
 func NewCharacter(race race.Race, nature nature.Nature, shape shape.Shape, modifiers ...CharacterModifier) *Character {
 	c := &Character{
@@ -44,96 +44,142 @@ func NewCharacter(race race.Race, nature nature.Nature, shape shape.Shape, modif
 }
 
 func Merge(modifiers ...CharacterModifier) CharacterModifier {
-	return func(character *Character) {
-		for _, modifier := range modifiers {
-			modifier(character)
+	return func(character *Character) func() {
+		size := len(modifiers)
+		cancelList := make([]func(), size)
+		for idx, modifier := range modifiers {
+			cancelList[size-idx-1] = modifier(character)
+		}
+		return func() {
+			for _, cancel := range cancelList {
+				cancel()
+			}
 		}
 	}
 }
 
 func Job(job job.Job) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
+		oldJob := character.job
 		character.job = job
+		return func() {
+			character.job = oldJob
+		}
 	}
 }
 
 func AddQuality(quality *Quality) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.quality.Add(quality)
+		return func() {
+			character.quality.Del(quality)
+		}
 	}
 }
 
 func AddLevel(level *Level) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.level.Add(level)
+		return func() {
+			character.level.Del(level)
+		}
 	}
 }
 
 func AddGains(magic bool, gains *Gains) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.profits.gains(magic).Add(gains)
+		return func() {
+			character.profits.gains(magic).Del(gains)
+		}
 	}
 }
 
 func AddGeneral(incr *General) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.profits.general.Add(incr)
+		return func() {
+			character.profits.general.Del(incr)
+		}
 	}
 }
 
 func AddNatureAttack(incr *map[nature.Nature]float64) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.profits.AddNatureAttack(incr)
+		return func() {
+			character.profits.DelNatureAttack(incr)
+		}
 	}
 }
 
 func AddRaceDamage(incr *map[race.Race]float64) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.profits.AddRaceDamage(incr)
+		return func() {
+			character.profits.DelRaceDamage(incr)
+		}
 	}
 }
 
 func AddRaceResist(incr *map[race.Race]float64) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.profits.AddRaceResist(incr)
+		return func() {
+			character.profits.DelRaceResist(incr)
+		}
 	}
 }
 
 func AddShapeDamage(incr *map[shape.Shape]float64) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.profits.AddShapeDamage(incr)
+		return func() {
+			character.profits.DelShapeDamage(incr)
+		}
 	}
 }
 
 func AddShapeResist(incr *map[shape.Shape]float64) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.profits.AddShapeResist(incr)
+		return func() {
+			character.profits.DelShapeResist(incr)
+		}
 	}
 }
 
 func AddNatureDamage(incr *map[nature.Nature]float64) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.profits.AddNatureDamage(incr)
+		return func() {
+			character.profits.DelNatureDamage(incr)
+		}
 	}
 }
 
 func AddNatureResist(incr *map[nature.Nature]float64) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.profits.AddNatureResist(incr)
+		return func() {
+			character.profits.DelNatureResist(incr)
+		}
 	}
 }
 
 func DetectAttackByPanel(remote bool, expectPhysicalPanel, expectMagicalPanel float64) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.detectAttackByPanel(false, remote, expectPhysicalPanel)
 		character.detectAttackByPanel(true, remote, expectMagicalPanel)
+		return func() {}
 	}
 }
 
 func DetectDefenceByPanel(expectPhysicalPanel, expectMagicalPanel float64) CharacterModifier {
-	return func(character *Character) {
+	return func(character *Character) func() {
 		character.detectDefenceByPanel(false, expectPhysicalPanel)
 		character.detectDefenceByPanel(true, expectMagicalPanel)
+		return func() {}
 	}
 }
 

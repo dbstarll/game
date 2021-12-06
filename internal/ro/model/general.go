@@ -33,6 +33,21 @@ func (d *General) Add(incr *General) {
 	}
 }
 
+func (d *General) Del(incr *General) {
+	if incr != nil {
+		d.critical -= incr.critical
+		d.criticalDamage -= incr.criticalDamage
+		d.criticalResist -= incr.criticalResist
+		d.criticalDamageResist -= incr.criticalDamageResist
+		d.ordinary -= incr.ordinary
+		d.ordinaryResist -= incr.ordinaryResist
+		d.skill -= incr.skill
+		d.skillResist -= incr.skillResist
+		d.mvp -= incr.mvp
+		d.mvpResist -= incr.mvpResist
+	}
+}
+
 func (d *General) UnmarshalYAML(value *yaml.Node) (err error) {
 	if value.Kind == yaml.MappingNode {
 		var lastAttr string

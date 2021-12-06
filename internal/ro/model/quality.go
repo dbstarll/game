@@ -56,3 +56,14 @@ func (q *Quality) Add(incr *Quality) {
 		q.Luk += incr.Luk
 	}
 }
+
+func (q *Quality) Del(incr *Quality) {
+	if incr != nil {
+		q.Str -= incr.Str
+		q.Agi -= incr.Agi
+		q.Vit -= incr.Vit
+		q.Int -= incr.Int
+		q.Dex -= incr.Dex
+		q.Luk -= incr.Luk
+	}
+}
