@@ -6,45 +6,45 @@ import (
 )
 
 type General struct {
-	critical             float64 //暴击
-	criticalDamage       float64 //暴伤%
-	criticalResist       float64 //暴击防护
-	criticalDamageResist float64 //爆伤减免%
-	ordinary             float64 //普攻伤害加成%
-	ordinaryResist       float64 //普攻伤害减免%
-	skill                float64 //技能伤害加成%
-	skillResist          float64 //技能伤害减免%
-	mvp                  float64 //MVP增伤%
-	mvpResist            float64 //MVP减伤%
+	Critical             float64 //暴击
+	CriticalDamage       float64 //暴伤%
+	CriticalResist       float64 //暴击防护
+	CriticalDamageResist float64 //爆伤减免%
+	Ordinary             float64 //普攻伤害加成%
+	OrdinaryResist       float64 //普攻伤害减免%
+	Skill                float64 //技能伤害加成%
+	SkillResist          float64 //技能伤害减免%
+	MVP                  float64 //MVP增伤%
+	MVPResist            float64 //MVP减伤%
 }
 
 func (d *General) Add(incr *General) {
 	if incr != nil {
-		d.critical += incr.critical
-		d.criticalDamage += incr.criticalDamage
-		d.criticalResist += incr.criticalResist
-		d.criticalDamageResist += incr.criticalDamageResist
-		d.ordinary += incr.ordinary
-		d.ordinaryResist += incr.ordinaryResist
-		d.skill += incr.skill
-		d.skillResist += incr.skillResist
-		d.mvp += incr.mvp
-		d.mvpResist += incr.mvpResist
+		d.Critical += incr.Critical
+		d.CriticalDamage += incr.CriticalDamage
+		d.CriticalResist += incr.CriticalResist
+		d.CriticalDamageResist += incr.CriticalDamageResist
+		d.Ordinary += incr.Ordinary
+		d.OrdinaryResist += incr.OrdinaryResist
+		d.Skill += incr.Skill
+		d.SkillResist += incr.SkillResist
+		d.MVP += incr.MVP
+		d.MVPResist += incr.MVPResist
 	}
 }
 
 func (d *General) Del(incr *General) {
 	if incr != nil {
-		d.critical -= incr.critical
-		d.criticalDamage -= incr.criticalDamage
-		d.criticalResist -= incr.criticalResist
-		d.criticalDamageResist -= incr.criticalDamageResist
-		d.ordinary -= incr.ordinary
-		d.ordinaryResist -= incr.ordinaryResist
-		d.skill -= incr.skill
-		d.skillResist -= incr.skillResist
-		d.mvp -= incr.mvp
-		d.mvpResist -= incr.mvpResist
+		d.Critical -= incr.Critical
+		d.CriticalDamage -= incr.CriticalDamage
+		d.CriticalResist -= incr.CriticalResist
+		d.CriticalDamageResist -= incr.CriticalDamageResist
+		d.Ordinary -= incr.Ordinary
+		d.OrdinaryResist -= incr.OrdinaryResist
+		d.Skill -= incr.Skill
+		d.SkillResist -= incr.SkillResist
+		d.MVP -= incr.MVP
+		d.MVPResist -= incr.MVPResist
 	}
 }
 
@@ -57,43 +57,43 @@ func (d *General) UnmarshalYAML(value *yaml.Node) (err error) {
 			} else {
 				switch lastAttr {
 				case "critical":
-					if err = sub.Decode(&d.critical); err != nil {
+					if err = sub.Decode(&d.Critical); err != nil {
 						return
 					}
 				case "criticalDamage":
-					if err = sub.Decode(&d.criticalDamage); err != nil {
+					if err = sub.Decode(&d.CriticalDamage); err != nil {
 						return
 					}
 				case "criticalResist":
-					if err = sub.Decode(&d.criticalResist); err != nil {
+					if err = sub.Decode(&d.CriticalResist); err != nil {
 						return
 					}
 				case "criticalDamageResist":
-					if err = sub.Decode(&d.criticalDamageResist); err != nil {
+					if err = sub.Decode(&d.CriticalDamageResist); err != nil {
 						return
 					}
 				case "ordinary":
-					if err = sub.Decode(&d.ordinary); err != nil {
+					if err = sub.Decode(&d.Ordinary); err != nil {
 						return
 					}
 				case "ordinaryResist":
-					if err = sub.Decode(&d.ordinaryResist); err != nil {
+					if err = sub.Decode(&d.OrdinaryResist); err != nil {
 						return
 					}
 				case "skill":
-					if err = sub.Decode(&d.skill); err != nil {
+					if err = sub.Decode(&d.Skill); err != nil {
 						return
 					}
 				case "skillResist":
-					if err = sub.Decode(&d.skillResist); err != nil {
+					if err = sub.Decode(&d.SkillResist); err != nil {
 						return
 					}
 				case "mvp":
-					if err = sub.Decode(&d.mvp); err != nil {
+					if err = sub.Decode(&d.MVP); err != nil {
 						return
 					}
 				case "mvpResist":
-					if err = sub.Decode(&d.mvpResist); err != nil {
+					if err = sub.Decode(&d.MVPResist); err != nil {
 						return
 					}
 				default:

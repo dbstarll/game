@@ -53,7 +53,7 @@ func NewPlayer(job job.Job, modifiers ...CharacterModifier) *Player {
 func (p *Player) SkillDamageRate(target *Monster, magic bool, skillNature nature.Nature) (rate float64) {
 	rate = p.Character.SkillDamageRate(target.Character, magic, skillNature)
 	if target.types.IsBoss() {
-		rate *= 1 + p.profits.general.mvp/100 //*(1+MVP增伤%)
+		rate *= 1 + p.profits.general.MVP/100 //*(1+MVP增伤%)
 	}
 	return
 }
@@ -72,7 +72,7 @@ func (p *Player) GeneralAttack(target *Monster, attack *Attack) (damage float64)
 	gains := p.profits.gains(magic)
 	//最终物攻
 	damage = float64(p.EquipmentAttack(magic) + p.quality.GeneralAttack(magic, remote)) //装备攻击
-	damage *= 1 + gains.attackPer/100                                                   //*(1+攻击%)
+	damage *= 1 + gains.AttackPer/100                                                   //*(1+攻击%)
 	// TODO *武器体型修正
 	damage *= 1 + p.Character.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[p.shape]/100 //*(1+体型增伤%-体型减伤%)
 	damage *= nature.Restraint(target.nature)                                                                 //*属性克制
@@ -86,12 +86,12 @@ func (p *Player) GeneralAttack(target *Monster, attack *Attack) (damage float64)
 	//普攻暴击: 基础伤害 = (最终物攻*物理最终减伤值+精炼物攻)*(1+暴伤%)
 	//最终物防 = (物理防御-素质物理防御)*(1+物理防御%-忽视物防%)
 	//物防乘数 = (4000+最终物防)/(4000+最终物防*10)
-	damage += gains.refine //+精炼物攻
+	damage += gains.Refine //+精炼物攻
 
-	damage *= 1 + gains.damage/100                                                                       //*(1+伤害加成%)
+	damage *= 1 + gains.Damage/100                                                                       //*(1+伤害加成%)
 	damage *= 1 + p.Character.profits.natureAttack[nature]/100 - target.profits.natureResist[nature]/100 //*(1+属性攻击%-属性减伤%)
 	if target.types.IsBoss() {
-		damage *= 1 + p.profits.general.mvp/100 //*(1+MVP增伤%)
+		damage *= 1 + p.profits.general.MVP/100 //*(1+MVP增伤%)
 	}
 
 	return
@@ -103,7 +103,7 @@ func (p *Player) FinalDamage(target *Monster, attack *Attack) (damage float64) {
 	damage = p.baseDamage(target.Character, attack)         //基础伤害
 	damage *= 1 + p.profits.natureAttack[attack.nature]/100 //*(1+属性攻击%)
 	if target.types.IsBoss() {
-		damage *= 1 + p.profits.general.mvp/100 //*(1+MVP增伤%)
+		damage *= 1 + p.profits.general.MVP/100 //*(1+MVP增伤%)
 	}
 	// TODO *状态加伤
 	// TODO *(1+真实伤害)

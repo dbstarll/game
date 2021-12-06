@@ -190,7 +190,7 @@ func (c *Character) QualityAttack(magic, remote bool) int {
 
 //装备攻击
 func (c *Character) EquipmentAttack(magic bool) (atk int) {
-	atk = c.profits.gains(magic).attack
+	atk = c.profits.gains(magic).Attack
 	if !magic {
 		//装备物理攻击 = (装备，强化，附魔，卡片，头饰，祈祷，buff等合计)+ BaseLvAtkRate*人物等级
 		atk += c.job.BaseLvAtkRate() * c.level.Base
@@ -205,7 +205,7 @@ func (c *Character) Attack(magic, remote bool) int {
 
 //面板攻击 = 攻击 * (1 + 攻击%)
 func (c *Character) PanelAttack(magic, remote bool) float64 {
-	return float64(c.Attack(magic, remote)) * (1 + c.profits.gains(magic).attackPer/100)
+	return float64(c.Attack(magic, remote)) * (1 + c.profits.gains(magic).AttackPer/100)
 }
 
 //素质防御
@@ -215,7 +215,7 @@ func (c *Character) QualityDefence(magic bool) int {
 
 //装备防御
 func (c *Character) EquipmentDefence(magic bool) int {
-	return c.profits.gains(magic).defence
+	return c.profits.gains(magic).Defence
 }
 
 //防御 = 素质防御 + 装备防御
@@ -225,7 +225,7 @@ func (c *Character) Defence(magic bool) int {
 
 //面板防御 = 防御 * (1 + 防御%)
 func (c *Character) PanelDefence(magic bool) float64 {
-	return float64(c.Defence(magic)) * (1 + c.profits.gains(magic).defencePer/100)
+	return float64(c.Defence(magic)) * (1 + c.profits.gains(magic).DefencePer/100)
 }
 
 func (c *Character) AttackWithWeapon(weapon weapon.Weapon) *Attack {
@@ -254,26 +254,26 @@ func (c *Character) baseDamage(target *Character, attack *Attack) (damage float6
 	damage = c.finalAttack(target, attack) //最终物攻/最终魔攻
 	if attack.magic {
 		//TODO *魔防乘数
-		damage *= 1 - targetGains.resist/100 //*(1-魔伤减免)
-		damage += gains.refine               //+精炼魔攻
+		damage *= 1 - targetGains.Resist/100 //*(1-魔伤减免)
+		damage += gains.Refine               //+精炼魔攻
 		//TODO *技能倍率
-		damage *= 1 + gains.damage                                   //*(1+魔伤加成)
+		damage *= 1 + gains.Damage                                   //*(1+魔伤加成)
 		damage *= attack.nature.Restraint(target.nature)             //*属性克制
 		damage *= 1 - target.profits.natureResist[attack.nature]/100 //*(1-属性减伤)
 		damage -= float64(target.QualityDefence(attack.magic))       //-素质魔防
 		damage -= float64(target.QualityDefence(!attack.magic))      //-素质物防/2
 	} else if attack.critical { //普攻暴击
-		damage *= 1 - targetGains.resist/100                 //*(1-物伤减免)
-		damage += gains.refine                               //+精炼物攻
-		damage *= 1.5 + c.profits.general.criticalDamage/100 //*(1+暴伤%)
-		damage *= 1 + gains.damage/100                       //*(1+物伤加成)
+		damage *= 1 - targetGains.Resist/100                 //*(1-物伤减免)
+		damage += gains.Refine                               //+精炼物攻
+		damage *= 1.5 + c.profits.general.CriticalDamage/100 //*(1+暴伤%)
+		damage *= 1 + gains.Damage/100                       //*(1+物伤加成)
 	} else { // 普攻未暴击或技能
 		//TODO *物防乘数
-		damage *= 1 - targetGains.resist/100 //*(1-物伤减免)
-		damage += gains.refine               //+精炼物攻
+		damage *= 1 - targetGains.Resist/100 //*(1-物伤减免)
+		damage += gains.Refine               //+精炼物攻
 		//TODO *技能倍率
 		damage -= float64(target.QualityDefence(attack.magic)) //-素质物防
-		damage *= 1 + gains.damage/100                         //*(1+物伤加成)
+		damage *= 1 + gains.Damage/100                         //*(1+物伤加成)
 	}
 	return
 }
@@ -284,10 +284,10 @@ func (c *Character) finalAttack(target *Character, attack *Attack) (damage float
 	if !attack.skill {
 		damage += float64(c.quality.GeneralAttack(attack.magic, attack.remote)) //普攻攻击力
 	}
-	damage *= 1 + c.profits.gains(attack.magic).attackPer/100 //*(1+攻击%)
+	damage *= 1 + c.profits.gains(attack.magic).AttackPer/100 //*(1+攻击%)
 
 	if attack.magic {
-		damage += float64(c.quality.Int) * c.profits.gains(attack.magic).attackPer / 100 //+智力*魔法攻击%
+		damage += float64(c.quality.Int) * c.profits.gains(attack.magic).AttackPer / 100 //+智力*魔法攻击%
 	} else {
 		damage *= attack.weapon.Restraint(target.shape)                                                 //*武器体型修正
 		damage *= 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
@@ -302,8 +302,8 @@ func (c *Character) finalAttack(target *Character, attack *Attack) (damage float
 
 func (c *Character) detectAttackByPanel(magic, remote bool, expect float64) (optimumAttack int, optimumPanel float64) {
 	gains := c.profits.gains(magic)
-	for min, max, current := 0, 100000, gains.attack; ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
-		gains.attack = current
+	for min, max, current := 0, 100000, gains.Attack; ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
+		gains.Attack = current
 		actual := c.PanelAttack(magic, remote)
 
 		if actual >= expect && math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
@@ -321,15 +321,15 @@ func (c *Character) detectAttackByPanel(magic, remote bool, expect float64) (opt
 			min = current
 		}
 	}
-	gains.attack = optimumAttack
+	gains.Attack = optimumAttack
 	fmt.Printf("detectAttackByPanel[magic=%t]: optimumAttack=%d, optimumPanel=%f\n", magic, optimumAttack, optimumPanel)
 	return
 }
 
 func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDefence int, optimumPanel float64) {
 	gains := c.profits.gains(magic)
-	for min, max, current := 0, 100000, gains.defence; ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
-		gains.defence = current
+	for min, max, current := 0, 100000, gains.Defence; ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
+		gains.Defence = current
 		actual := c.PanelDefence(magic)
 
 		if actual >= expect && math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
@@ -347,7 +347,7 @@ func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDef
 			min = current
 		}
 	}
-	gains.defence = optimumDefence
+	gains.Defence = optimumDefence
 	fmt.Printf("detectDefenceByPanel[magic=%t]: optimumDefence=%d, optimumPanel=%f\n", magic, optimumDefence, optimumPanel)
 	return
 }

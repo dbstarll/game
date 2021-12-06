@@ -7,57 +7,57 @@ import (
 
 //装备，强化，附魔，卡片，头饰，祈祷，buff等合计
 type Gains struct {
-	attack  int //攻击
-	defence int //防御
+	Attack  int //攻击
+	Defence int //防御
 
-	spike float64 //穿刺
+	Spike float64 //穿刺
 
-	attackPer    float64 //攻击%
-	defencePer   float64 //防御%
-	damage       float64 //伤害%
-	ignore       float64 //忽视防御%
-	resist       float64 //伤害减免%
-	nearResist   float64 //近战伤害减免%
-	remoteResist float64 //远程伤害减免%
-	refine       float64 //精炼攻击
-	refineResist float64 //精炼伤害减免%
+	AttackPer    float64 //攻击%
+	DefencePer   float64 //防御%
+	Damage       float64 //伤害%
+	Ignore       float64 //忽视防御%
+	Resist       float64 //伤害减免%
+	NearResist   float64 //近战伤害减免%
+	RemoteResist float64 //远程伤害减免%
+	Refine       float64 //精炼攻击
+	RefineResist float64 //精炼伤害减免%
 }
 
 func (g *Gains) Add(incr *Gains) {
 	if incr != nil {
-		g.attack += incr.attack
-		g.defence += incr.defence
+		g.Attack += incr.Attack
+		g.Defence += incr.Defence
 
-		g.spike += incr.spike
+		g.Spike += incr.Spike
 
-		g.attackPer += incr.attackPer
-		g.defencePer += incr.defencePer
-		g.damage += incr.damage
-		g.ignore += incr.ignore
-		g.resist += incr.resist
-		g.nearResist += incr.nearResist
-		g.remoteResist += incr.remoteResist
-		g.refine += incr.refine
-		g.refineResist += incr.refineResist
+		g.AttackPer += incr.AttackPer
+		g.DefencePer += incr.DefencePer
+		g.Damage += incr.Damage
+		g.Ignore += incr.Ignore
+		g.Resist += incr.Resist
+		g.NearResist += incr.NearResist
+		g.RemoteResist += incr.RemoteResist
+		g.Refine += incr.Refine
+		g.RefineResist += incr.RefineResist
 	}
 }
 
 func (g *Gains) Del(incr *Gains) {
 	if incr != nil {
-		g.attack -= incr.attack
-		g.defence -= incr.defence
+		g.Attack -= incr.Attack
+		g.Defence -= incr.Defence
 
-		g.spike -= incr.spike
+		g.Spike -= incr.Spike
 
-		g.attackPer -= incr.attackPer
-		g.defencePer -= incr.defencePer
-		g.damage -= incr.damage
-		g.ignore -= incr.ignore
-		g.resist -= incr.resist
-		g.nearResist -= incr.nearResist
-		g.remoteResist -= incr.remoteResist
-		g.refine -= incr.refine
-		g.refineResist -= incr.refineResist
+		g.AttackPer -= incr.AttackPer
+		g.DefencePer -= incr.DefencePer
+		g.Damage -= incr.Damage
+		g.Ignore -= incr.Ignore
+		g.Resist -= incr.Resist
+		g.NearResist -= incr.NearResist
+		g.RemoteResist -= incr.RemoteResist
+		g.Refine -= incr.Refine
+		g.RefineResist -= incr.RefineResist
 	}
 }
 
@@ -70,43 +70,43 @@ func (g *Gains) UnmarshalYAML(value *yaml.Node) (err error) {
 			} else {
 				switch lastAttr {
 				case "spike":
-					if err = sub.Decode(&g.spike); err != nil {
+					if err = sub.Decode(&g.Spike); err != nil {
 						return
 					}
 				case "attackPer":
-					if err = sub.Decode(&g.attackPer); err != nil {
+					if err = sub.Decode(&g.AttackPer); err != nil {
 						return
 					}
 				case "defencePer":
-					if err = sub.Decode(&g.defencePer); err != nil {
+					if err = sub.Decode(&g.DefencePer); err != nil {
 						return
 					}
 				case "damage":
-					if err = sub.Decode(&g.damage); err != nil {
+					if err = sub.Decode(&g.Damage); err != nil {
 						return
 					}
 				case "ignore":
-					if err = sub.Decode(&g.ignore); err != nil {
+					if err = sub.Decode(&g.Ignore); err != nil {
 						return
 					}
 				case "resist":
-					if err = sub.Decode(&g.resist); err != nil {
+					if err = sub.Decode(&g.Resist); err != nil {
 						return
 					}
 				case "nearResist":
-					if err = sub.Decode(&g.nearResist); err != nil {
+					if err = sub.Decode(&g.NearResist); err != nil {
 						return
 					}
 				case "remoteResist":
-					if err = sub.Decode(&g.remoteResist); err != nil {
+					if err = sub.Decode(&g.RemoteResist); err != nil {
 						return
 					}
 				case "refine":
-					if err = sub.Decode(&g.refine); err != nil {
+					if err = sub.Decode(&g.Refine); err != nil {
 						return
 					}
 				case "refineResist":
-					if err = sub.Decode(&g.refineResist); err != nil {
+					if err = sub.Decode(&g.RefineResist); err != nil {
 						return
 					}
 				default:
