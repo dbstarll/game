@@ -8,18 +8,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type Damage struct {
-	critical             float64 //暴击
-	criticalDamage       float64 //暴伤%
-	criticalResist       float64 //暴击防护
-	criticalDamageResist float64 //爆伤减免%
-	//普攻伤害加成
-	//普攻伤害减免
-	skill float64 //技能伤害加成%
-	//技能伤害减免
-	mvp float64 //MVP增伤%
-}
-
 type Refine struct {
 	Weapon int //武器精炼等级
 	Ring1  int //饰品1精炼等级
@@ -29,7 +17,7 @@ type Refine struct {
 type Profits struct {
 	physical     Gains
 	magical      Gains
-	damage       Damage
+	general      General
 	refine       Refine
 	natureAttack map[nature.Nature]float64 //属性攻击%
 	raceDamage   map[race.Race]float64     //种族增伤%
@@ -40,28 +28,12 @@ type Profits struct {
 	natureResist map[nature.Nature]float64 //属性减伤%
 }
 
-func (d *Damage) Add(incr *Damage) {
-	if incr != nil {
-		d.critical += incr.critical
-		d.criticalDamage += incr.criticalDamage
-		d.criticalResist += incr.criticalResist
-		d.criticalDamageResist += incr.criticalDamageResist
-
-		d.skill += incr.skill
-		d.mvp += incr.mvp
-	}
-}
-
 func (p *Profits) gains(magic bool) *Gains {
 	if magic {
 		return &p.magical
 	} else {
 		return &p.physical
 	}
-}
-
-func (p *Profits) AddDamage(incr *Damage) {
-	p.damage.Add(incr)
 }
 
 func (p *Profits) AddNatureAttack(incr *map[nature.Nature]float64) {
@@ -191,7 +163,7 @@ func (r *Refine) weaponSpike(lvl int) float64 {
 }
 
 func (p *Profits) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
-	rate = 1 + p.damage.skill/100                                                                        //*(1+技能伤害加成%)
+	rate = 1 + p.general.skill/100                                                                       //*(1+技能伤害加成%)
 	rate *= 1 + p.natureDamage[target.nature]/100                                                        //*(1+属性魔物增伤%)
 	rate *= 1 - target.profits.natureResist[skillNature]/100                                             //*(1-属性减伤%)
 	rate *= 1 + p.natureAttack[skillNature]/100                                                          //*(1+属性攻击%)
@@ -216,8 +188,8 @@ func (p *Profits) UnmarshalYAML(value *yaml.Node) (err error) {
 					if err = sub.Decode(&p.magical); err != nil {
 						return
 					}
-				case "damage":
-					if err = sub.Decode(&p.damage); err != nil {
+				case "general":
+					if err = sub.Decode(&p.general); err != nil {
 						return
 					}
 				case "refine":

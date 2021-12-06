@@ -75,9 +75,9 @@ func AddGains(magic bool, gains *Gains) CharacterModifier {
 	}
 }
 
-func AddDamage(incr *Damage) CharacterModifier {
+func AddGeneral(incr *General) CharacterModifier {
 	return func(character *Character) {
-		character.profits.AddDamage(incr)
+		character.profits.general.Add(incr)
 	}
 }
 
@@ -217,10 +217,10 @@ func (c *Character) baseDamage(target *Character, attack *Attack) (damage float6
 		damage -= float64(target.QualityDefence(attack.magic))       //-素质魔防
 		damage -= float64(target.QualityDefence(!attack.magic))      //-素质物防/2
 	} else if attack.critical { //普攻暴击
-		damage *= 1 - targetGains.resist/100                //*(1-物伤减免)
-		damage += gains.refine                              //+精炼物攻
-		damage *= 1.5 + c.profits.damage.criticalDamage/100 //*(1+暴伤%)
-		damage *= 1 + gains.damage/100                      //*(1+物伤加成)
+		damage *= 1 - targetGains.resist/100                 //*(1-物伤减免)
+		damage += gains.refine                               //+精炼物攻
+		damage *= 1.5 + c.profits.general.criticalDamage/100 //*(1+暴伤%)
+		damage *= 1 + gains.damage/100                       //*(1+物伤加成)
 	} else { // 普攻未暴击或技能
 		//TODO *物防乘数
 		damage *= 1 - targetGains.resist/100 //*(1-物伤减免)

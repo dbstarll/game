@@ -16,6 +16,14 @@ character:
     matk: 4569
     mdef: 3515
   profits:
+    general:
+      critical: 16
+      criticalDamage: 34.2
+      criticalResist: 55
+      criticalDamageResist: 31.5
+      ordinaryResist: 12
+      skillResist: 6
+      mvp: 28
     physical:
       spike: 37
       attackPer: 31
@@ -37,15 +45,6 @@ character:
       #      defence: 0
       defencePer: 60
     #      resist: 0
-    damage:
-      critical: 16
-      criticalDamage: 34.2
-      criticalResist: 55
-      criticalDamageResist: 31.5
-      #      skill: 0
-      mvp: 28
-      # 普攻伤害减免: 12
-      # 技能伤害减免: 6
     refine:
       weapon: 10
       ring1: 0

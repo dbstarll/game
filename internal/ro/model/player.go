@@ -53,7 +53,7 @@ func NewPlayer(job job.Job, modifiers ...CharacterModifier) *Player {
 func (p *Player) SkillDamageRate(target *Monster, magic bool, skillNature nature.Nature) (rate float64) {
 	rate = p.Character.SkillDamageRate(target.Character, magic, skillNature)
 	if target.types.IsBoss() {
-		rate *= 1 + p.profits.damage.mvp/100 //*(1+MVP增伤%)
+		rate *= 1 + p.profits.general.mvp/100 //*(1+MVP增伤%)
 	}
 	return
 }
@@ -91,7 +91,7 @@ func (p *Player) GeneralAttack(target *Monster, attack *Attack) (damage float64)
 	damage *= 1 + gains.damage/100                                                                       //*(1+伤害加成%)
 	damage *= 1 + p.Character.profits.natureAttack[nature]/100 - target.profits.natureResist[nature]/100 //*(1+属性攻击%-属性减伤%)
 	if target.types.IsBoss() {
-		damage *= 1 + p.profits.damage.mvp/100 //*(1+MVP增伤%)
+		damage *= 1 + p.profits.general.mvp/100 //*(1+MVP增伤%)
 	}
 
 	return
@@ -103,7 +103,7 @@ func (p *Player) FinalDamage(target *Monster, attack *Attack) (damage float64) {
 	damage = p.baseDamage(target.Character, attack)         //基础伤害
 	damage *= 1 + p.profits.natureAttack[attack.nature]/100 //*(1+属性攻击%)
 	if target.types.IsBoss() {
-		damage *= 1 + p.profits.damage.mvp/100 //*(1+MVP增伤%)
+		damage *= 1 + p.profits.general.mvp/100 //*(1+MVP增伤%)
 	}
 	// TODO *状态加伤
 	// TODO *(1+真实伤害)

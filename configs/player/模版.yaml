@@ -1,0 +1,116 @@
+character:
+  job: 初心者
+  level:
+    base: 0
+    job: 0
+  quality:
+    str: 0
+    agi: 0
+    vit: 0
+    int: 0
+    dex: 0
+    luk: 0
+  detectByPanel: #根据面板来预测装备攻击/装备防御
+    atk: 0 #面板物理攻击
+    def: 0 #面板物理防御
+    matk: 0 #面板魔法攻击
+    mdef: 0 #面板魔法防御
+  profits:
+    general:
+      critical: 0 #暴击
+      criticalDamage: 0 #暴伤%
+      criticalResist: 0 #暴击防护
+      criticalDamageResist: 0 #爆伤减免%
+      ordinary: 0 #普攻伤害加成%
+      ordinaryResist: 0 #普攻伤害减免%
+      skill: 0 #技能伤害加成%
+      skillResist: 0 #技能伤害减免%
+      mvp: 0 #MVP增伤%
+      mvpResist: 0 #MVP减伤%
+    physical: #物理属性
+      spike: 0 #物理穿刺
+      attackPer: 0 #物理攻击%
+      defencePer: 0 #物理防御%
+      damage: 0 #物伤加成%
+      ignore: 0 #忽视物防%
+      resist: 0 #物伤减免%
+      nearResist: 0 #近战物理伤害减免%
+      remoteResist: 0 #远程物理伤害减免%
+      refine: 0 #精炼物攻
+      refineResist: 0 #精炼物免%
+    magical: #魔法属性
+      spike: 0 #魔法穿刺
+      attackPer: 0 #魔法攻击%
+      defencePer: 0 #魔法防御%
+      damage: 0 #魔伤加成%
+      ignore: 0 #忽视魔防%
+      resist: 0 #魔伤减免%
+      refine: 0 #精炼魔攻
+      refineResist: 0 #精炼魔免%
+    refine: #装备和首饰精炼等级
+      weapon: 0
+      ring1: 0
+      ring2: 0
+    natureAttack: #属性-技能增强
+      风: 0
+      地: 0
+      火: 0
+      水: 0
+      无: 0
+      圣: 0
+      暗: 0
+      念: 0
+      毒: 0
+      不死: 0
+    natureDamage: #属性-攻击增加
+      风: 0
+      地: 0
+      火: 0
+      水: 0
+      无: 0
+      圣: 0
+      暗: 0
+      念: 0
+      毒: 0
+      不死: 0
+    natureResist: #属性-伤害减免
+      风: 0
+      地: 0
+      火: 0
+      水: 0
+      无: 0
+      圣: 0
+      暗: 0
+      念: 0
+      毒: 0
+      不死: 0
+    raceDamage: #种族-攻击增加
+      动物: 0
+      人形: 0
+      恶魔: 0
+      植物: 0
+      不死: 0
+      无形: 0
+      鱼贝: 0
+      天使: 0
+      昆虫: 0
+      龙: 0
+    raceResist: #种族-伤害减免
+      动物: 0
+      人形: 0
+      恶魔: 0
+      植物: 0
+      不死: 0
+      无形: 0
+      鱼贝: 0
+      天使: 0
+      昆虫: 0
+      龙: 0
+    shapeDamage: #体型-攻击增强
+      小型: 0
+      中型: 0
+      大型: 0
+    shapeResist: #体型-伤害减免
+      小型: 0
+      中型: 0
+      大型: 0

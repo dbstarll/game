@@ -8,14 +8,14 @@ character:
     dex: 264
     luk: 73
   profits:
+    general:
+      criticalDamage: 13
     physical:
       #      attack: 0
       attackPer: 20
       #      spike: 37
       #      damage: 70.5
       refine: 58
-      #      critical: 0
-      criticalPer: 13
       #      defence: 0
       defencePer: 5
       #      resist: 0
@@ -30,9 +30,6 @@ character:
       #      defence: 0
       defencePer: 5
     #      resist: 0
-    damage:
-    #      skill: 0
-    #      mvp: 28
     natureAttack: #属性攻击%
       #      无: 2
       #      地: 20

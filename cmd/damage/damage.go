@@ -12,7 +12,17 @@ import (
 )
 
 func main() {
-	Hunter()
+	Template()
+	//Hunter()
+	//EarthBash()
+}
+
+func Template() {
+	if player, err := model.LoadPlayerFromYaml("模版", true); err != nil {
+		log.Fatalf("%+v\n", err)
+	} else {
+		fmt.Printf("%+v\n", player.Character)
+	}
 }
 
 func Hunter() {
@@ -33,9 +43,7 @@ func EarthBash() {
 	if player, err := model.LoadPlayerFromYaml("猫爸-圣盾", false); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else {
-		monster := model.NewMonster(types.MVP, race.Demon, nature.Dark, shape.Large,
-			model.AddGains(false, &model.Gains{Resist: 30}),
-			model.AddRaceResist(&map[race.Race]float64{race.Human: 30}))
+		monster := model.NewMonster(types.Ordinary, race.Human, nature.Wind, shape.Large)
 		skillEarth, rate := player.SkillEarth(), player.SkillDamageRate(monster, false, nature.Earth)
 		fmt.Printf("%f * %f = %f\n", skillEarth, rate, rate*skillEarth)
 	}
