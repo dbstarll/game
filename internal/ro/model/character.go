@@ -282,7 +282,8 @@ func (c *Character) baseDamage(target *Character, attack *Attack) (damage float6
 func (c *Character) finalAttack(target *Character, attack *Attack) (damage float64) {
 	damage = float64(c.EquipmentAttack(attack.magic)) //装备攻击
 	if !attack.skill {
-		damage += float64(c.quality.GeneralAttack(attack.magic, attack.remote)) //普攻攻击力
+		damage += float64(c.quality.OrdinaryAttack(attack.magic, attack.remote)) //素质普攻攻击力
+		damage += c.profits.general.Ordinary                                     //普攻攻击力
 	}
 	damage *= 1 + c.profits.gains(attack.magic).AttackPer/100 //*(1+攻击%)
 

@@ -27,7 +27,7 @@ var (
 		"暴伤%+1":     model.AddGeneral(&model.General{CriticalDamage: 1}),
 		"暴击防护+1":    model.AddGeneral(&model.General{CriticalResist: 1}),
 		"爆伤减免%+1":   model.AddGeneral(&model.General{CriticalDamageResist: 1}),
-		"普攻伤害加成%+1": model.AddGeneral(&model.General{Ordinary: 1}),
+		"普攻伤害加成%+1": model.AddGeneral(&model.General{OrdinaryDamage: 1}),
 		"普攻伤害减免%+1": model.AddGeneral(&model.General{OrdinaryResist: 1}),
 		"技能伤害加成%+1": model.AddGeneral(&model.General{Skill: 1}),
 		"技能伤害减免%+1": model.AddGeneral(&model.General{SkillResist: 1}),
@@ -125,8 +125,8 @@ var (
 
 func main() {
 	//Template()
-	//Hunter()
-	EarthBash()
+	Hunter()
+	//EarthBash()
 }
 
 func Template() {
@@ -148,6 +148,9 @@ func Hunter() {
 		attack.WithCritical()
 		fmt.Printf("%f, %f\n", generalAttack, player.FinalDamage(monster, attack))
 		//4055 	6610
+		ProfitDetect(player, func(player *model.Player) float64 {
+			return player.FinalDamage(monster, attack)
+		})
 	}
 }
 
@@ -190,7 +193,7 @@ func ProfitDetect(player *model.Player, fn FinalDamage) error {
 		}
 	})
 	for _, profit := range profits {
-		fmt.Printf("%2.4f%% - %s\n", 100*(profit.value-base)/base, profit.name)
+		fmt.Printf("增幅：%2.4f%% - %s\n", 100*(profit.value-base)/base, profit.name)
 	}
 	return nil
 }

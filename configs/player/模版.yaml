@@ -21,7 +21,8 @@ character:
       criticalDamage: 0 #暴伤%
       criticalResist: 0 #暴击防护
       criticalDamageResist: 0 #爆伤减免%
-      ordinary: 0 #普攻伤害加成%
+      ordinary: 0 #普攻攻击力
+      ordinaryDamage: 0 #普攻伤害加成%
       ordinaryResist: 0 #普攻伤害减免%
       skill: 0 #技能伤害加成%
       skillResist: 0 #技能伤害减免%
@@ -65,8 +66,8 @@ character:
     natureDamage: #属性-攻击增加
       风: 0
       地: 0
-      火: 0
       水: 0
+      火: 0
       无: 0
       圣: 0
       暗: 0

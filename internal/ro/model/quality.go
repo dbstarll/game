@@ -24,8 +24,8 @@ func (q *Quality) Attack(magic, remote bool) int {
 	}
 }
 
-//普攻攻击力
-func (q *Quality) GeneralAttack(magic, remote bool) int {
+//素质普攻攻击力
+func (q *Quality) OrdinaryAttack(magic, remote bool) int {
 	if magic {
 		return q.Int * 3 // TODO 待确认
 	} else if remote {

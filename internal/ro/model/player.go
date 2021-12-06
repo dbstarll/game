@@ -71,8 +71,8 @@ func (p *Player) GeneralAttack(target *Monster, attack *Attack) (damage float64)
 	magic, remote, nature := attack.magic, attack.remote, attack.nature
 	gains := p.profits.gains(magic)
 	//最终物攻
-	damage = float64(p.EquipmentAttack(magic) + p.quality.GeneralAttack(magic, remote)) //装备攻击
-	damage *= 1 + gains.AttackPer/100                                                   //*(1+攻击%)
+	damage = float64(p.EquipmentAttack(magic) + p.quality.OrdinaryAttack(magic, remote)) //装备攻击
+	damage *= 1 + gains.AttackPer/100                                                    //*(1+攻击%)
 	// TODO *武器体型修正
 	damage *= 1 + p.Character.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[p.shape]/100 //*(1+体型增伤%-体型减伤%)
 	damage *= nature.Restraint(target.nature)                                                                 //*属性克制

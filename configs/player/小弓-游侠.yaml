@@ -1,87 +1,117 @@
 character:
   job: 游侠
+  level:
+    base: 140
+    job: 80
   quality:
     str: 15
-    agi: 159
+    agi: 161
     vit: 34
     int: 42
-    dex: 264
+    dex: 274
     luk: 73
+  detectByPanel: #根据面板来预测装备攻击/装备防御
+    atk: 3420 #面板物理攻击
+    def: 494 #面板物理防御
+    matk: 1117 #面板魔法攻击
+    mdef: 396 #面板魔法防御
   profits:
     general:
-      criticalDamage: 13
-    physical:
-      #      attack: 0
-      attackPer: 20
-      #      spike: 37
-      #      damage: 70.5
-      refine: 58
-      #      defence: 0
-      defencePer: 5
-      #      resist: 0
-    magical:
-      #      attack: 0
-      attackPer: 19
-      #      spike: 5
-      #      damage: 0
-      #      refine: 0
-      #      critical: 0
-      #      criticalPer: 0
-      #      defence: 0
-      defencePer: 5
-    #      resist: 0
-    natureAttack: #属性攻击%
-      #      无: 2
-      #      地: 20
-      #      风: 21
-      水: 1
+      critical: 26 #暴击
+      criticalDamage: 13 #暴伤%
+      criticalResist: 15 #暴击防护
+      criticalDamageResist: 0 #爆伤减免%
+      ordinary: 100 #普攻攻击力
+      ordinaryDamage: 0 #普攻伤害加成%
+      ordinaryResist: 0 #普攻伤害减免%
+      skill: 0 #技能伤害加成%
+      skillResist: 0 #技能伤害减免%
+      mvp: 0 #MVP增伤%
+      mvpResist: 0 #MVP减伤%
+    physical: #物理属性
+      spike: 0 #物理穿刺
+      attackPer: 20 #物理攻击%
+      defencePer: 5 #物理防御%
+      damage: 0 #物伤加成%
+      ignore: 0 #忽视物防%
+      resist: 0 #物伤减免%
+      nearResist: 0 #近战物理伤害减免%
+      remoteResist: 0 #远程物理伤害减免%
+      refine: 58 #精炼物攻
+      refineResist: 0 #精炼物免%
+    magical: #魔法属性
+      spike: 0 #魔法穿刺
+      attackPer: 19 #魔法攻击%
+      defencePer: 5 #魔法防御%
+      damage: 0 #魔伤加成%
+      ignore: 0 #忽视魔防%
+      resist: 2 #魔伤减免%
+      refine: 84 #精炼魔攻
+      refineResist: 0 #精炼魔免%
+    refine: #装备和首饰精炼等级
+      weapon: 0
+      ring1: 0
+      ring2: 0
+    natureAttack: #属性-技能增强
+      风: 0
+      地: 0
       火: 1
+      水: 1
+      无: 0
       圣: 1
-    #      暗: 0
-    #      不死: 0
-    #      念: 0
-    #      毒: 0
-    raceDamage: #种族增伤%
-      #      无形: 4
-      人形: 1
-      #      植物: 3
-      动物: 4
-      昆虫: 13
-      鱼贝: 5
-      #      天使: 3
-      恶魔: 2
-      不死: 6
-      龙: 2
-    raceResist: #种族减伤%
-    #      无形: 0
-    #      人形: 0
-    #      植物: 0
-    #      动物: 0
-    #      昆虫: 0
-    #      鱼贝: 0
-    #      天使: 0
-    #      恶魔: 0
-    #      不死: 0
-    #      龙: 0
-    shapeDamage: #体型增伤%
-    #      小型: 65
-    #      中型: 6
-    #      大型: 55
-    shapeResist: #体型减伤%
-    natureDamage: #属性增伤%
-      #      无: 0
-      地: 7
+      暗: 0
+      念: 0
+      毒: 0
+      不死: 0
+    natureDamage: #属性-攻击增加
       风: 6
+      地: 7
       水: 8
       火: 7
+      无: 0
       圣: 6
-      #      暗: 2
-      #      不死: 0
+      暗: 0
       念: 2
       毒: 1
-    natureResist: #属性减伤%
-  detectByPanel: #根据面板预测: 装备攻击/装备防御
-    atk: 3295
-    def: 494
-    matk: 1117
-    mdef: 396
+      不死: 0
+    natureResist: #属性-伤害减免
+      风: 0
+      地: 2
+      火: 0
+      水: 10
+      无: 1
+      圣: 0
+      暗: 4
+      念: 0
+      毒: 0
+      不死: 0
+    raceDamage: #种族-攻击增加
+      动物: 4
+      人形: 1
+      恶魔: 2
+      植物: 0
+      不死: 6
+      无形: 0
+      鱼贝: 5
+      天使: 0
+      昆虫: 13
+      龙: 2
+    raceResist: #种族-伤害减免
+      动物: 2
+      人形: 0
+      恶魔: 1
+      植物: 0
+      不死: 4
+      无形: 0
+      鱼贝: 0
+      天使: 0
+      昆虫: 0
+      龙: 0
+    shapeDamage: #体型-攻击增强
+      小型: 0
+      中型: 0
+      大型: 0
+    shapeResist: #体型-伤害减免
+      小型: 0
+      中型: 0
+      大型: 0

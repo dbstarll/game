@@ -2,7 +2,7 @@ character:
   job: 世界圣盾
   level:
     base: 170
-    job: 70
+    job: 80
   quality:
     str: 130
     agi: 131

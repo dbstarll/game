@@ -10,7 +10,8 @@ type General struct {
 	CriticalDamage       float64 //暴伤%
 	CriticalResist       float64 //暴击防护
 	CriticalDamageResist float64 //爆伤减免%
-	Ordinary             float64 //普攻伤害加成%
+	Ordinary             float64 //普攻攻击力
+	OrdinaryDamage       float64 //普攻伤害加成%
 	OrdinaryResist       float64 //普攻伤害减免%
 	Skill                float64 //技能伤害加成%
 	SkillResist          float64 //技能伤害减免%
@@ -25,6 +26,7 @@ func (d *General) Add(incr *General) {
 		d.CriticalResist += incr.CriticalResist
 		d.CriticalDamageResist += incr.CriticalDamageResist
 		d.Ordinary += incr.Ordinary
+		d.OrdinaryDamage += incr.OrdinaryDamage
 		d.OrdinaryResist += incr.OrdinaryResist
 		d.Skill += incr.Skill
 		d.SkillResist += incr.SkillResist
@@ -40,6 +42,7 @@ func (d *General) Del(incr *General) {
 		d.CriticalResist -= incr.CriticalResist
 		d.CriticalDamageResist -= incr.CriticalDamageResist
 		d.Ordinary -= incr.Ordinary
+		d.OrdinaryDamage -= incr.OrdinaryDamage
 		d.OrdinaryResist -= incr.OrdinaryResist
 		d.Skill -= incr.Skill
 		d.SkillResist -= incr.SkillResist
@@ -74,6 +77,10 @@ func (d *General) UnmarshalYAML(value *yaml.Node) (err error) {
 					}
 				case "ordinary":
 					if err = sub.Decode(&d.Ordinary); err != nil {
+						return
+					}
+				case "ordinaryDamage":
+					if err = sub.Decode(&d.OrdinaryDamage); err != nil {
 						return
 					}
 				case "ordinaryResist":
