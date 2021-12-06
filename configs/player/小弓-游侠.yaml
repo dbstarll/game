@@ -5,24 +5,24 @@ character:
     job: 80
   quality:
     str: 15
-    agi: 161
-    vit: 34
-    int: 42
-    dex: 274
+    agi: 171
+    vit: 35
+    int: 43
+    dex: 284
     luk: 73
   detectByPanel: #根据面板来预测装备攻击/装备防御
-    atk: 3420 #面板物理攻击
-    def: 494 #面板物理防御
-    matk: 1117 #面板魔法攻击
-    mdef: 396 #面板魔法防御
+    atk: 3792 #面板物理攻击
+    def: 528 #面板物理防御
+    matk: 1120 #面板魔法攻击
+    mdef: 408 #面板魔法防御
   profits:
     general:
-      critical: 26 #暴击
-      criticalDamage: 13 #暴伤%
-      criticalResist: 15 #暴击防护
+      critical: 28 #暴击
+      criticalDamage: 14 #暴伤%
+      criticalResist: 18 #暴击防护
       criticalDamageResist: 0 #爆伤减免%
       ordinary: 100 #普攻攻击力
-      ordinaryDamage: 0 #普攻伤害加成%
+      ordinaryDamage: 2 #普攻伤害加成%
       ordinaryResist: 0 #普攻伤害减免%
       skill: 0 #技能伤害加成%
       skillResist: 0 #技能伤害减免%
@@ -37,7 +37,7 @@ character:
       resist: 0 #物伤减免%
       nearResist: 0 #近战物理伤害减免%
       remoteResist: 0 #远程物理伤害减免%
-      refine: 58 #精炼物攻
+      refine: 97 #精炼物攻
       refineResist: 0 #精炼物免%
     magical: #魔法属性
       spike: 0 #魔法穿刺
@@ -55,10 +55,10 @@ character:
     natureAttack: #属性-技能增强
       风: 0
       地: 0
-      火: 1
+      火: 9
       水: 1
       无: 0
-      圣: 1
+      圣: 6
       暗: 0
       念: 0
       毒: 0

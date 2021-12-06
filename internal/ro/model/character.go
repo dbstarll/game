@@ -267,6 +267,7 @@ func (c *Character) baseDamage(target *Character, attack *Attack) (damage float6
 		damage += gains.Refine                               //+精炼物攻
 		damage *= 1.5 + c.profits.general.CriticalDamage/100 //*(1+暴伤%)
 		damage *= 1 + gains.Damage/100                       //*(1+物伤加成)
+		damage *= 1 + c.profits.general.OrdinaryDamage/100   //*(1+普攻伤害加成%)
 	} else { // 普攻未暴击或技能
 		//TODO *物防乘数
 		damage *= 1 - targetGains.Resist/100 //*(1-物伤减免)
@@ -274,6 +275,9 @@ func (c *Character) baseDamage(target *Character, attack *Attack) (damage float6
 		//TODO *技能倍率
 		damage -= float64(target.QualityDefence(attack.magic)) //-素质物防
 		damage *= 1 + gains.Damage/100                         //*(1+物伤加成)
+		if !attack.skill {
+			damage *= 1 + c.profits.general.OrdinaryDamage/100 //*(1+普攻伤害加成%)
+		}
 	}
 	return
 }

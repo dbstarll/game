@@ -27,6 +27,7 @@ var (
 		"暴伤%+1":     model.AddGeneral(&model.General{CriticalDamage: 1}),
 		"暴击防护+1":    model.AddGeneral(&model.General{CriticalResist: 1}),
 		"爆伤减免%+1":   model.AddGeneral(&model.General{CriticalDamageResist: 1}),
+		"普攻攻击力+20":  model.AddGeneral(&model.General{Ordinary: 20}),
 		"普攻伤害加成%+1": model.AddGeneral(&model.General{OrdinaryDamage: 1}),
 		"普攻伤害减免%+1": model.AddGeneral(&model.General{OrdinaryResist: 1}),
 		"技能伤害加成%+1": model.AddGeneral(&model.General{Skill: 1}),
@@ -44,7 +45,7 @@ var (
 		"物伤减免%+1":     model.AddGains(false, &model.Gains{Resist: 1}),
 		"近战物理伤害减免%+1": model.AddGains(false, &model.Gains{NearResist: 1}),
 		"远程物理伤害减免%+1": model.AddGains(false, &model.Gains{RemoteResist: 1}),
-		"精炼物攻+1":      model.AddGains(false, &model.Gains{Refine: 1}),
+		"精炼物攻+20":     model.AddGains(false, &model.Gains{Refine: 20}),
 		"精炼物免%+1":     model.AddGains(false, &model.Gains{RefineResist: 1}),
 
 		"魔法攻击+20": model.AddGains(true, &model.Gains{Attack: 20}),
@@ -55,7 +56,7 @@ var (
 		"魔伤加成%+1": model.AddGains(true, &model.Gains{Damage: 1}),
 		"忽视魔防%+1": model.AddGains(true, &model.Gains{Ignore: 1}),
 		"魔伤减免%+1": model.AddGains(true, &model.Gains{Resist: 1}),
-		"精炼魔攻+1":  model.AddGains(true, &model.Gains{Refine: 1}),
+		"精炼魔攻+20": model.AddGains(true, &model.Gains{Refine: 20}),
 		"精炼魔免%+1": model.AddGains(true, &model.Gains{RefineResist: 1}),
 
 		"无属性攻击%+1":  model.AddNatureAttack(&map[nature.Nature]float64{nature.Neutral: 1}),
