@@ -254,8 +254,8 @@ func (c *Character) baseDamage(target *Character, attack *Attack) (damage float6
 	damage = c.finalAttack(target, attack) //最终物攻/最终魔攻
 	if attack.magic {
 		//TODO *魔防乘数
-		damage *= 1 - targetGains.Resist/100 //*(1-魔伤减免)
-		damage += gains.Refine               //+精炼魔攻
+		damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+魔法穿刺%-魔伤减免%)
+		damage += gains.Refine                                                                //+精炼魔攻
 		//TODO *技能倍率
 		damage *= 1 + gains.Damage                                   //*(1+魔伤加成)
 		damage *= attack.nature.Restraint(target.nature)             //*属性克制
@@ -263,15 +263,15 @@ func (c *Character) baseDamage(target *Character, attack *Attack) (damage float6
 		damage -= float64(target.QualityDefence(attack.magic))       //-素质魔防
 		damage -= float64(target.QualityDefence(!attack.magic))      //-素质物防/2
 	} else if attack.critical { //普攻暴击
-		damage *= 1 - targetGains.Resist/100                 //*(1-物伤减免)
-		damage += gains.Refine                               //+精炼物攻
-		damage *= 1.5 + c.profits.general.CriticalDamage/100 //*(1+暴伤%)
-		damage *= 1 + gains.Damage/100                       //*(1+物伤加成)
-		damage *= 1 + c.profits.general.OrdinaryDamage/100   //*(1+普攻伤害加成%)
+		damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
+		damage += gains.Refine                                                                //+精炼物攻
+		damage *= 1.5 + c.profits.general.CriticalDamage/100                                  //*(1+暴伤%)
+		damage *= 1 + gains.Damage/100                                                        //*(1+物伤加成)
+		damage *= 1 + c.profits.general.OrdinaryDamage/100                                    //*(1+普攻伤害加成%)
 	} else { // 普攻未暴击或技能
 		//TODO *物防乘数
-		damage *= 1 - targetGains.Resist/100 //*(1-物伤减免)
-		damage += gains.Refine               //+精炼物攻
+		damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
+		damage += gains.Refine                                                                //+精炼物攻
 		//TODO *技能倍率
 		damage -= float64(target.QualityDefence(attack.magic)) //-素质物防
 		damage *= 1 + gains.Damage/100                         //*(1+物伤加成)
@@ -287,7 +287,10 @@ func (c *Character) finalAttack(target *Character, attack *Attack) (damage float
 	damage = float64(c.EquipmentAttack(attack.magic)) //装备攻击
 	if !attack.skill {
 		damage += float64(c.quality.OrdinaryAttack(attack.magic, attack.remote)) //素质普攻攻击力
-		damage += c.profits.general.Ordinary                                     //普攻攻击力
+		damage += c.profits.general.Ordinary                                     //TODO 这里存疑普攻攻击力
+		if c.job >= job.Hunter2 && c.job <= job.Hunter4 {
+			damage += float64(200 + c.quality.Dex*5) //猎人进阶二转技能：元素箭矢20级被动效果
+		}
 	}
 	damage *= 1 + c.profits.gains(attack.magic).AttackPer/100 //*(1+攻击%)
 

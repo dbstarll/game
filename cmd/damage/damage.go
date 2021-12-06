@@ -144,11 +144,15 @@ func Hunter() {
 	} else {
 		monster := model.NewMonster(types.Ordinary, race.Plant, nature.Neutral, shape.Medium)
 		attack := player.AttackWithWeapon(weapon.Bow)
-		generalAttack := player.GeneralAttack(monster, attack)
-		fmt.Printf("%f, %f\n", generalAttack, player.FinalDamage(monster, attack))
+
+		model.Merge(model.AddQuality(&model.Quality{Str: 5, Agi: 5 - 30, Vit: 5, Int: 5 + 40, Dex: 5 + 40, Luk: 5}),
+			model.AddGeneral(&model.General{Critical: 10 + 30, CriticalDamage: 100}),
+			model.AddGains(false, &model.Gains{AttackPer: 10}))(player.Character)
+
+		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		attack.WithCritical()
-		fmt.Printf("%f, %f\n", generalAttack, player.FinalDamage(monster, attack))
-		//4055 	6610
+		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
+		//22058
 		ProfitDetect(player, func(player *model.Player) float64 {
 			return player.FinalDamage(monster, attack)
 		})

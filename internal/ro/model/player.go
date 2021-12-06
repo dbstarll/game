@@ -67,36 +67,6 @@ func (p *Player) SkillEarth() (damage float64) {
 	return
 }
 
-func (p *Player) GeneralAttack(target *Monster, attack *Attack) (damage float64) {
-	magic, remote, nature := attack.magic, attack.remote, attack.nature
-	gains := p.profits.gains(magic)
-	//最终物攻
-	damage = float64(p.EquipmentAttack(magic) + p.quality.OrdinaryAttack(magic, remote)) //装备攻击
-	damage *= 1 + gains.AttackPer/100                                                    //*(1+攻击%)
-	// TODO *武器体型修正
-	damage *= 1 + p.Character.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[p.shape]/100 //*(1+体型增伤%-体型减伤%)
-	damage *= nature.Restraint(target.nature)                                                                 //*属性克制
-	damage *= 1 + p.Character.profits.natureDamage[target.nature]/100                                         //*(1+属性魔物增伤%)
-	damage *= 1 - target.profits.natureResist[nature]/100                                                     //*(1-属性减伤%)
-	damage += float64(p.QualityAttack(magic, remote))                                                         //+素质攻击
-	damage *= 1 + p.Character.profits.raceDamage[target.race]/100 - target.profits.raceResist[p.race]/100     //*(1+种族增伤%-种族减伤%)
-
-	//基础伤害
-	//普攻未暴击: 基础伤害 = ((最终物攻 * 物防乘数 *物理最终减伤值+精炼物攻)*技能倍率 -素质物防)
-	//普攻暴击: 基础伤害 = (最终物攻*物理最终减伤值+精炼物攻)*(1+暴伤%)
-	//最终物防 = (物理防御-素质物理防御)*(1+物理防御%-忽视物防%)
-	//物防乘数 = (4000+最终物防)/(4000+最终物防*10)
-	damage += gains.Refine //+精炼物攻
-
-	damage *= 1 + gains.Damage/100                                                                       //*(1+伤害加成%)
-	damage *= 1 + p.Character.profits.natureAttack[nature]/100 - target.profits.natureResist[nature]/100 //*(1+属性攻击%-属性减伤%)
-	if target.types.IsBoss() {
-		damage *= 1 + p.profits.general.MVP/100 //*(1+MVP增伤%)
-	}
-
-	return
-}
-
 //最终伤害
 func (p *Player) FinalDamage(target *Monster, attack *Attack) (damage float64) {
 	//最终伤害 = 基础伤害 * (1+元素加伤) * (1+MVP增伤%) * 状态加伤 * (1+真实伤害)
