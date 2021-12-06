@@ -4,28 +4,32 @@ character:
     base: 170
     job: 70
   quality:
-    str: 103
+    str: 130
     agi: 131
     vit: 402
     int: 196
     dex: 78
     luk: 42
+  detectByPanel: #根据面板预测: 装备攻击/装备防御
+    atk: 8030
+    def: 8132
+    matk: 4569
+    mdef: 3515
   profits:
     physical:
-      #      attack: 0
-      attackPer: 31
       spike: 37
-      damage: 70.5
-      #      refine: 0
-      #      critical: 0
-      #      criticalPer: 0
-      #      defence: 0
-      defencePer: 112.5
-      #      resist: 0
-    magical:
-      #      attack: 0
       attackPer: 31
+      defencePer: 112.5
+      damage: 70.5
+      ignore: 178.1
+      resist: 41.7
+      nearResist: 13.4
+      remoteResist: 25
+      refine: 934
+      refineResist: 38.7
+    magical:
       spike: 5
+      attackPer: 31
       #      damage: 0
       #      refine: 0
       #      critical: 0
@@ -34,8 +38,14 @@ character:
       defencePer: 60
     #      resist: 0
     damage:
+      critical: 16
+      criticalDamage: 34.2
+      criticalResist: 55
+      criticalDamageResist: 31.5
       #      skill: 0
       mvp: 28
+      # 普攻伤害减免: 12
+      # 技能伤害减免: 6
     refine:
       weapon: 10
       ring1: 0
@@ -90,8 +100,3 @@ character:
       #      念: 0
       毒: 1
     natureResist: #属性减伤%
-  detectByPanel: #根据面板预测: 装备攻击/装备防御
-    atk: 0
-    def: 7766
-    matk: 0
-    mdef: 3308

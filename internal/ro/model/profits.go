@@ -8,24 +8,16 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-//装备，强化，附魔，卡片，头饰，祈祷，buff等合计
-type Gains struct {
-	attack      int     //攻击
-	attackPer   float64 //攻击%
-	spike       float64 //穿刺
-	damage      float64 //伤害%
-	refine      float64 //精炼攻击
-	critical    float64 //暴击
-	criticalPer float64 //暴伤%
-
-	defence    int     //防御
-	defencePer float64 //防御%
-	resist     float64 //伤害减免%
-}
-
 type Damage struct {
-	Skill float64 //技能伤害加成%
-	MVP   float64 //MVP增伤%
+	critical             float64 //暴击
+	criticalDamage       float64 //暴伤%
+	criticalResist       float64 //暴击防护
+	criticalDamageResist float64 //爆伤减免%
+	//普攻伤害加成
+	//普攻伤害减免
+	skill float64 //技能伤害加成%
+	//技能伤害减免
+	mvp float64 //MVP增伤%
 }
 
 type Refine struct {
@@ -48,34 +40,23 @@ type Profits struct {
 	natureResist map[nature.Nature]float64 //属性减伤%
 }
 
-func (g *Gains) Add(incr *Gains) {
-	if incr != nil {
-		g.attack += incr.attack
-		g.attackPer += incr.attackPer
-		g.spike += incr.spike
-		g.damage += incr.damage
-		g.refine += incr.refine
-		g.critical += incr.critical
-		g.criticalPer += incr.criticalPer
-
-		g.defence += incr.defence
-		g.defencePer += incr.defencePer
-		g.resist += incr.resist
-	}
-}
-
 func (d *Damage) Add(incr *Damage) {
 	if incr != nil {
-		d.Skill += incr.Skill
-		d.MVP += incr.MVP
+		d.critical += incr.critical
+		d.criticalDamage += incr.criticalDamage
+		d.criticalResist += incr.criticalResist
+		d.criticalDamageResist += incr.criticalDamageResist
+
+		d.skill += incr.skill
+		d.mvp += incr.mvp
 	}
 }
 
-func (p *Profits) AddGains(magic bool, incr *Gains) {
+func (p *Profits) gains(magic bool) *Gains {
 	if magic {
-		p.magical.Add(incr)
+		return &p.magical
 	} else {
-		p.physical.Add(incr)
+		return &p.physical
 	}
 }
 
@@ -188,112 +169,6 @@ func (p *Profits) AddNatureResist(incr *map[nature.Nature]float64) {
 	}
 }
 
-//装备攻击
-func (p *Profits) Attack(magic bool) int {
-	if magic {
-		return p.magical.attack
-	} else {
-		return p.physical.attack
-	}
-}
-
-func (p *Profits) setAttack(magic bool, attack int) {
-	if magic {
-		p.magical.attack = attack
-	} else {
-		p.physical.attack = attack
-	}
-}
-
-//攻击%
-func (p *Profits) AttackPer(magic bool) float64 {
-	if magic {
-		return p.magical.attackPer
-	} else {
-		return p.physical.attackPer
-	}
-}
-
-//装备防御
-func (p *Profits) Defence(magic bool) int {
-	if magic {
-		return p.magical.defence
-	} else {
-		return p.physical.defence
-	}
-}
-
-func (p *Profits) setDefence(magic bool, defence int) {
-	if magic {
-		p.magical.defence = defence
-	} else {
-		p.physical.defence = defence
-	}
-}
-
-//防御%
-func (p *Profits) DefencePer(magic bool) float64 {
-	if magic {
-		return p.magical.defencePer
-	} else {
-		return p.physical.defencePer
-	}
-}
-
-//伤害减免%
-func (p *Profits) Resist(magic bool) float64 {
-	if magic {
-		return p.magical.resist
-	} else {
-		return p.physical.resist
-	}
-}
-
-//穿刺
-func (p *Profits) Spike(magic bool) float64 {
-	if magic {
-		return p.magical.spike
-	} else {
-		return p.physical.spike
-	}
-}
-
-//伤害%
-func (p *Profits) Damage(magic bool) float64 {
-	if magic {
-		return p.magical.damage
-	} else {
-		return p.physical.damage
-	}
-}
-
-//精炼攻击
-func (p *Profits) Refine(magic bool) float64 {
-	if magic {
-		return p.magical.refine
-	} else {
-		return p.physical.refine
-	}
-}
-
-//暴击
-func (p *Profits) Critical(magic bool) float64 {
-	if magic {
-		return p.magical.critical
-	} else {
-		return p.physical.critical
-	}
-}
-
-//暴伤%
-func (p *Profits) CriticalPer(magic bool) float64 {
-	if magic {
-		return p.magical.criticalPer
-	} else {
-		return p.physical.criticalPer
-	}
-}
-
 func (p *Profits) weaponSpikes() float64 {
 	return p.refine.weaponSpikes()
 }
@@ -316,12 +191,12 @@ func (r *Refine) weaponSpike(lvl int) float64 {
 }
 
 func (p *Profits) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
-	rate = 1 + p.damage.Skill/100                                                            //*(1+技能伤害加成%)
-	rate *= 1 + p.natureDamage[target.nature]/100                                            //*(1+属性魔物增伤%)
-	rate *= 1 - target.profits.natureResist[skillNature]/100                                 //*(1-属性减伤%)
-	rate *= 1 + p.natureAttack[skillNature]/100                                              //*(1+属性攻击%)
-	rate *= 1 + p.Damage(magic)/100                                                          //*(1+伤害加成%)
-	rate *= 1 + p.weaponSpikes()/100 + p.Spike(magic)/100 - target.profits.Resist(magic)/100 //*(1+装备穿刺%+穿刺%-伤害减免%)
+	rate = 1 + p.damage.skill/100                                                                        //*(1+技能伤害加成%)
+	rate *= 1 + p.natureDamage[target.nature]/100                                                        //*(1+属性魔物增伤%)
+	rate *= 1 - target.profits.natureResist[skillNature]/100                                             //*(1-属性减伤%)
+	rate *= 1 + p.natureAttack[skillNature]/100                                                          //*(1+属性攻击%)
+	rate *= 1 + p.gains(magic).damage/100                                                                //*(1+伤害加成%)
+	rate *= 1 + p.weaponSpikes()/100 + p.gains(magic).spike/100 - target.profits.gains(magic).resist/100 //*(1+装备穿刺%+穿刺%-伤害减免%)
 	return
 }
 
@@ -379,63 +254,6 @@ func (p *Profits) UnmarshalYAML(value *yaml.Node) (err error) {
 					}
 				default:
 					fmt.Printf("missing decode Profits.%s: %+v\n", lastAttr, sub)
-				}
-			}
-		}
-	}
-	return
-}
-
-func (g *Gains) UnmarshalYAML(value *yaml.Node) (err error) {
-	if value.Kind == yaml.MappingNode {
-		var lastAttr string
-		for idx, sub := range value.Content {
-			if sub.Kind == yaml.ScalarNode && idx%2 == 0 {
-				lastAttr = sub.Value
-			} else {
-				switch lastAttr {
-				case "attack":
-					if err = sub.Decode(&g.attack); err != nil {
-						return
-					}
-				case "attackPer":
-					if err = sub.Decode(&g.attackPer); err != nil {
-						return
-					}
-				case "spike":
-					if err = sub.Decode(&g.spike); err != nil {
-						return
-					}
-				case "damage":
-					if err = sub.Decode(&g.damage); err != nil {
-						return
-					}
-				case "refine":
-					if err = sub.Decode(&g.refine); err != nil {
-						return
-					}
-				case "critical":
-					if err = sub.Decode(&g.critical); err != nil {
-						return
-					}
-				case "criticalPer":
-					if err = sub.Decode(&g.criticalPer); err != nil {
-						return
-					}
-				case "defence":
-					if err = sub.Decode(&g.defence); err != nil {
-						return
-					}
-				case "defencePer":
-					if err = sub.Decode(&g.defencePer); err != nil {
-						return
-					}
-				case "resist":
-					if err = sub.Decode(&g.resist); err != nil {
-						return
-					}
-				default:
-					fmt.Printf("missing decode Gains.%s: %+v\n", lastAttr, sub)
 				}
 			}
 		}
