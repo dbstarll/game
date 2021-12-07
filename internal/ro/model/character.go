@@ -286,8 +286,10 @@ func (c *Character) baseDamage(target *Character, attack *Attack) (damage float6
 func (c *Character) finalAttack(target *Character, attack *Attack) (damage float64) {
 	damage = float64(c.EquipmentAttack(attack.magic)) //装备攻击
 	if !attack.skill {
-		damage += float64(c.quality.OrdinaryAttack(attack.magic, attack.remote)) //素质普攻攻击力
-		damage += c.profits.general.Ordinary                                     //TODO 这里存疑普攻攻击力
+		if c.job >= job.Archer && c.job <= job.Hunter4 {
+			damage += float64(c.quality.OrdinaryAttack(attack.magic, attack.remote)) //素质普攻攻击力
+			damage += c.profits.general.Ordinary                                     //TODO 这里存疑普攻攻击力
+		}
 		if c.job >= job.Hunter2 && c.job <= job.Hunter4 {
 			damage += float64(200 + c.quality.Dex*5) //猎人进阶二转技能：元素箭矢20级被动效果
 		}

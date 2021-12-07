@@ -6,6 +6,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
+	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -77,6 +78,9 @@ func (p *Player) FinalDamage(target *Monster, attack *Attack) (damage float64) {
 	}
 	// TODO *状态加伤
 	// TODO *(1+真实伤害)
+	if attack.weapon == weapon.Rifle {
+		damage *= 2 //来复枪伤害翻倍
+	}
 	return
 }
 
