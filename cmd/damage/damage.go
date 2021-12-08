@@ -139,20 +139,21 @@ func Template() {
 }
 
 func Hunter() {
-	if player, err := model.LoadPlayerFromYaml("小弓-游侠", true); err != nil {
+	if player, err := model.LoadPlayerFromYaml("璐璐-暴君", true); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else {
 		monster := model.NewMonster(types.Ordinary, race.Plant, nature.Neutral, shape.Medium)
-		attack := player.AttackWithWeapon(weapon.Bow)
+		attack := player.AttackWithWeapon(weapon.Rifle).WithNature(nature.Wind)
 
-		model.Merge(model.AddQuality(&model.Quality{Str: 5, Agi: 5 - 30, Vit: 5, Int: 5 + 40, Dex: 5 + 40, Luk: 5}),
-			model.AddGeneral(&model.General{Critical: 10 + 30, CriticalDamage: 100}),
-			model.AddGains(false, &model.Gains{AttackPer: 10}))(player.Character)
+		//model.Merge(model.AddQuality(&model.Quality{Str: 5, Agi: 5 - 30, Vit: 5, Int: 5 + 40, Dex: 5 + 40, Luk: 5}),
+		//	model.AddGeneral(&model.General{Critical: 10 + 30 + 3, CriticalDamage: 100 + 8.3}),
+		//	model.AddGains(false, &model.Gains{AttackPer: 10}))(player.Character)
 
+		// 暴伤13,14057/24342
+		// 暴伤36.7,14057/27881
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		attack.WithCritical()
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
-		//22058
 		ProfitDetect(player, func(player *model.Player) float64 {
 			return player.FinalDamage(monster, attack)
 		})

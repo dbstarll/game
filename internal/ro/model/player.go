@@ -7,6 +7,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
 	"github.com/dbstarll/game/internal/ro/dimension/weapon"
+	"github.com/dbstarll/game/internal/ro/model/attack"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -69,16 +70,16 @@ func (p *Player) SkillEarth() (damage float64) {
 }
 
 //最终伤害
-func (p *Player) FinalDamage(target *Monster, attack *Attack) (damage float64) {
+func (p *Player) FinalDamage(target *Monster, attack *attack.Attack) (damage float64) {
 	//最终伤害 = 基础伤害 * (1+元素加伤) * (1+MVP增伤%) * 状态加伤 * (1+真实伤害)
-	damage = p.baseDamage(target.Character, attack)         //基础伤害
-	damage *= 1 + p.profits.natureAttack[attack.nature]/100 //*(1+属性攻击%)
+	damage = p.baseDamage(target.Character, attack) //基础伤害
+	//damage *= 1 + p.profits.natureAttack[attack.GetNature()]/100 //*(1+属性攻击%)
 	if target.types.IsBoss() {
 		damage *= 1 + p.profits.general.MVP/100 //*(1+MVP增伤%)
 	}
 	// TODO *状态加伤
 	// TODO *(1+真实伤害)
-	if attack.weapon == weapon.Rifle {
+	if attack.GetWeapon() == weapon.Rifle {
 		damage *= 2 //来复枪伤害翻倍
 	}
 	return
