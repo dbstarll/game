@@ -35,6 +35,8 @@ var (
 		"技能伤害减免%+1": model.AddGeneral(&model.General{SkillResist: 1}),
 		"MVP增伤%+1":  model.AddGeneral(&model.General{MVP: 1}),
 		"MVP减伤%+1":  model.AddGeneral(&model.General{MVPResist: 1}),
+		"攻击速度%+1":   model.AddGeneral(&model.General{AttackSpeed: 1}),
+		"移动速度%+1":   model.AddGeneral(&model.General{MoveSpeed: 1}),
 
 		"物理攻击+20":     model.AddGains(false, &model.Gains{Attack: 20}),
 		"物理防御+20":     model.AddGains(false, &model.Gains{Defence: 20}),
