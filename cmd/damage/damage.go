@@ -8,6 +8,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/types"
 	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/dbstarll/game/internal/ro/model"
+	"github.com/dbstarll/game/internal/ro/model/buff"
 	"log"
 	"sort"
 )
@@ -41,6 +42,8 @@ var (
 		"物理攻击%+1":     model.AddGains(false, &model.Gains{AttackPer: 1}),
 		"物理防御%+1":     model.AddGains(false, &model.Gains{DefencePer: 1}),
 		"物伤加成%+1":     model.AddGains(false, &model.Gains{Damage: 1}),
+		"近战物理伤害%+1":   model.AddGains(false, &model.Gains{NearDamage: 1}),
+		"远程物理伤害%+1":   model.AddGains(false, &model.Gains{RemoteDamage: 1}),
 		"忽视物防%+1":     model.AddGains(false, &model.Gains{Ignore: 1}),
 		"物伤减免%+1":     model.AddGains(false, &model.Gains{Resist: 1}),
 		"近战物理伤害减免%+1": model.AddGains(false, &model.Gains{NearResist: 1}),
@@ -139,18 +142,20 @@ func Template() {
 }
 
 func Hunter() {
-	if player, err := model.LoadPlayerFromYaml("璐璐-暴君", true); err != nil {
+	if player, err := model.LoadPlayerFromYaml("猫爸-暴君", true); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else {
-		monster := model.NewMonster(types.Ordinary, race.Plant, nature.Neutral, shape.Medium)
+		monster := model.NewMonster(types.Ordinary, race.Animal, nature.Water, shape.Medium)
 		attack := player.AttackWithWeapon(weapon.Rifle).WithNature(nature.Wind)
 
 		//model.Merge(model.AddQuality(&model.Quality{Str: 5, Agi: 5 - 30, Vit: 5, Int: 5 + 40, Dex: 5 + 40, Luk: 5}),
 		//	model.AddGeneral(&model.General{Critical: 10 + 30 + 3, CriticalDamage: 100 + 8.3}),
 		//	model.AddGains(false, &model.Gains{AttackPer: 10}))(player.Character)
 
-		// 暴伤13,14057/24342
-		// 暴伤36.7,14057/27881
+		buff.Manor()(player.Character)
+		buff.DexA()(player.Character)
+		model.Merge(model.AddGains(false, &model.Gains{Resist: 30}))(monster.Character)
+
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		attack.WithCritical()
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))

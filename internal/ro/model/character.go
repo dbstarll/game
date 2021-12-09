@@ -263,7 +263,12 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 		damage += gains.Refine                                                                //+精炼物攻
 		damage *= 1.5 + c.profits.general.CriticalDamage/100                                  //*(1+暴伤%)
 		damage *= 1 + gains.Damage/100                                                        //*(1+物伤加成)
-		damage *= 1 + c.profits.general.OrdinaryDamage/100                                    //*(1+普攻伤害加成%)
+		if attack.IsRemote() {
+			damage *= 1 + gains.RemoteDamage/100 //*(1+远程物理伤害%)
+		} else {
+			damage *= 1 + gains.NearDamage/100 //*(1+近战物理伤害%)
+		}
+		damage *= 1 + c.profits.general.OrdinaryDamage/100 //*(1+普攻伤害加成%)
 	} else { // 普攻未暴击或技能
 		//TODO *物防乘数
 		damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
@@ -271,8 +276,15 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 		//TODO *技能倍率
 		damage -= float64(target.QualityDefence(false)) //-素质物防
 		damage *= 1 + gains.Damage/100                  //*(1+物伤加成)
+		if attack.IsRemote() {
+			damage *= 1 + gains.RemoteDamage/100 //*(1+远程物理伤害%)
+		} else {
+			damage *= 1 + gains.NearDamage/100 //*(1+近战物理伤害%)
+		}
 		if attack.IsOrdinary() {
 			damage *= 1 + c.profits.general.OrdinaryDamage/100 //*(1+普攻伤害加成%)
+		} else {
+			damage *= 1 + c.profits.general.Skill/100 //*(1+技能伤害加成%)
 		}
 	}
 	return
