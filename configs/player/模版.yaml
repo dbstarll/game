@@ -33,6 +33,8 @@ character:
       attackPer: 0 #物理攻击%
       defencePer: 0 #物理防御%
       damage: 0 #物伤加成%
+      nearDamage: 0 #近战物理伤害%
+      remoteDamage: 0 #远程物理伤害%
       ignore: 0 #忽视物防%
       resist: 0 #物伤减免%
       nearResist: 0 #近战物理伤害减免%

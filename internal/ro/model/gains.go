@@ -15,6 +15,8 @@ type Gains struct {
 	AttackPer    float64 //攻击%
 	DefencePer   float64 //防御%
 	Damage       float64 //伤害%
+	NearDamage   float64 //近战伤害%
+	RemoteDamage float64 //远程伤害%
 	Ignore       float64 //忽视防御%
 	Resist       float64 //伤害减免%
 	NearResist   float64 //近战伤害减免%
@@ -33,6 +35,8 @@ func (g *Gains) Add(incr *Gains) {
 		g.AttackPer += incr.AttackPer
 		g.DefencePer += incr.DefencePer
 		g.Damage += incr.Damage
+		g.NearDamage += incr.NearDamage
+		g.RemoteDamage += incr.RemoteDamage
 		g.Ignore += incr.Ignore
 		g.Resist += incr.Resist
 		g.NearResist += incr.NearResist
@@ -52,6 +56,8 @@ func (g *Gains) Del(incr *Gains) {
 		g.AttackPer -= incr.AttackPer
 		g.DefencePer -= incr.DefencePer
 		g.Damage -= incr.Damage
+		g.NearDamage -= incr.NearDamage
+		g.RemoteDamage -= incr.RemoteDamage
 		g.Ignore -= incr.Ignore
 		g.Resist -= incr.Resist
 		g.NearResist -= incr.NearResist
@@ -83,6 +89,14 @@ func (g *Gains) UnmarshalYAML(value *yaml.Node) (err error) {
 					}
 				case "damage":
 					if err = sub.Decode(&g.Damage); err != nil {
+						return
+					}
+				case "nearDamage":
+					if err = sub.Decode(&g.NearDamage); err != nil {
+						return
+					}
+				case "remoteDamage":
+					if err = sub.Decode(&g.RemoteDamage); err != nil {
 						return
 					}
 				case "ignore":
