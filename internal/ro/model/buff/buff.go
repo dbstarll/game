@@ -6,6 +6,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
 	"github.com/dbstarll/game/internal/ro/model"
+	"github.com/dbstarll/game/internal/ro/model/general"
 	"sort"
 )
 
@@ -20,22 +21,22 @@ var (
 		"Dex+1": model.AddQuality(&model.Quality{Dex: 1}),
 		"Luk+1": model.AddQuality(&model.Quality{Luk: 1}),
 
-		"暴击+1":              model.AddGeneral(&model.General{Critical: 1}),
-		"暴伤%+1":             model.AddGeneral(&model.General{CriticalDamage: 1}),
-		"暴击防护+1":            model.AddGeneral(&model.General{CriticalResist: 1}),
-		"爆伤减免%+1":           model.AddGeneral(&model.General{CriticalDamageResist: 1}),
-		"普攻攻击力+20":          model.AddGeneral(&model.General{Ordinary: 20}),
-		"普攻伤害加成%+1":         model.AddGeneral(&model.General{OrdinaryDamage: 1}),
-		"普攻伤害减免%+1":         model.AddGeneral(&model.General{OrdinaryResist: 1}),
-		"技能伤害加成%+1":         model.AddGeneral(&model.General{Skill: 1}),
-		"技能伤害减免%+1":         model.AddGeneral(&model.General{SkillResist: 1}),
-		"MVP增伤%+1":          model.AddGeneral(&model.General{MVP: 1}),
-		"MVP减伤%+1":          model.AddGeneral(&model.General{MVPResist: 1}),
-		"普通魔物(不包含MVP)增伤%+1": model.AddGeneral(&model.General{NoMVP: 1}),
-		"普通魔物减伤%+1":         model.AddGeneral(&model.General{NoMVPResist: 1}),
-		"普通魔物(包含MVP)增伤%+1":  model.AddGeneral(&model.General{MVP: 1, NoMVP: 1}),
-		"攻击速度%+1":           model.AddGeneral(&model.General{AttackSpeed: 1}),
-		"移动速度%+1":           model.AddGeneral(&model.General{MoveSpeed: 1}),
+		"暴击+1":              model.AddGeneral(&general.General{Critical: 1}),
+		"暴伤%+1":             model.AddGeneral(&general.General{CriticalDamage: 1}),
+		"暴击防护+1":            model.AddGeneral(&general.General{CriticalResist: 1}),
+		"爆伤减免%+1":           model.AddGeneral(&general.General{CriticalDamageResist: 1}),
+		"普攻攻击力+20":          model.AddGeneral(&general.General{Ordinary: 20}),
+		"普攻伤害加成%+1":         model.AddGeneral(&general.General{OrdinaryDamage: 1}),
+		"普攻伤害减免%+1":         model.AddGeneral(&general.General{OrdinaryResist: 1}),
+		"技能伤害加成%+1":         model.AddGeneral(&general.General{Skill: 1}),
+		"技能伤害减免%+1":         model.AddGeneral(&general.General{SkillResist: 1}),
+		"MVP增伤%+1":          model.AddGeneral(&general.General{MVP: 1}),
+		"MVP减伤%+1":          model.AddGeneral(&general.General{MVPResist: 1}),
+		"普通魔物(不包含MVP)增伤%+1": model.AddGeneral(&general.General{NoMVP: 1}),
+		"普通魔物减伤%+1":         model.AddGeneral(&general.General{NoMVPResist: 1}),
+		"普通魔物(包含MVP)增伤%+1":  model.AddGeneral(&general.General{MVP: 1, NoMVP: 1}),
+		"攻击速度%+1":           model.AddGeneral(&general.General{AttackSpeed: 1}),
+		"移动速度%+1":           model.AddGeneral(&general.General{MoveSpeed: 1}),
 
 		"物理攻击+20":     model.AddGains(false, &model.Gains{Attack: 20}),
 		"物理防御+20":     model.AddGains(false, &model.Gains{Defence: 20}),
@@ -178,7 +179,7 @@ type Profit struct {
 func Manor() model.CharacterModifier {
 	return model.Merge(
 		Quality(10),
-		model.AddGeneral(&model.General{Critical: 30}),
+		model.AddGeneral(&general.General{Critical: 30}),
 		model.AddGains(false, &model.Gains{Damage: 60, Ignore: 30, Resist: 40}),
 		model.AddGains(true, &model.Gains{Damage: 60, Ignore: 30, Resist: 40}),
 	)
@@ -209,7 +210,7 @@ func StrB() model.CharacterModifier {
 func AgiA() model.CharacterModifier {
 	return model.Merge(
 		model.AddQuality(&model.Quality{Agi: 5}),
-		model.AddGeneral(&model.General{AttackSpeed: 10}),
+		model.AddGeneral(&general.General{AttackSpeed: 10}),
 	)
 }
 
@@ -217,7 +218,7 @@ func AgiA() model.CharacterModifier {
 func AgiB() model.CharacterModifier {
 	return model.Merge(
 		model.AddQuality(&model.Quality{Agi: 10}),
-		model.AddGeneral(&model.General{AttackSpeed: 20}),
+		model.AddGeneral(&general.General{AttackSpeed: 20}),
 	)
 }
 
@@ -271,7 +272,7 @@ func DexB() model.CharacterModifier {
 func LukA() model.CharacterModifier {
 	return model.Merge(
 		model.AddQuality(&model.Quality{Luk: 5}),
-		model.AddGeneral(&model.General{Critical: 10}),
+		model.AddGeneral(&general.General{Critical: 10}),
 	)
 }
 
@@ -279,7 +280,7 @@ func LukA() model.CharacterModifier {
 func LukB() model.CharacterModifier {
 	return model.Merge(
 		model.AddQuality(&model.Quality{Luk: 10}),
-		model.AddGeneral(&model.General{Critical: 20}),
+		model.AddGeneral(&general.General{Critical: 20}),
 	)
 }
 

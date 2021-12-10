@@ -1,10 +1,11 @@
-package model
+package general
 
 import (
 	"fmt"
 	"gopkg.in/yaml.v3"
 )
 
+//通用增益
 type General struct {
 	Critical             float64 //暴击
 	CriticalDamage       float64 //暴伤%

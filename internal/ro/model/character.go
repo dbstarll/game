@@ -9,6 +9,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/types"
 	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/dbstarll/game/internal/ro/model/attack"
+	"github.com/dbstarll/game/internal/ro/model/general"
 	"gopkg.in/yaml.v3"
 	"math"
 )
@@ -99,7 +100,7 @@ func AddGains(magic bool, gains *Gains) CharacterModifier {
 	}
 }
 
-func AddGeneral(incr *General) CharacterModifier {
+func AddGeneral(incr *general.General) CharacterModifier {
 	return func(character *Character) func() {
 		character.profits.general.Add(incr)
 		return func() {

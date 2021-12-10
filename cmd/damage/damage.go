@@ -9,6 +9,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/dbstarll/game/internal/ro/model"
 	"github.com/dbstarll/game/internal/ro/model/buff"
+	"github.com/dbstarll/game/internal/ro/model/general"
 	"log"
 )
 
@@ -63,7 +64,7 @@ func Hunter() {
 		monster := model.NewCharacter(types.Ordinary, race.Animal, nature.Water, shape.Medium)
 		attack := player.AttackWithWeapon(weapon.Bow).WithNature(nature.Wind)
 
-		model.AddGeneral(&model.General{Critical: 30, CriticalDamage: 100})(player.Character)
+		model.AddGeneral(&general.General{Critical: 30, CriticalDamage: 100})(player.Character)
 		buff.Manor()(player.Character)
 		buff.DexA()(player.Character)
 		model.Merge(model.AddGains(false, &model.Gains{Resist: 30}))(monster)

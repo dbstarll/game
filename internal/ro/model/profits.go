@@ -5,6 +5,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
+	"github.com/dbstarll/game/internal/ro/model/general"
 	"gopkg.in/yaml.v3"
 )
 
@@ -17,7 +18,7 @@ type Refine struct {
 type Profits struct {
 	physical     Gains
 	magical      Gains
-	general      General
+	general      general.General
 	refine       Refine
 	natureAttack map[nature.Nature]float64 //属性攻击%
 	raceDamage   map[race.Race]float64     //种族增伤%
