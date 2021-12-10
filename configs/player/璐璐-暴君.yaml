@@ -5,20 +5,20 @@ character:
     job: 61
   quality:
     str: 19
-    agi: 45
+    agi: 41
     vit: 22
     int: 34
-    dex: 85
+    dex: 100
     luk: 26
   detectByPanel: #根据面板来预测装备攻击/装备防御
-    atk: 4571 #面板物理攻击
+    atk: 4656 #面板物理攻击
     def: 741 #面板物理防御
     matk: 1203 #面板魔法攻击
     mdef: 406 #面板魔法防御
   profits:
     general:
-      critical: 14 #暴击
-      criticalDamage: 46.3 #暴伤%
+      critical: 17 #暴击
+      criticalDamage: 47.9 #暴伤%
       criticalResist: 6 #暴击防护
       criticalDamageResist: 0 #爆伤减免%
       ordinary: 0 #普攻攻击力
@@ -29,15 +29,15 @@ character:
       mvp: 0 #MVP增伤%
       mvpResist: 0 #MVP减伤%
     physical: #物理属性
-      spike: 21 #物理穿刺
+      spike: 27 #物理穿刺
       attackPer: 22 #物理攻击%
       defencePer: 28 #物理防御%
-      damage: 10 #物伤加成%
+      damage: 17.8 #物伤加成%
       ignore: 1.5 #忽视物防%
       resist: 22 #物伤减免%
       nearResist: 0 #近战物理伤害减免%
       remoteResist: 0 #远程物理伤害减免%
-      refine: 76 #精炼物攻
+      refine: 208 #精炼物攻
       refineResist: 0 #精炼物免%
     magical: #魔法属性
       spike: 1 #魔法穿刺
@@ -46,21 +46,21 @@ character:
       damage: 0 #魔伤加成%
       ignore: 1.5 #忽视魔防%
       resist: 20.5 #魔伤减免%
-      refine: 76 #精炼魔攻
+      refine: 84 #精炼魔攻
       refineResist: 0 #精炼魔免%
     refine: #装备和首饰精炼等级
       weapon: 0
       ring1: 0
       ring2: 0
     natureAttack: #属性-技能增强
-      风: 20
-      地: 16.5
-      火: 21
-      水: 11
+      风: 22.4
+      地: 18.9
+      火: 23.4
+      水: 3.4
       无: 0
       圣: 6
       暗: 0
-      念: 0
+      念: 2.4
       毒: 0
       不死: 0
     natureDamage: #属性-攻击增加
@@ -89,9 +89,9 @@ character:
       动物: 22
       人形: 4
       恶魔: 5
-      植物: 0
+      植物: 3
       不死: 9
-      无形: 0
+      无形: 3
       鱼贝: 8
       天使: 3
       昆虫: 16
@@ -109,9 +109,9 @@ character:
       龙: 3
     shapeDamage: #体型-攻击增强
       小型: 0
-      中型: 0
+      中型: 0.4
       大型: 0
     shapeResist: #体型-伤害减免
       小型: 0
-      中型: 0
+      中型: 0.4
       大型: 0
