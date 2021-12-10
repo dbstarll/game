@@ -8,13 +8,11 @@ import (
 )
 
 type Monster struct {
-	types types.Types
 	*Character
 }
 
 func NewMonster(types types.Types, race race.Race, nature nature.Nature, shape shape.Shape, modifiers ...CharacterModifier) *Monster {
 	return &Monster{
-		types:     types,
-		Character: NewCharacter(race, nature, shape, modifiers...),
+		Character: NewCharacter(types, race, nature, shape, modifiers...),
 	}
 }

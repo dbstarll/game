@@ -5,6 +5,7 @@ type Types int
 
 const (
 	Unlimited Types = iota
+	Player          // 玩家
 	Ordinary        // 普通魔物
 	Star            // 星怪
 	Special         // 特殊
@@ -17,6 +18,8 @@ func (t Types) String() string {
 	switch t {
 	case Unlimited:
 		return "不限"
+	case Player:
+		return "玩家"
 	case Ordinary:
 		return "普通魔物"
 	case Star:

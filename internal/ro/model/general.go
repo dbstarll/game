@@ -17,6 +17,8 @@ type General struct {
 	SkillResist          float64 //技能伤害减免%
 	MVP                  float64 //MVP增伤%
 	MVPResist            float64 //MVP减伤%
+	NoMVP                float64 //普通魔物增伤%
+	NoMVPResist          float64 //普通魔物减伤%
 	AttackSpeed          float64 //攻击速度%
 	MoveSpeed            float64 //移动速度%
 }
@@ -34,6 +36,8 @@ func (d *General) Add(incr *General) {
 		d.SkillResist += incr.SkillResist
 		d.MVP += incr.MVP
 		d.MVPResist += incr.MVPResist
+		d.NoMVP += incr.NoMVP
+		d.NoMVPResist += incr.NoMVPResist
 		d.AttackSpeed += incr.AttackSpeed
 		d.MoveSpeed += incr.MoveSpeed
 	}
@@ -52,6 +56,8 @@ func (d *General) Del(incr *General) {
 		d.SkillResist -= incr.SkillResist
 		d.MVP -= incr.MVP
 		d.MVPResist -= incr.MVPResist
+		d.NoMVP -= incr.NoMVP
+		d.NoMVPResist -= incr.NoMVPResist
 		d.AttackSpeed -= incr.AttackSpeed
 		d.MoveSpeed -= incr.MoveSpeed
 	}
@@ -107,6 +113,14 @@ func (d *General) UnmarshalYAML(value *yaml.Node) (err error) {
 					}
 				case "mvpResist":
 					if err = sub.Decode(&d.MVPResist); err != nil {
+						return
+					}
+				case "noMvp":
+					if err = sub.Decode(&d.NoMVP); err != nil {
+						return
+					}
+				case "noMvpResist":
+					if err = sub.Decode(&d.NoMVPResist); err != nil {
 						return
 					}
 				case "attackSpeed":

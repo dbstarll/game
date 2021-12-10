@@ -28,6 +28,8 @@ character:
       skillResist: 0 #技能伤害减免%
       mvp: 0 #MVP增伤%
       mvpResist: 0 #MVP减伤%
+      noMvp: 0 #普通魔物增伤%
+      noMvpResist: 0 #普通魔物减伤%
       attackSpeed: 0 #攻击速度%
       moveSpeed: 0 #移动速度%
     physical: #物理属性

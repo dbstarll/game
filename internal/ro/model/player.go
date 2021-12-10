@@ -6,6 +6,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
+	"github.com/dbstarll/game/internal/ro/dimension/types"
 	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/dbstarll/game/internal/ro/model/attack"
 	"github.com/pkg/errors"
@@ -26,9 +27,10 @@ func LoadPlayerFromYaml(name string, remote bool) (*Player, error) {
 		if err := yaml.Unmarshal(data, player); err != nil {
 			return nil, errors.WithStack(err)
 		} else {
-			player.Character.nature = nature.Neutral
-			player.Character.race = race.Human
-			player.Character.shape = shape.Medium
+			player.types = types.Player
+			player.nature = nature.Neutral
+			player.race = race.Human
+			player.shape = shape.Medium
 			if player.detectByPanel.Atk > 0 {
 				player.detectAttackByPanel(false, remote, player.detectByPanel.Atk)
 			}
@@ -48,7 +50,7 @@ func LoadPlayerFromYaml(name string, remote bool) (*Player, error) {
 
 func NewPlayer(job job.Job, modifiers ...CharacterModifier) *Player {
 	return &Player{
-		Character: NewCharacter(race.Human, nature.Neutral, shape.Medium, append([]CharacterModifier{Job(job)}, modifiers...)...),
+		Character: NewCharacter(types.Player, race.Human, nature.Neutral, shape.Medium, append([]CharacterModifier{Job(job)}, modifiers...)...),
 	}
 }
 
@@ -56,6 +58,8 @@ func (p *Player) SkillDamageRate(target *Monster, magic bool, skillNature nature
 	rate = p.Character.SkillDamageRate(target.Character, magic, skillNature)
 	if target.types.IsBoss() {
 		rate *= 1 + p.profits.general.MVP/100 //*(1+MVP增伤%)
+	} else {
+		rate *= 1 + p.profits.general.NoMVP/100 //*(1+普通魔物增伤%)
 	}
 	return
 }
@@ -74,9 +78,6 @@ func (p *Player) FinalDamage(target *Monster, attack *attack.Attack) (damage flo
 	//最终伤害 = 基础伤害 * (1+元素加伤) * (1+MVP增伤%) * 状态加伤 * (1+真实伤害)
 	damage = p.baseDamage(target.Character, attack) //基础伤害
 	//damage *= 1 + p.profits.natureAttack[attack.GetNature()]/100 //*(1+属性攻击%)
-	if target.types.IsBoss() {
-		damage *= 1 + p.profits.general.MVP/100 //*(1+MVP增伤%)
-	}
 	// TODO *状态加伤
 	// TODO *(1+真实伤害)
 	if attack.GetWeapon() == weapon.Rifle {

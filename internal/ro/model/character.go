@@ -6,6 +6,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
+	"github.com/dbstarll/game/internal/ro/dimension/types"
 	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/dbstarll/game/internal/ro/model/attack"
 	"gopkg.in/yaml.v3"
@@ -20,6 +21,7 @@ type DetectByPanel struct {
 }
 
 type Character struct {
+	types         types.Types
 	job           job.Job
 	nature        nature.Nature
 	race          race.Race
@@ -32,8 +34,9 @@ type Character struct {
 
 type CharacterModifier func(character *Character) func()
 
-func NewCharacter(race race.Race, nature nature.Nature, shape shape.Shape, modifiers ...CharacterModifier) *Character {
+func NewCharacter(types types.Types, race race.Race, nature nature.Nature, shape shape.Shape, modifiers ...CharacterModifier) *Character {
 	c := &Character{
+		types:  types,
 		nature: nature,
 		race:   race,
 		shape:  shape,
@@ -316,6 +319,11 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 	}
 	damage += float64(c.QualityAttack(attack.IsMagic(), attack.IsRemote()))                     //+素质攻击
 	damage *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
+	if target.types.IsBoss() {
+		damage *= 1 + c.profits.general.MVP/100 //*(1+MVP增伤%)
+	} else {
+		damage *= 1 + c.profits.general.NoMVP/100 //*(1+普通魔物增伤%)
+	}
 	return
 }
 
