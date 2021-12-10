@@ -238,13 +238,30 @@ func (c *Character) AttackWithWeapon(weapon weapon.Weapon) *attack.Attack {
 }
 
 func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
-	rate = c.profits.SkillDamageRate(target, magic, skillNature)
-	rate *= 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
-	//TODO 种族减伤待验证，是加算还是乘算
-	//rate *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
-	rate *= 1 + c.profits.raceDamage[target.race]/100 //*(1+种族增伤%)
-	rate *= 1 - target.profits.raceResist[c.race]/100 //*(1-种族减伤%)
-	rate *= skillNature.Restraint(target.nature)      //*属性克制
+	gains, targetGains := c.profits.gains(magic), target.profits.gains(magic)
+
+	//finalAttack
+	rate = 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
+	rate *= skillNature.Restraint(target.nature)                                                 //*属性克制
+	rate *= 1 + c.profits.natureAttack[skillNature]/100                                          //*(1+属性攻击%)
+	rate *= 1 + c.profits.natureDamage[target.nature]/100                                        //*(1+属性魔物增伤%)
+	rate *= 1 - target.profits.natureResist[skillNature]/100                                     //*(1-属性减伤%)
+	rate *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100    //*(1+种族增伤%-种族减伤%)
+	if target.types.IsPlayer() {
+		//TODO *(1+玩家增伤%)
+	} else if target.types.IsBoss() {
+		rate *= 1 + c.profits.general.MVP/100 //*(1+MVP增伤%)
+	} else {
+		rate *= 1 + c.profits.general.NoMVP/100 //*(1+普通魔物增伤%)
+	}
+
+	//baseDamage
+	rate *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+穿刺%-伤害减免%)
+	rate *= 1 + gains.Damage/100 + gains.NearDamage/100                                 //*(1+伤害加成%+近战伤害%)
+	rate *= 1 + c.profits.general.Skill/100                                             //*(1+技能伤害加成%)
+
+	//finalDamage
+
 	return
 }
 
@@ -274,22 +291,18 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 		damage *= 1 - target.profits.natureResist[attack.GetNature()]/100 //*(1-属性减伤)
 		damage -= float64(target.QualityDefence(true))                    //-素质魔防
 		damage -= float64(target.QualityDefence(false))                   //-素质物防/2
-	} else if attack.IsCritical() { //普攻暴击
-		damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
-		damage += gains.Refine                                                                //+精炼物攻
-		damage *= 1.5 + c.profits.general.CriticalDamage/100                                  //*(1+暴伤%)
-		if attack.IsRemote() {
-			damage *= 1 + gains.Damage/100 + gains.RemoteDamage/100 //*(1+物伤加成%+远程物理伤害%)
-		} else {
-			damage *= 1 + gains.Damage/100 + gains.NearDamage/100 //*(1+物伤加成%+近战物理伤害%)
+	} else {
+		if attack.IsCritical() { //普攻暴击
+			damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
+			damage += gains.Refine                                                                //+精炼物攻
+			damage *= 1.5 + c.profits.general.CriticalDamage/100                                  //*(1+暴伤%)
+		} else { // 普攻未暴击或技能
+			//TODO *物防乘数
+			damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
+			damage += gains.Refine                                                                //+精炼物攻
+			//TODO *技能倍率
+			damage -= float64(target.QualityDefence(false)) //-素质物防
 		}
-		damage *= 1 + c.profits.general.OrdinaryDamage/100 //*(1+普攻伤害加成%)
-	} else { // 普攻未暴击或技能
-		//TODO *物防乘数
-		damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
-		damage += gains.Refine                                                                //+精炼物攻
-		//TODO *技能倍率
-		damage -= float64(target.QualityDefence(false)) //-素质物防
 		if attack.IsRemote() {
 			damage *= 1 + gains.Damage/100 + gains.RemoteDamage/100 //*(1+物伤加成%+远程物理伤害%)
 		} else {
@@ -301,6 +314,7 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 			damage *= 1 + c.profits.general.Skill/100 //*(1+技能伤害加成%)
 		}
 	}
+
 	return
 }
 
@@ -332,7 +346,9 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 	}
 	damage += float64(c.QualityAttack(attack.IsMagic(), attack.IsRemote()))                     //+素质攻击
 	damage *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
-	if target.types.IsBoss() {
+	if target.types.IsPlayer() {
+		//TODO *(1+玩家增伤%)
+	} else if target.types.IsBoss() {
 		damage *= 1 + c.profits.general.MVP/100 //*(1+MVP增伤%)
 	} else {
 		damage *= 1 + c.profits.general.NoMVP/100 //*(1+普通魔物增伤%)

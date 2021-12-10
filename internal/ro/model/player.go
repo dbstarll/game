@@ -45,16 +45,6 @@ func LoadPlayerFromYaml(name string, remote bool) (*Player, error) {
 	}
 }
 
-func (p *Player) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
-	rate = p.Character.SkillDamageRate(target, magic, skillNature)
-	if target.types.IsBoss() {
-		rate *= 1 + p.profits.general.MVP/100 //*(1+MVP增伤%)
-	} else {
-		rate *= 1 + p.profits.general.NoMVP/100 //*(1+普通魔物增伤%)
-	}
-	return
-}
-
 func (p *Player) SkillEarth() (damage float64) {
 	damage = float64(p.quality.Vit*p.quality.Vit) *
 		p.PanelDefence(false) / 10000 *

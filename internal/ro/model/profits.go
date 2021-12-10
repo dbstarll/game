@@ -268,16 +268,6 @@ func (r *Refine) weaponSpike(lvl int) float64 {
 	}
 }
 
-func (p *Profits) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
-	rate = 1 + p.general.Skill/100                                                                       //*(1+技能伤害加成%)
-	rate *= 1 + p.natureDamage[target.nature]/100                                                        //*(1+属性魔物增伤%)
-	rate *= 1 - target.profits.natureResist[skillNature]/100                                             //*(1-属性减伤%)
-	rate *= 1 + p.natureAttack[skillNature]/100                                                          //*(1+属性攻击%)
-	rate *= 1 + p.gains(magic).Damage/100                                                                //*(1+伤害加成%)
-	rate *= 1 + p.weaponSpikes()/100 + p.gains(magic).Spike/100 - target.profits.gains(magic).Resist/100 //*(1+装备穿刺%+穿刺%-伤害减免%)
-	return
-}
-
 func (p *Profits) UnmarshalYAML(value *yaml.Node) (err error) {
 	if value.Kind == yaml.MappingNode {
 		var lastAttr string

@@ -45,3 +45,7 @@ func (t Types) IsBoss() bool {
 		return false
 	}
 }
+
+func (t Types) IsPlayer() bool {
+	return t == Player
+}
