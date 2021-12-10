@@ -75,9 +75,8 @@ func (p *Player) SkillEarth() (damage float64) {
 
 //最终伤害
 func (p *Player) FinalDamage(target *Monster, attack *attack.Attack) (damage float64) {
-	//最终伤害 = 基础伤害 * (1+元素加伤) * (1+MVP增伤%) * 状态加伤 * (1+真实伤害)
+	//最终伤害 = 基础伤害 * (1+元素加伤) * 状态加伤 * (1+真实伤害)
 	damage = p.baseDamage(target.Character, attack) //基础伤害
-	//damage *= 1 + p.profits.natureAttack[attack.GetNature()]/100 //*(1+属性攻击%)
 	// TODO *状态加伤
 	// TODO *(1+真实伤害)
 	if attack.GetWeapon() == weapon.Rifle {

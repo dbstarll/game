@@ -28,11 +28,17 @@ character:
       skillResist: 0 #技能伤害减免%
       mvp: 0 #MVP增伤%
       mvpResist: 0 #MVP减伤%
+      noMvp: 0 #普通魔物增伤%
+      noMvpResist: 0 #普通魔物减伤%
+      attackSpeed: 0 #攻击速度%
+      moveSpeed: 0 #移动速度%
     physical: #物理属性
       spike: 35 #物理穿刺
       attackPer: 112 #物理攻击%
       defencePer: 48 #物理防御%
       damage: 20.9 #物伤加成%
+      nearDamage: 0 #近战物理伤害%
+      remoteDamage: 0 #远程物理伤害%
       ignore: 77.1 #忽视物防%
       resist: 28 #物伤减免%
       nearResist: 0 #近战物理伤害减免%
