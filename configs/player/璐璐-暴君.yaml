@@ -8,10 +8,10 @@ character:
     agi: 41
     vit: 22
     int: 34
-    dex: 100
+    dex: 251
     luk: 26
   detectByPanel: #根据面板来预测装备攻击/装备防御
-    atk: 4656 #面板物理攻击
+    atk: 5671 #面板物理攻击
     def: 741 #面板物理防御
     matk: 1203 #面板魔法攻击
     mdef: 406 #面板魔法防御
@@ -32,7 +32,7 @@ character:
       spike: 27 #物理穿刺
       attackPer: 22 #物理攻击%
       defencePer: 28 #物理防御%
-      damage: 17.8 #物伤加成%
+      damage: 7.8 #物伤加成%
       ignore: 1.5 #忽视物防%
       resist: 22 #物伤减免%
       nearResist: 0 #近战物理伤害减免%
@@ -41,7 +41,7 @@ character:
       refineResist: 0 #精炼物免%
     magical: #魔法属性
       spike: 1 #魔法穿刺
-      attackPer: 21 #魔法攻击%
+      attackPer: 24 #魔法攻击%
       defencePer: 8 #魔法防御%
       damage: 0 #魔伤加成%
       ignore: 1.5 #忽视魔防%
@@ -50,7 +50,7 @@ character:
       refineResist: 0 #精炼魔免%
     refine: #装备和首饰精炼等级
       weapon: 0
-      ring1: 0
+      ring1: 12
       ring2: 0
     natureAttack: #属性-技能增强
       风: 22.4
@@ -109,9 +109,9 @@ character:
       龙: 3
     shapeDamage: #体型-攻击增强
       小型: 0
-      中型: 0.4
+      中型: 1.2
       大型: 0
     shapeResist: #体型-伤害减免
       小型: 0
-      中型: 0.4
+      中型: 1.2
       大型: 0

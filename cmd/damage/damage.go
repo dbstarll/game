@@ -31,53 +31,35 @@ func Shooter() {
 		log.Fatalf("%+v\n", err)
 	} else {
 		monster := model.NewMonster(types.Ordinary, race.Animal, nature.Water, shape.Medium)
-		attack := player.AttackWithWeapon(weapon.Bow) //.WithNature(nature.Wind)
+		attack := player.AttackWithWeapon(weapon.Rifle) //.WithNature(nature.Wind)
 
-		//model.Merge(model.AddQuality(&model.Quality{Str: 5, Agi: 5 - 30, Vit: 5, Int: 5 + 40, Dex: 5 + 40, Luk: 5}),
-		//	model.AddGeneral(&model.General{Critical: 10 + 30 + 3, CriticalDamage: 100 + 8.3}),
-		//	model.AddGains(false, &model.Gains{AttackPer: 10}))(player.Character)
-
+		model.Merge(model.AddQuality(&model.Quality{Dex: 17}),
+			model.AddGains(false, &model.Gains{Attack: 25 + 224 + 85, AttackPer: 5, RemoteDamage: 4, Refine: 180 + 120}),
+			model.AddRaceDamage(&map[race.Race]float64{race.Demon: 5, race.Animal: 5}),
+		)(player.Character)
+		model.Merge(model.AddGains(false, &model.Gains{Spike: -6 + 0.4, Refine: -70 + 4}))(player.Character)
+		model.Merge(buff.Quality(2),
+			model.AddGeneral(&model.General{Critical: -30, OrdinaryDamage: 15, NoMVP: 8}),
+			model.AddGains(false, &model.Gains{AttackPer: 3}),
+		)(player.Character)
 		//model.Merge(model.AddGains(false, &model.Gains{Resist: 30}))(monster.Character)
-		//model.Merge(
-		//	model.AddQuality(&model.Quality{
-		//		Dex: 12 + 5,
-		//	}),
-		//	model.AddGeneral(&model.General{
-		//		OrdinaryDamage: 6,
-		//	}),
-		//	model.AddGains(false, &model.Gains{
-		//		Attack:    224 + 85 + 25,
-		//		AttackPer: 3,
-		//		Refine:    180 + 120,
-		//	}),
-		//	model.AddRaceDamage(&map[race.Race]float64{
-		//		race.Animal: 5,
-		//	}))(player.Character)
 
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		attack.WithCritical()
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
-		//ProfitDetect(player, func(player *model.Player) float64 {
+		//buff.ProfitDetect(player, func(player *model.Player) float64 {
 		//	return player.FinalDamage(monster, attack)
-		//})
+		//}, nil)
 
-		//攻击%
-		//	武器体型修正
-		//体型增伤%
-		//	体型减伤%
-		//	属性克制
-		//属性攻击%
-		//	属性魔物增伤%
-		//	属性减伤%
-		//	种族增伤%
-		//	种族减伤%
-		//	装备穿刺%
-		//	物伤减免%
-		//普攻伤害加成%
-		//	技能伤害加成%
-		//	MVP增伤%
-		//	元素加伤
+		//武器体型修正
+		//技能伤害加成%
+		//MVP增伤%
+		//元素加伤
 		//状态加伤
+		//		体型减伤%
+		//		属性减伤%
+		//		种族减伤%
+		//		物伤减免%
 	}
 }
 
