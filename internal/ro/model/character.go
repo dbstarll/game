@@ -247,6 +247,18 @@ func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature n
 	return
 }
 
+//最终伤害
+func (c *Character) FinalDamage(target *Character, attack *attack.Attack) (damage float64) {
+	//最终伤害 = 基础伤害 * (1+元素加伤) * 状态加伤 * (1+真实伤害)
+	damage = c.baseDamage(target, attack) //基础伤害
+	// TODO *状态加伤
+	// TODO *(1+真实伤害)
+	if attack.GetWeapon() == weapon.Rifle {
+		damage *= 2 //来复枪伤害翻倍
+	}
+	return
+}
+
 //基础伤害
 func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage float64) {
 	gains, targetGains := c.profits.gains(attack.IsMagic()), target.profits.gains(attack.IsMagic())

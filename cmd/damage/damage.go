@@ -27,29 +27,22 @@ func Template() {
 	}
 }
 func Shooter() {
-	if player, err := model.LoadPlayerFromYaml("璐璐-暴君", true); err != nil {
+	if player, err := model.LoadPlayerFromYaml("猫爸-暴君", true); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else {
-		monster := model.NewMonster(types.Ordinary, race.Animal, nature.Water, shape.Medium)
-		attack := player.AttackWithWeapon(weapon.Rifle) //.WithNature(nature.Wind)
+		monster := model.NewCharacter(types.Ordinary, race.Animal, nature.Water, shape.Medium)
+		attack := player.AttackWithWeapon(weapon.Rifle).WithNature(nature.Wind)
 
-		model.Merge(model.AddQuality(&model.Quality{Dex: 17}),
-			model.AddGains(false, &model.Gains{Attack: 25 + 224 + 85, AttackPer: 5, RemoteDamage: 4, Refine: 180 + 120}),
-			model.AddRaceDamage(&map[race.Race]float64{race.Demon: 5, race.Animal: 5}),
-		)(player.Character)
-		model.Merge(model.AddGains(false, &model.Gains{Spike: -6 + 0.4, Refine: -70 + 4}))(player.Character)
-		model.Merge(buff.Quality(2),
-			model.AddGeneral(&model.General{Critical: -30, OrdinaryDamage: 15, NoMVP: 8}),
-			model.AddGains(false, &model.Gains{AttackPer: 3}),
-		)(player.Character)
-		//model.Merge(model.AddGains(false, &model.Gains{Resist: 30}))(monster.Character)
+		buff.Manor()(player.Character)
+		buff.DexA()(player.Character)
+		model.Merge(model.AddGains(false, &model.Gains{Resist: 30}))(monster)
 
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		attack.WithCritical()
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
-		//buff.ProfitDetect(player, func(player *model.Player) float64 {
-		//	return player.FinalDamage(monster, attack)
-		//}, nil)
+		buff.ProfitDetect(player, func(player *model.Player) float64 {
+			return player.FinalDamage(monster, attack)
+		}, nil)
 
 		//武器体型修正
 		//技能伤害加成%
@@ -67,13 +60,13 @@ func Hunter() {
 	if player, err := model.LoadPlayerFromYaml("晴天有时下猪", true); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else {
-		monster := model.NewMonster(types.Ordinary, race.Animal, nature.Water, shape.Medium)
+		monster := model.NewCharacter(types.Ordinary, race.Animal, nature.Water, shape.Medium)
 		attack := player.AttackWithWeapon(weapon.Bow).WithNature(nature.Wind)
 
 		model.AddGeneral(&model.General{Critical: 30, CriticalDamage: 100})(player.Character)
 		buff.Manor()(player.Character)
 		buff.DexA()(player.Character)
-		model.Merge(model.AddGains(false, &model.Gains{Resist: 30}))(monster.Character)
+		model.Merge(model.AddGains(false, &model.Gains{Resist: 30}))(monster)
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		attack.WithCritical()
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
@@ -87,7 +80,7 @@ func EarthBash() {
 	if player, err := model.LoadPlayerFromYaml("猫爸-圣盾", false); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else {
-		monster := model.NewMonster(types.MVP, race.Human, nature.Wind, shape.Large)
+		monster := model.NewCharacter(types.MVP, race.Human, nature.Wind, shape.Large)
 		skillEarth, rate := player.SkillEarth(), player.SkillDamageRate(monster, false, nature.Earth)
 		fmt.Printf("%f * %f = %f\n", skillEarth, rate, rate*skillEarth)
 

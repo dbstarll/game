@@ -2,13 +2,10 @@ package model
 
 import (
 	"fmt"
-	"github.com/dbstarll/game/internal/ro/dimension/job"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
 	"github.com/dbstarll/game/internal/ro/dimension/types"
-	"github.com/dbstarll/game/internal/ro/dimension/weapon"
-	"github.com/dbstarll/game/internal/ro/model/attack"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -48,14 +45,8 @@ func LoadPlayerFromYaml(name string, remote bool) (*Player, error) {
 	}
 }
 
-func NewPlayer(job job.Job, modifiers ...CharacterModifier) *Player {
-	return &Player{
-		Character: NewCharacter(types.Player, race.Human, nature.Neutral, shape.Medium, append([]CharacterModifier{Job(job)}, modifiers...)...),
-	}
-}
-
-func (p *Player) SkillDamageRate(target *Monster, magic bool, skillNature nature.Nature) (rate float64) {
-	rate = p.Character.SkillDamageRate(target.Character, magic, skillNature)
+func (p *Player) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
+	rate = p.Character.SkillDamageRate(target, magic, skillNature)
 	if target.types.IsBoss() {
 		rate *= 1 + p.profits.general.MVP/100 //*(1+MVP增伤%)
 	} else {
@@ -70,18 +61,6 @@ func (p *Player) SkillEarth() (damage float64) {
 		9.6 //基础技能倍率
 	damage *= 1 + 10.0/100 //*(1+守护之盾技能增伤%)
 	damage *= 1 + 16.2/100 //*(1+铁蹄直驱符文增伤%)
-	return
-}
-
-//最终伤害
-func (p *Player) FinalDamage(target *Monster, attack *attack.Attack) (damage float64) {
-	//最终伤害 = 基础伤害 * (1+元素加伤) * 状态加伤 * (1+真实伤害)
-	damage = p.baseDamage(target.Character, attack) //基础伤害
-	// TODO *状态加伤
-	// TODO *(1+真实伤害)
-	if attack.GetWeapon() == weapon.Rifle {
-		damage *= 2 //来复枪伤害翻倍
-	}
 	return
 }
 
