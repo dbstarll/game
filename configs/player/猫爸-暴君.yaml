@@ -4,53 +4,53 @@ character:
     base: 170
     job: 80
   quality:
-    str: 58
-    agi: 251
-    vit: 97
-    int: 48
-    dex: 324
-    luk: 206
+    str: 68
+    agi: 261
+    vit: 107
+    int: 58
+    dex: 339
+    luk: 216
   detectByPanel: #根据面板来预测装备攻击/装备防御
-    atk: 18049 #面板物理攻击
-    def: 4281 #面板物理防御
-    matk: 4001 #面板魔法攻击
-    mdef: 2533 #面板魔法防御
+    atk: 18884 #面板物理攻击
+    def: 4586 #面板物理防御
+    matk: 4046 #面板魔法攻击
+    mdef: 2734 #面板魔法防御
   profits:
     general:
-      critical: 85 #暴击
-      criticalDamage: 83.3 #暴伤%
-      criticalResist: 87 #暴击防护
+      critical: 119 #暴击
+      criticalDamage: 84.3 #暴伤%
+      criticalResist: 89 #暴击防护
       criticalDamageResist: 0 #爆伤减免%
       ordinary: 0 #普攻攻击力
       ordinaryDamage: 10 #普攻伤害加成%
       ordinaryResist: 4.5 #普攻伤害减免%
       skill: 5 #技能伤害加成%
       skillResist: 0 #技能伤害减免%
-      mvp: 0 #MVP增伤%
+      mvp: 3 #MVP增伤%
       mvpResist: 0 #MVP减伤%
-      noMvp: 0 #普通魔物增伤%
+      noMvp: 8 #普通魔物增伤%
       noMvpResist: 0 #普通魔物减伤%
-      attackSpeed: 0 #攻击速度%
-      moveSpeed: 0 #移动速度%
+      attackSpeed: 470.8 #攻击速度%
+      moveSpeed: 196 #移动速度%
     physical: #物理属性
-      spike: 35 #物理穿刺
+      spike: 62 #物理穿刺
       attackPer: 112 #物理攻击%
-      defencePer: 48 #物理防御%
-      damage: 20.9 #物伤加成%
+      defencePer: 58 #物理防御%
+      damage: 90.8 #物伤加成%
       nearDamage: 0 #近战物理伤害%
-      remoteDamage: 0 #远程物理伤害%
-      ignore: 77.1 #忽视物防%
+      remoteDamage: 10 #远程物理伤害%
+      ignore: 125.1 #忽视物防%
       resist: 28 #物伤减免%
       nearResist: 0 #近战物理伤害减免%
       remoteResist: 0 #远程物理伤害减免%
-      refine: 1047 #精炼物攻
+      refine: 1275 #精炼物攻
       refineResist: 40.5 #精炼物免%
     magical: #魔法属性
       spike: 1 #魔法穿刺
       attackPer: 48 #魔法攻击%
-      defencePer: 45 #魔法防御%
-      damage: 0 #魔伤加成%
-      ignore: 1.5 #忽视魔防%
+      defencePer: 55 #魔法防御%
+      damage: 70 #魔伤加成%
+      ignore: 31.5 #忽视魔防%
       resist: 24 #魔伤减免%
       refine: 107 #精炼魔攻
       refineResist: 15.2 #精炼魔免%
