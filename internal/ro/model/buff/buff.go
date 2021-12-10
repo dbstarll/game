@@ -174,11 +174,16 @@ type Profit struct {
 //庄园
 func Manor() model.CharacterModifier {
 	return model.Merge(
-		model.AddQuality(&model.Quality{Str: 10, Agi: 10, Vit: 10, Int: 10, Dex: 10, Luk: 10}),
+		Quality(10),
 		model.AddGeneral(&model.General{Critical: 30}),
 		model.AddGains(false, &model.Gains{Damage: 60, Ignore: 30, Resist: 40}),
 		model.AddGains(true, &model.Gains{Damage: 60, Ignore: 30, Resist: 40}),
 	)
+}
+
+//全能力+N
+func Quality(n int) model.CharacterModifier {
+	return model.AddQuality(&model.Quality{Str: n, Agi: n, Vit: n, Int: n, Dex: n, Luk: n})
 }
 
 //力量料理A
