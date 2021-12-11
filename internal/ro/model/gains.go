@@ -75,6 +75,14 @@ func (g *Gains) UnmarshalYAML(value *yaml.Node) (err error) {
 				lastAttr = sub.Value
 			} else {
 				switch lastAttr {
+				case "attack":
+					if err = sub.Decode(&g.Attack); err != nil {
+						return
+					}
+				case "defence":
+					if err = sub.Decode(&g.Defence); err != nil {
+						return
+					}
 				case "spike":
 					if err = sub.Decode(&g.Spike); err != nil {
 						return

@@ -15,9 +15,9 @@ import (
 
 func main() {
 	//Template()
-	Shooter()
+	//Shooter()
 	//Hunter()
-	//EarthBash()
+	EarthBash()
 }
 
 func Template() {
@@ -32,18 +32,27 @@ func Shooter() {
 		log.Fatalf("%+v\n", err)
 	} else {
 		monster := model.NewCharacter(types.Ordinary, race.Animal, nature.Water, shape.Medium)
-		attack := player.AttackWithWeapon(weapon.Rifle).WithNature(nature.Wind)
+		attack := player.AttackWithWeapon(weapon.Rifle) //.WithNature(nature.Wind)
 
-		buff.Manor()(player.Character)
-		buff.DexA()(player.Character)
-		model.Merge(model.AddGains(false, &model.Gains{Resist: 30}))(monster)
+		player.Apply(
+			//	buff.Manor(),
+			model.AddGains(false, &model.Gains{Attack: 9, Spike: 27}), //大君之怒
+			buff.CardAdmiral(),
+		)
 
+		//monster.Apply(
+		//	model.AddGains(false, &model.Gains{Resist: 40}),
+		//	model.AddRaceResist(&map[race.Race]float64{race.Human: 30}),
+		//)
+
+		//9/197930/521745
+		//196674/518065
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		attack.WithCritical()
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
-		buff.ProfitDetect(player, func(player *model.Player) float64 {
-			return player.FinalDamage(monster, attack)
-		}, nil)
+		//buff.ProfitDetect(player, func(player *model.Player) float64 {
+		//	return player.FinalDamage(monster, attack)
+		//}, nil)
 
 		//武器体型修正
 		//技能伤害加成%
@@ -81,18 +90,25 @@ func EarthBash() {
 	if player, err := model.LoadPlayerFromYaml("猫爸-圣盾", false); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else {
-		monster := model.NewCharacter(types.MVP, race.Human, nature.Wind, shape.Large)
+		monster := model.NewCharacter(types.Ordinary, race.Animal, nature.Water, shape.Medium)
+
+		player.Apply(
+			buff.Manor(),
+		)
+
 		skillEarth, rate := player.SkillEarth(), player.SkillDamageRate(monster, false, nature.Earth)
 		fmt.Printf("%f * %f = %f\n", skillEarth, rate, rate*skillEarth)
 
-		buff.ProfitDetect(player, func(player *model.Player) float64 {
-			return player.SkillEarth() * player.SkillDamageRate(monster, false, nature.Earth)
-		}, map[string]model.CharacterModifier{
-			"物理防御%+15": model.AddGains(false, &model.Gains{DefencePer: 15}),
-			"物理防御+240": model.AddGains(false, &model.Gains{Defence: 240}),
-			"Vit+12":   model.AddQuality(&model.Quality{Vit: 12}),
-			"体质料理B":    buff.VitB(),
-			"力量料理B":    buff.StrB(),
-		})
+		//6577060
+
+		//buff.ProfitDetect(player, func(player *model.Player) float64 {
+		//	return player.SkillEarth() * player.SkillDamageRate(monster, false, nature.Earth)
+		//}, map[string]model.CharacterModifier{
+		//	"物理防御%+15": model.AddGains(false, &model.Gains{DefencePer: 15}),
+		//	"物理防御+240": model.AddGains(false, &model.Gains{Defence: 240}),
+		//	"Vit+12":   model.AddQuality(&model.Quality{Vit: 12}),
+		//	"体质料理B":    buff.VitB(),
+		//	"力量料理B":    buff.StrB(),
+		//})
 	}
 }

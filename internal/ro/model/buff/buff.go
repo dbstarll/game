@@ -288,3 +288,11 @@ func LukB() model.CharacterModifier {
 func AllB() model.CharacterModifier {
 	return model.Merge(StrB(), AgiB(), VitB(), IntB(), DexB(), LukB())
 }
+
+//将军魔碑卡片
+func CardAdmiral() model.CharacterModifier {
+	return model.Merge(
+		model.AddGains(false, &model.Gains{Damage: 10}),
+		model.AddGains(true, &model.Gains{Damage: 10}),
+	)
+}

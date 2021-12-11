@@ -188,6 +188,10 @@ func DetectDefenceByPanel(expectPhysicalPanel, expectMagicalPanel float64) Chara
 	}
 }
 
+func (c *Character) Apply(modifiers ...CharacterModifier) func() {
+	return Merge(modifiers...)(c)
+}
+
 //素质攻击
 func (c *Character) QualityAttack(magic, remote bool) int {
 	return c.quality.Attack(magic, remote)
@@ -346,6 +350,8 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 	}
 	damage += float64(c.QualityAttack(attack.IsMagic(), attack.IsRemote()))                     //+素质攻击
 	damage *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
+	//damage *= 1 + c.profits.raceDamage[target.race]/100 //*(1+种族增伤%)
+	//damage *= 1 - target.profits.raceResist[c.race]/100 //*(1-种族减伤%)
 	if target.types.IsPlayer() {
 		//TODO *(1+玩家增伤%)
 	} else if target.types.IsBoss() {

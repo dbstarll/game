@@ -30,9 +30,11 @@ character:
       mvpResist: 0 #MVP减伤%
       noMvp: 0 #普通魔物增伤%
       noMvpResist: 0 #普通魔物减伤%
-      attackSpeed: 0 #攻击速度%
       moveSpeed: 0 #移动速度%
+      attackSpeed: 0 #攻击速度%
     physical: #物理属性
+      attack: 0 #攻击
+      defence: 0 #防御
       spike: 0 #物理穿刺
       attackPer: 0 #物理攻击%
       defencePer: 0 #物理防御%
@@ -46,6 +48,8 @@ character:
       refine: 0 #精炼物攻
       refineResist: 0 #精炼物免%
     magical: #魔法属性
+      attack: 0 #攻击
+      defence: 0 #防御
       spike: 0 #魔法穿刺
       attackPer: 0 #魔法攻击%
       defencePer: 0 #魔法防御%
@@ -83,14 +87,14 @@ character:
     natureResist: #属性-伤害减免
       风: 0
       地: 0
-      火: 0
       水: 0
+      火: 0
       无: 0
       圣: 0
       暗: 0
       念: 0
-      毒: 0
       不死: 0
+      毒: 0
     raceDamage: #种族-攻击增加
       动物: 0
       人形: 0
