@@ -250,7 +250,9 @@ func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature n
 	rate *= 1 + c.profits.natureAttack[skillNature]/100                                          //*(1+属性攻击%)
 	rate *= 1 + c.profits.natureDamage[target.nature]/100                                        //*(1+属性魔物增伤%)
 	rate *= 1 - target.profits.natureResist[skillNature]/100                                     //*(1-属性减伤%)
-	rate *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100    //*(1+种族增伤%-种族减伤%)
+	//rate *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100    //*(1+种族增伤%-种族减伤%)
+	rate *= 1 + c.profits.raceDamage[target.race]/100 //*(1+种族增伤%)
+	rate *= 1 - target.profits.raceResist[c.race]/100 //*(1-种族减伤%)
 	if target.types.IsPlayer() {
 		//TODO *(1+玩家增伤%)
 	} else if target.types.IsBoss() {
@@ -298,8 +300,8 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 	} else {
 		if attack.IsCritical() { //普攻暴击
 			damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
-			damage += gains.Refine                                                                //+精炼物攻
-			damage *= 1.5 + c.profits.general.CriticalDamage/100                                  //*(1+暴伤%)
+			damage += gains.Refine
+			damage *= 1.5 + c.profits.general.CriticalDamage/100 - target.profits.general.CriticalDamageResist/100 //*(1+暴伤%-爆伤减免%)
 		} else { // 普攻未暴击或技能
 			//TODO *物防乘数
 			damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
@@ -313,9 +315,9 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 			damage *= 1 + gains.Damage/100 + gains.NearDamage/100 //*(1+物伤加成%+近战物理伤害%)
 		}
 		if attack.IsOrdinary() {
-			damage *= 1 + c.profits.general.OrdinaryDamage/100 //*(1+普攻伤害加成%)
+			damage *= 1 + c.profits.general.OrdinaryDamage/100 - target.profits.general.OrdinaryResist/100 //*(1+普攻伤害加成%-普攻伤害减免%)
 		} else {
-			damage *= 1 + c.profits.general.Skill/100 //*(1+技能伤害加成%)
+			damage *= 1 + c.profits.general.Skill/100 - target.profits.general.SkillResist/100 //*(1+技能伤害加成%-技能伤害减免%)
 		}
 	}
 
@@ -348,10 +350,10 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 		damage *= 1 + c.profits.natureDamage[target.nature]/100                                         //*(1+属性魔物增伤%)
 		damage *= 1 - target.profits.natureResist[attack.GetNature()]/100                               //*(1-属性减伤%)
 	}
-	damage += float64(c.QualityAttack(attack.IsMagic(), attack.IsRemote()))                     //+素质攻击
-	damage *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
-	//damage *= 1 + c.profits.raceDamage[target.race]/100 //*(1+种族增伤%)
-	//damage *= 1 - target.profits.raceResist[c.race]/100 //*(1-种族减伤%)
+	damage += float64(c.QualityAttack(attack.IsMagic(), attack.IsRemote())) //+素质攻击
+	//damage *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
+	damage *= 1 + c.profits.raceDamage[target.race]/100 //*(1+种族增伤%)
+	damage *= 1 - target.profits.raceResist[c.race]/100 //*(1-种族减伤%)
 	if target.types.IsPlayer() {
 		//TODO *(1+玩家增伤%)
 	} else if target.types.IsBoss() {
@@ -422,6 +424,10 @@ func (c *Character) UnmarshalYAML(value *yaml.Node) (err error) {
 				lastAttr = sub.Value
 			} else {
 				switch lastAttr {
+				case "types":
+					if err = sub.Decode(&c.types); err != nil {
+						return
+					}
 				case "job":
 					if err = sub.Decode(&c.job); err != nil {
 						return

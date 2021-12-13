@@ -1,5 +1,7 @@
 package types
 
+import "gopkg.in/yaml.v3"
+
 //类型
 type Types int
 
@@ -48,4 +50,14 @@ func (t Types) IsBoss() bool {
 
 func (t Types) IsPlayer() bool {
 	return t == Player
+}
+
+func (t *Types) UnmarshalYAML(value *yaml.Node) error {
+	for i := Unlimited; i <= DEAD; i++ {
+		if i.String() == value.Value {
+			*t = i
+			break
+		}
+	}
+	return nil
 }

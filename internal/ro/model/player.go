@@ -45,6 +45,20 @@ func LoadPlayerFromYaml(name string, remote bool) (*Player, error) {
 	}
 }
 
+func LoadMonsterFromYaml(name string) (*Character, error) {
+	yamlFile := fmt.Sprintf("configs/monster/%s.yaml", name)
+	if data, err := ioutil.ReadFile(yamlFile); err != nil {
+		return nil, errors.WithStack(err)
+	} else {
+		monster := &Character{}
+		if err := yaml.Unmarshal(data, monster); err != nil {
+			return nil, errors.WithStack(err)
+		} else {
+			return monster, nil
+		}
+	}
+}
+
 func (p *Player) SkillEarth() (damage float64) {
 	damage = float64(p.quality.Vit*p.quality.Vit) *
 		p.PanelDefence(false) / 10000 *

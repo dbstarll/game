@@ -1,0 +1,53 @@
+types: 普通魔物
+nature: 无
+race: 无形
+shape: 中型
+level:
+  base: 0
+quality:
+  str: 0
+  agi: 0
+  vit: 0
+  int: 0
+  dex: 0
+  luk: 0
+profits:
+  general:
+    criticalResist: 0 #暴击防护
+    criticalDamageResist: 0 #爆伤减免%
+    ordinaryResist: 0 #普攻伤害减免%
+    skillResist: 0 #技能伤害减免%
+  physical: #物理属性
+    attack: 0 #攻击
+    defence: 0 #防御
+    defencePer: 0 #物理防御%
+    resist: 0 #物伤减免%
+    nearResist: 0 #近战物理伤害减免%
+    remoteResist: 0 #远程物理伤害减免%
+  magical: #魔法属性
+    attack: 0 #攻击
+    defence: 0 #防御
+    defencePer: 0 #魔法防御%
+    resist: 0 #魔伤减免%
+  natureResist: #属性-伤害减免
+    风: 0
+    地: 0
+    水: 0
+    火: 0
+    无: 0
+    圣: 0
+    暗: 0
+    念: 0
+    不死: 0
+    毒: 0
+  raceResist: #种族-伤害减免
+    动物: 0
+    人形: 0
+    恶魔: 0
+    植物: 0
+    不死: 0
+    无形: 0
+    鱼贝: 0
+    天使: 0
+    昆虫: 0
+    龙: 0

@@ -11,8 +11,8 @@ character:
     dex: 324
     luk: 206
   detectByPanel: #根据面板来预测装备攻击/装备防御
-    atk: 18579 #面板物理攻击
-    def: 4281 #面板物理防御
+    atk: 18586 #面板物理攻击
+    def: 4287 #面板物理防御
     matk: 4022 #面板魔法攻击
     mdef: 2543 #面板魔法防御
   profits:
@@ -31,10 +31,10 @@ character:
       noMvp: 8 #普通魔物增伤%
       noMvpResist: 0 #普通魔物减伤%
       attackSpeed: 455.9 #攻击速度%
-      moveSpeed: 136 #移动速度%
+      moveSpeed: 121 #移动速度%
     physical: #物理属性
-      attack: 7015 #攻击
-      defence: 2796 #防御
+      attack: 7018 #攻击
+      defence: 2800 #防御
       spike: 35 #物理穿刺
       attackPer: 112 #物理攻击%
       defencePer: 48 #物理防御%
