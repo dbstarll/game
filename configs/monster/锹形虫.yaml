@@ -1,16 +1,16 @@
 types: 普通魔物
-nature: 水
-race: 动物
+nature: 地
+race: 昆虫
 shape: 中型
 level:
-  base: 172
+  base: 174
 quality:
-  str: 188
-  agi: 144
+  str: 120
+  agi: 90
   vit: 0
   int: 0
-  dex: 192
-  luk: 132
+  dex: 108
+  luk: 171
 profits:
   general:
     criticalResist: 0 #暴击防护
@@ -18,15 +18,15 @@ profits:
     ordinaryResist: 0 #普攻伤害减免%
     skillResist: 0 #技能伤害减免%
   physical: #物理属性
-    attack: 3506 #攻击
-    defence: 2720 #防御
+    attack: 4078 #攻击
+    defence: 3027 #防御
     defencePer: 0 #物理防御%
-    resist: 30 #物伤减免%
+    resist: 0 #物伤减免%
     nearResist: 0 #近战物理伤害减免%
     remoteResist: 0 #远程物理伤害减免%
   magical: #魔法属性
-    attack: 1988 #攻击
-    defence: 1119 #防御
+    attack: 2313 #攻击
+    defence: 1245 #防御
     defencePer: 0 #魔法防御%
     resist: 0 #魔伤减免%
   natureResist: #属性-伤害减免
@@ -42,7 +42,7 @@ profits:
     毒: 0
   raceResist: #种族-伤害减免
     动物: 0
-    人形: 10
+    人形: 0
     恶魔: 0
     植物: 0
     不死: 0

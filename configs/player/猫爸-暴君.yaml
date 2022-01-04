@@ -4,69 +4,69 @@ character:
     base: 170
     job: 80
   quality:
-    str: 58
-    agi: 251
+    str: 61
+    agi: 226
     vit: 97
-    int: 48
-    dex: 324
-    luk: 206
+    int: 56
+    dex: 342
+    luk: 241
   detectByPanel: #根据面板来预测装备攻击/装备防御
-    atk: 18586 #面板物理攻击
-    def: 4287 #面板物理防御
-    matk: 4022 #面板魔法攻击
-    mdef: 2543 #面板魔法防御
+    atk: 18624 #面板物理攻击
+    def: 4522 #面板物理防御
+    matk: 4609 #面板魔法攻击
+    mdef: 2505 #面板魔法防御
   profits:
     general:
-      critical: 85 #暴击
-      criticalDamage: 83.3 #暴伤%
-      criticalResist: 79 #暴击防护
+      critical: 102 #暴击
+      criticalDamage: 83.2 #暴伤%
+      criticalResist: 86 #暴击防护
       criticalDamageResist: 0 #爆伤减免%
       ordinary: 0 #普攻攻击力
-      ordinaryDamage: 10 #普攻伤害加成%
-      ordinaryResist: 4.5 #普攻伤害减免%
-      skill: 5 #技能伤害加成%
+      ordinaryDamage: 8 #普攻伤害加成%
+      ordinaryResist: 0 #普攻伤害减免%
+      skill: 0 #技能伤害加成%
       skillResist: 0 #技能伤害减免%
       mvp: 3 #MVP增伤%
       mvpResist: 0 #MVP减伤%
       noMvp: 8 #普通魔物增伤%
       noMvpResist: 0 #普通魔物减伤%
-      attackSpeed: 455.9 #攻击速度%
-      moveSpeed: 121 #移动速度%
+      attackSpeed: 268.8 #攻击速度%
+      moveSpeed: 111 #移动速度%
     physical: #物理属性
-      attack: 7018 #攻击
-      defence: 2800 #防御
-      spike: 35 #物理穿刺
-      attackPer: 112 #物理攻击%
-      defencePer: 48 #物理防御%
-      damage: 20.9 #物伤加成%
+      attack: 6956 #攻击
+      defence: 2802 #防御
+      spike: 50 #物理穿刺
+      attackPer: 110 #物理攻击%
+      defencePer: 56 #物理防御%
+      damage: 19 #物伤加成%
       nearDamage: 0 #近战物理伤害%
       remoteDamage: 0 #远程物理伤害%
-      ignore: 77.1 #忽视物防%
-      resist: 28 #物伤减免%
+      ignore: 79.1 #忽视物防%
+      resist: 25 #物伤减免%
       nearResist: 0 #近战物理伤害减免%
       remoteResist: 0 #远程物理伤害减免%
-      refine: 1275 #精炼物攻
-      refineResist: 40.5 #精炼物免%
+      refine: 1071 #精炼物攻
+      refineResist: 36 #精炼物免%
     magical: #魔法属性
-      attack: 2599 #攻击
-      defence: 1706 #防御
+      attack: 2930 #攻击
+      defence: 1672 #防御
       spike: 1 #魔法穿刺
-      attackPer: 48 #魔法攻击%
+      attackPer: 50 #魔法攻击%
       defencePer: 45 #魔法防御%
       damage: 0 #魔伤加成%
-      ignore: 1.5 #忽视魔防%
+      ignore: 4.5 #忽视魔防%
       resist: 24 #魔伤减免%
-      refine: 107 #精炼魔攻
-      refineResist: 15.2 #精炼魔免%
+      refine: 182 #精炼魔攻
+      refineResist: 17.6 #精炼魔免%
     refine: #装备和首饰精炼等级
       weapon: 10
-      ring1: 9
-      ring2: 9
+      ring1: 5
+      ring2: 5
     natureAttack: #属性-技能增强
-      风: 30
-      地: 29
-      火: 30
-      水: 10
+      风: 35
+      地: 44
+      火: 39
+      水: 15
       无: 0
       圣: 21
       暗: 0
@@ -74,54 +74,54 @@ character:
       毒: 0
       不死: 0
     natureDamage: #属性-攻击增加
-      风: 8
-      地: 6
-      水: 100
-      火: 7
+      风: 23
+      地: 87
+      水: 10
+      火: 12.4
       无: 0
       圣: 6
-      暗: 2
+      暗: 3
       念: 0
       毒: 1
       不死: 0
     natureResist: #属性-伤害减免
-      风: 16
+      风: 19
       地: 2
-      水: 30
+      水: 10
       火: 3
-      无: 7.5
+      无: 11.5
       圣: 0
       暗: 4
       念: 0
       毒: 5
       不死: 0
     raceDamage: #种族-攻击增加
-      动物: 34.8
-      人形: 29.5
-      恶魔: 7.8
-      植物: 5.8
-      不死: 14.8
-      无形: 6.8
-      鱼贝: 11.8
-      天使: 5.8
-      昆虫: 18.8
-      龙: 7.8
+      动物: 28
+      人形: 33.7
+      恶魔: 11
+      植物: 9
+      不死: 18
+      无形: 10
+      鱼贝: 15
+      天使: 9
+      昆虫: 63
+      龙: 11
     raceResist: #种族-伤害减免
-      动物: 17.8
-      人形: 9.8
-      恶魔: 6.8
-      植物: 5.8
-      不死: 9.8
-      无形: 5.8
-      鱼贝: 5.8
-      天使: 5.8
-      昆虫: 5.8
-      龙: 5.8
+      动物: 11
+      人形: 13
+      恶魔: 10
+      植物: 9
+      不死: 13
+      无形: 9
+      鱼贝: 9
+      天使: 19
+      昆虫: 9
+      龙: 9
     shapeDamage: #体型-攻击增强
       小型: 0
-      中型: 6
+      中型: 17.2
       大型: 0
     shapeResist: #体型-伤害减免
       小型: 1
-      中型: 6
+      中型: 11.2
       大型: 0
