@@ -277,7 +277,7 @@ func (c *Character) FinalDamage(target *Character, attack *attack.Attack) (damag
 	damage = c.baseDamage(target, attack) //基础伤害
 	// TODO *状态加伤
 	// TODO *(1+真实伤害)
-	if attack.GetWeapon() == weapon.Rifle {
+	if attack.GetWeapon() == weapon.Rifle && attack.IsOrdinary() {
 		damage *= 2 //来复枪伤害翻倍
 	}
 	return
@@ -298,12 +298,12 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 		damage -= float64(target.QualityDefence(true))                    //-素质魔防
 		damage -= float64(target.QualityDefence(false))                   //-素质物防/2
 	} else {
-		if attack.IsCritical() { //普攻暴击
+		if attack.IsCritical() && attack.IsOrdinary() { //普攻暴击
 			damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
 			damage += gains.Refine
 			damage *= 1.5 + c.profits.general.CriticalDamage/100 - target.profits.general.CriticalDamageResist/100 //*(1+暴伤%-爆伤减免%)
 		} else { // 普攻未暴击或技能
-			//TODO *物防乘数
+			damage *= target.defenceMultiplier(c, attack)                                         //*物防乘数
 			damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
 			damage += gains.Refine                                                                //+精炼物攻
 			//TODO *技能倍率
@@ -360,6 +360,32 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 		damage *= 1 + c.profits.general.MVP/100 //*(1+MVP增伤%)
 	} else {
 		damage *= 1 + c.profits.general.NoMVP/100 //*(1+普通魔物增伤%)
+	}
+	return
+}
+
+//最终物防/最终魔防
+func (c *Character) finalDefence(target *Character, attack *attack.Attack) (defence float64) {
+	gain, targetGain := c.profits.gains(attack.IsMagic()), target.profits.gains(attack.IsMagic())
+	defence = float64(c.EquipmentDefence(attack.IsMagic())) //装备防御
+	if attack.IsMagic() {
+		//TODO 最终魔防
+	} else {
+		defence *= 1 + gain.DefencePer/100 - targetGain.Ignore/100 //*(1+物理防御%-忽视物防%)
+	}
+	return
+}
+
+//物防乘数/魔防乘数
+func (c *Character) defenceMultiplier(target *Character, attack *attack.Attack) (rate float64) {
+	if finalDefence := c.finalDefence(target, attack); finalDefence <= 0 {
+		rate = 1
+	} else if attack.IsMagic() {
+		//TODO 魔防乘数
+		rate = 1
+	} else {
+		//物防乘数 = (4000+最终物防)/(4000+最终物防*10)
+		rate = (4000 + finalDefence) / (4000 + finalDefence*10)
 	}
 	return
 }
