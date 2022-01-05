@@ -7,25 +7,28 @@ import (
 )
 
 type Attack struct {
-	weapon   weapon.Weapon
-	magic    bool
-	remote   bool
-	skill    bool
-	critical bool
-	nature   nature.Nature
+	weapon    weapon.Weapon
+	magic     bool
+	remote    bool
+	skill     bool
+	skillRate float64
+	critical  bool
+	nature    nature.Nature
 }
 
 func UseWeapon(job job.Job, weapon weapon.Weapon) *Attack {
 	return &Attack{
-		weapon: weapon,
-		magic:  weapon.IsMagic(job),
-		remote: weapon.IsRemote(job),
-		nature: nature.Neutral,
+		weapon:    weapon,
+		magic:     weapon.IsMagic(job),
+		remote:    weapon.IsRemote(job),
+		nature:    nature.Neutral,
+		skillRate: 1,
 	}
 }
 
-func (a *Attack) WithSkill() *Attack {
+func (a *Attack) WithSkill(skillRate float64) *Attack {
 	a.skill = true
+	a.skillRate = skillRate
 	return a
 }
 
@@ -61,4 +64,8 @@ func (a *Attack) GetNature() nature.Nature {
 
 func (a *Attack) GetWeapon() weapon.Weapon {
 	return a.weapon
+}
+
+func (a *Attack) SkillRate() float64 {
+	return a.skillRate
 }
