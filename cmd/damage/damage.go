@@ -40,6 +40,7 @@ func Shooter() {
 			//buff.Manor(),
 			//model.AddGains(false, &model.Gains{Attack: 9, Spike: 27}), //大君之怒
 			buff.CardAdmiral(),
+			//model.AddGains(false, &model.Gains{Attack: 3019}),
 		)
 
 		monster.Apply(
@@ -48,24 +49,27 @@ func Shooter() {
 		//model.AddGeneral(&general.General{CriticalDamageResist: 10, OrdinaryResist: 10}),
 		)
 
-		//0.4/1409981/1786425/2195794/
-		//0.8/1414322/1791883/2201252/4340/5458/0.7951
-		//1.2/1418662/1797341/2206710/4340/5458/0.7951
+		//739976
+		//802159/2/1.34=299313/258606 686039
+		//802159/1.34/2/119725
 
+		//魔术子弹：魔法攻击+31%，魔法攻击50%的有视物理防御的攻击
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		attack.WithCritical()
+		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
+		attack.WithSkill(1.34 * 5)
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		buff.ProfitDetect(player, func(player *model.Player) float64 {
 			return player.FinalDamage(monster, attack)
 		}, map[string]model.CharacterModifier{
 			"战役斗篷": model.Merge(
 				model.AddQuality(&model.Quality{Str: 5, Dex: 5}),
-				//model.AddGeneral(&general.General{Critical: 5, OrdinaryDamage: 3}),
+				model.AddGeneral(&general.General{Critical: 5, OrdinaryDamage: 3}),
 				model.AddGains(false, &model.Gains{Attack: 240, Defence: 100}),
 			),
 			"王室骑士披风": model.Merge(
 				model.AddQuality(&model.Quality{Luk: 20}),
-				//model.AddGeneral(&general.General{Critical: 5, CriticalDamage: 15 + 7.5}),
+				model.AddGeneral(&general.General{Critical: 5, CriticalDamage: 15 + 7.5}),
 				model.AddGains(false, &model.Gains{Defence: 100}),
 			),
 			"远航者战靴": model.Merge(
@@ -85,7 +89,7 @@ func Shooter() {
 			),
 			"轻灵之鞋": model.Merge(
 				model.AddQuality(&model.Quality{Agi: 12}),
-				//model.AddGeneral(&general.General{MoveSpeed: 12, CriticalDamage: 10}),
+				model.AddGeneral(&general.General{MoveSpeed: 12, CriticalDamage: 10}),
 				model.AddGains(false, &model.Gains{Defence: 120}),
 			),
 			"远洋银币": model.Merge(
@@ -103,7 +107,7 @@ func Shooter() {
 			),
 			"热爱胸针": model.Merge(
 				model.AddQuality(&model.Quality{Luk: 16}),
-				//model.AddGeneral(&general.General{CriticalDamage: 8}),
+				model.AddGeneral(&general.General{CriticalDamage: 8}),
 				model.AddGains(false, &model.Gains{Attack: 224}),
 			),
 			"黄金耳环": model.Merge(
