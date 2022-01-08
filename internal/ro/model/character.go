@@ -287,32 +287,31 @@ func (c *Character) FinalDamage(target *Character, attack *attack.Attack) (damag
 func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage float64) {
 	gains, targetGains := c.profits.gains(attack.IsMagic()), target.profits.gains(attack.IsMagic())
 	damage = c.finalAttack(target, attack) //最终物攻/最终魔攻
+	// 物理最终减伤系数=1-(1+装备穿刺+物理穿刺-物理减免)*物理技能伤害减免
+	damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+穿刺%-伤害减免%)
 	if attack.IsMagic() {
-		damage *= target.defenceMultiplier(c, attack)                                         //*魔防乘数
-		damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+魔法穿刺%-魔伤减免%)
-		damage += gains.Refine                                                                //+精炼魔攻
-		damage *= attack.SkillRate()                                                          //*技能倍率
-		damage *= 1 + gains.Damage                                                            //*(1+魔伤加成)
-		damage *= attack.GetNature().Restraint(target.nature)                                 //*属性克制
-		damage *= 1 - target.profits.natureResist[attack.GetNature()]/100                     //*(1-属性减伤)
-		damage -= float64(target.QualityDefence(true))                                        //-素质魔防
-		damage -= float64(target.QualityDefence(false))                                       //-素质物防/2
+		damage *= target.defenceMultiplier(c, attack)                     //*魔防乘数
+		damage += gains.Refine                                            //+精炼魔攻
+		damage *= attack.SkillRate()                                      //*技能倍率
+		damage *= 1 + gains.Damage                                        //*(1+魔伤加成)
+		damage *= attack.GetNature().Restraint(target.nature)             //*属性克制
+		damage *= 1 - target.profits.natureResist[attack.GetNature()]/100 //*(1-属性减伤)
+		damage -= float64(target.QualityDefence(true))                    //-素质魔防
+		damage -= float64(target.QualityDefence(false))                   //-素质物防/2
 	} else {
 		if attack.IsCritical() && attack.IsOrdinary() { //普攻暴击
-			damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
 			damage += gains.Refine
 			damage *= 1.5 + c.profits.general.CriticalDamage/100 - target.profits.general.CriticalDamageResist/100 //*(1+暴伤%-爆伤减免%)
 		} else { // 普攻未暴击或技能
-			damage *= target.defenceMultiplier(c, attack)                                         //*物防乘数
-			damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+物理穿刺%-物伤减免%)
-			damage += gains.Refine                                                                //+精炼物攻
-			damage *= attack.SkillRate()                                                          //*技能倍率
-			damage -= float64(target.QualityDefence(false))                                       //-素质物防
+			damage *= target.defenceMultiplier(c, attack)   //*物防乘数
+			damage += gains.Refine                          //+精炼物攻
+			damage *= attack.SkillRate()                    //*技能倍率
+			damage -= float64(target.QualityDefence(false)) //-素质物防
 		}
 		if attack.IsRemote() {
-			damage *= 1 + gains.Damage/100 + gains.RemoteDamage/100 //*(1+物伤加成%+远程物理伤害%)
+			damage *= 1 + gains.Damage/100 + gains.RemoteDamage/100 - targetGains.RemoteResist/100 //*(1+物伤加成%+远程物理伤害%-远程伤害减免%)
 		} else {
-			damage *= 1 + gains.Damage/100 + gains.NearDamage/100 //*(1+物伤加成%+近战物理伤害%)
+			damage *= 1 + gains.Damage/100 + gains.NearDamage/100 - targetGains.NearResist/100 //*(1+物伤加成%+近战物理伤害%-近战伤害减免%)
 		}
 		if attack.IsOrdinary() {
 			damage *= 1 + c.profits.general.OrdinaryDamage/100 - target.profits.general.OrdinaryResist/100 //*(1+普攻伤害加成%-普攻伤害减免%)
