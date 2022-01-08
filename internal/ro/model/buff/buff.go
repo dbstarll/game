@@ -185,6 +185,15 @@ func Manor() model.CharacterModifier {
 	)
 }
 
+//狩猎场
+func HuntingGround() model.CharacterModifier {
+	return model.Merge(
+		model.AddGeneral(&general.General{MoveSpeed: 30}),
+		model.AddGains(false, &model.Gains{Damage: 30}),
+		model.AddGains(true, &model.Gains{Damage: 30}),
+	)
+}
+
 //全能力+N
 func Quality(n int) model.CharacterModifier {
 	return model.AddQuality(&model.Quality{Str: n, Agi: n, Vit: n, Int: n, Dex: n, Luk: n})
