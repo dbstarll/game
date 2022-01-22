@@ -59,7 +59,27 @@ func NewRomelApi(secret string) *RomelApi {
 }
 
 func (a *RomelApi) GetCardList(page int) (*Result, error) {
-	log.Printf("GetCardList: %d", page)
+	return a.getListAndSave("card", page)
+}
+
+func (a *RomelApi) GetHatList(page int) (*Result, error) {
+	return a.getListAndSave("hat", page)
+}
+
+func (a *RomelApi) GetEquipList(page int) (*Result, error) {
+	return a.getListAndSave("equip", page)
+}
+
+func (a *RomelApi) GetPetList(page int) (*Result, error) {
+	return a.getListAndSave2("pet", page)
+}
+
+func (a *RomelApi) GetMonsterList(page int) (*Result, error) {
+	return a.getListAndSave2("monster", page)
+}
+
+func (a *RomelApi) getListAndSave(list string, page int) (*Result, error) {
+	log.Printf("getListAndSave: %s-%d", list, page)
 	query := &Query{
 		apiId:    a.apiId,
 		version:  a.version,
@@ -71,8 +91,8 @@ func (a *RomelApi) GetCardList(page int) (*Result, error) {
 		return nil, err
 	}
 
-	url := fmt.Sprintf("http://%s/api/item/cardList?%s", a.domain, query.values().Encode())
-	referer := fmt.Sprintf("http://%s/item/card", a.domain)
+	url := fmt.Sprintf("http://%s/api/item/%sList?%s", a.domain, list, query.values().Encode())
+	referer := fmt.Sprintf("http://%s/item/%s", a.domain, list)
 	if req, err := a.newGetRequest(url, referer); err != nil {
 		return nil, err
 	} else if resp, err := http.DefaultClient.Do(req); err != nil {
@@ -83,7 +103,42 @@ func (a *RomelApi) GetCardList(page int) (*Result, error) {
 		result := &Result{}
 		if body, err := ioutil.ReadAll(resp.Body); err != nil {
 			return nil, err
-		} else if err := ioutil.WriteFile(fmt.Sprintf("configs/romel/card/cardList-%03d.json", page), body, 0644); err != nil {
+		} else if err := ioutil.WriteFile(fmt.Sprintf("configs/romel/%s/%sList-%03d.json", list, list, page), body, 0644); err != nil {
+			return nil, err
+		} else if err := json.Unmarshal(body, result); err != nil {
+			return nil, err
+		} else {
+			return result, nil
+		}
+	}
+}
+
+func (a *RomelApi) getListAndSave2(list string, page int) (*Result, error) {
+	log.Printf("getListAndSave2: %s-%d", list, page)
+	query := &Query{
+		apiId:    a.apiId,
+		version:  a.version,
+		language: a.language,
+		data:     &Page{Page: page},
+	}
+
+	if err := query.signature(a.apiSecret); err != nil {
+		return nil, err
+	}
+
+	url := fmt.Sprintf("http://%s/api/%s/list?%s", a.domain, list, query.values().Encode())
+	referer := fmt.Sprintf("http://%s/%s/", a.domain, list)
+	if req, err := a.newGetRequest(url, referer); err != nil {
+		return nil, err
+	} else if resp, err := http.DefaultClient.Do(req); err != nil {
+		return nil, err
+	} else {
+		defer resp.Body.Close()
+
+		result := &Result{}
+		if body, err := ioutil.ReadAll(resp.Body); err != nil {
+			return nil, err
+		} else if err := ioutil.WriteFile(fmt.Sprintf("configs/romel/%s/%sList-%03d.json", list, list, page), body, 0644); err != nil {
 			return nil, err
 		} else if err := json.Unmarshal(body, result); err != nil {
 			return nil, err
