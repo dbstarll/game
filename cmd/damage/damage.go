@@ -20,6 +20,10 @@ func main() {
 	//EarthBash()
 }
 
+func ff(b, d float64) float64 {
+	return 51061*(4000+3027*d)/(4000+3027*d*10)*b + 1071
+}
+
 func Template() {
 	if player, err := model.LoadPlayerFromYaml("模版", true); err != nil {
 		log.Fatalf("%+v\n", err)
@@ -29,109 +33,123 @@ func Template() {
 }
 
 func Shooter() {
-	if player, err := model.LoadPlayerFromYaml("猫爸-暴君", true); err != nil {
+	if player, err := model.LoadPlayerFromYaml("璐璐-暴君", true); err != nil {
 		log.Fatalf("%+v\n", err)
-	} else if monster, err := model.LoadMonsterFromYaml("锹形虫"); err != nil {
+	} else if monster, err := model.LoadMonsterFromYaml("鳄鱼人"); err != nil {
+		//} else if monster, err := model.LoadMonsterFromYaml("木桩"); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else {
-		attack := player.AttackWithWeapon(weapon.Rifle) //.WithNature(nature.Fire)
+		attack := player.AttackWithWeapon(weapon.Rifle).WithNature(nature.Wind)
 
 		player.Apply(
-			//buff.Manor(),
-			//model.AddGains(false, &model.Gains{Attack: 9, Spike: 27}), //大君之怒
+			buff.Manor(),
+			//buff.HuntingGround(),
+			//model.AddGains(false, &model.Gains{Spike: 30, Ignore: 18}), //大君之怒
+
+			//双面硬币
+			//model.AddQuality(&model.Quality{Luk: 30, Agi: 42}),
+			//model.AddGains(true, &model.Gains{AttackPer: 32.2}),
+			//model.AddGeneral(&general.General{MoveSpeed: 20}),
+
 			buff.CardAdmiral(),
+			//model.AddGains(false, &model.Gains{Ignore: 0.8, Refine: 4}),
 		)
 
 		monster.Apply(
-		//model.AddGains(false, &model.Gains{Resist: 30}),
-		//model.AddRaceResist(&map[race.Race]float64{race.Human: 10}),
-		//model.AddGeneral(&general.General{CriticalDamageResist: 10, OrdinaryResist: 10}),
+		//model.AddGains(false, &model.Gains{Resist: 30, DefencePer: 40}),
+		//model.AddRaceResist(&map[race.Race]float64{race.Human: 15}),
+		//model.AddGeneral(&general.General{CriticalDamageResist: 22}),
 		)
+		//0.8/4/607208/506597/703985/628183
+		//1.6/8/607246/509071/704022/631252
+		//2.4/12/607283/511567/704060/634355
+		//3.2/16/607321/514090/704098/637494
+		//4.0/20/607359/516636/704135/640668
 
 		//魔术子弹：魔法攻击+31%，魔法攻击50%的有视物理防御的攻击
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		attack.WithCritical()
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
-		attack.WithSkill(1.34 * 5)
-		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
-		//buff.ProfitDetect(player, func(player *model.Player) float64 {
-		//	return player.FinalDamage(monster, attack)
-		//}, map[string]model.CharacterModifier{
-		//	"战役斗篷": model.Merge(
-		//		model.AddQuality(&model.Quality{Str: 5, Dex: 5}),
-		//		model.AddGeneral(&general.General{Critical: 5, Ordinary: 240, OrdinaryDamage: 3}),
-		//		model.AddGains(false, &model.Gains{Defence: 100}),
-		//	),
-		//	"伯爵斗篷": model.Merge(
-		//		model.AddGains(false, &model.Gains{Defence: 31, Ignore: 15}),
-		//	),
-		//	"勇士肩甲": model.Merge(
-		//		model.AddQuality(&model.Quality{Str: 10}),
-		//		model.AddGains(false, &model.Gains{Defence: 100, Ignore: 18}),
-		//	),
-		//	"王室骑士披风": model.Merge(
-		//		model.AddQuality(&model.Quality{Luk: 20}),
-		//		model.AddGeneral(&general.General{Critical: 5, CriticalDamage: 15 + 7.5}),
-		//		model.AddGains(false, &model.Gains{Defence: 100}),
-		//	),
-		//	"远航者战靴": model.Merge(
-		//		model.AddQuality(&model.Quality{Dex: 12}),
-		//		model.AddGeneral(&general.General{MoveSpeed: 12}),
-		//		model.AddGains(false, &model.Gains{Defence: 120, RemoteDamage: 4}),
-		//	),
-		//	"平衡之理靴子": model.Merge(
-		//		model.AddQuality(&model.Quality{Str: 6, Int: 6}),
-		//		model.AddGeneral(&general.General{MoveSpeed: 12}),
-		//		model.AddGains(false, &model.Gains{Defence: 120, AttackPer: 6}),
-		//		model.AddGains(true, &model.Gains{AttackPer: 6}),
-		//	),
-		//	"统治者战靴": model.Merge(
-		//		model.AddQuality(&model.Quality{Str: 12}),
-		//		model.AddGeneral(&general.General{MoveSpeed: 12}),
-		//		model.AddGains(false, &model.Gains{Defence: 120, NearDamage: 4}),
-		//	),
-		//	"斩龙者战靴": model.Merge(
-		//		model.AddQuality(&model.Quality{Str: 6, Dex: 6}),
-		//		model.AddGeneral(&general.General{MoveSpeed: 12}),
-		//		model.AddGains(false, &model.Gains{Defence: 120, AttackPer: 8}),
-		//	),
-		//	"轻灵之鞋": model.Merge(
-		//		model.AddQuality(&model.Quality{Agi: 12}),
-		//		model.AddGeneral(&general.General{MoveSpeed: 12, CriticalDamage: 10}),
-		//		model.AddGains(false, &model.Gains{Defence: 120}),
-		//	),
-		//	"虚无之晶": model.Merge(
-		//		model.AddQuality(&model.Quality{Str: 8, Dex: 8}),
-		//		model.AddGains(false, &model.Gains{Attack: 224, Ignore: 6}),
-		//	),
-		//	"远洋银币": model.Merge(
-		//		model.AddQuality(&model.Quality{Str: 12}),
-		//		model.AddGeneral(&general.General{Ordinary: 120}),
-		//		model.AddGains(false, &model.Gains{Attack: 224}),
-		//	),
-		//	"镶金竖琴": model.Merge(
-		//		model.AddQuality(&model.Quality{Dex: 12}),
-		//		model.AddGains(false, &model.Gains{Attack: 224, RemoteDamage: 6}),
-		//	),
-		//	"乌金之坠": model.Merge(
-		//		model.AddQuality(&model.Quality{Str: 12}),
-		//		model.AddGains(false, &model.Gains{Attack: 224, NearDamage: 6}),
-		//	),
-		//	"灼炎之精": model.Merge(
-		//		model.AddQuality(&model.Quality{Str: 8, Int: 8}),
-		//		model.AddGains(true, &model.Gains{Attack: 200}),
-		//		model.AddNatureAttack(&map[nature.Nature]float64{nature.Fire: 8}),
-		//	),
-		//	"热爱胸针": model.Merge(
-		//		model.AddQuality(&model.Quality{Luk: 16}),
-		//		model.AddGeneral(&general.General{CriticalDamage: 8}),
-		//		model.AddGains(false, &model.Gains{Attack: 224}),
-		//	),
-		//	"黄金耳环": model.Merge(
-		//		model.AddGeneral(&general.General{Critical: 10 + 5}),
-		//		model.AddGains(false, &model.Gains{Attack: 224 + 60 + 50}),
-		//	),
-		//})
+		//attack.WithSkill(1.74 * 5)
+		//fmt.Printf("%f\n", player.FinalDamage(monster, attack))
+		buff.ProfitDetect(player, func(player *model.Player) float64 {
+			return player.FinalDamage(monster, attack)
+		}, map[string]model.CharacterModifier{
+			"战役斗篷": model.Merge(
+				model.AddQuality(&model.Quality{Str: 5, Dex: 5}),
+				model.AddGeneral(&general.General{Critical: 5, Ordinary: 240, OrdinaryDamage: 3}),
+				model.AddGains(false, &model.Gains{Defence: 100}),
+			),
+			"伯爵斗篷": model.Merge(
+				model.AddGains(false, &model.Gains{Defence: 31, Ignore: 15}),
+			),
+			"勇士肩甲": model.Merge(
+				model.AddQuality(&model.Quality{Str: 10}),
+				model.AddGains(false, &model.Gains{Defence: 100, Ignore: 18}),
+			),
+			"王室骑士披风": model.Merge(
+				model.AddQuality(&model.Quality{Luk: 20}),
+				model.AddGeneral(&general.General{Critical: 5, CriticalDamage: 15 + 7.5}),
+				model.AddGains(false, &model.Gains{Defence: 100}),
+			),
+			"远航者战靴": model.Merge(
+				model.AddQuality(&model.Quality{Dex: 12}),
+				model.AddGeneral(&general.General{MoveSpeed: 12}),
+				model.AddGains(false, &model.Gains{Defence: 120, RemoteDamage: 4}),
+			),
+			"平衡之理靴子": model.Merge(
+				model.AddQuality(&model.Quality{Str: 6, Int: 6}),
+				model.AddGeneral(&general.General{MoveSpeed: 12}),
+				model.AddGains(false, &model.Gains{Defence: 120, AttackPer: 6}),
+				model.AddGains(true, &model.Gains{AttackPer: 6}),
+			),
+			"统治者战靴": model.Merge(
+				model.AddQuality(&model.Quality{Str: 12}),
+				model.AddGeneral(&general.General{MoveSpeed: 12}),
+				model.AddGains(false, &model.Gains{Defence: 120, NearDamage: 4}),
+			),
+			"斩龙者战靴": model.Merge(
+				model.AddQuality(&model.Quality{Str: 6, Dex: 6}),
+				model.AddGeneral(&general.General{MoveSpeed: 12}),
+				model.AddGains(false, &model.Gains{Defence: 120, AttackPer: 8}),
+			),
+			"轻灵之鞋": model.Merge(
+				model.AddQuality(&model.Quality{Agi: 12}),
+				model.AddGeneral(&general.General{MoveSpeed: 12, CriticalDamage: 10}),
+				model.AddGains(false, &model.Gains{Defence: 120}),
+			),
+			"虚无之晶": model.Merge(
+				model.AddQuality(&model.Quality{Str: 8, Dex: 8}),
+				model.AddGains(false, &model.Gains{Attack: 224, Ignore: 6}),
+			),
+			"远洋银币": model.Merge(
+				model.AddQuality(&model.Quality{Str: 12}),
+				model.AddGeneral(&general.General{Ordinary: 120}),
+				model.AddGains(false, &model.Gains{Attack: 224}),
+			),
+			"镶金竖琴": model.Merge(
+				model.AddQuality(&model.Quality{Dex: 12}),
+				model.AddGains(false, &model.Gains{Attack: 224, RemoteDamage: 6}),
+			),
+			"乌金之坠": model.Merge(
+				model.AddQuality(&model.Quality{Str: 12}),
+				model.AddGains(false, &model.Gains{Attack: 224, NearDamage: 6}),
+			),
+			"灼炎之精": model.Merge(
+				model.AddQuality(&model.Quality{Str: 8, Int: 8}),
+				model.AddGains(true, &model.Gains{Attack: 200}),
+				model.AddNatureAttack(&map[nature.Nature]float64{nature.Fire: 8}),
+			),
+			"热爱胸针": model.Merge(
+				model.AddQuality(&model.Quality{Luk: 16}),
+				model.AddGeneral(&general.General{CriticalDamage: 8}),
+				model.AddGains(false, &model.Gains{Attack: 224}),
+			),
+			"黄金耳环": model.Merge(
+				model.AddGeneral(&general.General{Critical: 10 + 5}),
+				model.AddGains(false, &model.Gains{Attack: 224 + 60 + 50}),
+			),
+		})
 
 		//武器体型修正
 		//技能伤害加成%

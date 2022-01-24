@@ -19,9 +19,9 @@ profits:
     skillResist: 0 #技能伤害减免%
   physical: #物理属性
     attack: 3445 #攻击
-    defence: 2673 #防御
+    defence: 400 #防御
     defencePer: 0 #物理防御%
-    resist: 50 #物伤减免%
+    resist: 0 #物伤减免%
     nearResist: 0 #近战物理伤害减免%
     remoteResist: 0 #远程物理伤害减免%
   magical: #魔法属性
@@ -42,7 +42,7 @@ profits:
     毒: 0
   raceResist: #种族-伤害减免
     动物: 0
-    人形: 10
+    人形: 0
     恶魔: 0
     植物: 0
     不死: 0
