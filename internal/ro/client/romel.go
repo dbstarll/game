@@ -42,10 +42,11 @@ type Result struct {
 }
 
 type ResultData struct {
-	Page      int `json:"page"`
-	PageSize  int `json:"pageSize"`
-	PageCount int `json:"pageCount"`
-	Total     int `json:"total"`
+	Page      int                      `json:"page"`
+	PageSize  int                      `json:"pageSize"`
+	PageCount int                      `json:"pageCount"`
+	Total     int                      `json:"total"`
+	List      []map[string]interface{} `json:"list"`
 }
 
 func NewRomelApi(secret string) *RomelApi {
