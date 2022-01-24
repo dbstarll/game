@@ -7,12 +7,12 @@ type Position int
 
 const (
 	Unlimited Position = iota
-	Neutral            // 无
-	Earth              // 地
-	Wind               // 风
-	Water              // 水
-	Fire               // 火
-	Holy               // 圣
+	Weapon             // 武器
+	Shield             // 副手
+	Armor              // 盔甲
+	Cloak              // 披风
+	Shoes              // 鞋子
+	Ring               // 饰品
 	Head               // 头部
 	Face               // 脸部
 	Mouth              // 嘴部
@@ -26,18 +26,18 @@ func (p Position) String() string {
 	switch p {
 	case Unlimited:
 		return "不限"
-	case Neutral:
-		return "无"
-	case Earth:
-		return "地"
-	case Wind:
-		return "风"
-	case Water:
-		return "水"
-	case Fire:
-		return "火"
-	case Holy:
-		return "圣"
+	case Weapon:
+		return "武器"
+	case Shield:
+		return "副手"
+	case Armor:
+		return "盔甲"
+	case Cloak:
+		return "披风"
+	case Shoes:
+		return "鞋子"
+	case Ring:
+		return "饰品"
 	case Head:
 		return "头部"
 	case Face:
