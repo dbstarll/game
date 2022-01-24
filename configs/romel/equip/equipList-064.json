@@ -1,0 +1,195 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843830,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 64,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "42021",
+        "name": "天衣月舞",
+        "icon": "item_42021",
+        "rank": 2,
+        "job": [
+          "51",
+          "52",
+          "53",
+          "54",
+          "55",
+          "122",
+          "123",
+          "124",
+          "125"
+        ],
+        "position": 3,
+        "effect": "物理防御+37",
+        "buff": "智力+3\n魔法上限+5%\n【霸邪之阵】，【圣母之颂歌】，【圣母之祈福】技能的SP消耗降低40%\n【红十字杖Ⅳ】+【天衣月舞Ⅳ】：治疗加成+5%，【天衣月舞Ⅳ】精炼+10以上时治疗加成提升至10%\n【生机之杖】+【天衣月舞Ⅳ】：治疗加成+5%，【天衣月舞Ⅳ】精炼+10以上时治疗加成提升至10%",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42020",
+        "name": "哥夫内的铠甲",
+        "icon": "item_42020",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 3,
+        "effect": "物理防御+42",
+        "buff": "体质+5\n生命上限+10%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42019",
+        "name": "忍服血樱",
+        "icon": "item_42019",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 3,
+        "effect": "物理防御+33",
+        "buff": "幸运+2\n装备攻速+3%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42018",
+        "name": "龙之衬衣",
+        "icon": "item_42018",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 3,
+        "effect": "物理防御+37",
+        "buff": "装备攻速+3%\n闪避+25",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42017",
+        "name": "魔法外套",
+        "icon": "item_42017",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 3,
+        "effect": "物理防御+24",
+        "buff": "智力+2\n魔法攻击+3%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42016",
+        "name": "紧身便衣",
+        "icon": "item_42016",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 3,
+        "effect": "物理防御+28",
+        "buff": "灵巧+2\n物理攻击+4%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42015",
+        "name": "圣职之衣",
+        "icon": "item_42015",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 3,
+        "effect": "物理防御+33",
+        "buff": "体质+2\n物理防御+20\n生命上限+200",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42014",
+        "name": "三角裤",
+        "icon": "item_42014",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 3,
+        "effect": "物理防御+33",
+        "buff": "灵巧+7\n【三角裤Ⅵ】+【衬衫Ⅳ】：敏捷+5，每1点闪避可以转换5点生命上限\n【三角裤Ⅵ】+【云朵衬衫】：敏捷+5，每1点闪避额外增加5点生命上限",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42013",
+        "name": "地鳞铠甲",
+        "icon": "item_42013",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 3,
+        "effect": "物理防御+37",
+        "buff": "铠甲本身永远赋予地属性",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42012",
+        "name": "风鳞铠甲",
+        "icon": "item_42012",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 3,
+        "effect": "物理防御+42",
+        "buff": "铠甲本身永远赋予风属性",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      }
+    ]
+  }
+}

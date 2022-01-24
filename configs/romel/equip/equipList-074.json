@@ -1,0 +1,45 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843930,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 74,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "40007",
+        "name": "象牙长矛[1]",
+        "icon": "item_40007",
+        "rank": 3,
+        "job": [
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "72",
+          "73",
+          "74",
+          "75",
+          "203",
+          "204",
+          "205"
+        ],
+        "position": 1,
+        "effect": "物理攻击+175",
+        "buff": "攻击时无视敌方乘算物理防御（对MVP、Mini魔物无效）\n对无属性魔物伤害+25%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      }
+    ]
+  }
+}

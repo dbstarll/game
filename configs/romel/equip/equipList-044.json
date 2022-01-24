@@ -1,0 +1,187 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843628,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 44,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "47069",
+        "name": "光耀太阳神背饰",
+        "icon": "item_47069",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+5000\n物理防御+5%\n魔法防御+15%\n暴击防护+15\n物伤减免+2.5%\n魔伤减免+7.5%\n受毒、圣、暗、念、无属性伤害-5%，火、水、地、风属性伤害-15%\n获得被动技能【阳炎反击】：每当自身被攻击时，对对方造成自己（物理攻击+魔法攻击）*50%的真实伤害。",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "47068",
+        "name": "太阳神背饰",
+        "icon": "item_47068",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+4000\n物理防御+5%\n魔法防御+15%\n暴击防护+15\n受毒、圣、暗、念、无属性伤害-5%，火、水、地、风属性伤害-15%\n获得被动技能【阳炎反击】：每当自身被攻击时，对对方造成自己（物理攻击+魔法攻击）*30%的真实伤害。",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "47067",
+        "name": "太阳背饰",
+        "icon": "item_47067",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+3000\n物理防御+5%\n魔法防御+15%\n暴击防护+8\n受火、水、地、风属性伤害-10%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "45606",
+        "name": "焰耀头盔Ⅰ",
+        "icon": "item_45606",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+3000\n物理防御+5%\n魔法防御+5%\n暴击防护+8\n物伤减免+2.5%\n魔伤减免+2.5%\n受毒、圣、暗、念、无、火、水、地、风属性伤害-5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "45559",
+        "name": "璀璨星神头盔",
+        "icon": "item_45559",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+5000\n物理防御+10%\n魔法防御+10%\n暴击防护+15\n物伤减免+5%\n魔伤减免+5%\n受毒、圣、暗、念、无、火、水、地、风属性伤害-10%\n获得被动技能【星云缠绕】：受到攻击时，攻击者获得一层【减速】buff，每层减速buff使攻击者移速减少15%，最多可叠加3层，buff持续时间3秒。",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "45558",
+        "name": "星神头盔",
+        "icon": "item_45558",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+4000\n物理防御+10%\n魔法防御+10%\n暴击防护+15\n受毒、圣、暗、念、无、火、水、地、风属性伤害-10%\n获得被动技能【星云缠绕】：受到攻击时，攻击者获得一层【减速】buff，每层减速buff使攻击者移速减少8%，最多可叠加3层，buff持续时间3秒。",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "45557",
+        "name": "星辰头盔",
+        "icon": "item_45557",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+3000\n物理防御+10%\n魔法防御+10%\n暴击防护+8\n受毒、圣、暗、念、无、火、水、地、风属性伤害-5%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "45556",
+        "name": "胧月神头盔",
+        "icon": "item_45556",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+5000\n物理防御+5%\n魔法防御+15%\n暴击防护+15\n物伤减免+2.5%\n魔伤减免+7.5%\n受毒、圣、暗、念、无属性伤害-5%，火、水、地、风属性伤害-15%\n获得被动技能【辉月之环】：每隔10秒自动释放一次，自身周边5M范围内敌人的装备攻速降低50%，暴击-50，持续5秒。",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "45555",
+        "name": "月神头盔",
+        "icon": "item_45555",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+4000\n物理防御+5%\n魔法防御+15%\n暴击防护+15\n受毒、圣、暗、念、无属性伤害-5%，火、水、地、风属性伤害-15%\n获得被动技能【辉月之环】：每隔10秒自动释放一次，自身周边5M范围内敌人的装备攻速降低30%，暴击-30，持续5秒。",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "45554",
+        "name": "月亮头盔",
+        "icon": "item_45554",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+3000\n物理防御+5%\n魔法防御+15%\n暴击防护+8\n受火、水、地、风属性伤害-10%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      }
+    ]
+  }
+}

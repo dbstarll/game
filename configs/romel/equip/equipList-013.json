@@ -1,0 +1,195 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843316,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 13,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "44087",
+        "name": "狙击手勋章",
+        "icon": "item_44087",
+        "rank": 3,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 6,
+        "effect": "物理攻击+54",
+        "buff": "灵巧+2\n攻击目标时，有10%概率使目标陷入黑暗状态，持续5秒\n精炼+12时，远程物理伤害+3%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44086",
+        "name": "水滴胸针",
+        "icon": "item_44086",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+108\n物理攻击+108",
+        "buff": "力量+4、智力+4\n受到水属性伤害-5%\n水属性攻击+10%\n精炼+12时，水属性攻击+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43590",
+        "name": "游猎者之靴",
+        "icon": "item_43590",
+        "rank": 4,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n灵巧+8\n生命上限+3000\n物理攻击+3%\n精炼+8时，物理攻击+3%；精炼+12时，远程物理伤害+3%；精炼+15时，远程物理伤害+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 1,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43589",
+        "name": "狙击手的长靴",
+        "icon": "item_43589",
+        "rank": 3,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 5,
+        "effect": "物理防御+28",
+        "buff": "灵巧+3\n移动速度+5%\n生命上限+200\n物理攻击+3%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "43588",
+        "name": "牧童马刺靴",
+        "icon": "item_43588",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+90",
+        "buff": "移动速度+8%\n魔法上限+100\nSP恢复+10\n每10秒恢复60点SP",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43068",
+        "name": "浪子斗篷",
+        "icon": "item_43068",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 4,
+        "effect": "物理防御+80",
+        "buff": "生命上限+800\n受到无属性伤害-5%\n人形种族减伤+5%；精炼+10时，人形种族减伤+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42667",
+        "name": "神秘抄本",
+        "icon": "item_42667",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "敏捷+12\n生命上限+2800\n装备攻速+24%；精炼+10时，魔法攻击+8%；精炼+15时，魔法攻击+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "魔法攻击+30%\n物伤减免+24%\n魔伤减免+24%\n生命上限+18%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42666",
+        "name": "巫毒秘典",
+        "icon": "item_42666",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "敏捷+12\n生命上限+2800\n装备攻速+24%；精炼+10时，魔法攻击+8%；精炼+15时，魔法攻击+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42664",
+        "name": "英雄丰碑",
+        "icon": "item_42664",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+225",
+        "buff": "体质+12\n生命上限+3000\n生命上限+8%、受治疗加成+20%；精炼+10时，生命上限+4%；精炼+15时，生命上限+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "生命上限+18%\n物伤减免+24%\n魔伤减免+24%\n受治疗加成+45%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42663",
+        "name": "古代石板",
+        "icon": "item_42663",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+225",
+        "buff": "体质+12\n生命上限+3000\n生命上限+8%、受治疗加成+20%；精炼+10时，生命上限+4%；精炼+15时，生命上限+4%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      }
+    ]
+  }
+}

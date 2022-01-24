@@ -1,0 +1,206 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843195,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 1,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "64203",
+        "name": "彼岸之钥[1]",
+        "icon": "item_64203",
+        "rank": 4,
+        "job": [
+          "183",
+          "184",
+          "185"
+        ],
+        "position": 1,
+        "effect": "魔法攻击+405",
+        "buff": "智力+10、体质+10\n生命上限+15%\n受到大型魔物伤害-10%\n每精炼+1，人形种族减伤+1%\n精炼+5时，受到小型魔物伤害-10%；精炼+10时，受到中型魔物伤害-10%；精炼+15时，受到大、中、小型魔物伤害-10%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 1,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "64202",
+        "name": "往生之刃[1]",
+        "icon": "item_64202",
+        "rank": 3,
+        "job": [
+          "183",
+          "184",
+          "185"
+        ],
+        "position": 1,
+        "effect": "魔法攻击+105",
+        "buff": "智力+4、体质+4\n生命上限+5%\n受到大型魔物伤害-5%\n每精炼+1，人形种族减伤+1%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "64201",
+        "name": "万灵渊噬[1]",
+        "icon": "item_64201",
+        "rank": 4,
+        "job": [
+          "183",
+          "184",
+          "185"
+        ],
+        "position": 1,
+        "effect": "魔法攻击+420",
+        "buff": "智力+10、幸运+10\n念属性攻击+15%\n每精炼+1，魔法攻击+2%\n对大型魔物伤害+15%\n精炼+5时，忽视魔法防御+5%；精炼+10时，忽视魔法防御+5%；精炼+15时，魔法伤害+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 1,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "64200",
+        "name": "暴噬之刃[1]",
+        "icon": "item_64200",
+        "rank": 3,
+        "job": [
+          "183",
+          "184",
+          "185"
+        ],
+        "position": 1,
+        "effect": "魔法攻击+110",
+        "buff": "智力+4、幸运+4\n念属性攻击+15%\n每精炼+1，魔法攻击+2%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44136",
+        "name": "虚无之晶",
+        "icon": "item_44136",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "力量+8、灵巧+8\n忽视物理防御+3%；精炼+12时，忽视物理防御+3%；精炼+15时，忽视物理防御+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理伤害+4.5%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44135",
+        "name": "透明晶块",
+        "icon": "item_44022",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "力量+8、灵巧+8\n忽视物理防御+3%；精炼+12时，忽视物理防御+3%；精炼+15时，忽视物理防御+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44133",
+        "name": "传承灰石",
+        "icon": "item_44133",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "敏捷+12\n装备攻速+5%；精炼+12时，装备攻速+5%；精炼+15时，装备攻速+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理穿刺+4.5%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44132",
+        "name": "祝福香囊",
+        "icon": "item_44076",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "敏捷+12\n装备攻速+5%；精炼+12时，装备攻速+5%；精炼+15时，装备攻速+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44127",
+        "name": "远洋银币",
+        "icon": "item_44127",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "力量+12\n普攻攻击力+60；精炼+12时，普攻攻击力+60；精炼+15时，普攻攻击力+60",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "普攻伤害+4.5%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44126",
+        "name": "闪亮贝壳",
+        "icon": "item_44011",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "力量+12\n普攻攻击力+60；精炼+12时，普攻攻击力+60；精炼+15时，普攻攻击力+60",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      }
+    ],
+    "partner": {
+      "id": 30301,
+      "pos": 6,
+      "title": "交易所订阅",
+      "tip": "",
+      "pic": "\/\/rosc3.zhaiwuyu.com\/partner\/self\/find-exchange-202103.jpg",
+      "link": "http:\/\/romel.wiki\/article\/exchange-remind"
+    }
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843749,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 56,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "43539",
+        "name": "圣符长靴",
+        "icon": "item_43539",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+19",
+        "buff": "移动速度+5%\n受治疗加成+20%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "43538",
+        "name": "魔磨长靴",
+        "icon": "item_43538",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+22",
+        "buff": "移动速度+5%\n生命上限+75\n魔法上限+75",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "43537",
+        "name": "布袋熊长靴",
+        "icon": "item_43537",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+22",
+        "buff": "移动速度+5%\n敏捷+2",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "43536",
+        "name": "迪斯凯特的便靴",
+        "icon": "item_43536",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+13",
+        "buff": "法师系，弓手系，牧师系，多兰族，悟灵士系装备时，增加BaseLv×5倍的生命上限\n剑士系，商人系，盗贼系，超初，忍者系，枪手系装备时，增加JobLv×2的魔法上限",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "43535",
+        "name": "坚定战靴",
+        "icon": "item_43535",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+22",
+        "buff": "移动速度+2%\n增加BaseLv×10的生命上限",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "43529",
+        "name": "奔跑长靴",
+        "icon": "item_43529",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+31",
+        "buff": "移动速度+10%\n可以使用【冲锋】Lv.1",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43527",
+        "name": "抗魔靴",
+        "icon": "item_43527",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+19",
+        "buff": "移动速度+5%\n魔法防御+10",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "43525",
+        "name": "防水靴",
+        "icon": "item_43525",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+13",
+        "buff": "移动速度+5%\n受到水属性伤害-10%\n【防水靴Ⅵ】（蜉蝣长靴）+【丝质外袍Ⅵ】（魔光茧织）：普通攻击10%概率使目标变成水属性，持续10秒",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "43516",
+        "name": "重靴",
+        "icon": "item_43516",
+        "rank": 2,
+        "job": [
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "61",
+          "62",
+          "63",
+          "64",
+          "65",
+          "72",
+          "73",
+          "74",
+          "75",
+          "132",
+          "133",
+          "134",
+          "135",
+          "143",
+          "144",
+          "145",
+          "203",
+          "204",
+          "205",
+          "213",
+          "214",
+          "215"
+        ],
+        "position": 5,
+        "effect": "物理防御+45",
+        "buff": "移动速度+8%\n物理防御+12\nHP恢复+5\n【青铁柱枪Ⅳ】（【圣佑长枪】）+【重靴Ⅷ】+【石制圆盾Ⅳ】（陨坚圆盾）：忽视物理防御+5%、物理攻击+5%",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "43511",
+        "name": "哥夫内军靴",
+        "icon": "item_43511",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+25",
+        "buff": "魔法防御+35\nSP恢复+5",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      }
+    ]
+  }
+}

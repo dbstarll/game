@@ -1,0 +1,192 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843205,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 2,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "44124",
+        "name": "镶金竖琴",
+        "icon": "item_44124",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "灵巧+12\n远程物理攻击+3%；精炼+12时，远程物理攻击+3%；精炼+15时，远程物理攻击+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理伤害+4.5%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44123",
+        "name": "银质戒指",
+        "icon": "item_44008",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "灵巧+12\n远程物理攻击+3%；精炼+12时，远程物理攻击+3%；精炼+15时，远程物理攻击+3%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44121",
+        "name": "引导者胸针",
+        "icon": "item_44121",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、灵巧+8\n装备攻速+10%；精炼+12时，忽视魔法防御+5%；精炼+15时，忽视魔法防御+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "魔法穿刺+9%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44120",
+        "name": "元素戒指",
+        "icon": "item_44016",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、灵巧+8\n装备攻速+10%；精炼+12时，忽视魔法防御+5%；精炼+15时，忽视魔法防御+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44118",
+        "name": "乌金之坠",
+        "icon": "item_44118",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "力量+12\n近战物理攻击+3%；精炼+12时，近战物理攻击+3%；精炼+15时，近战物理攻击+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理伤害+4.5%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44117",
+        "name": "合金项链",
+        "icon": "item_44081",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "力量+12\n近战物理攻击+3%；精炼+12时，近战物理攻击+3%；精炼+15时，近战物理攻击+3%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44115",
+        "name": "灼炎之精",
+        "icon": "item_44115",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、力量+8\n火属性攻击+4%；精炼+12时，火属性攻击+4%；精炼+15时，火属性攻击+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "火属性攻击+12%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44114",
+        "name": "火之吊坠",
+        "icon": "item_44027",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、力量+8\n火属性攻击+4%；精炼+12时，火属性攻击+4%；精炼+15时，火属性攻击+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44112",
+        "name": "萤石纽扣",
+        "icon": "item_44112",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、力量+8\n水属性攻击+4%；精炼+12时，水属性攻击+4%；精炼+15时，水属性攻击+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "水属性攻击+12%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44111",
+        "name": "贝壳纽扣",
+        "icon": "item_44058",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、力量+8\n水属性攻击+4%；精炼+12时，水属性攻击+4%；精炼+15时，水属性攻击+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      }
+    ]
+  }
+}

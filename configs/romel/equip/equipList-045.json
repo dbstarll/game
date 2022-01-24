@@ -1,0 +1,196 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843639,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 45,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "45553",
+        "name": "光耀太阳神头盔",
+        "icon": "item_45553",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+5000\n物理防御+15%\n魔法防御+5%\n暴击防护+15\n物伤减免+7.5%\n魔伤减免+2.5%\n受毒、圣、暗、念、无属性伤害-15%，火、水、地、风属性伤害-5%\n获得被动技能【烈阳光辉】：被攻击时有30%触发烈阳光辉效果，每秒对自身3米周围敌人造成自身最大生命值（以野外生命值为准）1%的真实伤害，持续5秒",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "45552",
+        "name": "太阳神头盔",
+        "icon": "item_45552",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+4000\n物理防御+15%\n魔法防御+5%\n暴击防护+15\n受毒、圣、暗、念、无属性伤害-15%，火、水、地、风属性伤害-5%\n获得被动技能【烈阳光辉】：被攻击时有30%触发烈阳光辉效果，每秒对自身3米周围敌人造成自身最大生命值（以野外生命值为准）0.5%的真实伤害，持续5秒",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "45551",
+        "name": "太阳头盔",
+        "icon": "item_45551",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 14,
+        "effect": "",
+        "buff": "生命上限+3000\n物理防御+15%\n魔法防御+5%\n暴击防护+8\n受毒、圣、暗、念、无属性伤害-10%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43553",
+        "name": "白翼之靴",
+        "icon": "item_43553",
+        "rank": 2,
+        "job": [
+          "44",
+          "45"
+        ],
+        "position": 5,
+        "effect": "物理防御+48",
+        "buff": "移动速度+10%\n敏捷+4\n生命上限+500\n精炼+10时，暴击+2、暴击伤害+2%；精炼+15时，暴击+6、暴击伤害+6%\n【白翼之铠】+【白翼之靴IV】：暴击+10,【死亡狙击】伤害+15%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "43552",
+        "name": "审判之靴",
+        "icon": "item_43552",
+        "rank": 2,
+        "job": [
+          "54",
+          "55"
+        ],
+        "position": 5,
+        "effect": "物理防御+48",
+        "buff": "移动速度+8%\n生命上限+1000\n精炼+10以后，再每精炼+1，圣属性攻击+1%（总计5%）\n精炼+10时，【赞歌】的技能倍率+50%；精炼+15时，【赞歌】的技能倍率+100%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42551",
+        "name": "红色手提包",
+        "icon": "item_41547",
+        "rank": 2,
+        "job": [
+          "134",
+          "135"
+        ],
+        "position": 2,
+        "effect": "物理防御+78",
+        "buff": "魔法防御+30\n力量+3\n魔法上限+150\n【气泡虫召唤】和【气泡虫寄生】的伤害+15%\n【疯狂野草】的伤害+15%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42077",
+        "name": "皇家战甲",
+        "icon": "item_42077",
+        "rank": 3,
+        "job": [
+          "74",
+          "75"
+        ],
+        "position": 3,
+        "effect": "物理防御+105",
+        "buff": "魔法防御+63\n生命上限+2000\n使用【牺牲】技能后，每5秒恢复2%最大生命值，持续60秒\n精炼+10以后，再每精炼+1，生命上限+2%（总计10%）",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "42076",
+        "name": "审判之袍",
+        "icon": "item_42076",
+        "rank": 3,
+        "job": [
+          "54",
+          "55"
+        ],
+        "position": 3,
+        "effect": "物理防御+92",
+        "buff": "智力+5\n生命上限+1000\n魔法上限+200\n可变吟唱时间-5%\n精炼+10时，【赞歌】的技能倍率+100%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "41556",
+        "name": "工程扳手[1]",
+        "icon": "item_41556",
+        "rank": 4,
+        "job": [
+          "64",
+          "65",
+          "214",
+          "215"
+        ],
+        "position": 1,
+        "effect": "物理攻击+475",
+        "buff": "力量+5\n生命上限+1000\n每精炼+1，【自爆】伤害+2%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "41526",
+        "name": "审判之锤[1]",
+        "icon": "item_41526",
+        "rank": 4,
+        "job": [
+          "54",
+          "55"
+        ],
+        "position": 1,
+        "effect": "魔法攻击+438",
+        "buff": "智力+6\n灵巧+6\n精炼+5以后，再每精炼+1，【赞歌】的技能倍率+20%（总计200%）",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      }
+    ]
+  }
+}

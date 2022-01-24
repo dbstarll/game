@@ -1,0 +1,81 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642845331,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 16,
+    "pageSize": 30,
+    "pageCount": 16,
+    "total": 454,
+    "list": [
+      {
+        "id": "17002",
+        "name": "珍稀曼陀罗",
+        "avatar": "Mandala",
+        "type": 0,
+        "race": 2,
+        "nature": 1,
+        "size": 1,
+        "level": 1,
+        "hp": 38,
+        "baseExp": 1,
+        "jobExp": 1,
+        "isStar": 0,
+        "isDead": 0,
+        "isSpecial": 0
+      },
+      {
+        "id": "17001",
+        "name": "惊叫曼陀罗",
+        "avatar": "Mandala",
+        "type": 0,
+        "race": 2,
+        "nature": 1,
+        "size": 1,
+        "level": 1,
+        "hp": 25,
+        "baseExp": 1,
+        "jobExp": 1,
+        "isStar": 0,
+        "isDead": 0,
+        "isSpecial": 0
+      },
+      {
+        "id": "17000",
+        "name": "曼陀罗种子",
+        "avatar": "Mandala",
+        "type": 0,
+        "race": 2,
+        "nature": 1,
+        "size": 1,
+        "level": 1,
+        "hp": 13,
+        "baseExp": 1,
+        "jobExp": 1,
+        "isStar": 0,
+        "isDead": 0,
+        "isSpecial": 0
+      },
+      {
+        "id": "10001",
+        "name": "波利",
+        "avatar": "boli",
+        "type": 0,
+        "race": 2,
+        "nature": 3,
+        "size": 2,
+        "level": 1,
+        "hp": 10,
+        "baseExp": 16,
+        "jobExp": 9,
+        "isStar": 0,
+        "isDead": 0,
+        "isSpecial": 0
+      }
+    ]
+  }
+}

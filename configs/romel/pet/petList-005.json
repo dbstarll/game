@@ -1,0 +1,1517 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642844156,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 5,
+    "pageSize": 30,
+    "pageCount": 6,
+    "total": 172,
+    "list": [
+      {
+        "id": "500610",
+        "name": "反斗狸",
+        "avatar": "Armed_hamster",
+        "intro": "超级调皮超级调皮的河狸宝宝，满脑子都是如何捣蛋的鬼点子，喜欢用手里的铁头锤到处搞破坏。（他根本搞不清棒球和橄榄球的其区别。）",
+        "race": 3,
+        "nature": 5,
+        "size": 2,
+        "star": 1,
+        "accessway": 5,
+        "hobby": [
+          {
+            "id": "900088",
+            "name": "磨牙木",
+            "icon": "item_900088"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "重锤一击",
+            "intro": "对敌方单体造成物理攻击*<em>500%<\/em>的物理伤害，有<em>30%<\/em>几率造成眩晕，持续3秒",
+            "lv": 10
+          },
+          {
+            "name": "贪玩",
+            "intro": "冒险时获得Base经验增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "诡计",
+            "intro": "增加宠物和主人<em>10%<\/em>中毒抵抗和冰冻抵抗",
+            "lv": 10
+          },
+          {
+            "name": "顽强",
+            "intro": "增加宠物和主人<em>3%<\/em>生命上限",
+            "lv": 10
+          },
+          {
+            "name": "打工·烹饪Ⅱ",
+            "intro": "增加宠物在烹饪中心<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "生命上限+30"
+      },
+      {
+        "id": "500600",
+        "name": "红鼻子鲁道夫",
+        "avatar": "Rudolf_pet",
+        "intro": "铃铃铛，铃铃铛，铃儿响叮当——圣诞小天使驯鹿敬上",
+        "race": 3,
+        "nature": 6,
+        "size": 2,
+        "star": 1,
+        "accessway": 2,
+        "hobby": [
+          {
+            "id": "900082",
+            "name": "鲜嫩树芽",
+            "icon": "item_900082"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "寒冰风暴",
+            "intro": "对范围内单位造成魔法攻击*<em>500%<\/em>的水属性魔法伤害，有<em>30%<\/em>的概率造成冰冻，持续3秒",
+            "lv": 10
+          },
+          {
+            "name": "寻宝",
+            "intro": "冒险时直接获得稀有箱子概率增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "刺骨寒霜",
+            "intro": "增加宠物和主人<em>2%<\/em>魔法穿刺",
+            "lv": 10
+          },
+          {
+            "name": "圣诞祝福",
+            "intro": "增加宠物和主人<em>5%<\/em>Hp和Sp恢复",
+            "lv": 10
+          },
+          {
+            "name": "打工·烹饪Ⅱ",
+            "intro": "增加宠物在烹饪中心<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理攻击+6，生命上限+60"
+      },
+      {
+        "id": "500590",
+        "name": "迷你梦罗克",
+        "avatar": "Morocc_pet",
+        "intro": "魔王梦罗克一小部分灵魂所凝结诞生的魔物，虽然脱胎于魔王本体，但是彻底丧失了魔王时期的记忆，具有调皮而搞怪的性格，与凶恶残暴的魔王本体截然不同。",
+        "race": 7,
+        "nature": 6,
+        "size": 2,
+        "star": 1,
+        "accessway": 3,
+        "hobby": [
+          {
+            "id": "900087",
+            "name": "异世界饼干",
+            "icon": "item_900087"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "噩梦盛宴",
+            "intro": "对范围内单位造成魔法攻击*<em>800%<\/em>的暗属性魔法伤害，有<em>30%<\/em>的概率造成恐惧，持续3秒",
+            "lv": 10
+          },
+          {
+            "name": "贪玩",
+            "intro": "冒险时获得Base经验增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "原罪印记",
+            "intro": "增加宠物和主人<em>3%<\/em>对恶魔种族魔物伤害",
+            "lv": 10
+          },
+          {
+            "name": "战意侵蚀",
+            "intro": "增加宠物和主人<em>10%<\/em>恶魔种族伤害减免",
+            "lv": 10
+          },
+          {
+            "name": "打工·卡普拉公司Ⅰ",
+            "intro": "增加宠物在卡普拉公司<em>5%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "魔法攻击+2"
+      },
+      {
+        "id": "500570",
+        "name": "木偶骑兵",
+        "avatar": "Award_pet",
+        "intro": "一只满怀勇气的马宝宝，背负着名为唐吉柯德的木偶骑士，对于一切充满了斗志与决心！",
+        "race": 3,
+        "nature": 1,
+        "size": 2,
+        "star": 1,
+        "accessway": 5,
+        "hobby": [
+          {
+            "id": "900037",
+            "name": "香脆稻草",
+            "icon": "item_900037"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "冲撞",
+            "intro": "对敌方单体造成物理攻击*<em>500%<\/em>的物理伤害，有<em>30%<\/em>几率造成定身，持续3秒",
+            "lv": 10
+          },
+          {
+            "name": "贪玩",
+            "intro": "冒险时获得Base经验增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "冲锋",
+            "intro": "增加宠物和主人<em>5%<\/em>移动速度",
+            "lv": 10
+          },
+          {
+            "name": "铁骑",
+            "intro": "增加宠物和主人<em>30<\/em>点物理防御和魔法防御",
+            "lv": 10
+          },
+          {
+            "name": "打工·微笑小姐Ⅰ",
+            "intro": "增加宠物在微笑小姐<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理攻击+2"
+      },
+      {
+        "id": "500560",
+        "name": "热血战熊",
+        "avatar": "Reward_pet_3",
+        "intro": "在乐园团长大的傲气小熊，一举一动透露着斗士的精神，它只愿意追随心怀热血的战士！",
+        "race": 3,
+        "nature": 5,
+        "size": 2,
+        "star": 1,
+        "accessway": 5,
+        "hobby": [
+          {
+            "id": "900038",
+            "name": "热血战熊饼干",
+            "icon": "item_900038"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "重殴",
+            "intro": "对敌方单体造成物理攻击*<em>800%<\/em>的物理伤害，有<em>30%<\/em>几率造成眩晕，持续3秒",
+            "lv": 10
+          },
+          {
+            "name": "努力",
+            "intro": "冒险时消耗战斗时长减少<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "战意",
+            "intro": "增加宠物和主人<em>30<\/em>点物理攻击和魔法攻击",
+            "lv": 10
+          },
+          {
+            "name": "勇气守护",
+            "intro": "增加宠物和主人<em>5%<\/em>人形种族减伤",
+            "lv": 10
+          },
+          {
+            "name": "打工·竞技Ⅰ",
+            "intro": "增加宠物在竞技场<em>5%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理攻击+2"
+      },
+      {
+        "id": "500550",
+        "name": "骑士战熊",
+        "avatar": "Reward_pet_2",
+        "intro": "在骑士团长大的傲气小熊，一举一动透露着骑士的精神，它只愿意追随强大的战士！",
+        "race": 3,
+        "nature": 5,
+        "size": 2,
+        "star": 1,
+        "accessway": 5,
+        "hobby": [
+          {
+            "id": "900039",
+            "name": "骑士战熊饼干",
+            "icon": "item_900039"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "重殴",
+            "intro": "对敌方单体造成物理攻击*<em>800%<\/em>的物理伤害，有<em>30%<\/em>几率造成眩晕，持续3秒",
+            "lv": 10
+          },
+          {
+            "name": "努力",
+            "intro": "冒险时消耗战斗时长减少<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "战意",
+            "intro": "增加宠物和主人<em>30<\/em>点物理攻击和魔法攻击",
+            "lv": 10
+          },
+          {
+            "name": "勇气守护",
+            "intro": "增加宠物和主人<em>5%<\/em>人形种族减伤",
+            "lv": 10
+          },
+          {
+            "name": "打工·竞技Ⅰ",
+            "intro": "增加宠物在竞技场<em>5%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理攻击+2"
+      },
+      {
+        "id": "500540",
+        "name": "皇家战熊",
+        "avatar": "Reward_pet_1",
+        "intro": "在皇室长大的高贵小熊，一举一动彰显出出王者的风范，它只愿意追随绝对的强者！",
+        "race": 3,
+        "nature": 5,
+        "size": 2,
+        "star": 1,
+        "accessway": 5,
+        "hobby": [
+          {
+            "id": "900040",
+            "name": "皇家战熊饼干",
+            "icon": "item_900040"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "重殴",
+            "intro": "对敌方单体造成物理攻击*<em>800%<\/em>的物理伤害，有<em>30%<\/em>几率造成眩晕，持续3秒",
+            "lv": 10
+          },
+          {
+            "name": "努力",
+            "intro": "冒险时消耗战斗时长减少<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "战意",
+            "intro": "增加宠物和主人<em>30<\/em>点物理攻击和魔法攻击",
+            "lv": 10
+          },
+          {
+            "name": "勇气守护",
+            "intro": "增加宠物和主人<em>5%<\/em>人形种族减伤",
+            "lv": 10
+          },
+          {
+            "name": "打工·竞技Ⅰ",
+            "intro": "增加宠物在竞技场<em>5%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理攻击+2"
+      },
+      {
+        "id": "500530",
+        "name": "蛋黄哥",
+        "avatar": "Gudetama_pet",
+        "intro": "",
+        "race": 0,
+        "nature": 7,
+        "size": 2,
+        "star": 1,
+        "accessway": 8,
+        "hobby": [
+          {
+            "id": "700160",
+            "name": "特制酱油",
+            "icon": "item_550530"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "懒惰气息",
+            "intro": "释放慵懒气息，使周围3米范围敌人装备攻速和移动速度降低<em>50%<\/em>，持续1秒",
+            "lv": 10
+          },
+          {
+            "name": "恋家",
+            "intro": "冒险外出时间减少<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "安逸",
+            "intro": "增加宠物和主人<em>5%<\/em>无属性伤害减免",
+            "lv": 10
+          },
+          {
+            "name": "偷懒",
+            "intro": "宠物和主人所有技能的SP消耗减少<em>5%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·烹饪Ⅱ",
+            "intro": "增加宠物在烹饪中心<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理防御+1"
+      },
+      {
+        "id": "500520",
+        "name": "无颅武士",
+        "avatar": "Dullahan",
+        "intro": "",
+        "race": 0,
+        "nature": 8,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900034",
+            "name": "盔甲一角",
+            "icon": "item_900034"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "无视防御攻击",
+            "intro": "对敌方单体造成物理攻击*<em>550%<\/em>的无视物理防御的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "亡灵克星",
+            "intro": "增加宠物和主人<em>4%<\/em>对不死种族魔物伤害",
+            "lv": 10
+          },
+          {
+            "name": "惊惧铠甲",
+            "intro": "增加宠物和主人<em>10%<\/em>不死种族伤害减免",
+            "lv": 10
+          },
+          {
+            "name": "持家",
+            "intro": "冒险时获得普通素材数量增加<em>11<\/em>个，获得高级素材（沙金等）数量增加<em>6<\/em>个",
+            "lv": 10
+          },
+          {
+            "name": "打工·公会Ⅱ",
+            "intro": "增加宠物在公会<em>40%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "生命上限+20"
+      },
+      {
+        "id": "500510",
+        "name": "万圣魔",
+        "avatar": "Quve",
+        "intro": "",
+        "race": 7,
+        "nature": 8,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900035",
+            "name": "黑色布条",
+            "icon": "item_900035"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "灵魂打击",
+            "intro": "对敌方单体造成魔法攻击*<em>500%<\/em>的暗属性魔法伤害，有<em>30%<\/em>的概率造成黑暗效果",
+            "lv": 10
+          },
+          {
+            "name": "幽灵鬼步",
+            "intro": "增加宠物和主人<em>5%<\/em>移速",
+            "lv": 10
+          },
+          {
+            "name": "亡灵形态",
+            "intro": "增加宠物和主人<em>3%<\/em>物理伤害减免和魔法伤害减免",
+            "lv": 10
+          },
+          {
+            "name": "幸运",
+            "intro": "冒险时获得普通素材数量增加<em>11<\/em>个",
+            "lv": 10
+          },
+          {
+            "name": "打工·烹饪Ⅱ",
+            "intro": "增加宠物在烹饪中心<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理攻击+2"
+      },
+      {
+        "id": "500470",
+        "name": "爱丽丝女仆",
+        "avatar": "Alice",
+        "intro": "",
+        "race": 7,
+        "nature": 6,
+        "size": 2,
+        "star": 3,
+        "accessway": 4,
+        "hobby": null,
+        "equip": null,
+        "skill": [
+          {
+            "name": "打扫卫生",
+            "intro": "对敌方单体造成物理攻击*<em>900%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "清算",
+            "intro": "增加宠物和主人<em>5%<\/em>忽视物理防御",
+            "lv": 10
+          },
+          {
+            "name": "暴击率UP",
+            "intro": "增加宠物和主人<em>15<\/em>点暴击",
+            "lv": 10
+          },
+          {
+            "name": "机灵",
+            "intro": "冒险时直接获得稀有箱子和获得卡片的概率增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·烹饪Ⅱ",
+            "intro": "增加宠物在烹饪中心<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": [
+          {
+            "id": "500100",
+            "name": "小巴风特",
+            "avatar": "Baphomet_S"
+          },
+          {
+            "id": "500430",
+            "name": "鸟人哈比",
+            "avatar": "Hapy"
+          }
+        ],
+        "adventureBuff": "物理攻击+2"
+      },
+      {
+        "id": "500460",
+        "name": "妖仙女",
+        "avatar": "Fairy",
+        "intro": "",
+        "race": 2,
+        "nature": 1,
+        "size": 2,
+        "star": 2,
+        "accessway": 4,
+        "hobby": null,
+        "equip": null,
+        "skill": [
+          {
+            "name": "精神灼烧",
+            "intro": "对范围内目标释放精神灼烧，造成魔法攻击*<em>900%<\/em>的念属性魔法伤害",
+            "lv": 10
+          },
+          {
+            "name": "冰焰",
+            "intro": "精神灼烧有<em>50%<\/em>的几率冰冻敌人",
+            "lv": 10
+          },
+          {
+            "name": "黑焰",
+            "intro": "精神灼烧有<em>50%<\/em>的几率点燃敌人",
+            "lv": 10
+          },
+          {
+            "name": "机灵",
+            "intro": "冒险时直接获得稀有箱子和获得卡片的概率增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·道具店Ⅰ",
+            "intro": "增加宠物在道具店<em>10%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": [
+          {
+            "id": "500060",
+            "name": "鬼女",
+            "avatar": "Sohee"
+          },
+          {
+            "id": "500360",
+            "name": "恶魔女仆",
+            "avatar": "Succubus"
+          }
+        ],
+        "adventureBuff": "物理攻击+2"
+      },
+      {
+        "id": "500450",
+        "name": "米雅毕",
+        "avatar": "Miyabi",
+        "intro": "",
+        "race": 8,
+        "nature": 6,
+        "size": 2,
+        "star": 3,
+        "accessway": 4,
+        "hobby": null,
+        "equip": null,
+        "skill": [
+          {
+            "name": "痊愈",
+            "intro": "以<em>100%<\/em>的几率解除宠物和主人身上的冰冻，石化，定身效果",
+            "lv": 10
+          },
+          {
+            "name": "庇护",
+            "intro": "痊愈技能有<em>50%<\/em>的几率使主人免疫冰冻，石化，定身5秒",
+            "lv": 10
+          },
+          {
+            "name": "圣歌",
+            "intro": "增加宠物和主人<em>5%<\/em>受治疗加成",
+            "lv": 10
+          },
+          {
+            "name": "好奇",
+            "intro": "冒险时获得普通素材数量增加<em>6<\/em>个，获得高级素材（沙金等）数量增加<em>6<\/em>个",
+            "lv": 10
+          },
+          {
+            "name": "打工·微笑小姐Ⅰ",
+            "intro": "增加宠物在微笑小姐<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": [
+          {
+            "id": "500070",
+            "name": "蛇女伊丝",
+            "avatar": "Isis"
+          },
+          {
+            "id": "500410",
+            "name": "傀儡娃娃",
+            "avatar": "Marionette"
+          }
+        ],
+        "adventureBuff": "魔法攻击+2"
+      },
+      {
+        "id": "500440",
+        "name": "艾斯恩魔女",
+        "avatar": "Zherlthsh",
+        "intro": "",
+        "race": 1,
+        "nature": 0,
+        "size": 2,
+        "star": 2,
+        "accessway": 4,
+        "hobby": null,
+        "equip": null,
+        "skill": [
+          {
+            "name": "来玩游戏",
+            "intro": "对敌方单体造成物理攻击*<em>800%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "鞭挞",
+            "intro": "增加宠物和主人<em>2%<\/em>物理穿刺",
+            "lv": 10
+          },
+          {
+            "name": "物理攻击UP",
+            "intro": "增加宠物和主人<em>40<\/em>点物理攻击",
+            "lv": 10
+          },
+          {
+            "name": "邪恶",
+            "intro": "冒险时获得卡片概率增加<em>15%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·卡普拉公司Ⅱ",
+            "intro": "增加宠物在卡普拉公司<em>40%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": [
+          {
+            "id": "500350",
+            "name": "恶魔侍者",
+            "avatar": "Incubus"
+          },
+          {
+            "id": "500360",
+            "name": "恶魔女仆",
+            "avatar": "Succubus"
+          }
+        ],
+        "adventureBuff": "魔法攻击+2"
+      },
+      {
+        "id": "500430",
+        "name": "鸟人哈比",
+        "avatar": "Hapy",
+        "intro": "",
+        "race": 7,
+        "nature": 2,
+        "size": 2,
+        "star": 2,
+        "accessway": 4,
+        "hobby": null,
+        "equip": null,
+        "skill": [
+          {
+            "name": "飞翼攻击",
+            "intro": "对敌方单体造成魔法攻击*<em>640%<\/em>的魔法伤害",
+            "lv": 10
+          },
+          {
+            "name": "魔法攻击UP",
+            "intro": "增加宠物和主人<em>40<\/em>点魔法攻击",
+            "lv": 10
+          },
+          {
+            "name": "刃羽",
+            "intro": "增加宠物和主人<em>3%<\/em>风属性伤害",
+            "lv": 10
+          },
+          {
+            "name": "贪婪",
+            "intro": "冒险时获得普通素材数量增加<em>11<\/em>个，不消耗丸子概率增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·卡普拉公司Ⅰ",
+            "intro": "增加宠物在卡普拉公司<em>5%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": [
+          {
+            "id": "500040",
+            "name": "沙漠幼狼",
+            "avatar": "LittleWolf"
+          },
+          {
+            "id": "500050",
+            "name": "曼陀罗种子",
+            "avatar": "Mandala"
+          },
+          {
+            "id": "500250",
+            "name": "魔菇",
+            "avatar": "Spore"
+          }
+        ],
+        "adventureBuff": "物理攻击+2"
+      },
+      {
+        "id": "500420",
+        "name": "狸猫",
+        "avatar": "Smokie",
+        "intro": "",
+        "race": 3,
+        "nature": 1,
+        "size": 2,
+        "star": 2,
+        "accessway": 4,
+        "hobby": null,
+        "equip": null,
+        "skill": [
+          {
+            "name": "欺诈打击",
+            "intro": "对敌方单体造成物理攻击*<em>500%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "物理攻击UP",
+            "intro": "增加宠物和主人<em>40<\/em>点物理攻击",
+            "lv": 10
+          },
+          {
+            "name": "伪装",
+            "intro": "增加宠物和主人<em>10%<\/em>动物种族伤害减免",
+            "lv": 10
+          },
+          {
+            "name": "聪明",
+            "intro": "冒险时获得Job经验增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·料理协会Ⅰ",
+            "intro": "增加宠物在料理协会<em>10%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": [
+          {
+            "id": "500020",
+            "name": "小野猪",
+            "avatar": "Savage_Baby"
+          },
+          {
+            "id": "500290",
+            "name": "大嘴鸟",
+            "avatar": "Pecopeco"
+          },
+          {
+            "id": "500370",
+            "name": "土拨鼠",
+            "avatar": "Martin"
+          }
+        ],
+        "adventureBuff": "魔法攻击+2"
+      },
+      {
+        "id": "500410",
+        "name": "傀儡娃娃",
+        "avatar": "Marionette",
+        "intro": "",
+        "race": 7,
+        "nature": 7,
+        "size": 2,
+        "star": 2,
+        "accessway": 4,
+        "hobby": null,
+        "equip": null,
+        "skill": [
+          {
+            "name": "念力连击",
+            "intro": "对敌方单体造成魔法攻击*<em>550%<\/em>的念属性魔法伤害",
+            "lv": 10
+          },
+          {
+            "name": "超念力",
+            "intro": "增加宠物和主人<em>4%<\/em>念属性伤害",
+            "lv": 10
+          },
+          {
+            "name": "念力回复",
+            "intro": "增加宠物和主人<em>10%<\/em>SP恢复",
+            "lv": 10
+          },
+          {
+            "name": "恋家",
+            "intro": "冒险外出时间减少<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·烹饪Ⅰ",
+            "intro": "增加宠物在烹饪中心<em>5%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": [
+          {
+            "id": "500110",
+            "name": "疯兔",
+            "avatar": "fengtu"
+          },
+          {
+            "id": "500280",
+            "name": "白幽灵",
+            "avatar": "Whisper"
+          }
+        ],
+        "adventureBuff": "生命上限+20"
+      },
+      {
+        "id": "500400",
+        "name": "圣诞哥布灵",
+        "avatar": "Goblin_Santa",
+        "intro": "",
+        "race": 1,
+        "nature": 3,
+        "size": 2,
+        "star": 2,
+        "accessway": 4,
+        "hobby": null,
+        "equip": null,
+        "skill": [
+          {
+            "name": "连刺攻击",
+            "intro": "对敌方单体造成物理攻击*<em>550%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "闪避UP",
+            "intro": "增加宠物和主人<em>10<\/em>点闪避",
+            "lv": 10
+          },
+          {
+            "name": "物理攻击UP",
+            "intro": "增加宠物和主人<em>30<\/em>点物理攻击",
+            "lv": 10
+          },
+          {
+            "name": "贪婪",
+            "intro": "冒险时获得普通素材数量增加<em>11<\/em>个，不消耗丸子概率增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·宠物协会Ⅰ",
+            "intro": "增加宠物在宠物协会<em>10%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": [
+          {
+            "id": "500010",
+            "name": "波利",
+            "avatar": "boli"
+          },
+          {
+            "id": "500320",
+            "name": "榔头哥布灵",
+            "avatar": "Goblin3"
+          }
+        ],
+        "adventureBuff": "生命上限+20"
+      },
+      {
+        "id": "500390",
+        "name": "妖道",
+        "avatar": "Bon_cun",
+        "intro": "",
+        "race": 8,
+        "nature": 8,
+        "size": 2,
+        "star": 2,
+        "accessway": 4,
+        "hobby": null,
+        "equip": null,
+        "skill": [
+          {
+            "name": "螺旋刺击",
+            "intro": "对敌方单体造成物理攻击*<em>500%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "命中UP",
+            "intro": "增加宠物和主人<em>10<\/em>点命中",
+            "lv": 10
+          },
+          {
+            "name": "失心",
+            "intro": "增加宠物和主人<em>20%<\/em>恐惧抵抗",
+            "lv": 10
+          },
+          {
+            "name": "好奇",
+            "intro": "冒险时获得普通素材数量增加<em>6<\/em>个，获得高级素材（沙金等）数量增加<em>6<\/em>个",
+            "lv": 10
+          },
+          {
+            "name": "打工·宠物协会Ⅱ",
+            "intro": "增加宠物在宠物协会<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": [
+          {
+            "id": "500030",
+            "name": "溜溜猴",
+            "avatar": "Yoyo"
+          },
+          {
+            "id": "500300",
+            "name": "小僵",
+            "avatar": "Munak"
+          }
+        ],
+        "adventureBuff": "生命上限+20"
+      },
+      {
+        "id": "500380",
+        "name": "人鱼",
+        "avatar": "Obeaune",
+        "intro": "",
+        "race": 5,
+        "nature": 3,
+        "size": 2,
+        "star": 2,
+        "accessway": 4,
+        "hobby": null,
+        "equip": null,
+        "skill": [
+          {
+            "name": "祝福",
+            "intro": "复活主人，并恢复其HP<em>100%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "海洋魔力",
+            "intro": "增加宠物和主人<em>500<\/em>HP上限",
+            "lv": 10
+          },
+          {
+            "name": "圣水庇佑",
+            "intro": "增加宠物和主人<em>10%<\/em>HP恢复",
+            "lv": 10
+          },
+          {
+            "name": "幸运",
+            "intro": "冒险时获得普通素材数量增加<em>11<\/em>个",
+            "lv": 10
+          },
+          {
+            "name": "打工·微笑小姐Ⅰ",
+            "intro": "增加宠物在微笑小姐<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": [
+          {
+            "id": "500010",
+            "name": "波利",
+            "avatar": "boli"
+          },
+          {
+            "id": "500110",
+            "name": "疯兔",
+            "avatar": "fengtu"
+          }
+        ],
+        "adventureBuff": "生命上限+20"
+      },
+      {
+        "id": "500370",
+        "name": "土拨鼠",
+        "avatar": "Martin",
+        "intro": "",
+        "race": 3,
+        "nature": 1,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900032",
+            "name": "魔物防风镜",
+            "icon": "item_900032"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "疯狂爪击",
+            "intro": "对敌方单体造成物理攻击*<em>600%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "攻速UP",
+            "intro": "增加宠物和主人<em>5%<\/em>装备攻速",
+            "lv": 10
+          },
+          {
+            "name": "移速UP",
+            "intro": "增加宠物和主人<em>5%<\/em>移速",
+            "lv": 10
+          },
+          {
+            "name": "恋家",
+            "intro": "冒险外出时间减少<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·料理协会Ⅰ",
+            "intro": "增加宠物在料理协会<em>10%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理防御+1"
+      },
+      {
+        "id": "500360",
+        "name": "恶魔女仆",
+        "avatar": "Succubus",
+        "intro": "",
+        "race": 7,
+        "nature": 6,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900031",
+            "name": "摇曳的围裙",
+            "icon": "item_900031"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "鲜血之吻",
+            "intro": "对敌方单体造成魔法攻击*<em>640%<\/em>的暗属性魔法伤害，并造成小范围溅射伤害",
+            "lv": 10
+          },
+          {
+            "name": "罪恶之吻",
+            "intro": "增加宠物和主人<em>15<\/em>点精炼魔攻",
+            "lv": 10
+          },
+          {
+            "name": "恶魔之力",
+            "intro": "增加宠物和主人<em>10%<\/em>恶魔种族伤害减免",
+            "lv": 10
+          },
+          {
+            "name": "纯洁",
+            "intro": "冒险时获得卡片概率增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·卡普拉公司Ⅱ",
+            "intro": "增加宠物在卡普拉公司<em>40%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理攻击+2"
+      },
+      {
+        "id": "500350",
+        "name": "恶魔侍者",
+        "avatar": "Incubus",
+        "intro": "",
+        "race": 7,
+        "nature": 6,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900030",
+            "name": "少女的情书",
+            "icon": "item_900030"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "恶魔之魂",
+            "intro": "对敌方单体造成物理攻击*<em>640%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "罪恶之心",
+            "intro": "增加宠物和主人<em>15<\/em>点精炼物攻",
+            "lv": 10
+          },
+          {
+            "name": "恶魔之力",
+            "intro": "增加宠物和主人<em>10%<\/em>恶魔种族伤害减免",
+            "lv": 10
+          },
+          {
+            "name": "寻宝大师",
+            "intro": "冒险时直接获得稀有箱子概率增加<em>15%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·微笑小姐Ⅰ",
+            "intro": "增加宠物在微笑小姐<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理攻击+2"
+      },
+      {
+        "id": "500340",
+        "name": "土人",
+        "avatar": "Dokebi",
+        "intro": "",
+        "race": 7,
+        "nature": 6,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900029",
+            "name": "魔物扫把",
+            "icon": "item_900029"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "我很有钱！",
+            "intro": "对敌方单体造成物理攻击*<em>500%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "迟钝",
+            "intro": "增加宠物和主人<em>5%<\/em>精炼物伤减免",
+            "lv": 10
+          },
+          {
+            "name": "定身抵抗",
+            "intro": "增加宠物和主人<em>20%<\/em>定身抵抗",
+            "lv": 10
+          },
+          {
+            "name": "勤奋",
+            "intro": "冒险外出时间和消耗战斗时长减少<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·宠物协会Ⅰ",
+            "intro": "增加宠物在宠物协会<em>10%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "魔法攻击+2"
+      },
+      {
+        "id": "500330",
+        "name": "兽人战士",
+        "avatar": "Orc",
+        "intro": "",
+        "race": 1,
+        "nature": 1,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900028",
+            "name": "魔物之证",
+            "icon": "item_900028"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "来打我",
+            "intro": "挑衅敌方单位，使小范围内魔物强制攻击自己<em>5<\/em>秒，强制攻击对玩家无效",
+            "lv": 10
+          },
+          {
+            "name": "攻速UP",
+            "intro": "增加宠物和主人<em>5%<\/em>装备攻速",
+            "lv": 10
+          },
+          {
+            "name": "包扎伤口",
+            "intro": "增加宠物和主人<em>10%<\/em>生命恢复",
+            "lv": 10
+          },
+          {
+            "name": "努力",
+            "intro": "冒险时消耗战斗时长减少<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·竞技Ⅰ",
+            "intro": "增加宠物在竞技场<em>5%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "生命上限+20"
+      },
+      {
+        "id": "500320",
+        "name": "榔头哥布灵",
+        "avatar": "Goblin3",
+        "intro": "",
+        "race": 1,
+        "nature": 1,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900027",
+            "name": "榔头哥布灵的戒指",
+            "icon": "item_900027"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "敲！敲！敲",
+            "intro": "对敌方单体造成物理攻击*<em>550%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "战意号角",
+            "intro": "增加宠物和主人<em>1%<\/em>物理穿刺",
+            "lv": 10
+          },
+          {
+            "name": "惹事生非",
+            "intro": "增加宠物和主人<em>3%<\/em>对人形种族增伤",
+            "lv": 10
+          },
+          {
+            "name": "幸运",
+            "intro": "冒险时获得普通素材数量增加<em>11<\/em>个",
+            "lv": 10
+          },
+          {
+            "name": "打工·道具店Ⅰ",
+            "intro": "增加宠物在道具店<em>10%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "生命上限+20"
+      },
+      {
+        "id": "500310",
+        "name": "巨石怪",
+        "avatar": "Golen",
+        "intro": "",
+        "race": 0,
+        "nature": 0,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900026",
+            "name": "魔力石板",
+            "icon": "item_900026"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "重压敲击",
+            "intro": "对敌方单体造成物理攻击*<em>450%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "石化皮肤",
+            "intro": "增加宠物和主人<em>5%<\/em>魔法伤害减免",
+            "lv": 10
+          },
+          {
+            "name": "石化抵抗",
+            "intro": "增加宠物和主人<em>20%<\/em>石化抵抗",
+            "lv": 10
+          },
+          {
+            "name": "贪玩",
+            "intro": "冒险时获得Base经验增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·微笑小姐Ⅰ",
+            "intro": "增加宠物在微笑小姐<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "生命上限+20"
+      },
+      {
+        "id": "500300",
+        "name": "小僵",
+        "avatar": "Munak",
+        "intro": "",
+        "race": 8,
+        "nature": 8,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900025",
+            "name": "魔物信件",
+            "icon": "item_900025"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "不死属性攻击",
+            "intro": "对敌方单体造成物理攻击*<em>400%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "尸毒",
+            "intro": "增加宠物和主人<em>3%<\/em>毒属性攻击",
+            "lv": 10
+          },
+          {
+            "name": "无痛觉",
+            "intro": "增加宠物和主人<em>5%<\/em>精炼物伤减免",
+            "lv": 10
+          },
+          {
+            "name": "环保",
+            "intro": "冒险时获得普通素材数量增加<em>11<\/em>个",
+            "lv": 10
+          },
+          {
+            "name": "打工·道具店Ⅱ",
+            "intro": "增加宠物在道具店<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理防御+1"
+      },
+      {
+        "id": "500290",
+        "name": "大嘴鸟",
+        "avatar": "Pecopeco",
+        "intro": "",
+        "race": 3,
+        "nature": 4,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900024",
+            "name": "营养蚯蚓",
+            "icon": "item_900024"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "尖锐刺击",
+            "intro": "对敌方单体造成物理攻击*<em>400%<\/em>的物理伤害",
+            "lv": 10
+          },
+          {
+            "name": "尖喙",
+            "intro": "增加宠物和主人<em>5%<\/em>忽视物防",
+            "lv": 10
+          },
+          {
+            "name": "护主",
+            "intro": "增加宠物和主人<em>500<\/em>点生命上限",
+            "lv": 10
+          },
+          {
+            "name": "幸运",
+            "intro": "冒险时获得普通素材数量增加<em>11<\/em>个",
+            "lv": 10
+          },
+          {
+            "name": "打工·宠物协会Ⅰ",
+            "intro": "增加宠物在宠物协会<em>10%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理防御+1"
+      },
+      {
+        "id": "500280",
+        "name": "白幽灵",
+        "avatar": "Whisper",
+        "intro": "",
+        "race": 7,
+        "nature": 0,
+        "size": 2,
+        "star": 1,
+        "accessway": 1,
+        "hobby": [
+          {
+            "id": "900023",
+            "name": "橡木棺",
+            "icon": "item_900023"
+          }
+        ],
+        "equip": null,
+        "skill": [
+          {
+            "name": "圣灵召唤",
+            "intro": "对敌方单体造成魔法攻击<em>450%<\/em>圣属性魔法伤害",
+            "lv": 10
+          },
+          {
+            "name": "念力增幅",
+            "intro": "增加宠物和主人<em>3%<\/em>念属性伤害",
+            "lv": 10
+          },
+          {
+            "name": "虚化形态",
+            "intro": "增加宠物和主人<em>5%<\/em>物理伤害减免",
+            "lv": 10
+          },
+          {
+            "name": "聪明",
+            "intro": "冒险时获得Job经验增加<em>10%<\/em>",
+            "lv": 10
+          },
+          {
+            "name": "打工·微笑小姐Ⅰ",
+            "intro": "增加宠物在微笑小姐<em>30%<\/em>的打工效率",
+            "lv": 10
+          }
+        ],
+        "cost": null,
+        "adventureBuff": "物理防御+1"
+      }
+    ]
+  }
+}

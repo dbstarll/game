@@ -1,0 +1,470 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642842882,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 47,
+    "pageSize": 30,
+    "pageCount": 68,
+    "total": 2037,
+    "list": [
+      {
+        "id": "47142",
+        "name": "吸血喵",
+        "icon": "item_47142",
+        "rank": 3,
+        "position": 10,
+        "effect": "",
+        "buff": "装备攻速+5%\n物理攻击+5%\n精炼+6时，装备攻速+5%，物理攻击+5%",
+        "adventureBuff": "",
+        "storageBuff": "物理攻击+6\n魔法攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "47111",
+        "name": "暗星2000",
+        "icon": "item_47111",
+        "rank": 4,
+        "position": 10,
+        "effect": "",
+        "buff": "移动速度+5%\n每次使用技能获得【扫把掌控】效果：物理、魔法攻击+3%，可变吟唱时间-0.5秒，使用技能Sp消耗量-5%，持续15秒，最多可叠加3层",
+        "adventureBuff": "",
+        "storageBuff": "物理攻击+1%\n魔法攻击+1%",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "145888",
+        "name": "传说翼盔[1]",
+        "icon": "item_45888",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "生命上限+500\n物伤减免+4%\n每次受到物理伤害，获得4%物伤减免，最多叠加4层，持续4秒",
+        "adventureBuff": "",
+        "storageBuff": "PVP\/GVG中对玩家伤害+1%",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "51324",
+        "name": "偷心魅魔系列时装",
+        "icon": "item_51324",
+        "rank": 1,
+        "position": 13,
+        "effect": "",
+        "buff": "",
+        "adventureBuff": "物理攻击+1%\n魔法攻击+1%",
+        "storageBuff": "物理防御+6\n魔法防御+6",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "48667",
+        "name": "缝合怪嘴",
+        "icon": "item_48667",
+        "rank": 3,
+        "position": 9,
+        "effect": "",
+        "buff": "魔法防御+5%\n生命上限+500",
+        "adventureBuff": "",
+        "storageBuff": "魔法攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "48666",
+        "name": "吸血尖牙",
+        "icon": "item_48666",
+        "rank": 3,
+        "position": 9,
+        "effect": "",
+        "buff": "物理防御+5%\n生命上限+500",
+        "adventureBuff": "",
+        "storageBuff": "物理攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "48665",
+        "name": "黑蝠眼罩",
+        "icon": "item_48665",
+        "rank": 3,
+        "position": 8,
+        "effect": "",
+        "buff": "全能力+1\n忽视魔法防御+5%\n魔法攻击+15",
+        "adventureBuff": "",
+        "storageBuff": "物理攻击+3，生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "48664",
+        "name": "纯棉眼罩",
+        "icon": "item_48664",
+        "rank": 3,
+        "position": 8,
+        "effect": "",
+        "buff": "全能力+1\n忽视物理防御+5%\n物理攻击+20",
+        "adventureBuff": "",
+        "storageBuff": "魔法攻击+3，生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "48652",
+        "name": "收割者匕首",
+        "icon": "item_48652",
+        "rank": 3,
+        "position": 9,
+        "effect": "",
+        "buff": "每击杀一个敌方目标，自身移动速度提升3%，持续10秒，最多可叠加5层",
+        "adventureBuff": "",
+        "storageBuff": "魔法攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "48651",
+        "name": "斗士之纹",
+        "icon": "item_48651",
+        "rank": 2,
+        "position": 8,
+        "effect": "",
+        "buff": "力量+2\n灵巧+2\n智力+2",
+        "adventureBuff": "",
+        "storageBuff": "生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "48050",
+        "name": "迷你梦魇",
+        "icon": "item_48050",
+        "rank": 3,
+        "position": 11,
+        "effect": "",
+        "buff": "对不死属性魔物伤害+8%\n受到不死属性伤害-8%",
+        "adventureBuff": "",
+        "storageBuff": "物理防御+2，生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "48043",
+        "name": "传说之杯",
+        "icon": "item_48043",
+        "rank": 4,
+        "position": 11,
+        "effect": "",
+        "buff": "生命上限+500\n魔伤减免+4%\n每次受到魔法伤害，获得4%魔伤减免，最多叠加4层，持续4秒",
+        "adventureBuff": "",
+        "storageBuff": "PVP\/GVG中受玩家伤害-1%",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "47135",
+        "name": "魅魔夜翼",
+        "icon": "item_47135",
+        "rank": 3,
+        "position": 10,
+        "effect": "",
+        "buff": "全能力+1\n人形种族加伤+5%",
+        "adventureBuff": "",
+        "storageBuff": "魔法防御+2，生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "47133",
+        "name": "骨翼天使",
+        "icon": "item_47133",
+        "rank": 4,
+        "position": 10,
+        "effect": "",
+        "buff": "生命上限+1000\n恐惧抵抗+15%\n受到攻击时,有一定概率（15%）给与敌人恐惧2秒",
+        "adventureBuff": "物理防御+3，生命上限+45",
+        "storageBuff": "魔法防御+3，生命上限+45",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "47123",
+        "name": "战神旗帜",
+        "icon": "item_47123",
+        "rank": 2,
+        "position": 10,
+        "effect": "",
+        "buff": "佩戴者受到伤害时，使周围8米范围内队友获得战意加成：受治疗加成+5%，Hp恢复+15%，持续10秒。（不可叠加）",
+        "adventureBuff": "",
+        "storageBuff": "物理攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "45954",
+        "name": "十字蔷薇",
+        "icon": "item_45950",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "装备攻速+2%\n魔法穿刺+2%\n智力+2\n敏捷+2",
+        "adventureBuff": "",
+        "storageBuff": "物理防御+2，生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "45949",
+        "name": "荆棘玫瑰",
+        "icon": "item_45945",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "装备攻速+2%\n物理穿刺+2%\n力量+2\n灵巧+2",
+        "adventureBuff": "",
+        "storageBuff": "魔法防御+2，生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "45942",
+        "name": "大象头饰",
+        "icon": "item_45942",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "力量+2\n智力+2\n灵巧+2\n生命上限+100",
+        "adventureBuff": "生命上限+30",
+        "storageBuff": "生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "45936",
+        "name": "杰克南瓜灯",
+        "icon": "item_45936",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "生命上限+200\n人形种族加伤+3%",
+        "adventureBuff": "生命上限+30",
+        "storageBuff": "生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "145907",
+        "name": "星屑结[1]",
+        "icon": "item_45907",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "魔法攻击+15\n忽视魔法防御+2%",
+        "adventureBuff": "",
+        "storageBuff": "物理攻击+4\n魔法攻击+4",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "145906",
+        "name": "聆星[1]",
+        "icon": "item_45906",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理攻击+20\n忽视物理防御+2%",
+        "adventureBuff": "",
+        "storageBuff": "生命上限+60",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "145887",
+        "name": "打更猫[1]",
+        "icon": "item_45887",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "全能力+1\n移动速度+5%\n攻击目标时100%概率降低目标10%移动速度，持续3秒",
+        "adventureBuff": "物理攻击+2，生命上限+30",
+        "storageBuff": "生命上限+90",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "145886",
+        "name": "绅士礼帽[1]",
+        "icon": "item_45886",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "全能力+2\n魔法上限+5%\n精炼+10时，魔法上限+10%",
+        "adventureBuff": "物理攻击+4.5，生命上限+45",
+        "storageBuff": "生命上限+90",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+4.5"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+6，生命上限+60"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "145885",
+        "name": "凯美拉帽[1]",
+        "icon": "item_45885",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "对暗、不死属性魔物伤害+5%\n精炼每+1，对暗、不死属性魔物伤害+1%",
+        "adventureBuff": "魔法攻击+8",
+        "storageBuff": "魔法防御+3，生命上限+45",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "不死属性攻击+1%"
+          },
+          {
+            "lv": 8,
+            "buff": "对不死属性伤害减免+1%"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "145884",
+        "name": "死灵头巾[1]",
+        "icon": "item_45884",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "风、地、水、火属性攻击+5%\n忽视物理防御+3%\n忽视魔法防御+3%",
+        "adventureBuff": "物理攻击+8",
+        "storageBuff": "物理防御+3，生命上限+45",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+4.5"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+6，魔法防御+3"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "145846",
+        "name": "白骑士头盔[1]",
+        "icon": "item_45846",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "全能力+1\n对MVP、Mini魔物造成的伤害+10%，每精炼+1，对MVP、Mini魔物造成的伤害+0.5%，受MVP、Mini魔物造成的伤害-1%",
+        "adventureBuff": "对MVP、Mini魔物伤害+1%",
+        "storageBuff": "生命上限+90",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理防御+6"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+6，魔法防御+3"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "145845",
+        "name": "魔月发夹[1]",
+        "icon": "item_45845",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "魔法攻击+5%\n装备攻速+5%",
+        "adventureBuff": "魔法攻击+3，生命上限+30",
+        "storageBuff": "魔法防御+2，生命上限+30",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理防御+2，魔法防御+2"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+4，生命上限+40"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "145844",
+        "name": "诅咒兔娃[1]",
+        "icon": "item_45844",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "对暗属性魔物伤害+5%\n受到暗属性伤害-10%",
+        "adventureBuff": "物理攻击+3，生命上限+30",
+        "storageBuff": "魔法防御+2，生命上限+30",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "对暗属性魔物伤害+1%"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+6"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "145843",
+        "name": "万圣节灯笼[1]",
+        "icon": "item_45843",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "全能力+1\n忽视魔法防御+2%",
+        "adventureBuff": "物理防御+2",
+        "storageBuff": "生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "145842",
+        "name": "无颅武士头盔[1]",
+        "icon": "item_45842",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "物伤减免+4%\n生命上限+2%",
+        "adventureBuff": "魔法攻击+3，生命上限+30",
+        "storageBuff": "物理防御+2，生命上限+30",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+2，物理防御+2"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+4，生命上限+40"
+          }
+        ],
+        "isCompose": 1
+      }
+    ]
+  }
+}

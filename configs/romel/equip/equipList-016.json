@@ -1,0 +1,195 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843346,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 16,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "42631",
+        "name": "巫毒之刃",
+        "icon": "item_42631",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "力量+8、灵巧+8\n生命上限+2800\n忽视物理防御+20%；精炼+10时，忽视物理防御+8%；精炼+15时，忽视物理防御+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "忽视物理防御+30%\n物伤减免+24%\n魔伤减免+24%\n生命上限+18%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42630",
+        "name": "剥皮刀",
+        "icon": "item_42630",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "力量+8、灵巧+8\n生命上限+2800\n忽视物理防御+20%；精炼+10时，忽视物理防御+8%；精炼+15时，忽视物理防御+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42628",
+        "name": "龙骨盾",
+        "icon": "item_42628",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "力量+12\n生命上限+2800\n近战物理伤害+10%；精炼+10时，近战物理伤害+4%；精炼+15时，近战物理伤害+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理伤害+18%\n物伤减免+24%\n魔伤减免+24%\n生命上限+18%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42627",
+        "name": "巨兽头骨",
+        "icon": "item_42627",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "力量+12\n生命上限+2800\n近战物理伤害+10%；精炼+10时，近战物理伤害+4%；精炼+15时，近战物理伤害+4%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42625",
+        "name": "唤鹰笛",
+        "icon": "item_42625",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "灵巧+12\n生命上限+2800\n远程物理伤害+10%；精炼+10时，远程物理伤害+4%；精炼+15时，远程物理伤害+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理伤害+18%\n物伤减免+24%\n魔伤减免+24%\n生命上限+18%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42624",
+        "name": "骨笛",
+        "icon": "item_42624",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "灵巧+12\n生命上限+2800\n远程物理伤害+10%；精炼+10时，远程物理伤害+4%；精炼+15时，远程物理伤害+4%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42609",
+        "name": "智慧图腾",
+        "icon": "item_42609",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "智力+12\n生命上限+2800\n魔法伤害+10%；精炼+10时，魔法伤害+4%；精炼+15时，魔法伤害+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "魔法伤害+18%\n物伤减免+24%\n魔伤减免+24%\n生命上限+18%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42608",
+        "name": "图腾木雕",
+        "icon": "item_42608",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "智力+12\n生命上限+2800\n魔法伤害+10%；精炼+10时，魔法伤害+4%；精炼+15时，魔法伤害+4%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42183",
+        "name": "猎兵作战服",
+        "icon": "item_42183",
+        "rank": 4,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 3,
+        "effect": "物理防御+205",
+        "buff": "灵巧+20\n生命上限+3500\n物理防御+10%\n每精炼+1，魔法防御+1%\n物理攻击+5%；精炼+5时，物理伤害+5%；精炼+10时且装备手枪类武器时，忽视物理防御+10%；装备来复枪类武器时，物理伤害+5%；精炼+15时，物理伤害+5%、生命上限+5%\n精炼+8开始，每精炼+1，物理穿刺+1%（总计8%）",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 1,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42182",
+        "name": "狙击手的大衣",
+        "icon": "item_42182",
+        "rank": 3,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 3,
+        "effect": "物理防御+48",
+        "buff": "灵巧+5\n生命上限+300\n物理攻击+5%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      }
+    ]
+  }
+}

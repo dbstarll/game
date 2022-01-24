@@ -1,0 +1,192 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843216,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 3,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "44109",
+        "name": "鲜花发卡",
+        "icon": "item_44109",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、灵巧+8\n魔法攻击+5%；精炼+12时，魔法攻击+5%；精炼+15时，魔法攻击+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "魔法攻击+15%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44108",
+        "name": "花蕾发卡",
+        "icon": "item_44009",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、灵巧+8\n魔法攻击+5%；精炼+12时，魔法攻击+5%；精炼+15时，魔法攻击+5%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44106",
+        "name": "热爱胸针",
+        "icon": "item_44106",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "幸运+16\n暴击伤害+4%；精炼+12时，暴击伤害+4%；精炼+15时，暴击伤害+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "暴击伤害+12%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44105",
+        "name": "纯情胸针",
+        "icon": "item_44086",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "幸运+16\n暴击伤害+4%；精炼+12时，暴击伤害+4%；精炼+15时，暴击伤害+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44103",
+        "name": "贵妇手套",
+        "icon": "item_44103",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、灵巧+8\n可变吟唱时间-10%、魔法攻击+40；精炼+12时，可变吟唱时间-10%、魔法攻击+40；精炼+15时，可变吟唱时间-10%、魔法攻击+40",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "魔法穿刺+9%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44102",
+        "name": "淑女手套",
+        "icon": "item_44005",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、灵巧+8\n可变吟唱时间-10%、魔法攻击+40；精炼+12时，可变吟唱时间-10%、魔法攻击+40；精炼+15时，可变吟唱时间-10%、魔法攻击+40",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44100",
+        "name": "黄金耳环",
+        "icon": "item_44100",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "暴击+10\n物理攻击+60；精炼+12时，暴击+5、物理攻击+50；精炼+15时，暴击+5、物理攻击+50",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理穿刺+4.5%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44099",
+        "name": "月牙耳环",
+        "icon": "item_44006",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+224",
+        "buff": "暴击+10\n物理攻击+60；精炼+12时，暴击+5、物理攻击+50；精炼+15时，暴击+5、物理攻击+50",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44097",
+        "name": "祝福手链",
+        "icon": "item_44097",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+120\n物理攻击+120",
+        "buff": "智力+8、力量+8\n魔法上限+200；精炼+12时，魔法上限+200；精炼+15时，魔法上限+200",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "魔法上限+12%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44096",
+        "name": "珍珠戒指",
+        "icon": "item_44046",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+120\n物理攻击+120",
+        "buff": "智力+8、力量+8\n魔法上限+200；精炼+12时，魔法上限+200；精炼+15时，魔法上限+200",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      }
+    ]
+  }
+}

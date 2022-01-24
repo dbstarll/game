@@ -1,0 +1,192 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843226,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 4,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "44094",
+        "name": "誓约项链",
+        "icon": "item_44094",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+120\n物理攻击+120",
+        "buff": "体质+12\n生命上限+2%；精炼+12时，生命上限+3%；精炼+15时，生命上限+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "生命上限+6%\n物伤减免+9%\n魔伤减免+9%\n人形种族减伤+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44093",
+        "name": "信念项链",
+        "icon": "item_44019",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+120\n物理攻击+120",
+        "buff": "体质+12\n生命上限+2%；精炼+12时，生命上限+3%；精炼+15时，生命上限+3%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44091",
+        "name": "光影之戒",
+        "icon": "item_44091",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、灵巧+8\n忽视魔法防御+5%；精炼+12时，忽视魔法防御+5%；精炼+15时，忽视魔法防御+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "魔法攻击+15%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "44090",
+        "name": "回忆之戒",
+        "icon": "item_44003",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+200",
+        "buff": "智力+8、灵巧+8\n忽视魔法防御+5%；精炼+12时，忽视魔法防御+5%；精炼+15时，忽视魔法防御+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44089",
+        "name": "诅咒之手",
+        "icon": "item_44089",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+108",
+        "buff": "攻击目标时，有10%概率使目标陷入以下一种异常状态（黑暗、诅咒、沉默或恐惧），持续3秒（效果不叠加）\n每精炼+1，对黑暗、诅咒、沉默和恐惧目标伤害+1%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43620",
+        "name": "远航者战靴",
+        "icon": "item_43620",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n灵巧+12\n生命上限+2500\n远程物理伤害+2%；精炼+12时，远程物理伤害+2%；精炼+15时，远程物理伤害+2%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理伤害+6%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "43619",
+        "name": "深海战靴",
+        "icon": "item_43587",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n灵巧+12\n生命上限+2500\n远程物理伤害+2%；精炼+12时，远程物理伤害+2%；精炼+15时，远程物理伤害+2%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43617",
+        "name": "守序短靴",
+        "icon": "item_43617",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n智力+6、灵巧+6\n生命上限+2500\n魔法攻击+4%；精炼+12时，魔法攻击+4%；精炼+15时，魔法攻击+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "魔法穿刺+6%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "43616",
+        "name": "朴素短靴",
+        "icon": "item_43503",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n智力+6、灵巧+6\n生命上限+2500\n魔法攻击+4%；精炼+12时，魔法攻击+4%；精炼+15时，魔法攻击+4%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43614",
+        "name": "启明星短靴",
+        "icon": "item_43614",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n智力+6、体质+6\n生命上限+2500\n魔法上限+500；精炼+12时，魔法上限+6%；精炼+15时，魔法上限+6%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "生命上限+6%\n物伤减免+9%\n魔伤减免+9%\n人形种族减伤+6%\n物理防御+12%\n魔法防御+12%"
+      }
+    ]
+  }
+}

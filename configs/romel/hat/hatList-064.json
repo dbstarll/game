@@ -1,0 +1,461 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843053,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 64,
+    "pageSize": 30,
+    "pageCount": 68,
+    "total": 2037,
+    "list": [
+      {
+        "id": "48508",
+        "name": "白胡须",
+        "icon": "item_48508",
+        "rank": 2,
+        "position": 9,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "物理攻击+4.5",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48507",
+        "name": "叼在嘴里的鱼",
+        "icon": "item_48507",
+        "rank": 3,
+        "position": 9,
+        "effect": "",
+        "buff": "击杀鱼贝种族魔物时，根据角色等级在一定范围内随机恢复血量值",
+        "adventureBuff": "魔法防御+4",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+2，物理防御+2"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+6"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "48506",
+        "name": "剑士头盔",
+        "icon": "item_48506",
+        "rank": 2,
+        "position": 8,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "物理攻击+4.5",
+        "storageBuff": "物理攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48505",
+        "name": "时髦眼罩",
+        "icon": "item_48505",
+        "rank": 2,
+        "position": 8,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "物理防御+2",
+        "storageBuff": "物理攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48502",
+        "name": "氧气罩",
+        "icon": "item_48502",
+        "rank": 2,
+        "position": 8,
+        "effect": "",
+        "buff": "受到毒属性伤害-20%",
+        "adventureBuff": "受到风属性伤害-4%",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48501",
+        "name": "小丑鼻子",
+        "icon": "item_48501",
+        "rank": 2,
+        "position": 8,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "受到暗属性伤害-2%",
+        "storageBuff": "物理攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45134",
+        "name": "能量探测器",
+        "icon": "item_45134",
+        "rank": 3,
+        "position": 8,
+        "effect": "",
+        "buff": "生命上限+400",
+        "adventureBuff": "生命上限+7",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45032",
+        "name": "防风皮革眼镜",
+        "icon": "item_45032",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+15",
+        "adventureBuff": "物理防御+4",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45022",
+        "name": "海棠花发夹",
+        "icon": "item_45022",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "灵巧+1\n智力+1\n魔法防御+5",
+        "adventureBuff": "魔法防御+3",
+        "storageBuff": "魔法攻击+6",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+1.5"
+          },
+          {
+            "lv": 8,
+            "buff": "生命上限+60"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "48009",
+        "name": "马加锡亚的尾巴",
+        "icon": "item_48009",
+        "rank": 3,
+        "position": 11,
+        "effect": "",
+        "buff": "精炼物攻+10\n精炼每+1精炼物攻+2",
+        "adventureBuff": "",
+        "storageBuff": "精炼物攻+4",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "48008",
+        "name": "雷蒙盖顿的尾巴",
+        "icon": "item_48008",
+        "rank": 3,
+        "position": 11,
+        "effect": "",
+        "buff": "物理防御+15",
+        "adventureBuff": "生命上限+24",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48007",
+        "name": "狐狸尾巴",
+        "icon": "item_48007",
+        "rank": 3,
+        "position": 11,
+        "effect": "",
+        "buff": "闪避+5%\n受到火属性伤害-10%",
+        "adventureBuff": "生命上限+24",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+3"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+4，生命上限+40"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "48006",
+        "name": "小恶魔尾巴",
+        "icon": "item_48006",
+        "rank": 3,
+        "position": 11,
+        "effect": "",
+        "buff": "闪避+5%\n黑暗免疫",
+        "adventureBuff": "魔法上限+30",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48004",
+        "name": "毕帝特龙的尾巴",
+        "icon": "item_48004",
+        "rank": 3,
+        "position": 11,
+        "effect": "",
+        "buff": "移动速度+5%\n不会被龙类魔物主动攻击",
+        "adventureBuff": "魔法攻击+4.5",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+3"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+4，生命上限+40"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "47025",
+        "name": "马加锡亚背包",
+        "icon": "item_47025",
+        "rank": 3,
+        "position": 10,
+        "effect": "",
+        "buff": "生命上限+500\n精炼每+1生命上限+20\n包包格子+10",
+        "adventureBuff": "生命上限+21",
+        "storageBuff": "包包格子+5",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "47024",
+        "name": "小野猪气球",
+        "icon": "item_47024",
+        "rank": 2,
+        "position": 10,
+        "effect": "",
+        "buff": "动物种族加伤+5%",
+        "adventureBuff": "生命上限+12",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "47022",
+        "name": "喷射哥布灵背包",
+        "icon": "item_47022",
+        "rank": 3,
+        "position": 10,
+        "effect": "",
+        "buff": "包包格子+10\n全能力+1\n人形种族加伤+2%",
+        "adventureBuff": "包包格子+2",
+        "storageBuff": "组队成员达到五人时，自身的HP恢复+1，自身的SP恢复+1",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "47021",
+        "name": "黑猫雷蒙盖顿",
+        "icon": "item_47021",
+        "rank": 3,
+        "position": 10,
+        "effect": "",
+        "buff": "物理防御+15",
+        "adventureBuff": "生命上限+24",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "47020",
+        "name": "箭袋",
+        "icon": "item_47020",
+        "rank": 2,
+        "position": 10,
+        "effect": "",
+        "buff": "远程物理攻击+7%",
+        "adventureBuff": "生命上限+24",
+        "storageBuff": "物理攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "47019",
+        "name": "乐园团背包",
+        "icon": "item_47019",
+        "rank": 1,
+        "position": 10,
+        "effect": "",
+        "buff": "命中+5",
+        "adventureBuff": "物理防御+2",
+        "storageBuff": "物理攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "47018",
+        "name": "鬼火",
+        "icon": "item_47018",
+        "rank": 3,
+        "position": 10,
+        "effect": "",
+        "buff": "可使用【圣灵召唤】Lv.10",
+        "adventureBuff": "魔法攻击+4",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "47017",
+        "name": "海德拉",
+        "icon": "item_47017",
+        "rank": 4,
+        "position": 10,
+        "effect": "",
+        "buff": "智力+8\n魔法攻击+15",
+        "adventureBuff": "魔法攻击+8",
+        "storageBuff": "精炼魔攻+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "47016",
+        "name": "深渊骑士之盾",
+        "icon": "item_47016",
+        "rank": 4,
+        "position": 10,
+        "effect": "",
+        "buff": "受到普攻或任何技能攻击时概率触发地刺攻击，对目标造成多倍的属性物理伤害",
+        "adventureBuff": "魔法攻击+4.5",
+        "storageBuff": "生命上限+28",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "生命上限+90"
+          },
+          {
+            "lv": 8,
+            "buff": "生命上限+180"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "47015",
+        "name": "武士刀",
+        "icon": "item_47015",
+        "rank": 3,
+        "position": 10,
+        "effect": "",
+        "buff": "获得被动技能【二刀连击】Lv.3",
+        "adventureBuff": "物理攻击+4",
+        "storageBuff": "精炼物攻+8",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理防御+2，魔法防御+2"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+4，生命上限+40"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "47012",
+        "name": "天使波利的翅膀",
+        "icon": "item_47012",
+        "rank": 3,
+        "position": 10,
+        "effect": "",
+        "buff": "生命上限+400\n恶魔种族加伤+8%",
+        "adventureBuff": "生命上限+28",
+        "storageBuff": "恶魔种族加伤+2%",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "47011",
+        "name": "恶魔的翅膀",
+        "icon": "item_47011",
+        "rank": 4,
+        "position": 10,
+        "effect": "",
+        "buff": "全能力+1\n物理伤害+5%\n魔法伤害+5%",
+        "adventureBuff": "生命上限+14",
+        "storageBuff": "生命上限+70",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "47008",
+        "name": "小恶魔气球",
+        "icon": "item_47008",
+        "rank": 3,
+        "position": 10,
+        "effect": "",
+        "buff": "魔法上限+10%",
+        "adventureBuff": "魔法攻击+4.5",
+        "storageBuff": "精炼魔攻+8",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "47002",
+        "name": "冒险者背包",
+        "icon": "item_47002",
+        "rank": 3,
+        "position": 10,
+        "effect": "",
+        "buff": "物理防御+15\n精炼值+10及力量90以上时物理攻击+20\n精炼值+10及敏捷90以上时装备攻速+5%\n精炼值+10及体质90以上时受到无属性伤害-10%\n精炼值+10及智力90以上时魔法攻击+20\n精炼值+10及灵巧90以上时远程物理伤害+5%\n精炼值+10及幸运90以上时暴击伤害+5%",
+        "adventureBuff": "包包格子+5",
+        "storageBuff": "包包格子+5",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48539",
+        "name": "狐狸假面",
+        "icon": "item_48539",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10\n敏捷+1\n幸运+1",
+        "adventureBuff": "魔法攻击+14",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48504",
+        "name": "方头巾",
+        "icon": "item_48504",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "不死种族减伤+4%",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      }
+    ]
+  }
+}

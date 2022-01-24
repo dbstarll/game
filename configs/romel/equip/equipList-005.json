@@ -1,0 +1,192 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843236,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 5,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "43613",
+        "name": "彗星短靴",
+        "icon": "item_43586",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n智力+6、体质+6\n生命上限+2500\n魔法上限+500；精炼+12时，魔法上限+6%；精炼+15时，魔法上限+6%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43611",
+        "name": "继承者皮靴",
+        "icon": "item_43611",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n体质+10\n生命上限+3000\n生命上限+3%；精炼+12时，生命上限+2%；精炼+15时，生命上限+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "生命上限+6%\n物伤减免+9%\n魔伤减免+9%\n人形种族减伤+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "43610",
+        "name": "宗族皮靴",
+        "icon": "item_43577",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n体质+10\n生命上限+3000\n生命上限+3%；精炼+12时，生命上限+2%；精炼+15时，生命上限+3%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43608",
+        "name": "平衡之理靴子",
+        "icon": "item_43608",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n力量+6、智力+6\n生命上限+2500\n物理、魔法攻击+3%；精炼+12时，物理、魔法攻击+3%；精炼+15时，物理、魔法攻击+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理、魔法伤害+6%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "43607",
+        "name": "天秤靴子",
+        "icon": "item_43559",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n力量+6、智力+6\n生命上限+2500\n物理、魔法攻击+3%；精炼+12时，物理、魔法攻击+3%；精炼+15时，物理、魔法攻击+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43605",
+        "name": "荣耀战靴",
+        "icon": "item_43605",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n智力+12\n生命上限+2500\n魔法伤害+2%；精炼+12时，魔法伤害+2%；精炼+15时，魔法伤害+2%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "魔法伤害+6%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "43604",
+        "name": "传承之靴",
+        "icon": "item_43551",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n智力+12\n生命上限+2500\n魔法伤害+2%；精炼+12时，魔法伤害+2%；精炼+15时，魔法伤害+2%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43602",
+        "name": "统治者战靴",
+        "icon": "item_43602",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n力量+12\n生命上限+2500\n近战物理伤害+2%；精炼+12时，近战物理伤害+2%；精炼+15时，近战物理伤害+2%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理伤害+6%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "43601",
+        "name": "勇武战靴",
+        "icon": "item_43552",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n力量+12\n生命上限+2500\n近战物理伤害+2%；精炼+12时，近战物理伤害+2%；精炼+15时，近战物理伤害+2%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43599",
+        "name": "斩龙者战靴",
+        "icon": "item_43599",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n力量+6、灵巧+6\n生命上限+2500\n物理攻击+4%；精炼+12时，物理攻击+4%；精炼+15时，物理攻击+4%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理穿刺+6%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      }
+    ]
+  }
+}

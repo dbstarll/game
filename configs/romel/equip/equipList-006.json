@@ -1,0 +1,191 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843246,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 6,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "43598",
+        "name": "龙皮靴",
+        "icon": "item_43538",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n力量+6、灵巧+6\n生命上限+2500\n物理攻击+4%；精炼+12时，物理攻击+4%；精炼+15时，物理攻击+4%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43596",
+        "name": "轻灵之鞋",
+        "icon": "item_43596",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n敏捷+12\n生命上限+2500\n暴击伤害+5%；精炼+12时，暴击伤害+5%；精炼+15时，暴击伤害+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理穿刺+6%\n物伤减免+9%\n魔伤减免+9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "43595",
+        "name": "羽毛鞋",
+        "icon": "item_43529",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n敏捷+12\n生命上限+2500\n暴击伤害+5%；精炼+12时，暴击伤害+5%；精炼+15时，暴击伤害+5%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43593",
+        "name": "精炼战靴",
+        "icon": "item_43593",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n体质+10\n生命上限+3000\n物伤、魔伤减免+3%；精炼+12时，物伤、魔伤减免+2%；精炼+15时，物伤、魔伤减免+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物伤、魔伤减免+6%\n受到风、地、水、火、无属性伤害-9%\n受到无、圣、暗、念、毒属性伤害-9%\n生命上限+6%\n物理防御+12%\n魔法防御+12%"
+      },
+      {
+        "id": "43592",
+        "name": "锻钢战靴",
+        "icon": "item_43516",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+120",
+        "buff": "移动速度+12%\n体质+10\n生命上限+3000\n物伤、魔伤减免+3%；精炼+12时，物伤、魔伤减免+2%；精炼+15时，物伤、魔伤减免+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43591",
+        "name": "敏捷补充装置",
+        "icon": "item_43591",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 5,
+        "effect": "物理防御+90",
+        "buff": "移动速度+12%\n装备攻速+5%\n受到伤害时，提升30点敏捷，持续10秒",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43098",
+        "name": "战役斗篷",
+        "icon": "item_43098",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 4,
+        "effect": "物理防御+100",
+        "buff": "力量+5、灵巧+5、暴击+5\n生命上限+2000\n普攻攻击力+240；精炼+10时，普攻伤害+3%；精炼+15时，普攻伤害+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "普攻伤害+12%\n普攻伤害减免+12%\n技能伤害减免+12%\n生命上限+12%\n物理防御+24%\n魔法防御+24%"
+      },
+      {
+        "id": "43097",
+        "name": "战斗斗篷",
+        "icon": "item_43016",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 4,
+        "effect": "物理防御+100",
+        "buff": "力量+5、灵巧+5、暴击+5\n生命上限+2000\n普攻攻击力+240；精炼+10时，普攻伤害+3%；精炼+15时，普攻伤害+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "43095",
+        "name": "皮革风衣",
+        "icon": "item_43095",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 4,
+        "effect": "物理防御+100",
+        "buff": "体质+10\n生命上限+3000\n魔伤减免+6%，魔法防御+5%；精炼+10时，魔伤减免+3%，魔法防御+5%；精炼+15时，魔伤减免+3%，魔法防御+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "技能伤害减免+12%\n普攻伤害减免+12%\n生命上限+12%\n物理防御+24%\n魔法防御+24%\n受到大、中、小型魔物伤害-12%"
+      },
+      {
+        "id": "43094",
+        "name": "棉麻风衣",
+        "icon": "item_43044",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 4,
+        "effect": "物理防御+100",
+        "buff": "体质+10\n生命上限+3000\n魔伤减免+6%，魔法防御+5%；精炼+10时，魔伤减免+3%，魔法防御+5%；精炼+15时，魔伤减免+3%，魔法防御+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      }
+    ]
+  }
+}

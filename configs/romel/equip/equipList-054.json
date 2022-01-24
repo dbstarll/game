@@ -1,0 +1,187 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843729,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 54,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "44022",
+        "name": "敏捷别针",
+        "icon": "item_44022",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+42",
+        "buff": "敏捷+2",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44021",
+        "name": "黑狐颈链",
+        "icon": "item_44021",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+66",
+        "buff": "可以使用【疾走】技能（提升移速100%，持续5秒。CD：60）",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44020",
+        "name": "智力耳环",
+        "icon": "item_44020",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+42",
+        "buff": "智力+2",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44019",
+        "name": "幸运项链",
+        "icon": "item_44019",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+48",
+        "buff": "幸运+3",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44016",
+        "name": "力量戒指",
+        "icon": "item_44016",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+42",
+        "buff": "力量+2",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44011",
+        "name": "发夹",
+        "icon": "item_44011",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+30",
+        "buff": "魔法上限+125",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44010",
+        "name": "犬牙手套",
+        "icon": "item_44010",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+64",
+        "buff": "灵巧+5\n恶魔种族加伤+5%",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44009",
+        "name": "红玛瑙发夹",
+        "icon": "item_44009",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+48",
+        "buff": "魔法上限+150\n使用技能时SP消耗降低5%",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44008",
+        "name": "永恒戒指",
+        "icon": "item_44008",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+66",
+        "buff": "灵巧+5\n智力+5\n【大巫师之杖Ⅷ】（【巫师之力】）+【创作者外袍Ⅷ】（【碎星者外袍】）+【永恒戒指Ⅷ】（【克拉肯之眼】）+【水晶靴Ⅳ】（【白宝石之靴】）：可变吟唱时间-5%，魔法伤害+3%，忽视魔法防御+3%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44007",
+        "name": "冰玫瑰戒指",
+        "icon": "item_44007",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+48",
+        "buff": "物理攻击+30\n受植物种族伤害-10%\n装备时不会被植物系的魔物主动攻击",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      }
+    ]
+  }
+}

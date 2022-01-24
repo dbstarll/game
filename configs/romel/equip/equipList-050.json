@@ -1,0 +1,217 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843689,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 50,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "42073",
+        "name": "放浪者外套",
+        "icon": "item_42073",
+        "rank": 3,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 3,
+        "effect": "物理防御+36",
+        "buff": "灵巧+4\n敏捷+4\n物理攻击+3%\n【黑翼V】+【放浪者外套IV】：力量+5，忽视物理防御+10%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "41851",
+        "name": "强袭双刃斧[1]",
+        "icon": "item_41851",
+        "rank": 3,
+        "job": [
+          "132",
+          "133",
+          "134",
+          "135"
+        ],
+        "position": 1,
+        "effect": "物理攻击+268",
+        "buff": "体质+6\n装备攻速+10%\n【炼金铠甲】+【强袭双刃斧】：每次普通攻击可使“艾米斯可鲁”物理攻击+3%，持续5秒，最多可叠3层",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "41850",
+        "name": "强袭战斧[1]",
+        "icon": "item_41850",
+        "rank": 3,
+        "job": [
+          "132",
+          "133",
+          "134",
+          "135"
+        ],
+        "position": 1,
+        "effect": "物理攻击+128",
+        "buff": "体质+2\n装备攻速+5%\n【炼金铠甲】+【强袭战斧】：每次普通攻击可使“艾米斯可鲁”物理攻击+3%，持续5秒，最多可叠3层",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "41545",
+        "name": "艾尔德之锤[1]",
+        "icon": "item_41545",
+        "rank": 4,
+        "job": [
+          "132",
+          "133",
+          "134",
+          "135"
+        ],
+        "position": 1,
+        "effect": "物理攻击+340",
+        "buff": "力量+4\n使炼金使用【强酸攻击】【火烟瓶投掷】【强酸火烟瓶投掷】导致的装备部位破坏基础率上升\n精炼每+1【火烟瓶投掷】的伤害+5%，【强酸攻击】的伤害+2%，【强酸火烟瓶投掷】的技能倍率+30%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "41544",
+        "name": "羽翼权杖[1]",
+        "icon": "item_41544",
+        "rank": 3,
+        "job": [
+          "132",
+          "133",
+          "134",
+          "135"
+        ],
+        "position": 1,
+        "effect": "物理攻击+438",
+        "buff": "智力+6\n“巴尼米乐斯”的【善变】技能倍率+75%\n每精炼+1，“巴尼米乐斯”的【善变】技能倍率+35%",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "41543",
+        "name": "羽毛权杖[1]",
+        "icon": "item_41543",
+        "rank": 3,
+        "job": [
+          "132",
+          "133",
+          "134",
+          "135"
+        ],
+        "position": 1,
+        "effect": "物理攻击+218",
+        "buff": "智力+2\n“巴尼米乐斯”的【善变】技能倍率+75%\n每精炼+1，“巴尼米乐斯”的【善变】技能倍率+35%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "41237",
+        "name": "盗贼之弓[1]",
+        "icon": "item_41237",
+        "rank": 3,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+180",
+        "buff": "灵巧+4\n攻击速度+5%\n普通攻击时有概率触发【精通弓箭】效果，【精通弓箭】：攻速+5%，远程物理伤害+10%，持续3秒",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40747",
+        "name": "黑翼[1]",
+        "icon": "item_40747",
+        "rank": 3,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+144",
+        "buff": "敏捷+4\n装备攻速+4%\n每精炼+1，普通攻击力提高30点\n【黑翼V】+【放浪者外套IV】：力量+5，忽视物理防御+10%\n【黑翼V】+【狂徒外套】：力量+5，忽视物理防御+10%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40746",
+        "name": "破甲短锥[1]",
+        "icon": "item_40746",
+        "rank": 3,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+340",
+        "buff": "生命上限+300\n幸运+3\n忽视物理防御+25%\n精炼+5、+10、+15时，使【卸除饰品】【卸除盾牌】基础触发率上升5%、5%、10%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40745",
+        "name": "牙科手术刀[1]",
+        "icon": "item_40745",
+        "rank": 3,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+428",
+        "buff": "力量+8\n生命上限+1000\n精炼+10，+15时，【背刺】对人型魔物伤害+5，+10%",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843336,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 15,
+    "pageSize": 10,
+    "pageCount": 74,
+    "total": 731,
+    "list": [
+      {
+        "id": "42646",
+        "name": "勇气之旗",
+        "icon": "item_42646",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "幸运+12\n生命上限+2800\n暴击+25、普攻攻击力+400\n精炼+10时，普攻攻击力+200；精炼+15时，普攻攻击力+200",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理穿刺+18%\n物伤减免+24%\n魔伤减免+24%\n生命上限+18%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42645",
+        "name": "古代旗帜",
+        "icon": "item_42645",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "幸运+12\n生命上限+2800\n暴击+25、普攻攻击力+400\n精炼+10时，普攻攻击力+200；精炼+15时，普攻攻击力+200",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42643",
+        "name": "烈焰轻羽",
+        "icon": "item_42643",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "敏捷+12\n生命上限+2800\n装备攻速+24%；精炼+10时，物理攻击+8%；精炼+15时，物理攻击+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "物理攻击+30%\n物伤减免+24%\n魔伤减免+24%\n生命上限+18%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42642",
+        "name": "赤羽毛笔",
+        "icon": "item_42642",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "敏捷+12\n生命上限+2800\n装备攻速+24%；精炼+10时，物理攻击+8%；精炼+15时，物理攻击+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42640",
+        "name": "彼岸之网",
+        "icon": "item_42640",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "智力+12\n生命上限+2800\n可变吟唱时间-20%、固定吟唱时间-10%、魔法攻击+200；精炼+10时，魔法攻击+8%；精炼+15时，魔法攻击+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "魔法穿刺+18%\n物伤减免+24%\n魔伤减免+24%\n生命上限+18%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42639",
+        "name": "捕梦网",
+        "icon": "item_42639",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "智力+12\n生命上限+2800\n可变吟唱时间-20%、固定吟唱时间-10%、魔法攻击+200；精炼+10时，魔法攻击+8%；精炼+15时，魔法攻击+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42637",
+        "name": "赦罪金",
+        "icon": "item_42637",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+200",
+        "buff": "智力+12\n生命上限+3000\n所有技能SP消耗-20%、SP恢复+20%；精炼+10时，所有技能SP消耗-10%；精炼+15时，技能冷却-10%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "技能延迟-18%\n物伤减免+24%\n魔伤减免+24%\n生命上限+18%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42636",
+        "name": "古代金币",
+        "icon": "item_42636",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+200",
+        "buff": "智力+12\n生命上限+3000\n所有技能SP消耗-20%、SP恢复+20%；精炼+10时，所有技能SP消耗-10%；精炼+15时，技能冷却-10%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "42634",
+        "name": "恶魔之颅",
+        "icon": "item_42634",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "智力+12\n生命上限+2800\n忽视魔法防御+20%；精炼+10时，忽视魔法防御+8%；精炼+15时，忽视魔法防御+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0,
+        "randomBuff": "忽视魔法防御+30%\n物伤减免+24%\n魔伤减免+24%\n生命上限+18%\n物理防御+36%\n魔法防御+36%"
+      },
+      {
+        "id": "42633",
+        "name": "水晶之颅",
+        "icon": "item_42633",
+        "rank": 2,
+        "job": [
+          "0"
+        ],
+        "position": 2,
+        "effect": "物理防御+180",
+        "buff": "智力+12\n生命上限+2800\n忽视魔法防御+20%；精炼+10时，忽视魔法防御+8%；精炼+15时，忽视魔法防御+8%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      }
+    ]
+  }
+}

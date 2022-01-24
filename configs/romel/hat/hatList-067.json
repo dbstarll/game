@@ -1,0 +1,533 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1642843083,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.200.160",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 67,
+    "pageSize": 30,
+    "pageCount": 68,
+    "total": 2037,
+    "list": [
+      {
+        "id": "45083",
+        "name": "戏剧头盔",
+        "icon": "item_45083",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "物理防御+2",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45082",
+        "name": "招聘组队员广告板",
+        "icon": "item_45082",
+        "rank": 1,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5",
+        "adventureBuff": "物理防御+2",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45078",
+        "name": "花发圈",
+        "icon": "item_45078",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "魔法防御+3",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45077",
+        "name": "爱心发夹",
+        "icon": "item_45077",
+        "rank": 1,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5",
+        "adventureBuff": "生命上限+28",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45076",
+        "name": "乐园团帽子",
+        "icon": "item_45076",
+        "rank": 1,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45075",
+        "name": "普隆德拉军帽",
+        "icon": "item_45075",
+        "rank": 1,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45073",
+        "name": "发箍",
+        "icon": "item_45073",
+        "rank": 1,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5",
+        "adventureBuff": "物理防御+2",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45072",
+        "name": "山羊头盔",
+        "icon": "item_45072",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "力量+5\n忽视物理防御+10%\n精炼+10时，忽视物理防御+10%",
+        "adventureBuff": "物理攻击+8",
+        "storageBuff": "精炼物攻+10",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+4.5"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+6，魔法防御+3"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45071",
+        "name": "小丑帽",
+        "icon": "item_45071",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "魔法防御+5\n幸运+2",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45070",
+        "name": "趴趴小巴",
+        "icon": "item_45070",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "物理攻击+40\n精炼+10时，暴击+10",
+        "adventureBuff": "物理攻击+8",
+        "storageBuff": "精炼物攻+10",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+3，物理防御+3"
+          },
+          {
+            "lv": 8,
+            "buff": "暴击伤害+1%"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45068",
+        "name": "骨制头盔",
+        "icon": "item_45068",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5\n受到暗属性伤害-15%",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45067",
+        "name": "魔导师的帽子",
+        "icon": "item_45067",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5\n魔法防御+5\n可变吟唱时间-10%\n技能使用时SP消耗量+20%",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "魔法攻击+6",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+1，生命上限+10"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+3"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45066",
+        "name": "出游帽子",
+        "icon": "item_45066",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "魔法防御+10\n可变吟唱时间-5%\n精炼+10时，可变吟唱时间-15%",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "精炼魔攻+8",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+3"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+4，生命上限+40"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45065",
+        "name": "史汀帽子",
+        "icon": "item_45065",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10\n力量+2\n体质+1\n魔法防御+3\n地属性减伤+5%\n对火属性魔物伤害+5%",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45064",
+        "name": "蜡烛",
+        "icon": "item_45064",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45063",
+        "name": "魔术师帽",
+        "icon": "item_45063",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10\n灵巧+1\n敏捷+1\n魔法上限+50",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45062",
+        "name": "恶魔侍者角",
+        "icon": "item_45062",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10\n敏捷+1\n魔法防御+5",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "生命上限+30"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+3"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45061",
+        "name": "恶魔女仆角",
+        "icon": "item_45061",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5\n智力+1\n魔法防御+10",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "魔法攻击+6",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+1，物理防御+1"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+2，魔法防御+1"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45059",
+        "name": "婚礼头纱",
+        "icon": "item_45059",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "魔法防御+10\n生命上限+150\n只限女性装备",
+        "adventureBuff": "生命上限+32",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+2，物理防御+2"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+4，魔法防御+2"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45058",
+        "name": "首领冠冕",
+        "icon": "item_45058",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "智力+2\n幸运+1\n反射5%的魔法伤害\n精炼+10时，反射率提升10%，且额外获得魔法防御+5%",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+28",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45056",
+        "name": "领导者头箍",
+        "icon": "item_45056",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "力量+1\n智力+1\n幸运+1\n精炼+10时，生命上限+1000",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+28",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+3，生命上限+30"
+          },
+          {
+            "lv": 8,
+            "buff": "力量+1"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45055",
+        "name": "尖角发圈",
+        "icon": "item_45055",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45053",
+        "name": "小恶魔帽",
+        "icon": "item_45053",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10\n力量+1\n智力+1",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "精炼物攻+8",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+2，物理防御+2"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+6"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45052",
+        "name": "星星发夹",
+        "icon": "item_45052",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "魔法攻击+6",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+1，物理防御+1"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+2，魔法防御+1"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45051",
+        "name": "破产之哀",
+        "icon": "item_45051",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5\n智力+1\n灵巧+1",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "生命上限+30"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+2，生命上限+20"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45049",
+        "name": "兽人头盔",
+        "icon": "item_45049",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+15",
+        "adventureBuff": "物理攻击+3",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+3"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+4，魔法防御+2"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45048",
+        "name": "花冠",
+        "icon": "item_45048",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "幸运+3\n闪避+5\n精炼每+1闪避+1，最多可提升至+15",
+        "adventureBuff": "物理防御+5",
+        "storageBuff": "生命上限+28",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45047",
+        "name": "护士帽",
+        "icon": "item_45047",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5\n智力+2",
+        "adventureBuff": "生命上限+28",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45045",
+        "name": "苹果头饰",
+        "icon": "item_45045",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+2\n灵巧+3",
+        "adventureBuff": "物理防御+3",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "生命上限+30"
+          },
+          {
+            "lv": 8,
+            "buff": "生命上限+60"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45042",
+        "name": "蛋壳帽",
+        "icon": "item_45042",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "物理防御+2",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+1.5"
+          },
+          {
+            "lv": 8,
+            "buff": "生命上限+60"
+          }
+        ],
+        "isCompose": 1
+      }
+    ]
+  }
+}
