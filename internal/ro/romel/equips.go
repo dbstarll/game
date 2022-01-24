@@ -86,7 +86,6 @@ func (e *equips) Size() int {
 	return len(e.ids)
 }
 
-func (e *equips) Get(name string) (*Equip, bool) {
-	equip, found := e.names[name]
-	return equip, found
+func (e *equips) Get(name string) *Equip {
+	return e.names[name]
 }

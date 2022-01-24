@@ -3,14 +3,17 @@ package main
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ro/client"
+	"github.com/dbstarll/game/internal/ro/romel"
 	"time"
 )
 
 func main() {
-	api := client.NewRomelApi("sd32rfgfe344edsd")
-	if err := getMonsterList(api); err != nil {
-		fmt.Printf("err: %+v\n", err)
-	}
+	//api := client.NewRomelApi("sd32rfgfe344edsd")
+	//if err := getMonsterList(api); err != nil {
+	//	fmt.Printf("err: %+v\n", err)
+	//}
+
+	fmt.Printf("%+v\n", romel.Equips.Get("犬奴"))
 }
 
 func getCardList(api *client.RomelApi) error {

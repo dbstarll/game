@@ -77,7 +77,6 @@ func (c *cards) Size() int {
 	return len(c.ids)
 }
 
-func (c *cards) Get(name string) (*Card, bool) {
-	card, found := c.names[name]
-	return card, found
+func (c *cards) Get(name string) *Card {
+	return c.names[name]
 }
