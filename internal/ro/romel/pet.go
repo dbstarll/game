@@ -16,7 +16,6 @@ type pets struct {
 type Pet struct {
 	Id            string  `json:"id"`
 	Name          string  `json:"name"`
-	Avatar        string  `json:"avatar"`
 	Intro         string  `json:"intro"`
 	Race          int     `json:"race"`
 	Nature        int     `json:"nature"`
@@ -42,9 +41,8 @@ type Skill struct {
 }
 
 type Cost struct {
-	Id     string `json:"id"`
-	Name   string `json:"name"`
-	Avatar string `json:"avatar"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
 
 func init() {
