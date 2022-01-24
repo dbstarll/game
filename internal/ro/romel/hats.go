@@ -2,8 +2,10 @@ package romel
 
 import (
 	"encoding/json"
+	"github.com/dbstarll/game/internal/ro/dimension/position"
 	"github.com/pkg/errors"
 	"log"
+	"strings"
 )
 
 var Hats *hats
@@ -14,16 +16,15 @@ type hats struct {
 }
 
 type Hat struct {
-	Id                string       `json:"id"`
-	Name              string       `json:"name"`
-	Rank              int          `json:"rank"`
-	Position          int          `json:"position"`
-	Effect            string       `json:"effect"`
-	Buff              string       `json:"buff"`
-	AdventureBuff     string       `json:"adventureBuff"`
-	StorageBuff       string       `json:"storageBuff"`
-	StorageRefineBuff []RefineBuff `json:"storageRefineBuff"`
-	IsCompose         int          `json:"isCompose"`
+	Id                string            `json:"id"`
+	Name              string            `json:"name"`
+	Rank              int               `json:"rank"`
+	Position          position.Position `json:"position"`
+	Buff              string            `json:"buff"`
+	AdventureBuff     string            `json:"adventureBuff"`
+	StorageBuff       string            `json:"storageBuff"`
+	StorageRefineBuff *[]RefineBuff     `json:"storageRefineBuff"`
+	IsCompose         int               `json:"isCompose"`
 }
 
 type RefineBuff struct {
@@ -87,4 +88,57 @@ func (e *hats) Size() int {
 
 func (e *hats) Get(name string) *Hat {
 	return e.names[name]
+}
+
+func (e *hats) Filter(filter *Hat, fn func(*Hat) error) (int, error) {
+	if filter == nil {
+		filter = &Hat{}
+	}
+	count := 0
+	for _, hat := range e.ids {
+		if filter.Rank > 0 && filter.Rank != hat.Rank {
+			continue
+		} else if filter.Position > position.Unlimited && filter.Position != hat.Position {
+			continue
+		} else if filter.IsCompose >= 0 && filter.IsCompose != hat.IsCompose {
+			continue
+		} else if len(filter.Name) > 0 && strings.Index(hat.Name, filter.Name) < 0 {
+			continue
+		} else if len(filter.Buff) > 0 && strings.Index(hat.Buff, filter.Buff) < 0 {
+			continue
+		} else if len(filter.AdventureBuff) > 0 && strings.Index(hat.AdventureBuff, filter.AdventureBuff) < 0 {
+			continue
+		} else if len(filter.StorageBuff) > 0 && strings.Index(hat.StorageBuff, filter.StorageBuff) < 0 {
+			continue
+		} else if filter.StorageRefineBuff != nil {
+			if hat.StorageRefineBuff == nil {
+				continue
+			} else {
+				match, testCount := false, 0
+				for _, frb := range *filter.StorageRefineBuff {
+					if len(frb.Buff) > 0 {
+						testCount++
+						for _, rb := range *hat.StorageRefineBuff {
+							if strings.Index(rb.Buff, frb.Buff) >= 0 {
+								match = true
+								break
+							}
+						}
+						if match {
+							break
+						}
+					}
+				}
+				if testCount > 0 && !match {
+					continue
+				}
+			}
+		}
+
+		count++
+		if err := fn(hat); err != nil {
+			return 0, err
+		}
+	}
+	return count, nil
 }
