@@ -27,12 +27,6 @@ type Monster struct {
 	IsStar    int    `json:"isStar"`
 	IsDead    int    `json:"isDead"`
 	IsSpecial int    `json:"isSpecial"`
-
-	//Hobby         []Hobby `json:"hobby"`
-	//Equip         []Hobby `json:"equip"`
-	//Skill         []Skill `json:"skill"`
-	//Cost          []Cost  `json:"cost"`
-	//AdventureBuff string  `json:"adventureBuff"`
 }
 
 func init() {
