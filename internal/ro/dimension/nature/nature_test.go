@@ -7,7 +7,7 @@ func TestNature_Restraint(t *testing.T) {
 		name    string
 		n       Nature
 		defence Nature
-		want    float32
+		want    float64
 	}{
 		{
 			name:    "Earth->Wind",
