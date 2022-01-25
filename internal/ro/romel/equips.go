@@ -19,7 +19,7 @@ type Equip struct {
 	Id         string            `json:"id"`
 	Name       string            `json:"name"`
 	Rank       int               `json:"rank"`
-	Job        []string          `json:"job"`
+	Job        *[]string         `json:"job"`
 	Position   position.Position `json:"position"`
 	Effect     string            `json:"effect"`
 	Buff       string            `json:"buff"`
@@ -141,20 +141,24 @@ func (e *Equip) match(filter *Equip) bool {
 		return false
 	} else if len(filter.Effect) > 0 && strings.Index(e.Effect, filter.Effect) < 0 {
 		return false
-	} else if len(filter.Job) > 0 {
-		for _, filterJob := range filter.Job {
-			if filterJob == "0" {
-				return true
-			} else {
-				for _, job := range e.Job {
-					if job == "0" || job == filterJob {
-						return true
-					}
-				}
-			}
-		}
+	} else if filter.Job != nil && e.matchAnyJob(filter.Job) {
 		return false
 	} else {
 		return true
 	}
+}
+
+func (e *Equip) matchAnyJob(filters *[]string) bool {
+	for _, filter := range *filters {
+		if filter == "0" {
+			return true
+		} else {
+			for _, job := range *e.Job {
+				if job == "0" || job == filter {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
