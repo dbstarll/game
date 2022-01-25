@@ -55,13 +55,13 @@ func loadHats() (*hats, error) {
 	}
 }
 
-func (e *hats) add(item map[string]interface{}, data []byte) error {
+func (h *hats) add(item map[string]interface{}, data []byte) error {
 	hat := &Hat{}
 	if err := json.Unmarshal(data, hat); err != nil {
 		return errors.WithStack(err)
 	} else {
-		e.ids[hat.Id] = hat
-		e.names[hat.Name] = hat
+		h.ids[hat.Id] = hat
+		h.names[hat.Name] = hat
 		delete(item, "id")
 		delete(item, "name")
 		delete(item, "icon")
@@ -82,63 +82,77 @@ func (e *hats) add(item map[string]interface{}, data []byte) error {
 	}
 }
 
-func (e *hats) Size() int {
-	return len(e.ids)
+func (h *hats) Size() int {
+	return len(h.ids)
 }
 
-func (e *hats) Get(name string) *Hat {
-	return e.names[name]
+func (h *hats) Get(name string) *Hat {
+	return h.names[name]
 }
 
-func (e *hats) Filter(filter *Hat, fn func(*Hat) error) (int, error) {
-	if filter == nil {
-		filter = &Hat{}
+func (h *hats) Filter(fn func(*Hat) error, filterFn ...func(filter *Hat)) (int, error) {
+	count, filters := 0, make([]*Hat, len(filterFn))
+	for idx, f := range filterFn {
+		filters[idx] = &Hat{IsCompose: -1}
+		f(filters[idx])
 	}
-	count := 0
-	for _, hat := range e.ids {
-		if filter.Rank > 0 && filter.Rank != hat.Rank {
-			continue
-		} else if filter.Position > position.Unlimited && filter.Position != hat.Position {
-			continue
-		} else if filter.IsCompose >= 0 && filter.IsCompose != hat.IsCompose {
-			continue
-		} else if len(filter.Name) > 0 && strings.Index(hat.Name, filter.Name) < 0 {
-			continue
-		} else if len(filter.Buff) > 0 && strings.Index(hat.Buff, filter.Buff) < 0 {
-			continue
-		} else if len(filter.AdventureBuff) > 0 && strings.Index(hat.AdventureBuff, filter.AdventureBuff) < 0 {
-			continue
-		} else if len(filter.StorageBuff) > 0 && strings.Index(hat.StorageBuff, filter.StorageBuff) < 0 {
-			continue
-		} else if filter.StorageRefineBuff != nil {
-			if hat.StorageRefineBuff == nil {
-				continue
-			} else {
-				match, testCount := false, 0
-				for _, frb := range *filter.StorageRefineBuff {
-					if len(frb.Buff) > 0 {
-						testCount++
-						for _, rb := range *hat.StorageRefineBuff {
-							if strings.Index(rb.Buff, frb.Buff) >= 0 {
-								match = true
-								break
-							}
-						}
-						if match {
-							break
-						}
-					}
-				}
-				if testCount > 0 && !match {
-					continue
-				}
+	for _, hat := range h.ids {
+		if hat.matchAny(filters...) {
+			count++
+			if err := fn(hat); err != nil {
+				return 0, err
 			}
-		}
-
-		count++
-		if err := fn(hat); err != nil {
-			return 0, err
 		}
 	}
 	return count, nil
+}
+
+func (h *Hat) matchAny(filters ...*Hat) bool {
+	for _, filter := range filters {
+		if h.match(filter) {
+			return true
+		}
+	}
+	return len(filters) == 0
+}
+
+func (h *Hat) match(filter *Hat) bool {
+	if filter.Rank > 0 && filter.Rank != h.Rank {
+		return false
+	} else if filter.Position > position.Unlimited && filter.Position != h.Position {
+		return false
+	} else if filter.IsCompose >= 0 && filter.IsCompose != h.IsCompose {
+		return false
+	} else if len(filter.Name) > 0 && strings.Index(h.Name, filter.Name) < 0 {
+		return false
+	} else if len(filter.Buff) > 0 && strings.Index(h.Buff, filter.Buff) < 0 {
+		return false
+	} else if len(filter.AdventureBuff) > 0 && strings.Index(h.AdventureBuff, filter.AdventureBuff) < 0 {
+		return false
+	} else if len(filter.StorageBuff) > 0 && strings.Index(h.StorageBuff, filter.StorageBuff) < 0 {
+		return false
+	} else if filter.StorageRefineBuff != nil {
+		if h.StorageRefineBuff == nil {
+			return false
+		} else {
+			match, testCount := false, 0
+			for _, filterBuff := range *filter.StorageRefineBuff {
+				if len(filterBuff.Buff) > 0 {
+					testCount++
+					for _, buff := range *h.StorageRefineBuff {
+						if strings.Index(buff.Buff, filterBuff.Buff) >= 0 {
+							match = true
+							break
+						}
+					}
+					if match {
+						break
+					}
+				}
+			}
+			return testCount == 0 || match
+		}
+	} else {
+		return true
+	}
 }
