@@ -24,7 +24,7 @@ func TestNature_Restraint(t *testing.T) {
 		{
 			name:    "Poison->Unlimited",
 			n:       Poison,
-			defence: Unlimited,
+			defence: -1,
 			want:    1,
 		},
 		{
