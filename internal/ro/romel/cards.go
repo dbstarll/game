@@ -84,32 +84,48 @@ func (c *cards) Get(name string) *Card {
 	return c.names[name]
 }
 
-func (c *cards) Filter(filter *Card, fn func(*Card) error) (int, error) {
-	if filter == nil {
-		filter = &Card{}
+func (c *cards) Filter(fn func(*Card) error, filterFn ...func(filter *Card)) (int, error) {
+	count, filters := 0, make([]*Card, len(filterFn))
+	for idx, f := range filterFn {
+		filters[idx] = &Card{IsCompose: -1}
+		f(filters[idx])
 	}
-	count := 0
 	for _, card := range c.ids {
-		if filter.Quality > quality.Unlimited && filter.Quality != card.Quality {
-			continue
-		} else if filter.Position > position.Unlimited && filter.Position != card.Position {
-			continue
-		} else if filter.IsCompose >= 0 && filter.IsCompose != card.IsCompose {
-			continue
-		} else if len(filter.Name) > 0 && strings.Index(card.Name, filter.Name) < 0 {
-			continue
-		} else if len(filter.Buff) > 0 && strings.Index(card.Buff, filter.Buff) < 0 {
-			continue
-		} else if len(filter.AdventureBuff) > 0 && strings.Index(card.AdventureBuff, filter.AdventureBuff) < 0 {
-			continue
-		} else if len(filter.StorageBuff) > 0 && strings.Index(card.StorageBuff, filter.StorageBuff) < 0 {
-			continue
-		}
-
-		count++
-		if err := fn(card); err != nil {
-			return 0, err
+		if card.matchAny(filters...) {
+			count++
+			if err := fn(card); err != nil {
+				return 0, err
+			}
 		}
 	}
 	return count, nil
+}
+
+func (c *Card) matchAny(filters ...*Card) bool {
+	for _, filter := range filters {
+		if c.match(filter) {
+			return true
+		}
+	}
+	return len(filters) == 0
+}
+
+func (c *Card) match(filter *Card) bool {
+	if filter.Quality > quality.Unlimited && filter.Quality != c.Quality {
+		return false
+	} else if filter.Position > position.Unlimited && filter.Position != c.Position {
+		return false
+	} else if filter.IsCompose >= 0 && filter.IsCompose != c.IsCompose {
+		return false
+	} else if len(filter.Name) > 0 && strings.Index(c.Name, filter.Name) < 0 {
+		return false
+	} else if len(filter.Buff) > 0 && strings.Index(c.Buff, filter.Buff) < 0 {
+		return false
+	} else if len(filter.AdventureBuff) > 0 && strings.Index(c.AdventureBuff, filter.AdventureBuff) < 0 {
+		return false
+	} else if len(filter.StorageBuff) > 0 && strings.Index(c.StorageBuff, filter.StorageBuff) < 0 {
+		return false
+	} else {
+		return true
+	}
 }
