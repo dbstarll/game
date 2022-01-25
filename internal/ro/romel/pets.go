@@ -3,6 +3,9 @@ package romel
 import (
 	"encoding/json"
 	"github.com/dbstarll/game/internal/ro/dimension/accessWay"
+	"github.com/dbstarll/game/internal/ro/dimension/nature"
+	"github.com/dbstarll/game/internal/ro/dimension/race"
+	"github.com/dbstarll/game/internal/ro/dimension/shape"
 	"github.com/pkg/errors"
 	"log"
 	"strings"
@@ -19,9 +22,9 @@ type Pet struct {
 	Id            string              `json:"id"`
 	Name          string              `json:"name"`
 	Intro         string              `json:"intro"`
-	Race          int                 `json:"race"`
-	Nature        int                 `json:"nature"`
-	Size          int                 `json:"size"`
+	Race          race.Race           `json:"race"`
+	Nature        nature.Nature       `json:"nature"`
+	Size          shape.Shape         `json:"size"`
 	Star          int                 `json:"star"`
 	AccessWay     accessWay.AccessWay `json:"accessway"`
 	Hobby         *[]Hobby            `json:"hobby"`
@@ -111,7 +114,7 @@ func (p *pets) Get(name string) *Pet {
 func (p *pets) Filter(fn func(*Pet) error, filterFn ...func(filter *Pet)) (int, error) {
 	count, filters := 0, make([]*Pet, len(filterFn))
 	for idx, f := range filterFn {
-		filters[idx] = &Pet{AccessWay: -1}
+		filters[idx] = &Pet{AccessWay: -1, Race: -1, Nature: -1}
 		f(filters[idx])
 	}
 	for _, pet := range p.ids {
@@ -135,11 +138,11 @@ func (p *Pet) matchAny(filters ...*Pet) bool {
 }
 
 func (p *Pet) match(filter *Pet) bool {
-	if filter.Race > 0 && filter.Race != p.Race {
+	if filter.Race >= 0 && filter.Race != p.Race {
 		return false
-	} else if filter.Nature > 0 && filter.Nature != p.Nature {
+	} else if filter.Nature >= 0 && filter.Nature != p.Nature {
 		return false
-	} else if filter.Size > 0 && filter.Size != p.Size {
+	} else if filter.Size > shape.Unlimited && filter.Size != p.Size {
 		return false
 	} else if filter.Star > 0 && filter.Star != p.Star {
 		return false

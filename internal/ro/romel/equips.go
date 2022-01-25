@@ -3,6 +3,7 @@ package romel
 import (
 	"encoding/json"
 	"github.com/dbstarll/game/internal/ro/dimension/position"
+	"github.com/dbstarll/game/internal/ro/dimension/quality"
 	"github.com/pkg/errors"
 	"log"
 	"strings"
@@ -18,7 +19,7 @@ type equips struct {
 type Equip struct {
 	Id         string            `json:"id"`
 	Name       string            `json:"name"`
-	Rank       int               `json:"rank"`
+	Rank       quality.Quality   `json:"rank"`
 	Job        *[]string         `json:"job"`
 	Position   position.Position `json:"position"`
 	Effect     string            `json:"effect"`
@@ -119,7 +120,7 @@ func (e *Equip) matchAny(filters ...*Equip) bool {
 }
 
 func (e *Equip) match(filter *Equip) bool {
-	if filter.Rank > 0 && filter.Rank != e.Rank {
+	if filter.Rank > quality.Unlimited && filter.Rank != e.Rank {
 		return false
 	} else if filter.Position > position.Unlimited && filter.Position != e.Position {
 		return false
