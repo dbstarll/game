@@ -131,28 +131,32 @@ func (h *Hat) match(filter *Hat) bool {
 		return false
 	} else if len(filter.StorageBuff) > 0 && strings.Index(h.StorageBuff, filter.StorageBuff) < 0 {
 		return false
-	} else if filter.StorageRefineBuff != nil {
-		if h.StorageRefineBuff == nil {
-			return false
-		} else {
-			match, testCount := false, 0
-			for _, filterBuff := range *filter.StorageRefineBuff {
-				if len(filterBuff.Buff) > 0 {
-					testCount++
-					for _, buff := range *h.StorageRefineBuff {
-						if strings.Index(buff.Buff, filterBuff.Buff) >= 0 {
-							match = true
-							break
-						}
-					}
-					if match {
+	} else if filter.StorageRefineBuff != nil && !h.matchAnyStorageRefineBuff(filter.StorageRefineBuff) {
+		return false
+	} else {
+		return true
+	}
+}
+
+func (h *Hat) matchAnyStorageRefineBuff(filters *[]RefineBuff) bool {
+	if h.StorageRefineBuff == nil {
+		return false
+	} else {
+		match, matchCount := false, 0
+		for _, filter := range *filters {
+			if len(filter.Buff) > 0 {
+				matchCount++
+				for _, buff := range *h.StorageRefineBuff {
+					if strings.Index(buff.Buff, filter.Buff) >= 0 {
+						match = true
 						break
 					}
 				}
+				if match {
+					break
+				}
 			}
-			return testCount == 0 || match
 		}
-	} else {
-		return true
+		return matchCount == 0 || match
 	}
 }
