@@ -1,7 +1,9 @@
 package job
 
 import (
+	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
+	"strconv"
 )
 
 //职业
@@ -308,4 +310,15 @@ func (j *Job) UnmarshalYAML(value *yaml.Node) error {
 		}
 	}
 	return nil
+}
+
+func (j *Job) UnmarshalJSON(data []byte) error {
+	if str, err := strconv.Unquote(string(data)); err != nil {
+		return errors.WithStack(err)
+	} else if i, err := strconv.Atoi(str); err != nil {
+		return errors.WithStack(err)
+	} else {
+		*j = Job(i)
+		return nil
+	}
 }

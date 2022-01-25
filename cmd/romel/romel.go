@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ro/client"
+	"github.com/dbstarll/game/internal/ro/dimension/quality"
 	"github.com/dbstarll/game/internal/ro/romel"
+	"log"
 	"time"
 )
 
@@ -13,7 +15,24 @@ func main() {
 	//	fmt.Printf("err: %+v\n", err)
 	//}
 
-	fmt.Printf("%+v\n", romel.Equips.Get("犬奴"))
+	cnt := make(map[quality.Quality]int)
+	if count, err := romel.Equips.Filter(func(item *romel.Equip) error {
+		token := item.Rank
+		if ov, exist := cnt[token]; exist {
+			cnt[token] = ov + 1
+		} else {
+			cnt[token] = 1
+		}
+		fmt.Printf("%s: %+v\n", item.Name, item.Rank)
+		return nil
+	}); err != nil {
+		log.Fatalf("%+v", err)
+	} else {
+		fmt.Printf("count: %d\n", count)
+		for token, c := range cnt {
+			fmt.Printf("\t%+v=%d\n", token, c)
+		}
+	}
 }
 
 func getCardList(api *client.RomelApi) error {
