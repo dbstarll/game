@@ -1,6 +1,8 @@
 package position
 
-import "gopkg.in/yaml.v3"
+import (
+	"gopkg.in/yaml.v3"
+)
 
 //部位
 type Position int
@@ -20,6 +22,7 @@ const (
 	Tail               // 尾部
 	Ride               // 坐骑
 	Fashion            // 时装
+	God                // 神器
 )
 
 func (p Position) String() string {
@@ -52,6 +55,8 @@ func (p Position) String() string {
 		return "坐骑"
 	case Fashion:
 		return "时装"
+	case God:
+		return "神器"
 	default:
 		return "未知"
 	}

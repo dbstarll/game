@@ -2,8 +2,10 @@ package romel
 
 import (
 	"encoding/json"
+	"github.com/dbstarll/game/internal/ro/dimension/position"
 	"github.com/pkg/errors"
 	"log"
+	"strings"
 )
 
 var Equips *equips
@@ -14,19 +16,19 @@ type equips struct {
 }
 
 type Equip struct {
-	Id         string   `json:"id"`
-	Name       string   `json:"name"`
-	Rank       int      `json:"rank"`
-	Job        []string `json:"job"`
-	Position   int      `json:"position"`
-	Effect     string   `json:"effect"`
-	Buff       string   `json:"buff"`
-	IsCompose  int      `json:"isCompose"`
-	IsUpgrade  int      `json:"isUpgrade"`
-	IsHigh     int      `json:"isHigh"`
-	CanSlot    int      `json:"canSlot"`
-	CanUpgrade int      `json:"canUpgrade"`
-	RandomBuff string   `json:"randomBuff"`
+	Id         string            `json:"id"`
+	Name       string            `json:"name"`
+	Rank       int               `json:"rank"`
+	Job        []string          `json:"job"`
+	Position   position.Position `json:"position"`
+	Effect     string            `json:"effect"`
+	Buff       string            `json:"buff"`
+	IsCompose  int               `json:"isCompose"`
+	IsUpgrade  int               `json:"isUpgrade"`
+	IsHigh     int               `json:"isHigh"`
+	CanSlot    int               `json:"canSlot"`
+	CanUpgrade int               `json:"canUpgrade"`
+	RandomBuff string            `json:"randomBuff"`
 }
 
 func init() {
@@ -88,4 +90,71 @@ func (e *equips) Size() int {
 
 func (e *equips) Get(name string) *Equip {
 	return e.names[name]
+}
+
+func (e *equips) Filter(fn func(*Equip) error, filterFn ...func(filter *Equip)) (int, error) {
+	count, filters := 0, make([]*Equip, len(filterFn))
+	for idx, f := range filterFn {
+		filters[idx] = &Equip{IsCompose: -1, IsUpgrade: -1, IsHigh: -1, CanSlot: -1, CanUpgrade: -1}
+		f(filters[idx])
+	}
+	for _, equip := range e.ids {
+		if equip.matchAny(filters...) {
+			count++
+			if err := fn(equip); err != nil {
+				return 0, err
+			}
+		}
+	}
+	return count, nil
+}
+
+func (e *Equip) matchAny(filters ...*Equip) bool {
+	for _, filter := range filters {
+		if e.match(filter) {
+			return true
+		}
+	}
+	return len(filters) == 0
+}
+
+func (e *Equip) match(filter *Equip) bool {
+	if filter.Rank > 0 && filter.Rank != e.Rank {
+		return false
+	} else if filter.Position > position.Unlimited && filter.Position != e.Position {
+		return false
+	} else if filter.IsCompose >= 0 && filter.IsCompose != e.IsCompose {
+		return false
+	} else if filter.IsHigh >= 0 && filter.IsHigh != e.IsHigh {
+		return false
+	} else if filter.IsUpgrade >= 0 && filter.IsUpgrade != e.IsUpgrade {
+		return false
+	} else if filter.CanSlot >= 0 && filter.CanSlot != e.CanSlot {
+		return false
+	} else if filter.CanUpgrade >= 0 && filter.CanUpgrade != e.CanUpgrade {
+		return false
+	} else if len(filter.Name) > 0 && strings.Index(e.Name, filter.Name) < 0 {
+		return false
+	} else if len(filter.Buff) > 0 && strings.Index(e.Buff, filter.Buff) < 0 {
+		return false
+	} else if len(filter.RandomBuff) > 0 && strings.Index(e.RandomBuff, filter.RandomBuff) < 0 {
+		return false
+	} else if len(filter.Effect) > 0 && strings.Index(e.Effect, filter.Effect) < 0 {
+		return false
+	} else if len(filter.Job) > 0 {
+		for _, filterJob := range filter.Job {
+			if filterJob == "0" {
+				return true
+			} else {
+				for _, job := range e.Job {
+					if job == "0" || job == filterJob {
+						return true
+					}
+				}
+			}
+		}
+		return false
+	} else {
+		return true
+	}
 }
