@@ -2,6 +2,9 @@ package romel
 
 import (
 	"encoding/json"
+	"github.com/dbstarll/game/internal/ro/dimension/nature"
+	"github.com/dbstarll/game/internal/ro/dimension/race"
+	"github.com/dbstarll/game/internal/ro/dimension/shape"
 	"github.com/pkg/errors"
 	"log"
 )
@@ -14,19 +17,19 @@ type monsters struct {
 }
 
 type Monster struct {
-	Id        string `json:"id"`
-	Name      string `json:"name"`
-	Type      int    `json:"type"`
-	Race      int    `json:"race"`
-	Nature    int    `json:"nature"`
-	Size      int    `json:"size"`
-	Level     int    `json:"level"`
-	Hp        int    `json:"hp"`
-	BaseExp   int    `json:"baseExp"`
-	JobExp    int    `json:"jobExp"`
-	IsStar    int    `json:"isStar"`
-	IsDead    int    `json:"isDead"`
-	IsSpecial int    `json:"isSpecial"`
+	Id        string        `json:"id"`
+	Name      string        `json:"name"`
+	Type      int           `json:"type"`
+	Race      race.Race     `json:"race"`
+	Nature    nature.Nature `json:"nature"`
+	Size      shape.Shape   `json:"size"`
+	Level     int           `json:"level"`
+	Hp        int           `json:"hp"`
+	BaseExp   int           `json:"baseExp"`
+	JobExp    int           `json:"jobExp"`
+	IsStar    int           `json:"isStar"`
+	IsDead    int           `json:"isDead"`
+	IsSpecial int           `json:"isSpecial"`
 }
 
 func init() {
