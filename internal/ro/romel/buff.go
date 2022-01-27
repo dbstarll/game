@@ -9,6 +9,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/model/buff"
 	"github.com/dbstarll/game/internal/ro/model/general"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"log"
 	"strconv"
 	"strings"
@@ -25,9 +26,9 @@ func (b Buff) Effect() ([]model.CharacterModifier, error) {
 		return nil, nil
 	}
 	var modifiers []model.CharacterModifier
-	for idxLine, line := range strings.Split(string(b), "\n") {
-		for idxItem, item := range strings.Split(line, "；") {
-			if ms, err := b.resolveItem(idxLine, idxItem, item); err != nil {
+	for _, line := range strings.Split(string(b), "\n") {
+		for _, item := range strings.Split(line, "；") {
+			if ms, err := b.resolveItem(item); err != nil {
 				return nil, err
 			} else if len(ms) > 0 {
 				modifiers = append(modifiers, ms...)
@@ -42,7 +43,7 @@ func (b Buff) resolveEffects(effectStr string) ([]model.CharacterModifier, error
 	pos, runeArray, perRefine := 0, []rune(effectStr), false
 	for idx, char := range runeArray {
 		if (char == '、' || char == '，') && b.isEndOfDigit(runeArray[idx-1]) {
-			if effect := string(runeArray[pos:idx]); effect == "再每精炼+1" {
+			if effect := string(runeArray[pos:idx]); strings.HasSuffix(effect, "每精炼+1") {
 				perRefine = true
 				break
 			} else if sub, err := b.resolveEffect(effect); err != nil {
@@ -55,7 +56,7 @@ func (b Buff) resolveEffects(effectStr string) ([]model.CharacterModifier, error
 	}
 	if effect := string(runeArray[pos:]); perRefine {
 		//TODO 再每精炼+1
-		fmt.Printf("resolveEffects: %s\n", effect)
+		log.Printf("resolveEffects: %s", effect)
 	} else if sub, err := b.resolveEffect(effect); err != nil {
 		return nil, err
 	} else if sub != nil {
@@ -219,7 +220,7 @@ func (b Buff) resolveEffect(effectStr string) (model.CharacterModifier, error) {
 						return model.AddShapeResist(&map[shape.Shape]float64{shape.Small: -floatVal}), nil
 					case "受到中型魔物伤害":
 						return model.AddShapeResist(&map[shape.Shape]float64{shape.Medium: -floatVal}), nil
-					case "“艾米斯可鲁”物理攻击", "对中毒的目标造成伤害额外", "反伤率", "成功概率", "陷阱类技能的伤害":
+					case "SP恢复", "“艾米斯可鲁”物理攻击", "对中毒的目标造成伤害额外", "反伤率", "成功概率", "陷阱类技能的伤害":
 						//忽略以上
 						return nil, nil
 					default:
@@ -229,7 +230,7 @@ func (b Buff) resolveEffect(effectStr string) (model.CharacterModifier, error) {
 						}
 					}
 				} else {
-					log.Printf("resolveEffect: %s %s %s || %s", key, string(char), val, effectStr)
+					zap.S().Warnf("resolveEffect: %s %s %s || %s", key, string(char), val, effectStr)
 				}
 			} else {
 				if intVal, err := strconv.Atoi(val); err == nil {
@@ -255,6 +256,8 @@ func (b Buff) resolveEffect(effectStr string) (model.CharacterModifier, error) {
 						return model.AddGeneral(&general.General{Critical: intVal}), nil
 					case "普攻攻击力", "普攻攻击":
 						return model.AddGeneral(&general.General{Ordinary: intVal}), nil
+					case "暴击防护":
+						return model.AddGeneral(&general.General{CriticalResist: intVal}), nil
 					case "命中":
 						return model.AddGeneral(&general.General{Hit: intVal}), nil
 					case "闪避":
@@ -264,17 +267,51 @@ func (b Buff) resolveEffect(effectStr string) (model.CharacterModifier, error) {
 					case "魔法上限":
 						return model.AddGeneral(&general.General{Sp: intVal}), nil
 					case "物理攻击", "物理攻击分别":
-						return model.AddGains(false, &model.Gains{Attack: intVal}), nil
+						return model.AddGains(false, &model.Gains{Attack: float64(intVal)}), nil
+					case "物理防御":
+						return model.AddGains(false, &model.Gains{Defence: float64(intVal)}), nil
+					case "精炼物攻":
+						return model.AddGains(false, &model.Gains{Refine: float64(intVal)}), nil
 					case "魔法攻击":
-						return model.AddGains(true, &model.Gains{Attack: intVal}), nil
+						return model.AddGains(true, &model.Gains{Attack: float64(intVal)}), nil
+					case "魔法防御":
+						return model.AddGains(true, &model.Gains{Defence: float64(intVal)}), nil
+					case "精炼魔攻":
+						return model.AddGains(true, &model.Gains{Refine: float64(intVal)}), nil
+					case "物理、魔法防御":
+						return model.Merge(model.AddGains(false, &model.Gains{Defence: float64(intVal)}), model.AddGains(true, &model.Gains{Defence: float64(intVal)})), nil
+					case "生命自然恢复", "SP恢复", "Sp恢复", "魔法恢复", "生命恢复", "Hp恢复":
+						//忽略
+						return nil, nil
 					default:
 						//过滤掉技能
 						if strings.Index(key, "【") < 0 {
+							//fmt.Printf("\tresolveEffect: %s %s %d || %s\n", key, string(char), intVal, effectStr)
 							log.Printf("resolveEffect: %s %s %d || %s", key, string(char), intVal, effectStr)
 						}
 					}
+				} else if floatVal, err := strconv.ParseFloat(val, 64); err == nil {
+					if char == '-' {
+						floatVal = -floatVal
+					}
+					switch key {
+					case "物理攻击":
+						return model.AddGains(false, &model.Gains{Attack: floatVal}), nil
+					case "物理防御":
+						return model.AddGains(false, &model.Gains{Defence: floatVal}), nil
+					case "魔法攻击":
+						return model.AddGains(true, &model.Gains{Attack: floatVal}), nil
+					case "魔法防御":
+						return model.AddGains(true, &model.Gains{Defence: floatVal}), nil
+					default:
+						//过滤掉技能
+						if strings.Index(key, "【") < 0 {
+							fmt.Printf("\tresolveEffect: %s %s %f || %s\n", key, string(char), floatVal, effectStr)
+							log.Printf("resolveEffect: %s %s %f || %s", key, string(char), floatVal, effectStr)
+						}
+					}
 				} else {
-					log.Printf("resolveEffect: %s %s %s || %s", key, string(char), val, effectStr)
+					zap.S().Warnf("resolveEffect: %s %s %s || %s", key, string(char), val, effectStr)
 				}
 			}
 			break
@@ -287,23 +324,35 @@ func (b Buff) isEndOfDigit(s rune) bool {
 	return s == '%' || s == '）' || (s >= '0' && s <= '9')
 }
 
-func (b Buff) resolveItem(idxLine, idxItem int, item string) ([]model.CharacterModifier, error) {
+func (b Buff) resolveItem(item string) ([]model.CharacterModifier, error) {
 	if match, modifiers, err := b.resolveRefineItem(item); err != nil {
 		return nil, err
 	} else if match {
 		return modifiers, nil
+	} else {
+		return b.resolveEffects(item)
 	}
-	// TODO other
-	return nil, nil
 }
 
 func (b Buff) resolveRefineItem(item string) (bool, []model.CharacterModifier, error) {
-	if !strings.HasPrefix(item, "精炼+") {
+	cap := 0
+	if strings.HasPrefix(item, "精炼+") {
+		cap = 6
+	} else if strings.HasPrefix(item, "当精炼+") {
+		cap = 9
+	} else if strings.HasPrefix(item, "武器精炼+") {
+		cap = 12
+	} else if strings.HasPrefix(item, "当盔甲精炼+") {
+		cap = 15
+	} else if strings.HasPrefix(item, "当武器精炼+") {
+		cap = 15
+	} else {
 		return false, nil, nil
-	} else if idx := strings.Index(item, "时，"); idx < 0 {
+	}
+	if idx := strings.Index(item, "时"); idx < 0 {
 		return false, nil, nil
 	} else {
-		refineStr, effectStr := item[6:idx], item[idx+6:]
+		refineStr, effectStr := item[cap:idx], item[idx+6:]
 		if strings.Index(refineStr, "、") >= 0 {
 			modifiers, err := b.resolveRefineItemSplit(refineStr, effectStr, "、")
 			return err == nil, modifiers, err
