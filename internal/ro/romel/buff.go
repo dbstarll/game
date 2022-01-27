@@ -39,12 +39,27 @@ func (b Buff) Effect() ([]model.CharacterModifier, error) {
 }
 
 func (b Buff) resolveItem(item string) ([]model.CharacterModifier, error) {
-	if match, modifiers, err := b.resolveRefineItem(item); err != nil {
+	if match, modifiers, err := b.resolveCombineItem(item); err != nil {
+		return nil, err
+	} else if match {
+		return modifiers, nil
+	} else if match, modifiers, err := b.resolveRefineItem(item); err != nil {
 		return nil, err
 	} else if match {
 		return modifiers, nil
 	} else {
 		return b.resolveEffects(item)
+	}
+}
+
+func (b Buff) resolveCombineItem(item string) (bool, []model.CharacterModifier, error) {
+	//TODO 忽略装备组合增益
+	if strings.Index(item, "】+【") > 0 {
+		return true, nil, nil
+	} else if strings.Index(item, "）+【") > 0 {
+		return true, nil, nil
+	} else {
+		return false, nil, nil
 	}
 }
 
@@ -182,7 +197,7 @@ func (b Buff) resolveEffects(effectStr string) ([]model.CharacterModifier, error
 		}
 	}
 	if effect := string(runeArray[pos:]); perRefine {
-		//TODO 再每精炼+1
+		//TODO 每精炼+1
 		log.Printf("resolveEffects: %s", effect)
 	} else if sub, err := b.resolveEffect(effect); err != nil {
 		return nil, err
