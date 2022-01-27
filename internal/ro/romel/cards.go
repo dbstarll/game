@@ -21,9 +21,9 @@ type Card struct {
 	Name          string            `json:"name"`
 	Quality       quality.Quality   `json:"quality"`
 	Position      position.Position `json:"position"`
-	Buff          string            `json:"buff"`
-	AdventureBuff string            `json:"adventureBuff"`
-	StorageBuff   string            `json:"storageBuff"`
+	Buff          Buff              `json:"buff"`
+	AdventureBuff Buff              `json:"adventureBuff"`
+	StorageBuff   Buff              `json:"storageBuff"`
 	IsCompose     int               `json:"isCompose"`
 }
 
@@ -119,11 +119,11 @@ func (c *Card) match(filter *Card) bool {
 		return false
 	} else if len(filter.Name) > 0 && strings.Index(c.Name, filter.Name) < 0 {
 		return false
-	} else if len(filter.Buff) > 0 && strings.Index(c.Buff, filter.Buff) < 0 {
+	} else if len(filter.Buff) > 0 && !c.Buff.Contains(filter.Buff) {
 		return false
-	} else if len(filter.AdventureBuff) > 0 && strings.Index(c.AdventureBuff, filter.AdventureBuff) < 0 {
+	} else if len(filter.AdventureBuff) > 0 && !c.AdventureBuff.Contains(filter.AdventureBuff) {
 		return false
-	} else if len(filter.StorageBuff) > 0 && strings.Index(c.StorageBuff, filter.StorageBuff) < 0 {
+	} else if len(filter.StorageBuff) > 0 && !c.StorageBuff.Contains(filter.StorageBuff) {
 		return false
 	} else {
 		return true

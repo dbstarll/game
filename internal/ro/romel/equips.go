@@ -23,14 +23,14 @@ type Equip struct {
 	Rank       quality.Quality   `json:"rank"`
 	Job        *[]job.Job        `json:"job"`
 	Position   position.Position `json:"position"`
-	Effect     string            `json:"effect"`
-	Buff       string            `json:"buff"`
+	Effect     Buff              `json:"effect"`
+	Buff       Buff              `json:"buff"`
 	IsCompose  int               `json:"isCompose"`
 	IsUpgrade  int               `json:"isUpgrade"`
 	IsHigh     int               `json:"isHigh"`
 	CanSlot    int               `json:"canSlot"`
 	CanUpgrade int               `json:"canUpgrade"`
-	RandomBuff string            `json:"randomBuff"`
+	RandomBuff Buff              `json:"randomBuff"`
 }
 
 func init() {
@@ -137,11 +137,11 @@ func (e *Equip) match(filter *Equip) bool {
 		return false
 	} else if len(filter.Name) > 0 && strings.Index(e.Name, filter.Name) < 0 {
 		return false
-	} else if len(filter.Buff) > 0 && strings.Index(e.Buff, filter.Buff) < 0 {
+	} else if len(filter.Buff) > 0 && !e.Buff.Contains(filter.Buff) {
 		return false
-	} else if len(filter.RandomBuff) > 0 && strings.Index(e.RandomBuff, filter.RandomBuff) < 0 {
+	} else if len(filter.RandomBuff) > 0 && !e.RandomBuff.Contains(filter.RandomBuff) {
 		return false
-	} else if len(filter.Effect) > 0 && strings.Index(e.Effect, filter.Effect) < 0 {
+	} else if len(filter.Effect) > 0 && !e.Effect.Contains(filter.Effect) {
 		return false
 	} else if filter.Job != nil && !e.matchAnyJob(filter.Job) {
 		return false

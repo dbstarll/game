@@ -20,16 +20,16 @@ type Hat struct {
 	Name              string            `json:"name"`
 	Rank              int               `json:"rank"`
 	Position          position.Position `json:"position"`
-	Buff              string            `json:"buff"`
-	AdventureBuff     string            `json:"adventureBuff"`
-	StorageBuff       string            `json:"storageBuff"`
+	Buff              Buff              `json:"buff"`
+	AdventureBuff     Buff              `json:"adventureBuff"`
+	StorageBuff       Buff              `json:"storageBuff"`
 	StorageRefineBuff *[]RefineBuff     `json:"storageRefineBuff"`
 	IsCompose         int               `json:"isCompose"`
 }
 
 type RefineBuff struct {
-	Lv   int    `json:"lv"`
-	Buff string `json:"buff"`
+	Lv   int  `json:"lv"`
+	Buff Buff `json:"buff"`
 }
 
 func init() {
@@ -125,11 +125,11 @@ func (h *Hat) match(filter *Hat) bool {
 		return false
 	} else if len(filter.Name) > 0 && strings.Index(h.Name, filter.Name) < 0 {
 		return false
-	} else if len(filter.Buff) > 0 && strings.Index(h.Buff, filter.Buff) < 0 {
+	} else if len(filter.Buff) > 0 && !h.Buff.Contains(filter.Buff) {
 		return false
-	} else if len(filter.AdventureBuff) > 0 && strings.Index(h.AdventureBuff, filter.AdventureBuff) < 0 {
+	} else if len(filter.AdventureBuff) > 0 && !h.AdventureBuff.Contains(filter.AdventureBuff) {
 		return false
-	} else if len(filter.StorageBuff) > 0 && strings.Index(h.StorageBuff, filter.StorageBuff) < 0 {
+	} else if len(filter.StorageBuff) > 0 && !h.StorageBuff.Contains(filter.StorageBuff) {
 		return false
 	} else if filter.StorageRefineBuff != nil && !h.matchAnyStorageRefineBuff(filter.StorageRefineBuff) {
 		return false
@@ -147,7 +147,7 @@ func (h *Hat) matchAnyStorageRefineBuff(filters *[]RefineBuff) bool {
 			if len(filter.Buff) > 0 {
 				matchCount++
 				for _, buff := range *h.StorageRefineBuff {
-					if strings.Index(buff.Buff, filter.Buff) >= 0 {
+					if buff.Buff.Contains(filter.Buff) {
 						match = true
 						break
 					}

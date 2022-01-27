@@ -329,7 +329,7 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 	if attack.IsOrdinary() {
 		if c.job >= job.Archer && c.job <= job.Hunter4 {
 			damage += float64(c.quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
-			damage += c.profits.general.Ordinary                                             //TODO 这里存疑普攻攻击力
+			damage += float64(c.profits.general.Ordinary)                                    //TODO 这里存疑普攻攻击力
 		} else if attack.IsCritical() {
 			damage += float64(c.quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
 		}

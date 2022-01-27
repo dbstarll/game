@@ -199,6 +199,38 @@ func Quality(n int) model.CharacterModifier {
 	return model.AddQuality(&model.Quality{Str: n, Agi: n, Vit: n, Int: n, Dex: n, Luk: n})
 }
 
+//全种族伤害+N
+func RaceDamage(n float64) model.CharacterModifier {
+	return model.AddRaceDamage(&map[race.Race]float64{
+		race.Formless: n,
+		race.Human:    n,
+		race.Plant:    n,
+		race.Animal:   n,
+		race.Insect:   n,
+		race.Fish:     n,
+		race.Angel:    n,
+		race.Demon:    n,
+		race.Undead:   n,
+		race.Dragon:   n,
+	})
+}
+
+//全种族减伤+N
+func AddRaceResist(n float64) model.CharacterModifier {
+	return model.AddRaceResist(&map[race.Race]float64{
+		race.Formless: n,
+		race.Human:    n,
+		race.Plant:    n,
+		race.Animal:   n,
+		race.Insect:   n,
+		race.Fish:     n,
+		race.Angel:    n,
+		race.Demon:    n,
+		race.Undead:   n,
+		race.Dragon:   n,
+	})
+}
+
 //力量料理A
 func StrA() model.CharacterModifier {
 	return model.Merge(

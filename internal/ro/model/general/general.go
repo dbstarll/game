@@ -7,11 +7,11 @@ import (
 
 //通用增益
 type General struct {
-	Critical             float64 //暴击
+	Critical             int     //暴击
 	CriticalDamage       float64 //暴伤%
 	CriticalResist       float64 //暴击防护
 	CriticalDamageResist float64 //爆伤减免%
-	Ordinary             float64 //普攻攻击力
+	Ordinary             int     //普攻攻击力
 	OrdinaryDamage       float64 //普攻伤害加成%
 	OrdinaryResist       float64 //普攻伤害减免%
 	Skill                float64 //技能伤害加成%
@@ -22,6 +22,23 @@ type General struct {
 	NoMVPResist          float64 //普通魔物减伤%
 	AttackSpeed          float64 //攻击速度%
 	MoveSpeed            float64 //移动速度%
+
+	// TODO 以下为增加的属性
+	Hp                          int     //生命上限
+	HpPer                       float64 //生命上限%
+	Sp                          int     //魔法上限
+	SpPer                       float64 //魔法上限%
+	SpCost                      float64 //SP消耗%
+	Hit                         int     //命中
+	Dodge                       int     //闪避
+	DodgePer                    float64 //闪避%
+	SingFixed                   float64 //固定吟唱时间%
+	SingElasticity              float64 //可变吟唱时间%
+	SkillCooling                float64 //技能冷却%
+	Cure                        float64 //治疗加成%
+	Cured                       float64 //受治疗加成%
+	MagicOrdinaryCriticalRate   float64 //法术普攻暴击概率%
+	MagicOrdinaryCriticalDamage float64 //法术普攻暴击伤害%
 }
 
 func (d *General) Add(incr *General) {
