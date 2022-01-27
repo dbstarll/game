@@ -373,82 +373,19 @@ func (b Buff) resolveEffect(effectStr string) (model.CharacterModifier, error) {
 					zap.S().Warnf("resolveEffect: %s %s %s || %s", key, string(char), val, effectStr)
 				}
 			} else {
-				if intVal, err := strconv.Atoi(val); err == nil {
-					if char == '-' {
-						intVal = -intVal
-					}
-					switch key {
-					case "全能力":
-						return buff.Quality(intVal), nil
-					case "力量":
-						return model.AddQuality(&model.Quality{Str: intVal}), nil
-					case "敏捷":
-						return model.AddQuality(&model.Quality{Agi: intVal}), nil
-					case "体质":
-						return model.AddQuality(&model.Quality{Vit: intVal}), nil
-					case "智力":
-						return model.AddQuality(&model.Quality{Int: intVal}), nil
-					case "灵巧":
-						return model.AddQuality(&model.Quality{Dex: intVal}), nil
-					case "幸运":
-						return model.AddQuality(&model.Quality{Luk: intVal}), nil
-					case "暴击":
-						return model.AddGeneral(&general.General{Critical: intVal}), nil
-					case "普攻攻击力", "普攻攻击":
-						return model.AddGeneral(&general.General{Ordinary: intVal}), nil
-					case "暴击防护":
-						return model.AddGeneral(&general.General{CriticalResist: intVal}), nil
-					case "命中":
-						return model.AddGeneral(&general.General{Hit: intVal}), nil
-					case "闪避":
-						return model.AddGeneral(&general.General{Dodge: intVal}), nil
-					case "生命上限":
-						return model.AddGeneral(&general.General{Hp: intVal}), nil
-					case "魔法上限":
-						return model.AddGeneral(&general.General{Sp: intVal}), nil
-					case "物理攻击", "物理攻击分别":
-						return model.AddGains(false, &model.Gains{Attack: float64(intVal)}), nil
-					case "物理防御":
-						return model.AddGains(false, &model.Gains{Defence: float64(intVal)}), nil
-					case "精炼物攻":
-						return model.AddGains(false, &model.Gains{Refine: float64(intVal)}), nil
-					case "魔法攻击":
-						return model.AddGains(true, &model.Gains{Attack: float64(intVal)}), nil
-					case "魔法防御":
-						return model.AddGains(true, &model.Gains{Defence: float64(intVal)}), nil
-					case "精炼魔攻":
-						return model.AddGains(true, &model.Gains{Refine: float64(intVal)}), nil
-					case "物理、魔法防御":
-						return model.Merge(model.AddGains(false, &model.Gains{Defence: float64(intVal)}), model.AddGains(true, &model.Gains{Defence: float64(intVal)})), nil
-					case "生命自然恢复", "SP恢复", "Sp恢复", "魔法恢复", "生命恢复", "Hp恢复":
-						//忽略
-						return nil, nil
-					default:
-						//过滤掉技能
-						if strings.Index(key, "【") < 0 {
-							//fmt.Printf("\tresolveEffect: %s %s %d || %s\n", key, string(char), intVal, effectStr)
-							log.Printf("resolveEffect: %s %s %d || %s", key, string(char), intVal, effectStr)
-						}
-					}
-				} else if floatVal, err := strconv.ParseFloat(val, 64); err == nil {
+				if floatVal, err := strconv.ParseFloat(val, 64); err == nil {
 					if char == '-' {
 						floatVal = -floatVal
 					}
-					switch key {
-					case "物理攻击":
-						return model.AddGains(false, &model.Gains{Attack: floatVal}), nil
-					case "物理防御":
-						return model.AddGains(false, &model.Gains{Defence: floatVal}), nil
-					case "魔法攻击":
-						return model.AddGains(true, &model.Gains{Attack: floatVal}), nil
-					case "魔法防御":
-						return model.AddGains(true, &model.Gains{Defence: floatVal}), nil
-					default:
+					if m, exist := b.find(key, floatVal, false); exist {
+						return m, nil
+					} else if strings.HasSuffix(key, "恢复") {
+						//忽略"生命自然恢复", "SP恢复", "Sp恢复", "魔法恢复", "生命恢复", "Hp恢复"
+						return nil, nil
+					} else if strings.Index(key, "【") < 0 {
 						//过滤掉技能
-						if strings.Index(key, "【") < 0 {
-							fmt.Printf("\tresolveEffect: %s %s %f || %s\n", key, string(char), floatVal, effectStr)
-							log.Printf("resolveEffect: %s %s %f || %s", key, string(char), floatVal, effectStr)
-						}
+						fmt.Printf("\tresolveEffect: %s %s %f || %s\n", key, string(char), floatVal, effectStr)
+						log.Printf("resolveEffect: %s %s %f || %s", key, string(char), floatVal, effectStr)
 					}
 				} else {
 					zap.S().Warnf("resolveEffect: %s %s %s || %s", key, string(char), val, effectStr)
