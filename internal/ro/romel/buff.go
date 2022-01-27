@@ -54,13 +54,7 @@ func (b Buff) resolveItem(item string) ([]model.CharacterModifier, error) {
 
 func (b Buff) resolveCombineItem(item string) (bool, []model.CharacterModifier, error) {
 	//TODO 忽略装备组合增益
-	if strings.Index(item, "】+【") > 0 {
-		return true, nil, nil
-	} else if strings.Index(item, "）+【") > 0 {
-		return true, nil, nil
-	} else {
-		return false, nil, nil
-	}
+	return strings.Index(item, "】+【") > 0 || strings.Index(item, "）+【") > 0, nil, nil
 }
 
 func (b Buff) resolveRefineItem(item string) (bool, []model.CharacterModifier, error) {
