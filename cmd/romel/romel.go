@@ -11,10 +11,11 @@ import (
 )
 
 func init() {
-	if logger, err := zap.NewDevelopment(); err != nil {
+	if logger, err := zap.NewDevelopment(zap.AddStacktrace(zap.ErrorLevel), zap.IncreaseLevel(zap.WarnLevel)); err != nil {
 		log.Fatalf("%+v", err)
 	} else {
 		zap.RedirectStdLog(logger)
+		zap.ReplaceGlobals(logger)
 	}
 }
 
