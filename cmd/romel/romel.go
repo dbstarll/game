@@ -49,7 +49,7 @@ func main() {
 		//fmt.Printf("%s: %s\n", item.Name, item.Position)
 		return nil
 	}); err != nil {
-		log.Fatalf("%+v", err)
+		zap.S().Errorf("%+v", err)
 	} else {
 		fmt.Printf("count: %d\n", count)
 		for token, c := range cnt {
@@ -75,7 +75,7 @@ func main() {
 		//fmt.Printf("%s: %s\n", item.Name, item.Position)
 		return nil
 	}); err != nil {
-		log.Fatalf("%+v", err)
+		zap.S().Errorf("%+v", err)
 	} else {
 		fmt.Printf("count: %d\n", count)
 		for token, c := range cnt {
@@ -101,7 +101,7 @@ func main() {
 		//fmt.Printf("%s: %s\n", item.Name, item.Position)
 		return nil
 	}); err != nil {
-		log.Fatalf("%+v", err)
+		zap.S().Errorf("%+v", err)
 	} else {
 		fmt.Printf("count: %d\n", count)
 		for token, c := range cnt {
@@ -122,7 +122,7 @@ func main() {
 		//fmt.Printf("%s: %s\n", item.Name, item.Position)
 		return nil
 	}); err != nil {
-		log.Fatalf("%+v", err)
+		zap.S().Errorf("%+v", err)
 	} else {
 		fmt.Printf("count: %d\n", count)
 	}
