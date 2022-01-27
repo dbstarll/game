@@ -9,7 +9,7 @@ import (
 type General struct {
 	Critical             int     //暴击
 	CriticalDamage       float64 //暴伤%
-	CriticalResist       float64 //暴击防护
+	CriticalResist       int     //暴击防护
 	CriticalDamageResist float64 //爆伤减免%
 	Ordinary             int     //普攻攻击力
 	OrdinaryDamage       float64 //普攻伤害加成%
