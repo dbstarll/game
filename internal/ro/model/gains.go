@@ -7,8 +7,8 @@ import (
 
 //装备，强化，附魔，卡片，头饰，祈祷，buff等合计
 type Gains struct {
-	Attack  int //攻击
-	Defence int //防御
+	Attack  float64 //攻击
+	Defence float64 //防御
 
 	Spike float64 //穿刺
 

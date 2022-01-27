@@ -198,23 +198,23 @@ func (c *Character) QualityAttack(magic, remote bool) int {
 }
 
 //装备攻击
-func (c *Character) EquipmentAttack(magic bool) (atk int) {
+func (c *Character) EquipmentAttack(magic bool) (atk float64) {
 	atk = c.profits.gains(magic).Attack
 	if !magic {
 		//装备物理攻击 = (装备，强化，附魔，卡片，头饰，祈祷，buff等合计)+ BaseLvAtkRate*人物等级
-		atk += c.job.BaseLvAtkRate() * c.level.Base
+		atk += float64(c.job.BaseLvAtkRate() * c.level.Base)
 	}
 	return
 }
 
 //攻击 = 素质攻击 + 装备攻击
-func (c *Character) Attack(magic, remote bool) int {
-	return c.QualityAttack(magic, remote) + c.EquipmentAttack(magic)
+func (c *Character) Attack(magic, remote bool) float64 {
+	return float64(c.QualityAttack(magic, remote)) + c.EquipmentAttack(magic)
 }
 
 //面板攻击 = 攻击 * (1 + 攻击%)
 func (c *Character) PanelAttack(magic, remote bool) float64 {
-	return float64(c.Attack(magic, remote)) * (1 + c.profits.gains(magic).AttackPer/100)
+	return c.Attack(magic, remote) * (1 + c.profits.gains(magic).AttackPer/100)
 }
 
 //素质防御
@@ -223,18 +223,18 @@ func (c *Character) QualityDefence(magic bool) int {
 }
 
 //装备防御
-func (c *Character) EquipmentDefence(magic bool) int {
+func (c *Character) EquipmentDefence(magic bool) float64 {
 	return c.profits.gains(magic).Defence
 }
 
 //防御 = 素质防御 + 装备防御
-func (c *Character) Defence(magic bool) int {
-	return c.QualityDefence(magic) + c.EquipmentDefence(magic)
+func (c *Character) Defence(magic bool) float64 {
+	return float64(c.QualityDefence(magic)) + c.EquipmentDefence(magic)
 }
 
 //面板防御 = 防御 * (1 + 防御%)
 func (c *Character) PanelDefence(magic bool) float64 {
-	return float64(c.Defence(magic)) * (1 + c.profits.gains(magic).DefencePer/100)
+	return c.Defence(magic) * (1 + c.profits.gains(magic).DefencePer/100)
 }
 
 func (c *Character) AttackWithWeapon(weapon weapon.Weapon) *attack.Attack {
@@ -325,7 +325,7 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 
 //最终物攻/最终魔攻
 func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damage float64) {
-	damage = float64(c.EquipmentAttack(attack.IsMagic())) //装备攻击
+	damage = c.EquipmentAttack(attack.IsMagic()) //装备攻击
 	if attack.IsOrdinary() {
 		if c.job >= job.Archer && c.job <= job.Hunter4 {
 			damage += float64(c.quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
@@ -366,7 +366,7 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 //最终物防/最终魔防
 func (c *Character) finalDefence(target *Character, attack *attack.Attack) (defence float64) {
 	gain, targetGain := c.profits.gains(attack.IsMagic()), target.profits.gains(attack.IsMagic())
-	defence = float64(c.EquipmentDefence(attack.IsMagic())) //装备防御
+	defence = c.EquipmentDefence(attack.IsMagic()) //装备防御
 	if attack.IsMagic() {
 		//TODO 最终魔防
 	} else {
@@ -391,8 +391,8 @@ func (c *Character) defenceMultiplier(target *Character, attack *attack.Attack) 
 
 func (c *Character) detectAttackByPanel(magic, remote bool, expect float64) (optimumAttack int, optimumPanel float64) {
 	gains := c.profits.gains(magic)
-	for min, max, current := 0, 100000, gains.Attack; ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
-		gains.Attack = current
+	for min, max, current := 0, 100000, int(gains.Attack); ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
+		gains.Attack = float64(current)
 		actual := c.PanelAttack(magic, remote)
 
 		if actual >= expect && math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
@@ -410,15 +410,15 @@ func (c *Character) detectAttackByPanel(magic, remote bool, expect float64) (opt
 			min = current
 		}
 	}
-	gains.Attack = optimumAttack
+	gains.Attack = float64(optimumAttack)
 	fmt.Printf("detectAttackByPanel[magic=%t]: optimumAttack=%d, optimumPanel=%f\n", magic, optimumAttack, optimumPanel)
 	return
 }
 
 func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDefence int, optimumPanel float64) {
 	gains := c.profits.gains(magic)
-	for min, max, current := 0, 100000, gains.Defence; ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
-		gains.Defence = current
+	for min, max, current := 0, 100000, int(gains.Defence); ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
+		gains.Defence = float64(current)
 		actual := c.PanelDefence(magic)
 
 		if actual >= expect && math.Abs(actual-expect) < math.Abs(optimumPanel-expect) {
@@ -436,7 +436,7 @@ func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDef
 			min = current
 		}
 	}
-	gains.Defence = optimumDefence
+	gains.Defence = float64(optimumDefence)
 	fmt.Printf("detectDefenceByPanel[magic=%t]: optimumDefence=%d, optimumPanel=%f\n", magic, optimumDefence, optimumPanel)
 	return
 }
