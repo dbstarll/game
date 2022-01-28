@@ -32,13 +32,15 @@ type General struct {
 	Hit                         int     //命中
 	Dodge                       int     //闪避
 	DodgePer                    float64 //闪避%
-	SingFixed                   float64 //固定吟唱时间%
-	SingElasticity              float64 //可变吟唱时间%
+	SingPerFixed                float64 //固定吟唱时间%
+	SingPerElasticity           float64 //可变吟唱时间%
 	SkillCooling                float64 //技能冷却%
 	Cure                        float64 //治疗加成%
 	Cured                       float64 //受治疗加成%
 	MagicOrdinaryCriticalRate   float64 //法术普攻暴击概率%
 	MagicOrdinaryCriticalDamage float64 //法术普攻暴击伤害%
+	BaseExp                     float64 //击杀魔物Base经验%
+	JobExp                      float64 //击杀魔物Job经验%
 }
 
 func (d *General) Add(incr *General) {
