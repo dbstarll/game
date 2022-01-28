@@ -36,7 +36,7 @@ var Abnormals = []Abnormal{
 func (n Abnormal) String() string {
 	switch n {
 	case Poisoning:
-		return "无"
+		return "中毒"
 	case Bleed:
 		return "流血"
 	case Burn:

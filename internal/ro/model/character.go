@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/dbstarll/game/internal/ro/dimension/abnormal"
 	"github.com/dbstarll/game/internal/ro/dimension/job"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
@@ -168,6 +169,15 @@ func AddNatureResist(incr *map[nature.Nature]float64) CharacterModifier {
 		character.profits.AddNatureResist(incr)
 		return func() {
 			character.profits.DelNatureResist(incr)
+		}
+	}
+}
+
+func AddAbnormalResist(incr *map[abnormal.Abnormal]float64) CharacterModifier {
+	return func(character *Character) func() {
+		character.profits.AddAbnormalResist(incr)
+		return func() {
+			character.profits.DelAbnormalResist(incr)
 		}
 	}
 }

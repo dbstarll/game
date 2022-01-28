@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/dbstarll/game/internal/ro/dimension/abnormal"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
@@ -16,17 +17,18 @@ type Refine struct {
 }
 
 type Profits struct {
-	physical     Gains
-	magical      Gains
-	general      general.General
-	refine       Refine
-	natureAttack map[nature.Nature]float64 //属性攻击%
-	raceDamage   map[race.Race]float64     //种族增伤%
-	raceResist   map[race.Race]float64     //种族减伤%
-	shapeDamage  map[shape.Shape]float64   //体型增伤%
-	shapeResist  map[shape.Shape]float64   //体型减伤%
-	natureDamage map[nature.Nature]float64 //属性增伤%
-	natureResist map[nature.Nature]float64 //属性减伤%
+	physical       Gains
+	magical        Gains
+	general        general.General
+	refine         Refine
+	natureAttack   map[nature.Nature]float64     //属性攻击%
+	raceDamage     map[race.Race]float64         //种族增伤%
+	raceResist     map[race.Race]float64         //种族减伤%
+	shapeDamage    map[shape.Shape]float64       //体型增伤%
+	shapeResist    map[shape.Shape]float64       //体型减伤%
+	natureDamage   map[nature.Nature]float64     //属性增伤%
+	natureResist   map[nature.Nature]float64     //属性减伤%
+	abnormalResist map[abnormal.Abnormal]float64 //异常状态抵抗%
 }
 
 func (p *Profits) gains(magic bool) *Gains {
@@ -242,6 +244,36 @@ func (p *Profits) DelNatureResist(incr *map[nature.Nature]float64) {
 				p.natureResist[n] = ov - v
 			} else {
 				p.natureResist[n] = -v
+			}
+		}
+	}
+}
+
+func (p *Profits) AddAbnormalResist(incr *map[abnormal.Abnormal]float64) {
+	if incr != nil {
+		if p.abnormalResist == nil {
+			p.abnormalResist = make(map[abnormal.Abnormal]float64)
+		}
+		for n, v := range *incr {
+			if ov, exist := p.abnormalResist[n]; exist {
+				p.abnormalResist[n] = ov + v
+			} else {
+				p.abnormalResist[n] = v
+			}
+		}
+	}
+}
+
+func (p *Profits) DelAbnormalResist(incr *map[abnormal.Abnormal]float64) {
+	if incr != nil {
+		if p.abnormalResist == nil {
+			p.abnormalResist = make(map[abnormal.Abnormal]float64)
+		}
+		for n, v := range *incr {
+			if ov, exist := p.abnormalResist[n]; exist {
+				p.abnormalResist[n] = ov - v
+			} else {
+				p.abnormalResist[n] = -v
 			}
 		}
 	}

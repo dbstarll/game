@@ -35,6 +35,7 @@ type General struct {
 	SingPerFixed                float64 //固定吟唱时间%
 	SingPerElasticity           float64 //可变吟唱时间%
 	SkillCooling                float64 //技能冷却%
+	SkillDelay                  float64 //技能延迟%
 	Cure                        float64 //治疗加成%
 	Cured                       float64 //受治疗加成%
 	MagicOrdinaryCriticalRate   float64 //法术普攻暴击概率%
