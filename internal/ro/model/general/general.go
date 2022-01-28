@@ -41,6 +41,8 @@ type General struct {
 	MagicOrdinaryCriticalDamage float64 //法术普攻暴击伤害%
 	BaseExp                     float64 //击杀魔物Base经验%
 	JobExp                      float64 //击杀魔物Job经验%
+	Player                      float64 //玩家增伤%
+	PlayerResist                float64 //玩家减伤%
 }
 
 func (d *General) Add(incr *General) {

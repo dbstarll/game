@@ -12,6 +12,15 @@ import (
 
 type Buff string
 
+var (
+	BuffTotal    = 0
+	BuffUnknown  = 0
+	BuffError    = 0
+	BuffIgnore   = 0
+	BuffDetected = 0
+	Buffs        = make(map[string]int)
+)
+
 func (b Buff) Contains(o Buff) bool {
 	return strings.Index(string(b), string(o)) >= 0
 }
@@ -204,20 +213,32 @@ func (b Buff) resolveEffect(effectStr string) (model.CharacterModifier, error) {
 	runeArray, percentage := []rune(effectStr), strings.HasSuffix(effectStr, "%")
 	for idx, char := range runeArray {
 		if char == '+' || char == '-' {
+			BuffTotal++
 			key, val := string(runeArray[:idx]), strings.TrimSuffix(string(runeArray[idx+1:]), "%")
 			if floatVal, err := strconv.ParseFloat(val, 64); err != nil {
+				BuffError++
 				zap.S().Warnf("resolveEffect: [%t]%s[%s]%s || %s", percentage, key, string(char), val, effectStr)
 			} else {
 				if char == '-' {
 					floatVal = -floatVal
 				}
 				if m, exist := b.find(key, floatVal, percentage); exist {
+					BuffDetected++
 					return m, nil
 				} else if strings.HasSuffix(key, "恢复") {
+					BuffIgnore++
 					//忽略"生命自然恢复", "SP恢复", "Sp恢复", "魔法恢复", "生命恢复", "Hp恢复"
 					return nil, nil
-				} else if strings.Index(key, "【") < 0 {
+				} else if strings.Index(key, "【") >= 0 {
 					//过滤掉技能
+					BuffIgnore++
+				} else {
+					BuffUnknown++
+					if oc, exist := Buffs[key]; exist {
+						Buffs[key] = oc + 1
+					} else {
+						Buffs[key] = 1
+					}
 					fmt.Printf("\tresolveEffect: [%t]%s[%s]%f || %s\n", percentage, key, string(char), floatVal, effectStr)
 					log.Printf("resolveEffect: [%t]%s[%s]%f || %s", percentage, key, string(char), floatVal, effectStr)
 				}

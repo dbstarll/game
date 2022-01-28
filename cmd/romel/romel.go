@@ -7,8 +7,14 @@ import (
 	"github.com/dbstarll/game/internal/ro/romel"
 	"go.uber.org/zap"
 	"log"
+	"sort"
 	"time"
 )
+
+type BuffItem struct {
+	name  string
+	count int
+}
 
 func init() {
 	if logger, err := zap.NewDevelopment(zap.AddStacktrace(zap.ErrorLevel), zap.IncreaseLevel(zap.WarnLevel)); err != nil {
@@ -125,6 +131,34 @@ func main() {
 		zap.S().Errorf("%+v", err)
 	} else {
 		fmt.Printf("count: %d\n", count)
+	}
+
+	fmt.Printf("Buff Total: %d\n", romel.BuffTotal)
+	fmt.Printf("\t[%2.2f%%]Detected: %d\n", 100*float64(romel.BuffDetected)/float64(romel.BuffTotal), romel.BuffDetected)
+	fmt.Printf("\t[%2.2f%%]Unknown: %d\n", 100*float64(romel.BuffUnknown)/float64(romel.BuffTotal), romel.BuffUnknown)
+	fmt.Printf("\t[%2.2f%%]Ignore: %d\n", 100*float64(romel.BuffIgnore)/float64(romel.BuffTotal), romel.BuffIgnore)
+	fmt.Printf("\t[%2.2f%%]Error: %d\n", 100*float64(romel.BuffError)/float64(romel.BuffTotal), romel.BuffError)
+	var items []*BuffItem
+	for k, v := range romel.Buffs {
+		items = append(items, &BuffItem{
+			name:  k,
+			count: v,
+		})
+	}
+	sort.Slice(items, func(i, j int) bool {
+		if items[i].count < items[j].count {
+			return false
+		} else if items[i].count > items[j].count {
+			return true
+		} else {
+			return items[i].name < items[j].name
+		}
+	})
+	for idx, item := range items {
+		if idx > 10 {
+			break
+		}
+		fmt.Printf("占比：%2.4f%% - [%d]%s\n", 100*float64(item.count)/float64(romel.BuffUnknown), item.count, item.name)
 	}
 }
 
