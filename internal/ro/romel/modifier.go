@@ -105,6 +105,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"受到暴击伤害": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{CriticalDamageResist: -val})
 	},
+	"暴伤减免": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{CriticalDamageResist: val})
+	},
 	"普攻伤害": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{OrdinaryDamage: val})
 	},
@@ -132,6 +135,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"受普通魔物（不包含MVP、Mini魔物）造成的伤害": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{NoMVPResist: -val})
 	},
+	"PVP/GVG中对玩家伤害": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{Player: val})
+	},
 	"PVP/GVG中受玩家伤害": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{PlayerResist: -val})
 	},
@@ -142,6 +148,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		return model.AddGeneral(&general.General{SkillResist: val})
 	},
 	"装备攻速": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{AttackSpeed: val})
+	},
+	"攻击速度": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{AttackSpeed: val})
 	},
 	"移动速度": func(val float64) model.CharacterModifier {
@@ -179,6 +188,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"SP消耗": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{SpCost: val})
 	},
+	"使用技能Sp消耗量": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{SpCost: val})
+	},
 	//"法术普攻暴击概率":
 	//	return model.AddGeneral(&general.General{MagicOrdinaryCriticalRate: val})
 	//"法术普攻暴击伤害":
@@ -207,6 +219,18 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		return model.Merge(
 			model.AddGains(false, &model.Gains{AttackPer: val}),
 			model.AddGains(true, &model.Gains{AttackPer: val}),
+		)
+	},
+	"物理、魔法伤害": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Damage: val}),
+			model.AddGains(true, &model.Gains{Damage: val}),
+		)
+	},
+	"忽视物理、魔法防御": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Ignore: val}),
+			model.AddGains(true, &model.Gains{Ignore: val}),
 		)
 	},
 	//"最终伤害":
@@ -344,6 +368,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"对圣属性魔物伤害": func(val float64) model.CharacterModifier {
 		return model.AddNatureDamage(&map[nature.Nature]float64{nature.Holy: val})
 	},
+	"对毒属性魔物伤害": func(val float64) model.CharacterModifier {
+		return model.AddNatureDamage(&map[nature.Nature]float64{nature.Poison: val})
+	},
 	"对不死属性魔物伤害": func(val float64) model.CharacterModifier {
 		return model.AddNatureDamage(&map[nature.Nature]float64{nature.Undead: val})
 	},
@@ -368,6 +395,30 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 			nature.Water:   -val,
 			nature.Fire:    -val,
 			nature.Neutral: -val,
+		})
+	},
+	"受到风、地、水、火属性伤害": func(val float64) model.CharacterModifier {
+		return model.AddNatureResist(&map[nature.Nature]float64{
+			nature.Wind:  -val,
+			nature.Earth: -val,
+			nature.Water: -val,
+			nature.Fire:  -val,
+		})
+	},
+	"受火、水、地、风属性伤害": func(val float64) model.CharacterModifier {
+		return model.AddNatureResist(&map[nature.Nature]float64{
+			nature.Fire:  -val,
+			nature.Water: -val,
+			nature.Earth: -val,
+			nature.Wind:  -val,
+		})
+	},
+	"火、水、地、风属性伤害": func(val float64) model.CharacterModifier {
+		return model.AddNatureResist(&map[nature.Nature]float64{
+			nature.Fire:  -val,
+			nature.Water: -val,
+			nature.Earth: -val,
+			nature.Wind:  -val,
 		})
 	},
 	"受到无、圣、暗、念、毒属性伤害": func(val float64) model.CharacterModifier {
@@ -395,6 +446,19 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 			nature.Dark:    -val,
 			nature.Ghost:   -val,
 			nature.Neutral: -val,
+		})
+	},
+	"受毒、圣、暗、念、无、火、水、地、风属性伤害": func(val float64) model.CharacterModifier {
+		return model.AddNatureResist(&map[nature.Nature]float64{
+			nature.Poison:  -val,
+			nature.Holy:    -val,
+			nature.Dark:    -val,
+			nature.Ghost:   -val,
+			nature.Neutral: -val,
+			nature.Fire:    -val,
+			nature.Water:   -val,
+			nature.Earth:   -val,
+			nature.Wind:    -val,
 		})
 	},
 	"受到地属性伤害": func(val float64) model.CharacterModifier {
@@ -451,6 +515,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"人形种族伤害": func(val float64) model.CharacterModifier {
 		return model.AddRaceDamage(&map[race.Race]float64{race.Human: val})
 	},
+	"对人形种族加伤": func(val float64) model.CharacterModifier {
+		return model.AddRaceDamage(&map[race.Race]float64{race.Human: val})
+	},
 	"人形种族加伤": func(val float64) model.CharacterModifier {
 		return model.AddRaceDamage(&map[race.Race]float64{race.Human: val})
 	},
@@ -461,6 +528,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		return model.AddRaceDamage(&map[race.Race]float64{race.Plant: val})
 	},
 	"动物种族加伤": func(val float64) model.CharacterModifier {
+		return model.AddRaceDamage(&map[race.Race]float64{race.Animal: val})
+	},
+	"对动物种族伤害": func(val float64) model.CharacterModifier {
 		return model.AddRaceDamage(&map[race.Race]float64{race.Animal: val})
 	},
 	"对植物种族魔物伤害": func(val float64) model.CharacterModifier {
@@ -481,10 +551,25 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"对无形种族魔物伤害": func(val float64) model.CharacterModifier {
 		return model.AddRaceDamage(&map[race.Race]float64{race.Formless: val})
 	},
+	"对无形种族伤害": func(val float64) model.CharacterModifier {
+		return model.AddRaceDamage(&map[race.Race]float64{race.Formless: val})
+	},
 	"无形种族加伤": func(val float64) model.CharacterModifier {
 		return model.AddRaceDamage(&map[race.Race]float64{race.Formless: val})
 	},
+	"不死种族加伤": func(val float64) model.CharacterModifier {
+		return model.AddRaceDamage(&map[race.Race]float64{race.Undead: val})
+	},
+	"恶魔种族加伤": func(val float64) model.CharacterModifier {
+		return model.AddRaceDamage(&map[race.Race]float64{race.Demon: val})
+	},
 	"对恶魔系魔物增伤": func(val float64) model.CharacterModifier {
+		return model.AddRaceDamage(&map[race.Race]float64{race.Demon: val})
+	},
+	"对恶魔种族伤害": func(val float64) model.CharacterModifier {
+		return model.AddRaceDamage(&map[race.Race]float64{race.Demon: val})
+	},
+	"对恶魔种族魔物伤害": func(val float64) model.CharacterModifier {
 		return model.AddRaceDamage(&map[race.Race]float64{race.Demon: val})
 	},
 	"对天使种族魔物伤害": func(val float64) model.CharacterModifier {
@@ -519,17 +604,29 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"恶魔种族减伤": func(val float64) model.CharacterModifier {
 		return model.AddRaceResist(&map[race.Race]float64{race.Demon: val})
 	},
+	"对恶魔系魔物减伤": func(val float64) model.CharacterModifier {
+		return model.AddRaceResist(&map[race.Race]float64{race.Demon: val})
+	},
+	"受到恶魔种族魔物伤害": func(val float64) model.CharacterModifier {
+		return model.AddRaceResist(&map[race.Race]float64{race.Demon: -val})
+	},
 	"天使种族减伤": func(val float64) model.CharacterModifier {
 		return model.AddRaceResist(&map[race.Race]float64{race.Angel: val})
 	},
-	"对恶魔系魔物减伤": func(val float64) model.CharacterModifier {
-		return model.AddRaceResist(&map[race.Race]float64{race.Demon: val})
+	"不死种族减伤": func(val float64) model.CharacterModifier {
+		return model.AddRaceResist(&map[race.Race]float64{race.Undead: val})
+	},
+	"受到植物种族魔物伤害": func(val float64) model.CharacterModifier {
+		return model.AddRaceResist(&map[race.Race]float64{race.Plant: -val})
 	},
 	"受到龙族魔物伤害": func(val float64) model.CharacterModifier {
 		return model.AddRaceResist(&map[race.Race]float64{race.Dragon: -val})
 	},
 	"受到天使种族魔物伤害": func(val float64) model.CharacterModifier {
 		return model.AddRaceResist(&map[race.Race]float64{race.Angel: -val})
+	},
+	"受到无形种族魔物伤害": func(val float64) model.CharacterModifier {
+		return model.AddRaceResist(&map[race.Race]float64{race.Formless: -val})
 	},
 
 	// 体型增伤%
