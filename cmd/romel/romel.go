@@ -155,7 +155,7 @@ func main() {
 		}
 	})
 	for idx, item := range items {
-		if idx > 10 {
+		if idx > 20 {
 			break
 		}
 		fmt.Printf("占比：%2.4f%% - [%d]%s\n", 100*float64(item.count)/float64(romel.BuffUnknown), item.count, item.name)

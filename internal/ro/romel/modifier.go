@@ -2,6 +2,7 @@ package romel
 
 import (
 	"fmt"
+	"github.com/dbstarll/game/internal/ro/dimension/abnormal"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
@@ -121,6 +122,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"对MVP、Mini魔物伤害": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{MVP: val})
 	},
+	"对MVP、Mini魔物的伤害": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{MVP: val})
+	},
 	"对普通魔物（不包含MVP、Mini魔物）增伤": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{NoMVP: val})
 	},
@@ -131,6 +135,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		)
 	},
 	"受到MVP、Mini魔物伤害": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{MVPResist: -val})
+	},
+	"受到MVP、Mini魔物造成的伤害": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{MVPResist: -val})
 	},
 	"受普通魔物（不包含MVP、Mini魔物）造成的伤害": func(val float64) model.CharacterModifier {
@@ -157,8 +164,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"移动速度": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{MoveSpeed: val})
 	},
-	//"闪避":
-	//	return model.AddGeneral(&general.General{DodgePer: val})
+	"闪避": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{DodgePer: val})
+	},
 	"生命上限": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{HpPer: val})
 	},
@@ -180,6 +188,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"技能冷却": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{SkillCooling: val})
 	},
+	"技能延迟": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{SkillDelay: val})
+	},
 	"使用技能时SP消耗量": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{SpCost: val})
 	},
@@ -192,10 +203,15 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"使用技能Sp消耗量": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{SpCost: val})
 	},
-	//"法术普攻暴击概率":
-	//	return model.AddGeneral(&general.General{MagicOrdinaryCriticalRate: val})
-	//"法术普攻暴击伤害":
-	//	return model.AddGeneral(&general.General{MagicOrdinaryCriticalDamage: val})
+	"使用技能时Sp消耗量": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{SpCost: val})
+	},
+	"法术普攻暴击概率": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{MagicOrdinaryCriticalRate: val})
+	},
+	"法术普攻暴击伤害": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{MagicOrdinaryCriticalDamage: val})
+	},
 	"击杀魔物Base经验": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{BaseExp: val})
 	},
@@ -279,6 +295,12 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"受到远距离物理伤害减免": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{RemoteResist: val})
 	},
+	"受到近战物理伤害减免": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{NearResist: val})
+	},
+	"受到物理伤害": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{Resist: -val})
+	},
 
 	// 魔法增益
 	"魔法穿刺": func(val float64) model.CharacterModifier {
@@ -298,6 +320,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	},
 	"魔伤减免": func(val float64) model.CharacterModifier {
 		return model.AddGains(true, &model.Gains{Resist: val})
+	},
+	"受到魔法伤害": func(val float64) model.CharacterModifier {
+		return model.AddGains(true, &model.Gains{Resist: -val})
 	},
 	"受到的所有魔法伤害": func(val float64) model.CharacterModifier {
 		return model.AddGains(true, &model.Gains{Resist: -val})
@@ -521,10 +546,40 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 			shape.Small:  -val,
 		})
 	},
+
+	//异常状态抵抗%
+	"定身、恐惧抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
+			abnormal.Fixed: val,
+			abnormal.Fear:  val,
+		})
+	},
+	"眩晕、冰冻抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
+			abnormal.Vertigo: val,
+			abnormal.Frozen:  val,
+		})
+	},
+	"异常状态抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
+			abnormal.Poisoning: val,
+			abnormal.Bleed:     val,
+			abnormal.Burn:      val,
+			abnormal.Vertigo:   val,
+			abnormal.Frozen:    val,
+			abnormal.Petrify:   val,
+			abnormal.Sleep:     val,
+			abnormal.Fear:      val,
+			abnormal.Fixed:     val,
+			abnormal.Silent:    val,
+			abnormal.Cursed:    val,
+			abnormal.Dark:      val,
+		})
+	},
 }
 
 func init() {
-	//547
+	//445
 	for _, _nature := range nature.Natures {
 		//属性攻击%
 		(*percentageBuffModifiers)[fmt.Sprintf("%s属性攻击", _nature)] = func(val float64) model.CharacterModifier {
@@ -545,6 +600,9 @@ func init() {
 			return model.AddRaceDamage(&map[race.Race]float64{_race: val})
 		}
 		(*percentageBuffModifiers)[fmt.Sprintf("对%s伤害", _race.Name())] = func(val float64) model.CharacterModifier {
+			return model.AddRaceDamage(&map[race.Race]float64{_race: val})
+		}
+		(*percentageBuffModifiers)[fmt.Sprintf("对%s加伤", _race.Name())] = func(val float64) model.CharacterModifier {
 			return model.AddRaceDamage(&map[race.Race]float64{_race: val})
 		}
 		(*percentageBuffModifiers)[fmt.Sprintf("对%s魔物伤害", _race.Name())] = func(val float64) model.CharacterModifier {
@@ -572,6 +630,12 @@ func init() {
 		//体型减伤%
 		(*percentageBuffModifiers)[fmt.Sprintf("受到%s魔物伤害", _shape)] = func(val float64) model.CharacterModifier {
 			return model.AddShapeResist(&map[shape.Shape]float64{_shape: -val})
+		}
+	}
+	for _, _abnormal := range abnormal.Abnormals {
+		//异常状态抵抗%
+		(*percentageBuffModifiers)[fmt.Sprintf("%s抵抗", _abnormal)] = func(val float64) model.CharacterModifier {
+			return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: val})
 		}
 	}
 }

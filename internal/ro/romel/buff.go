@@ -225,7 +225,7 @@ func (b Buff) resolveEffect(effectStr string) (model.CharacterModifier, error) {
 				if m, exist := b.find(key, floatVal, percentage); exist {
 					BuffDetected++
 					return m, nil
-				} else if strings.HasSuffix(key, "恢复") {
+				} else if strings.Index(key, "恢复") > 0 {
 					BuffIgnore++
 					//忽略"生命自然恢复", "SP恢复", "Sp恢复", "魔法恢复", "生命恢复", "Hp恢复"
 					return nil, nil
