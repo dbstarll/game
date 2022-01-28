@@ -26,11 +26,11 @@ func init() {
 }
 
 func main() {
-	//api := client.NewRomelApi("sd32rfgfe344edsd")
-	//if err := getMonsterList(api); err != nil {
-	//	fmt.Printf("err: %+v\n", err)
-	//}
+	//updateApi()
+	detectBuffEffect()
+}
 
+func detectBuffEffect() {
 	cnt := make(map[position.Position]int)
 	if count, err := romel.Hats.Filter(func(item *romel.Hat) error {
 		token := item.Position
@@ -159,6 +159,13 @@ func main() {
 			break
 		}
 		fmt.Printf("占比：%2.4f%% - [%d]%s\n", 100*float64(item.count)/float64(romel.BuffUnknown), item.count, item.name)
+	}
+}
+
+func updateApi() {
+	api := client.NewRomelApi("sd32rfgfe344edsd")
+	if err := getMonsterList(api); err != nil {
+		fmt.Printf("err: %+v\n", err)
 	}
 }
 
