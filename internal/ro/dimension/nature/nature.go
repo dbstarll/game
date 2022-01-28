@@ -18,6 +18,19 @@ const (
 	Poison                // 毒
 )
 
+var Natures = []Nature{
+	Neutral,
+	Earth,
+	Wind,
+	Water,
+	Fire,
+	Holy,
+	Dark,
+	Ghost,
+	Undead,
+	Poison,
+}
+
 var restraints = [][]float64{
 	//{无,地,风,水,火,圣,暗,念,不死,毒}
 	{1, 1, 1, 1, 1, 1, 1, 0.25, 1, 1},                    //无

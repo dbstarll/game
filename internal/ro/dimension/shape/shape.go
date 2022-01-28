@@ -12,6 +12,12 @@ const (
 	Large           // 大型
 )
 
+var Shapes = []Shape{
+	Small,
+	Medium,
+	Large,
+}
+
 func (s Shape) String() string {
 	switch s {
 	case Unlimited:
