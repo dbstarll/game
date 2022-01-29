@@ -210,14 +210,21 @@ func (b Buff) isEndOfDigit(s rune) bool {
 }
 
 func (b Buff) resolveEffect(effectStr string) (model.CharacterModifier, error) {
-	runeArray, percentage := []rune(effectStr), strings.HasSuffix(effectStr, "%")
+	runeArray, pos, condition, percentage := []rune(effectStr), 0, "", strings.HasSuffix(effectStr, "%")
 	for idx, char := range runeArray {
-		if char == '+' || char == '-' {
+		if char == '时' && runeArray[idx+1] != '间' && runeArray[idx+1] != '长' && runeArray[idx-1] != '同' {
+			condition = string(runeArray[:idx+1])
+			if runeArray[idx+1] == '，' || runeArray[idx+1] == '：' {
+				pos = idx + 2
+			} else {
+				pos = idx + 1
+			}
+		} else if char == '+' || char == '-' {
 			BuffTotal++
-			key, val := string(runeArray[:idx]), strings.TrimSuffix(string(runeArray[idx+1:]), "%")
+			key, val := string(runeArray[pos:idx]), strings.TrimSuffix(string(runeArray[idx+1:]), "%")
 			if floatVal, err := strconv.ParseFloat(val, 64); err != nil {
 				BuffError++
-				zap.S().Warnf("resolveEffect: [%t]%s[%s]%s || %s", percentage, key, string(char), val, effectStr)
+				zap.S().Warnf("resolveEffect: [%t]%s[%s]%s - %s || %s", percentage, key, string(char), val, condition, effectStr)
 			} else {
 				if char == '-' {
 					floatVal = -floatVal
@@ -225,9 +232,13 @@ func (b Buff) resolveEffect(effectStr string) (model.CharacterModifier, error) {
 				if m, exist := b.find(key, floatVal, percentage); exist {
 					BuffDetected++
 					return m, nil
-				} else if strings.Index(key, "恢复") > 0 {
+				} else if strings.Index(key, "恢复") >= 0 {
 					BuffIgnore++
 					//忽略"生命自然恢复", "SP恢复", "Sp恢复", "魔法恢复", "生命恢复", "Hp恢复"
+					return nil, nil
+				} else if strings.Index(key, "竞技场模式") >= 0 || strings.Index(condition, "竞技场模式") >= 0 {
+					BuffIgnore++
+					//忽略竞技场模式加成
 					return nil, nil
 				} else if strings.Index(key, "【") >= 0 {
 					//过滤掉技能
@@ -239,8 +250,8 @@ func (b Buff) resolveEffect(effectStr string) (model.CharacterModifier, error) {
 					} else {
 						Buffs[key] = 1
 					}
-					fmt.Printf("\tresolveEffect: [%t]%s[%s]%f || %s\n", percentage, key, string(char), floatVal, effectStr)
-					log.Printf("resolveEffect: [%t]%s[%s]%f || %s", percentage, key, string(char), floatVal, effectStr)
+					fmt.Printf("\tresolveEffect: [%t]%s[%s]%f - %s || %s\n", percentage, key, string(char), floatVal, condition, effectStr)
+					log.Printf("resolveEffect: [%t]%s[%s]%f - %s || %s", percentage, key, string(char), floatVal, condition, effectStr)
 				}
 			}
 			break
