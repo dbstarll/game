@@ -1,0 +1,65 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1643702930,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "101.87.201.112",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 70,
+    "pageSize": 30,
+    "pageCount": 70,
+    "total": 2073,
+    "list": [
+      {
+        "id": "45003",
+        "name": "粉纱发圈",
+        "icon": "item_45003",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+5\n魔法上限+20",
+        "adventureBuff": "魔法上限+20",
+        "storageBuff": "魔法攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "45002",
+        "name": "猫耳发圈",
+        "icon": "item_45002",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "物理防御+4",
+        "storageBuff": "生命上限+19",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+3"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+6"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "45001",
+        "name": "波利帽",
+        "icon": "item_45001",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "物理防御+10",
+        "adventureBuff": "物理防御+3",
+        "storageBuff": "生命上限+10",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      }
+    ]
+  }
+}
