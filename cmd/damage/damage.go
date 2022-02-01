@@ -2,21 +2,22 @@ package main
 
 import (
 	"fmt"
+	"github.com/dbstarll/game/internal/ro/dimension/job"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
-	"github.com/dbstarll/game/internal/ro/dimension/race"
-	"github.com/dbstarll/game/internal/ro/dimension/shape"
-	"github.com/dbstarll/game/internal/ro/dimension/types"
+	"github.com/dbstarll/game/internal/ro/dimension/position"
 	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/dbstarll/game/internal/ro/model"
 	"github.com/dbstarll/game/internal/ro/model/buff"
 	"github.com/dbstarll/game/internal/ro/model/general"
+	"github.com/dbstarll/game/internal/ro/romel"
+	"go.uber.org/zap"
 	"log"
 )
 
 func main() {
 	//Template()
-	Shooter()
-	//Hunter()
+	//Shooter()
+	Hunter()
 	//EarthBash()
 }
 
@@ -33,7 +34,7 @@ func Template() {
 }
 
 func Shooter() {
-	if player, err := model.LoadPlayerFromYaml("璐璐-暴君", true); err != nil {
+	if player, err := model.LoadPlayerFromYaml("猫爸-暴君", true); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else if monster, err := model.LoadMonsterFromYaml("鳄鱼人"); err != nil {
 		//} else if monster, err := model.LoadMonsterFromYaml("木桩"); err != nil {
@@ -44,7 +45,7 @@ func Shooter() {
 		player.Apply(
 			buff.Manor(),
 			//buff.HuntingGround(),
-			//model.AddGains(false, &model.Gains{Spike: 30, Ignore: 18}), //大君之怒
+			model.AddGains(false, &model.Gains{Spike: 30, Ignore: 18}), //大君之怒
 
 			//双面硬币
 			//model.AddQuality(&model.Quality{Luk: 30, Agi: 42}),
@@ -56,9 +57,9 @@ func Shooter() {
 		)
 
 		monster.Apply(
-		//model.AddGains(false, &model.Gains{Resist: 30, DefencePer: 40}),
-		//model.AddRaceResist(&map[race.Race]float64{race.Human: 15}),
-		//model.AddGeneral(&general.General{CriticalDamageResist: 22}),
+			model.AddGains(false, &model.Gains{Resist: 30, DefencePer: 100}),
+			//model.AddRaceResist(&map[race.Race]float64{race.Human: 15}),
+			//model.AddGeneral(&general.General{CriticalDamageResist: 22}),
 		)
 		//0.8/4/607208/506597/703985/628183
 		//1.6/8/607246/509071/704022/631252
@@ -72,84 +73,10 @@ func Shooter() {
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
 		//attack.WithSkill(1.74 * 5)
 		//fmt.Printf("%f\n", player.FinalDamage(monster, attack))
-		buff.ProfitDetect(player, func(player *model.Player) float64 {
+
+		buff.ProfitDetect(player, true, func(player *model.Player) float64 {
 			return player.FinalDamage(monster, attack)
-		}, map[string]model.CharacterModifier{
-			"战役斗篷": model.Merge(
-				model.AddQuality(&model.Quality{Str: 5, Dex: 5}),
-				model.AddGeneral(&general.General{Critical: 5, Ordinary: 240, OrdinaryDamage: 3}),
-				model.AddGains(false, &model.Gains{Defence: 100}),
-			),
-			"伯爵斗篷": model.Merge(
-				model.AddGains(false, &model.Gains{Defence: 31, Ignore: 15}),
-			),
-			"勇士肩甲": model.Merge(
-				model.AddQuality(&model.Quality{Str: 10}),
-				model.AddGains(false, &model.Gains{Defence: 100, Ignore: 18}),
-			),
-			"王室骑士披风": model.Merge(
-				model.AddQuality(&model.Quality{Luk: 20}),
-				model.AddGeneral(&general.General{Critical: 5, CriticalDamage: 15 + 7.5}),
-				model.AddGains(false, &model.Gains{Defence: 100}),
-			),
-			"远航者战靴": model.Merge(
-				model.AddQuality(&model.Quality{Dex: 12}),
-				model.AddGeneral(&general.General{MoveSpeed: 12}),
-				model.AddGains(false, &model.Gains{Defence: 120, RemoteDamage: 4}),
-			),
-			"平衡之理靴子": model.Merge(
-				model.AddQuality(&model.Quality{Str: 6, Int: 6}),
-				model.AddGeneral(&general.General{MoveSpeed: 12}),
-				model.AddGains(false, &model.Gains{Defence: 120, AttackPer: 6}),
-				model.AddGains(true, &model.Gains{AttackPer: 6}),
-			),
-			"统治者战靴": model.Merge(
-				model.AddQuality(&model.Quality{Str: 12}),
-				model.AddGeneral(&general.General{MoveSpeed: 12}),
-				model.AddGains(false, &model.Gains{Defence: 120, NearDamage: 4}),
-			),
-			"斩龙者战靴": model.Merge(
-				model.AddQuality(&model.Quality{Str: 6, Dex: 6}),
-				model.AddGeneral(&general.General{MoveSpeed: 12}),
-				model.AddGains(false, &model.Gains{Defence: 120, AttackPer: 8}),
-			),
-			"轻灵之鞋": model.Merge(
-				model.AddQuality(&model.Quality{Agi: 12}),
-				model.AddGeneral(&general.General{MoveSpeed: 12, CriticalDamage: 10}),
-				model.AddGains(false, &model.Gains{Defence: 120}),
-			),
-			"虚无之晶": model.Merge(
-				model.AddQuality(&model.Quality{Str: 8, Dex: 8}),
-				model.AddGains(false, &model.Gains{Attack: 224, Ignore: 6}),
-			),
-			"远洋银币": model.Merge(
-				model.AddQuality(&model.Quality{Str: 12}),
-				model.AddGeneral(&general.General{Ordinary: 120}),
-				model.AddGains(false, &model.Gains{Attack: 224}),
-			),
-			"镶金竖琴": model.Merge(
-				model.AddQuality(&model.Quality{Dex: 12}),
-				model.AddGains(false, &model.Gains{Attack: 224, RemoteDamage: 6}),
-			),
-			"乌金之坠": model.Merge(
-				model.AddQuality(&model.Quality{Str: 12}),
-				model.AddGains(false, &model.Gains{Attack: 224, NearDamage: 6}),
-			),
-			"灼炎之精": model.Merge(
-				model.AddQuality(&model.Quality{Str: 8, Int: 8}),
-				model.AddGains(true, &model.Gains{Attack: 200}),
-				model.AddNatureAttack(&map[nature.Nature]float64{nature.Fire: 8}),
-			),
-			"热爱胸针": model.Merge(
-				model.AddQuality(&model.Quality{Luk: 16}),
-				model.AddGeneral(&general.General{CriticalDamage: 8}),
-				model.AddGains(false, &model.Gains{Attack: 224}),
-			),
-			"黄金耳环": model.Merge(
-				model.AddGeneral(&general.General{Critical: 10 + 5}),
-				model.AddGains(false, &model.Gains{Attack: 224 + 60 + 50}),
-			),
-		})
+		}, nil)
 
 		//武器体型修正
 		//技能伤害加成%
@@ -164,22 +91,36 @@ func Shooter() {
 }
 
 func Hunter() {
-	if player, err := model.LoadPlayerFromYaml("晴天有时下猪", true); err != nil {
+	if player, err := model.LoadPlayerFromYaml("璐璐-群星猎手", true); err != nil {
+		log.Fatalf("%+v\n", err)
+	} else if monster, err := model.LoadMonsterFromYaml("鳄鱼人"); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else {
-		monster := model.NewCharacter(types.Ordinary, race.Animal, nature.Water, shape.Medium)
-		attack := player.AttackWithWeapon(weapon.Bow).WithNature(nature.Wind)
+		attack := player.AttackWithWeapon(weapon.Bow).WithNature(nature.Wind).WithCritical()
 
-		model.AddGeneral(&general.General{Critical: 30, CriticalDamage: 100})(player.Character)
-		buff.Manor()(player.Character)
-		buff.DexA()(player.Character)
-		model.Merge(model.AddGains(false, &model.Gains{Resist: 30}))(monster)
+		player.Apply(
+			buff.Manor(),
+			buff.DexA(),
+			model.Merge( //狙杀瞄准
+				buff.Quality(5),
+				model.AddGeneral(&general.General{CriticalDamage: 7.8}),
+				model.AddGains(false, &model.Gains{AttackPer: 10}),
+			),
+			model.Merge( //蓄势待发
+				model.AddQuality(&model.Quality{Int: 40, Dex: 40}),
+				model.AddGeneral(&general.General{CriticalDamage: 100, OrdinaryDamage: 12.2}),
+			),
+			model.AddGains(false, &model.Gains{Spike: 20}),   //无限星辰
+			model.AddGains(false, &model.Gains{Attack: 240}), //勿忘初心.鱼排
+		)
+		monster.Apply(
+			model.AddGains(false, &model.Gains{Resist: 30, DefencePer: 30}),
+		)
+
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
-		attack.WithCritical()
-		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
-		buff.ProfitDetect(player, func(player *model.Player) float64 {
+		profitDetect(player, func(player *model.Player) float64 {
 			return player.FinalDamage(monster, attack)
-		}, nil)
+		})
 	}
 }
 
@@ -194,8 +135,8 @@ func EarthBash() {
 		log.Fatalf("%+v\n", err)
 	} else {
 		player.Apply(
-			buff.Manor(),
-			model.AddGains(false, &model.Gains{Defence: 6}),
+		//buff.Manor(),
+		//model.AddGains(false, &model.Gains{Defence: 6}),
 		)
 
 		skillEarth, rate := player.SkillEarth(), player.SkillDamageRate(monster1, false, nature.Earth)
@@ -212,14 +153,102 @@ func EarthBash() {
 		//34.5/6265294/8959937/8063944/23982/26646
 		//34.9/6289276/8986584/8087926/23982/26647
 
-		//buff.ProfitDetect(player, func(player *model.Player) float64 {
-		//	return player.SkillEarth() * player.SkillDamageRate(monster, false, nature.Earth)
-		//}, map[string]model.CharacterModifier{
-		//	"物理防御%+15": model.AddGains(false, &model.Gains{DefencePer: 15}),
-		//	"物理防御+240": model.AddGains(false, &model.Gains{Defence: 240}),
-		//	"Vit+12":   model.AddQuality(&model.Quality{Vit: 12}),
-		//	"体质料理B":    buff.VitB(),
-		//	"力量料理B":    buff.StrB(),
-		//})
+		monster2.Apply(
+			model.AddGains(false, &model.Gains{Resist: 30, DefencePer: 100}),
+			//model.AddRaceResist(&map[race.Race]float64{race.Human: 15}),
+			//model.AddGeneral(&general.General{CriticalDamageResist: 22}),
+		)
+
+		buff.ProfitDetect(player, true, func(player *model.Player) float64 {
+			return player.SkillEarth() * player.SkillDamageRate(monster2, false, nature.Earth)
+		}, nil)
 	}
+}
+
+func profitDetect(player *model.Player, fn buff.FinalDamage) {
+	positionEquips := []position.Position{
+		position.Weapon,
+		position.Shield,
+		position.Armor,
+		position.Cloak,
+		position.Shoes,
+		position.Ring,
+	}
+	for _, pos := range positionEquips {
+		fmt.Printf("Equips: %s\n", pos)
+		for idx, p := range buff.ProfitDetect(player, false, fn, Equips(pos, player.Job())) {
+			if idx < 10 {
+				fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
+			}
+		}
+	}
+}
+
+func Equips(pos position.Position, _job job.Job) map[string]model.CharacterModifier {
+	modifiers := make(map[string]model.CharacterModifier)
+	if _, err := romel.Equips.Filter(func(equip *romel.Equip) error {
+		var ms []model.CharacterModifier
+		if m, err := equip.Effect.Effect(); err != nil {
+			return err
+		} else if len(m) > 0 {
+			ms = append(ms, m...)
+		}
+		if m, err := equip.Buff.Effect(); err != nil {
+			return err
+		} else if len(m) > 0 {
+			ms = append(ms, m...)
+		}
+		if equip.RandomBuff.Empty() {
+			if len(ms) > 0 {
+				modifiers[equip.Name] = model.Merge(ms...)
+			}
+		} else if m, err := equip.RandomBuff.Effect(); err != nil {
+			return err
+		} else if len(m) == equip.RandomBuff.Size() {
+			for idx, item := range equip.RandomBuff.Items() {
+				modifiers[equip.Name+":"+item] = model.Merge(model.Merge(ms...), m[idx])
+			}
+		}
+		return nil
+	}, func(filter *romel.Equip) {
+		filter.Position = pos
+		filter.Job = &[]job.Job{_job}
+	}); err != nil {
+		zap.S().Errorf("%+v", err)
+	}
+	return modifiers
+}
+
+func Cards() map[string]model.CharacterModifier {
+	modifiers := make(map[string]model.CharacterModifier)
+	if _, err := romel.Cards.Filter(func(card *romel.Card) error {
+		if m, err := card.Buff.Effect(); err != nil {
+			return err
+		} else if len(m) > 0 {
+			modifiers[card.Name] = model.Merge(m...)
+		}
+		return nil
+	}, func(filter *romel.Card) {
+		filter.Position = position.Head
+	}); err != nil {
+		zap.S().Errorf("%+v", err)
+	}
+	return modifiers
+}
+
+func Hats(pos position.Position) map[string]model.CharacterModifier {
+	modifiers := make(map[string]model.CharacterModifier)
+	if _, err := romel.Hats.Filter(func(card *romel.Hat) error {
+		if m, err := card.Buff.Effect(); err != nil {
+			return err
+		} else if len(m) > 0 {
+			modifiers[card.Name] = model.Merge(m...)
+		}
+		return nil
+	}, func(filter *romel.Hat) {
+		filter.Position = pos
+	}); err != nil {
+		zap.S().Errorf("%+v", err)
+	}
+	return modifiers
 }

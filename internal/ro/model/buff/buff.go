@@ -129,50 +129,53 @@ var (
 	}
 )
 
-func ProfitDetect(player *model.Player, fn FinalDamage, customDetects map[string]model.CharacterModifier) error {
+func ProfitDetect(player *model.Player, baseDetect bool, fn FinalDamage, customDetects map[string]model.CharacterModifier) []*Profit {
 	base := fn(player)
-	fmt.Printf("base: %f\n", base)
 	var profits []*Profit
-	for name, modifier := range detect {
-		cancel := modifier(player.Character)
-		value := fn(player)
-		if value != base {
-			profits = append(profits, &Profit{
-				name:  name,
-				value: value,
-			})
+	if baseDetect {
+		for name, modifier := range detect {
+			cancel := modifier(player.Character)
+			value := fn(player)
+			if value != base {
+				profits = append(profits, &Profit{
+					Name:  name,
+					Value: 100 * (value - base) / base,
+				})
+			}
+			cancel()
 		}
-		cancel()
 	}
 	for name, modifier := range customDetects {
 		cancel := modifier(player.Character)
 		value := fn(player)
 		if value != base {
 			profits = append(profits, &Profit{
-				name:  name,
-				value: value,
+				Name:  name,
+				Value: 100 * (value - base) / base,
 			})
 		}
 		cancel()
 	}
 	sort.Slice(profits, func(i, j int) bool {
-		if profits[i].value < profits[j].value {
+		if profits[i].Value < profits[j].Value {
 			return false
-		} else if profits[i].value > profits[j].value {
+		} else if profits[i].Value > profits[j].Value {
 			return true
 		} else {
-			return profits[i].name < profits[j].name
+			return profits[i].Name < profits[j].Name
 		}
 	})
-	for _, profit := range profits {
-		fmt.Printf("增幅：%2.4f%% - %s\n", 100*(profit.value-base)/base, profit.name)
+	if baseDetect {
+		for _, profit := range profits {
+			fmt.Printf("增幅：%2.4f%% - %s\n", profit.Value, profit.Name)
+		}
 	}
-	return nil
+	return profits
 }
 
 type Profit struct {
-	name  string
-	value float64
+	Name  string
+	Value float64
 }
 
 //庄园

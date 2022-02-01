@@ -198,6 +198,10 @@ func DetectDefenceByPanel(expectPhysicalPanel, expectMagicalPanel float64) Chara
 	}
 }
 
+func (c *Character) Job() job.Job {
+	return c.job
+}
+
 func (c *Character) Apply(modifiers ...CharacterModifier) func() {
 	return Merge(modifiers...)(c)
 }
