@@ -1,6 +1,7 @@
 package romel
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ro/model"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -319,6 +320,10 @@ func (b Buff) resolveEffect(effectStr string, rate int) (model.CharacterModifier
 				BuffIgnore++
 				//忽略竞技场模式加成
 				return nil, nil
+			} else if strings.Index(key, "达纳托斯之塔") >= 0 || strings.Index(condition, "达纳托斯之塔") >= 0 {
+				BuffIgnore++
+				//忽略达纳托斯之塔加成
+				return nil, nil
 			} else if strings.Index(key, "【") >= 0 {
 				//过滤掉技能
 				BuffIgnore++
@@ -354,7 +359,7 @@ func (b Buff) resolveEffect(effectStr string, rate int) (model.CharacterModifier
 					} else {
 						Buffs[key] = 1
 					}
-					//fmt.Printf("\tresolveEffect: [%t]%s[%s]%f - %s || %s\n", percentage, key, string(char), floatVal, condition, effectStr)
+					fmt.Printf("\tresolveEffect: [%t]%s[%s]%f - %s || %s\n", percentage, key, string(char), floatVal, condition, effectStr)
 					log.Printf("resolveEffect: [%t]%s[%s]%f - %s || %s", percentage, key, string(char), floatVal, condition, effectStr)
 				}
 			}
