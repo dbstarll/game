@@ -163,7 +163,7 @@ func detectBuffEffect() {
 
 func updateApi() {
 	api := romel.NewRomelApi("sd32rfgfe344edsd")
-	if err := getCardList(api); err != nil {
+	if err := getMonsterList(api); err != nil {
 		fmt.Printf("err: %+v\n", err)
 	}
 }

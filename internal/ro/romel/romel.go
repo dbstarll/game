@@ -72,11 +72,11 @@ func (a *RomelApi) GetEquipList(page int) (*Result, error) {
 }
 
 func (a *RomelApi) GetPetList(page int) (*Result, error) {
-	return a.getListAndSave2("pet", page)
+	return a.getListAndSave2("pet", page, Pets.Size())
 }
 
 func (a *RomelApi) GetMonsterList(page int) (*Result, error) {
-	return a.getListAndSave2("monster", page)
+	return a.getListAndSave2("monster", page, Monsters.Size())
 }
 
 func (a *RomelApi) getListAndSave(list string, page, check int) (*Result, error) {
@@ -121,7 +121,7 @@ func (a *RomelApi) getListAndSave(list string, page, check int) (*Result, error)
 	}
 }
 
-func (a *RomelApi) getListAndSave2(list string, page int) (*Result, error) {
+func (a *RomelApi) getListAndSave2(list string, page, check int) (*Result, error) {
 	log.Printf("getListAndSave2: %s-%d", list, page)
 	query := &Query{
 		apiId:    a.apiId,
@@ -146,11 +146,18 @@ func (a *RomelApi) getListAndSave2(list string, page int) (*Result, error) {
 		result := &Result{}
 		if body, err := ioutil.ReadAll(resp.Body); err != nil {
 			return nil, err
-		} else if err := ioutil.WriteFile(fmt.Sprintf("configs/romel/%s/%sList-%03d.json", list, list, page), body, 0644); err != nil {
-			return nil, err
 		} else if err := json.Unmarshal(body, result); err != nil {
 			return nil, err
+		} else if result.Data.Total == check {
+			log.Printf("getListAndSave2: %s-%d -- not changed", list, page)
+			result.Data.PageCount = 0
+			return result, nil
+		} else if err := ioutil.WriteFile(fmt.Sprintf("configs/romel/%s/%sList-%03d.json", list, list, page), body, 0644); err != nil {
+			return nil, err
 		} else {
+			if page == 1 {
+				log.Printf("getListAndSave2: %s-%d -- updated[%d]: %d --> %d", list, page, result.Data.PageCount, check, result.Data.Total)
+			}
 			return result, nil
 		}
 	}
