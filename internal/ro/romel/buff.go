@@ -1,6 +1,7 @@
 package romel
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ro/model"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -361,7 +362,7 @@ func (b Buff) resolveEffect(effectStr string, rate int) (model.CharacterModifier
 					} else {
 						Buffs[key] = 1
 					}
-					//fmt.Printf("\tresolveEffect: [%t]%s[%s]%f - %s || %s\n", percentage, key, string(char), floatVal, condition, effectStr)
+					fmt.Printf("\tresolveEffect: [%t]%s[%s]%f - %s || %s\n", percentage, key, string(char), floatVal, condition, effectStr)
 					log.Printf("resolveEffect: [%t]%s[%s]%f - %s || %s", percentage, key, string(char), floatVal, condition, effectStr)
 				}
 			}
