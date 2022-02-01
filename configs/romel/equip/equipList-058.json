@@ -1,45 +1,62 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642843769,
+  "timeStamp": 1643703580,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 58,
     "pageSize": 10,
-    "pageCount": 74,
-    "total": 731,
+    "pageCount": 77,
+    "total": 765,
     "list": [
       {
-        "id": "43026",
-        "name": "棉衬衫",
-        "icon": "item_43026",
-        "rank": 2,
+        "id": "44010",
+        "name": "犬牙手套",
+        "icon": "item_44010",
+        "rank": 3,
         "job": [
           "0"
         ],
-        "position": 4,
-        "effect": "物理防御+13",
-        "buff": "闪避+5",
-        "isCompose": 1,
-        "isUpgrade": 0,
+        "position": 6,
+        "effect": "物理攻击+64",
+        "buff": "灵巧+5\n恶魔种族加伤+5%",
+        "isCompose": 0,
+        "isUpgrade": 1,
         "isHigh": 0,
         "canSlot": 1,
         "canUpgrade": 1
       },
       {
-        "id": "43025",
-        "name": "背德皇帝的斗篷",
-        "icon": "item_43025",
+        "id": "44009",
+        "name": "红玛瑙发夹",
+        "icon": "item_44009",
         "rank": 3,
         "job": [
           "0"
         ],
-        "position": 4,
-        "effect": "物理防御+25",
-        "buff": "受到无属性伤害-9%",
+        "position": 6,
+        "effect": "物理攻击+48",
+        "buff": "魔法上限+150\n使用技能时SP消耗降低5%",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44008",
+        "name": "永恒戒指",
+        "icon": "item_44008",
+        "rank": 4,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "魔法攻击+66",
+        "buff": "灵巧+5\n智力+5\n【大巫师之杖Ⅷ】（【巫师之力】）+【创作者外袍Ⅷ】（【碎星者外袍】）+【永恒戒指Ⅷ】（【克拉肯之眼】）+【水晶靴Ⅳ】（【白宝石之靴】）：可变吟唱时间-5%，魔法伤害+3%，忽视魔法防御+3%",
         "isCompose": 0,
         "isUpgrade": 0,
         "isHigh": 0,
@@ -47,16 +64,33 @@
         "canUpgrade": 1
       },
       {
-        "id": "43024",
-        "name": "时之蓝披肩",
-        "icon": "item_43024",
+        "id": "44007",
+        "name": "冰玫瑰戒指",
+        "icon": "item_44007",
         "rank": 3,
         "job": [
           "0"
         ],
-        "position": 4,
-        "effect": "物理防御+25",
-        "buff": "闪避+15\n【高等布袋熊长靴】+【大猫的祝福Ⅵ】+【时之蓝披肩Ⅳ】：力量+5，装备攻速+5%",
+        "position": 6,
+        "effect": "物理攻击+48",
+        "buff": "物理攻击+30\n受植物种族伤害-10%\n装备时不会被植物系的魔物主动攻击",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44006",
+        "name": "月亮胸针",
+        "icon": "item_44006",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 6,
+        "effect": "物理攻击+42",
+        "buff": "魔法上限+75\nSP恢复+5%\n【露娜弓Ⅵ】+【月亮胸针Ⅵ】（或【皎月】）：智力+2，SP恢复+10%\n【匿影外套】+【月亮胸针Ⅵ】：猎人陷阱类技能的伤害+10%",
         "isCompose": 0,
         "isUpgrade": 0,
         "isHigh": 0,
@@ -64,61 +98,44 @@
         "canUpgrade": 1
       },
       {
-        "id": "43017",
-        "name": "龙纹外套",
-        "icon": "item_43017",
-        "rank": 2,
+        "id": "44005",
+        "name": "奥尔里昂的手套",
+        "icon": "item_44005",
+        "rank": 4,
         "job": [
           "0"
         ],
-        "position": 4,
-        "effect": "物理防御+28",
-        "buff": "力量+2\n生命上限+100",
-        "isCompose": 1,
+        "position": 6,
+        "effect": "魔法攻击+60",
+        "buff": "灵巧+2\n魔法攻击+10%",
+        "isCompose": 0,
         "isUpgrade": 0,
         "isHigh": 0,
         "canSlot": 1,
         "canUpgrade": 1
       },
       {
-        "id": "43016",
-        "name": "生存斗篷",
-        "icon": "item_43016",
-        "rank": 2,
+        "id": "44004",
+        "name": "奥尔里昂的项链",
+        "icon": "item_44004",
+        "rank": 4,
         "job": [
           "0"
         ],
-        "position": 4,
-        "effect": "物理防御+16",
-        "buff": "生命上限+75",
-        "isCompose": 1,
+        "position": 6,
+        "effect": "魔法攻击+60",
+        "buff": "灵巧+3\n魔法攻击+30",
+        "isCompose": 0,
         "isUpgrade": 0,
         "isHigh": 0,
         "canSlot": 1,
         "canUpgrade": 1
       },
       {
-        "id": "43014",
-        "name": "哥夫内肩饰",
-        "icon": "item_43014",
-        "rank": 3,
-        "job": [
-          "0"
-        ],
-        "position": 4,
-        "effect": "物理防御+22",
-        "buff": "体质+2\n受到远距离物理伤害减免+10%",
-        "isCompose": 1,
-        "isUpgrade": 0,
-        "isHigh": 0,
-        "canSlot": 1,
-        "canUpgrade": 1
-      },
-      {
-        "id": "43007",
-        "name": "伯爵斗篷",
-        "icon": "item_43007",
-        "rank": 3,
+        "id": "44003",
+        "name": "坚定指环",
+        "icon": "item_44003",
+        "rank": 4,
         "job": [
           "12",
           "13",
@@ -198,9 +215,9 @@
           "224",
           "225"
         ],
-        "position": 4,
-        "effect": "物理防御+31",
-        "buff": "忽视物理防御+15%",
+        "position": 6,
+        "effect": "物理攻击+54",
+        "buff": "生命上限+400\n魔法上限+150\n受治疗加成+5%\n使【阿修罗霸凰拳】公式中【技能等级*4+剩余SP\/100】部分的伤害倍率增加1.5\n【霸王乱舞】+【坚定战袍Ⅹ】+【坚定指环Ⅳ】（或【赤心权戒】）：使【罗刹破凰拳】伤害+5%\n【苍天霸皇】+【坚定战袍Ⅹ】+【坚定指环Ⅳ】（或【赤心权戒】）：使【罗刹破凰拳】伤害+5%\n【霸王乱舞】+【天选者战袍】+【坚定指环Ⅳ】：使【罗刹破凰拳】伤害+5%\n【苍天霸皇】+【天选者战袍】+【坚定指环Ⅳ】：使【罗刹破凰拳】伤害+5%",
         "isCompose": 0,
         "isUpgrade": 0,
         "isHigh": 0,
@@ -208,33 +225,16 @@
         "canUpgrade": 1
       },
       {
-        "id": "43006",
-        "name": "奔跑者徽章",
-        "icon": "item_43006",
+        "id": "44002",
+        "name": "体力项链",
+        "icon": "item_44002",
         "rank": 3,
         "job": [
           "0"
         ],
-        "position": 4,
-        "effect": "物理防御+28",
-        "buff": "暴击防护+20",
-        "isCompose": 0,
-        "isUpgrade": 0,
-        "isHigh": 0,
-        "canSlot": 1,
-        "canUpgrade": 0
-      },
-      {
-        "id": "43005",
-        "name": "迪斯凯特的披风",
-        "icon": "item_43005",
-        "rank": 4,
-        "job": [
-          "0"
-        ],
-        "position": 4,
-        "effect": "物理防御+22",
-        "buff": "法师系，弓手系，服事系，多兰族，悟灵士系装备时闪避+35\n精炼+10时，闪避+10\n剑士系，商人系，盗贼系，超初，忍者系，枪手系装备时物理反伤率+5%\n精炼+10时，反伤率+15%",
+        "position": 6,
+        "effect": "物理攻击+42",
+        "buff": "体质+2",
         "isCompose": 0,
         "isUpgrade": 0,
         "isHigh": 0,
@@ -242,17 +242,17 @@
         "canUpgrade": 1
       },
       {
-        "id": "43004",
-        "name": "抗魔斗篷",
-        "icon": "item_43004",
-        "rank": 2,
+        "id": "44001",
+        "name": "花戒指",
+        "icon": "item_44001",
+        "rank": 3,
         "job": [
           "0"
         ],
-        "position": 4,
-        "effect": "物理防御+16",
-        "buff": "魔法防御+10",
-        "isCompose": 1,
+        "position": 6,
+        "effect": "物理攻击+30",
+        "buff": "物理攻击+20\n受植物种族伤害-10%",
+        "isCompose": 0,
         "isUpgrade": 0,
         "isHigh": 0,
         "canSlot": 1,

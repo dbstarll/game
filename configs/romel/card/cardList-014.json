@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839720,
+  "timeStamp": 1643702182,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 14,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "23021",
+        "name": "巴风特卡片",
+        "icon": "Baphomet",
+        "picture": "card_30021",
+        "quality": 4,
+        "position": 1,
+        "buff": "命中+10\n对所有种族魔物伤害+10%\n近战普攻时对目标及周围小范围内所有目标造成溅射伤害",
+        "adventureBuff": "命中+10",
+        "storageBuff": "物理攻击+10，魔法攻击+10",
+        "isCompose": 0
+      },
+      {
+        "id": "23020",
+        "name": "血腥骑士卡片",
+        "icon": "Bloody_Knight",
+        "picture": "card_30020",
+        "quality": 3,
+        "position": 1,
+        "buff": "普攻时有5%概率自动施放【陨石术】Lv.10技能\n【苍白领主卡片】【血腥骑士卡片】一起装备时，普攻伤害+5%，普攻时自动施放【陨石术】概率提高3%",
+        "adventureBuff": "生命上限+21",
+        "storageBuff": "生命上限+70",
+        "isCompose": 0
+      },
       {
         "id": "23019",
         "name": "凯美拉卡片",
@@ -346,30 +370,6 @@
         "buff": "受到火属性伤害-30%\n闪避+10",
         "adventureBuff": "生命上限+84",
         "storageBuff": "装备南瓜先生卡片时，受到火属性伤害-20%\n每次受到火属性攻击时，有概率根据对方和自己的等级差恢复生命值",
-        "isCompose": 0
-      },
-      {
-        "id": "22011",
-        "name": "兽人婴儿卡片",
-        "icon": "Orc_Baby",
-        "picture": "card_20010",
-        "quality": 3,
-        "position": 4,
-        "buff": "受到无属性伤害-30%\n闪避+10",
-        "adventureBuff": "生命上限+84",
-        "storageBuff": "装备兽人婴儿卡片时，受到无属性伤害-5%\n每次受到无属性攻击时，有概率根据对方和自己的等级差恢复生命值",
-        "isCompose": 0
-      },
-      {
-        "id": "22010",
-        "name": "狮鹫兽卡片",
-        "icon": "Grypjon",
-        "picture": "card_20009",
-        "quality": 3,
-        "position": 1,
-        "buff": "闪避+10\n暴击+5\n当装备的职业为剑士系时普攻有3%概率自动施放【怪物互击】Lv.5",
-        "adventureBuff": "物理攻击+8",
-        "storageBuff": "装备狮鹫兽卡片时，提升剑士系普攻释放【怪物互击】的概率",
         "isCompose": 0
       }
     ]

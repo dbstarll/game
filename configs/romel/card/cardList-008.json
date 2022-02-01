@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839660,
+  "timeStamp": 1643702121,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 8,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "23127",
+        "name": "魔王梦罗克卡片",
+        "icon": "cardhead_23127",
+        "picture": "card_23127",
+        "quality": 3,
+        "position": 2,
+        "buff": "对无属性魔物伤害+5%\n受到无属性伤害-5%",
+        "adventureBuff": "物理攻击+2，生命上限+30",
+        "storageBuff": "魔法攻击+2，生命上限+30",
+        "isCompose": 0
+      },
+      {
+        "id": "23122",
+        "name": "2周年限定卡片",
+        "icon": "cardhead_23122",
+        "picture": "card_23122",
+        "quality": 3,
+        "position": 6,
+        "buff": "全能力+2\n物理攻击+20\n魔法攻击+20",
+        "adventureBuff": "魔法攻击+3，生命上限+30",
+        "storageBuff": "物理攻击+3，生命上限+30",
+        "isCompose": 0
+      },
       {
         "id": "24609",
         "name": "阿特罗斯★卡片",
@@ -346,30 +370,6 @@
         "buff": "当佩戴者是刺客系职业时，对中毒的目标造成伤害+10%\n当佩戴者是刺客系职业时，攻击中毒的目标有5%概率使目标晕眩3秒",
         "adventureBuff": "魔法攻击+12",
         "storageBuff": "生命上限+112",
-        "isCompose": 1
-      },
-      {
-        "id": "24078",
-        "name": "贤者之书",
-        "icon": "cardhead_24078",
-        "picture": "card_24078",
-        "quality": 4,
-        "position": 3,
-        "buff": "当佩戴者是贤者系职业时，每20点敏捷增加自身1%忽视魔法防御，1%装备攻速",
-        "adventureBuff": "生命上限+112",
-        "storageBuff": "当佩戴者是贤者职业时，装备攻速+3%",
-        "isCompose": 1
-      },
-      {
-        "id": "24077",
-        "name": "移动援护",
-        "icon": "cardhead_24077",
-        "picture": "card_24077",
-        "quality": 4,
-        "position": 5,
-        "buff": "施放技能【舍命庇护】之后可以移动",
-        "adventureBuff": "物理攻击+12",
-        "storageBuff": "魔法攻击+12",
         "isCompose": 1
       }
     ]

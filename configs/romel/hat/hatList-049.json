@@ -1,404 +1,494 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642842902,
+  "timeStamp": 1643702718,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 49,
     "pageSize": 30,
-    "pageCount": 68,
-    "total": 2037,
+    "pageCount": 70,
+    "total": 2073,
     "list": [
       {
-        "id": "45905",
-        "name": "眩晕小鸟",
-        "icon": "item_45905",
-        "rank": 3,
+        "id": "145884",
+        "name": "死灵头巾[1]",
+        "icon": "item_45884",
+        "rank": 4,
         "position": 7,
         "effect": "",
-        "buff": "生命上限+5%\n眩晕抗性+10%",
-        "adventureBuff": "",
-        "storageBuff": "物理攻击+3，生命上限+30",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "45904",
-        "name": "零分考卷",
-        "icon": "item_45904",
-        "rank": 3,
-        "position": 7,
-        "effect": "",
-        "buff": "人形种族加伤+5%\n人形种族减伤+3%",
-        "adventureBuff": "",
-        "storageBuff": "魔法攻击+3，生命上限+30",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "45903",
-        "name": "迷你贝雷帽",
-        "icon": "item_45903",
-        "rank": 3,
-        "position": 7,
-        "effect": "",
-        "buff": "全能力+2\n魔法攻击+4%",
-        "adventureBuff": "",
-        "storageBuff": "物理防御+2，生命上限+30",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "45902",
-        "name": "学园贝雷帽",
-        "icon": "item_45902",
-        "rank": 3,
-        "position": 7,
-        "effect": "",
-        "buff": "全能力+2\n物理攻击+4%",
-        "adventureBuff": "",
-        "storageBuff": "魔法防御+2，生命上限+30",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "45881",
-        "name": "月骑士头盔",
-        "icon": "item_45881",
-        "rank": 2,
-        "position": 7,
-        "effect": "",
-        "buff": "全能力+1\n对暗属性魔物伤害+3%",
-        "adventureBuff": "生命上限+30",
-        "storageBuff": "生命上限+30",
-        "storageRefineBuff": null,
+        "buff": "风、地、水、火属性攻击+5%\n忽视物理防御+3%\n忽视魔法防御+3%",
+        "adventureBuff": "物理攻击+8",
+        "storageBuff": "物理防御+3，生命上限+45",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+4.5"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+6，魔法防御+3"
+          }
+        ],
         "isCompose": 1
       },
       {
-        "id": "145892",
-        "name": "波利号手[1]",
-        "icon": "item_45892",
-        "rank": 2,
-        "position": 7,
-        "effect": "",
-        "buff": "智力+2\n风属性攻击+3%",
-        "adventureBuff": "",
-        "storageBuff": "物理攻击+4\n魔法攻击+4",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "145891",
-        "name": "兔兔耳机[1]",
-        "icon": "item_45891",
-        "rank": 2,
-        "position": 7,
-        "effect": "",
-        "buff": "生命上限+200\n风属性伤害减免+3%",
-        "adventureBuff": "",
-        "storageBuff": "生命上限+60",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "145890",
-        "name": "史汀指挥家[1]",
-        "icon": "item_45890",
-        "rank": 3,
-        "position": 7,
-        "effect": "",
-        "buff": "智力+5、灵巧+5\n精炼+6时，智力+5、灵巧+5",
-        "adventureBuff": "",
-        "storageBuff": "物理攻击+6\n魔法攻击+6",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "48654",
-        "name": "百叶镜",
-        "icon": "item_48654",
-        "rank": 2,
-        "position": 8,
-        "effect": "",
-        "buff": "生命上限+100\n物理防御+10\n魔法防御+10",
-        "adventureBuff": "",
-        "storageBuff": "生命上限+30",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "48653",
-        "name": "嘀嘀叭叭",
-        "icon": "item_48653",
-        "rank": 2,
-        "position": 9,
-        "effect": "",
-        "buff": "物理攻击+20\n对暗属性魔物伤害+3%",
-        "adventureBuff": "",
-        "storageBuff": "生命上限+60",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "48044",
-        "name": "溜溜猴乐团",
-        "icon": "item_48044",
+        "id": "145846",
+        "name": "白骑士头盔[1]",
+        "icon": "item_45846",
         "rank": 4,
-        "position": 11,
+        "position": 7,
         "effect": "",
-        "buff": "移动速度+5%\n技能攻击伤害+3%",
-        "adventureBuff": "",
-        "storageBuff": "物理攻击+1%\n魔法攻击+1%",
-        "storageRefineBuff": null,
-        "isCompose": 0
+        "buff": "全能力+1\n对MVP、Mini魔物造成的伤害+10%，每精炼+1，对MVP、Mini魔物造成的伤害+0.5%，受MVP、Mini魔物造成的伤害-1%",
+        "adventureBuff": "对MVP、Mini魔物伤害+1%",
+        "storageBuff": "生命上限+90",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理防御+6"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+6，魔法防御+3"
+          }
+        ],
+        "isCompose": 1
       },
       {
-        "id": "47124",
-        "name": "剑鱼吉他",
-        "icon": "item_47124",
+        "id": "145845",
+        "name": "魔月发夹[1]",
+        "icon": "item_45845",
         "rank": 3,
-        "position": 10,
+        "position": 7,
         "effect": "",
-        "buff": "生命上限+5%\n牧师系、多兰族装备时，治疗加成+3%，其他系装备时受治疗加成+3%\n受到风、地、水、火属性伤害-3%",
-        "adventureBuff": "",
-        "storageBuff": "生命上限+120",
-        "storageRefineBuff": null,
-        "isCompose": 0
+        "buff": "魔法攻击+5%\n装备攻速+5%",
+        "adventureBuff": "魔法攻击+3，生命上限+30",
+        "storageBuff": "魔法防御+2，生命上限+30",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理防御+2，魔法防御+2"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+4，生命上限+40"
+          }
+        ],
+        "isCompose": 1
       },
       {
-        "id": "45816",
-        "name": "实验面罩",
-        "icon": "item_45816",
+        "id": "145844",
+        "name": "诅咒兔娃[1]",
+        "icon": "item_45844",
         "rank": 3,
-        "position": 9,
+        "position": 7,
         "effect": "",
-        "buff": "生命上限+200\n智力+2\n魔法攻击+30",
-        "adventureBuff": "魔法防御+2，生命上限+30",
-        "storageBuff": "物理攻击+3，生命上限+30",
-        "storageRefineBuff": null,
-        "isCompose": 0
+        "buff": "对暗属性魔物伤害+5%\n受到暗属性伤害-10%",
+        "adventureBuff": "物理攻击+3，生命上限+30",
+        "storageBuff": "魔法防御+2，生命上限+30",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "对暗属性魔物伤害+1%"
+          },
+          {
+            "lv": 8,
+            "buff": "物理攻击+6"
+          }
+        ],
+        "isCompose": 1
       },
       {
-        "id": "45815",
-        "name": "落樱纷华",
-        "icon": "item_45815",
+        "id": "145843",
+        "name": "万圣节灯笼[1]",
+        "icon": "item_45843",
         "rank": 2,
         "position": 7,
         "effect": "",
-        "buff": "体质+1\n生命上限+100",
-        "adventureBuff": "生命上限+30",
-        "storageBuff": "生命上限+30",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "45814",
-        "name": "加尔玩偶",
-        "icon": "item_45814",
-        "rank": 3,
-        "position": 10,
-        "effect": "",
-        "buff": "生命上限+200\n物伤减免+3%\n魔伤减免+3%",
-        "adventureBuff": "物理防御+2，生命上限+30",
-        "storageBuff": "魔法攻击+3，生命上限+30",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "45813",
-        "name": "尘世魔瞳",
-        "icon": "item_45813",
-        "rank": 2,
-        "position": 8,
-        "effect": "",
-        "buff": "生命上限+200\n魔法防御+10",
+        "buff": "全能力+1\n忽视魔法防御+2%",
         "adventureBuff": "物理防御+2",
         "storageBuff": "生命上限+30",
         "storageRefineBuff": null,
-        "isCompose": 0
+        "isCompose": 1
       },
       {
-        "id": "45812",
-        "name": "黑曜之角",
-        "icon": "item_45812",
+        "id": "145842",
+        "name": "无颅武士头盔[1]",
+        "icon": "item_45842",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "物伤减免+4%\n生命上限+2%",
+        "adventureBuff": "魔法攻击+3，生命上限+30",
+        "storageBuff": "物理防御+2，生命上限+30",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+2，物理防御+2"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+4，生命上限+40"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "145841",
+        "name": "趴趴鬼娃[1]",
+        "icon": "item_45841",
         "rank": 2,
         "position": 7,
         "effect": "",
-        "buff": "生命上限+200\n物理防御+15",
+        "buff": "对毒属性魔物伤害+3%\n受到毒属性伤害-5%",
         "adventureBuff": "魔法防御+2",
         "storageBuff": "生命上限+30",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "145691",
-        "name": "四翼天使",
-        "icon": "item_45691",
-        "rank": 4,
-        "position": 8,
-        "effect": "",
-        "buff": "濒死时恢复所有Hp和Sp\n穿戴240秒后开始生效，冷却时间：240秒",
-        "adventureBuff": "生命上限+90",
-        "storageBuff": "魔法攻击+4.5，生命上限+45",
         "storageRefineBuff": null,
         "isCompose": 1
       },
       {
-        "id": "145575",
-        "name": "朱诺守备官[1]",
-        "icon": "item_45575",
+        "id": "145840",
+        "name": "乌鸦头饰[1]",
+        "icon": "item_45840",
         "rank": 3,
         "position": 7,
         "effect": "",
-        "buff": "魔法攻击+1%\n智力+2",
+        "buff": "生命上限+500\n对恶魔种族魔物伤害+5%",
         "adventureBuff": "物理防御+2，魔法防御+2",
-        "storageBuff": "生命上限+60",
-        "storageRefineBuff": null,
-        "isCompose": 0
+        "storageBuff": "物理防御+2，生命上限+30",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+2，生命上限+20"
+          },
+          {
+            "lv": 8,
+            "buff": "生命上限+120"
+          }
+        ],
+        "isCompose": 1
       },
       {
-        "id": "51276",
-        "name": "汉服系列时装",
-        "icon": "item_51276",
-        "rank": 1,
-        "position": 13,
-        "effect": "",
-        "buff": "",
-        "adventureBuff": "物理攻击+1%\n魔法攻击+1%",
-        "storageBuff": "物理攻击+12\n魔法攻击+12",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "48647",
-        "name": "飞燕",
-        "icon": "item_48647",
-        "rank": 3,
-        "position": 8,
-        "effect": "",
-        "buff": "生命上限+300\n物理攻击+3%",
-        "adventureBuff": "",
-        "storageBuff": "物理攻击+3，生命上限+30",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "48041",
-        "name": "金风玉露",
-        "icon": "item_48041",
-        "rank": 3,
-        "position": 11,
-        "effect": "",
-        "buff": "忽视物理防御+3%\n物理攻击+20",
-        "adventureBuff": "",
-        "storageBuff": "生命上限+60",
-        "storageRefineBuff": null,
-        "isCompose": 0
-      },
-      {
-        "id": "48026",
-        "name": "火焰尾",
-        "icon": "item_48026",
+        "id": "145839",
+        "name": "招魂蜡烛[1]",
+        "icon": "item_45839",
         "rank": 2,
-        "position": 11,
+        "position": 7,
         "effect": "",
-        "buff": "魔法攻击+10\n智力+2",
+        "buff": "全能力+1\n忽视物理防御+2%",
         "adventureBuff": "物理攻击+3",
         "storageBuff": "生命上限+30",
         "storageRefineBuff": null,
         "isCompose": 1
       },
       {
-        "id": "47118",
-        "name": "万卷相思",
-        "icon": "item_47118",
-        "rank": 3,
-        "position": 10,
+        "id": "145838",
+        "name": "血色红帽[1]",
+        "icon": "item_45838",
+        "rank": 4,
+        "position": 7,
         "effect": "",
-        "buff": "对暗属性魔物伤害+10%\n受到暗属性伤害-10%",
+        "buff": "灵巧+10\n暴击+10\n精炼+10时，幸运+10，暴击+10",
+        "adventureBuff": "魔法攻击+8",
+        "storageBuff": "魔法防御+3，生命上限+45",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "生命上限+90"
+          },
+          {
+            "lv": 8,
+            "buff": "暴击+1"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "145837",
+        "name": "悲伤召唤师头饰[1]",
+        "icon": "item_45837",
+        "rank": 3,
+        "position": 7,
+        "effect": "",
+        "buff": "全能力+2\n魔法上限+200\n魔法防御+5%\n魔法上限+2%",
+        "adventureBuff": "物理攻击+3，生命上限+30",
+        "storageBuff": "物理防御+2，生命上限+30",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理攻击+3"
+          },
+          {
+            "lv": 8,
+            "buff": "魔法攻击+4，生命上限+40"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "48658",
+        "name": "无限围巾",
+        "icon": "item_48658",
+        "rank": 2,
+        "position": 9,
+        "effect": "",
+        "buff": "物理攻击+20\n对不死属性魔物伤害+3%",
         "adventureBuff": "",
         "storageBuff": "生命上限+60",
         "storageRefineBuff": null,
         "isCompose": 0
       },
       {
-        "id": "47109",
-        "name": "天使之证",
-        "icon": "item_47109",
+        "id": "48657",
+        "name": "阿斯特蕾娅的眷恋",
+        "icon": "item_48657",
+        "rank": 3,
+        "position": 8,
+        "effect": "",
+        "buff": "装备攻速+5%\n每2点敏捷额外增加1点魔法攻击",
+        "adventureBuff": "",
+        "storageBuff": "物理攻击+6\n魔法攻击+6",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "48650",
+        "name": "阿特罗斯之嘴",
+        "icon": "item_48650",
+        "rank": 4,
+        "position": 8,
+        "effect": "",
+        "buff": "忽视物理防御+3%\n每精炼+1，忽视物理防御+1%",
+        "adventureBuff": "物理防御+4.5",
+        "storageBuff": "生命上限+90",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "魔法攻击+3，生命上限+30"
+          },
+          {
+            "lv": 8,
+            "buff": "生命上限+180"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "48649",
+        "name": "蚁后面具",
+        "icon": "item_48649",
+        "rank": 4,
+        "position": 8,
+        "effect": "",
+        "buff": "生命上限+1500\n圣属性攻击+2%\n每精炼+1，生命上限+1%",
+        "adventureBuff": "魔法攻击+4.5，生命上限+45",
+        "storageBuff": "生命上限+90",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48648",
+        "name": "海神面冠",
+        "icon": "item_48648",
+        "rank": 4,
+        "position": 7,
+        "effect": "",
+        "buff": "对于血量小于40%的目标伤害增加4%\n每精炼+1，伤害值增加+1%",
+        "adventureBuff": "物理攻击+4.5，生命上限+45",
+        "storageBuff": "魔法防御+3，生命上限+45",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48645",
+        "name": "万圣魔面具",
+        "icon": "item_48645",
+        "rank": 3,
+        "position": 8,
+        "effect": "",
+        "buff": "智力+3\n灵巧+3\n移动速度+3%\n魔法攻击+15",
+        "adventureBuff": "物理攻击+3，生命上限+30",
+        "storageBuff": "魔法防御+2，生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48644",
+        "name": "嗜血面具",
+        "icon": "item_48644",
+        "rank": 4,
+        "position": 8,
+        "effect": "",
+        "buff": "普通攻击时，有3%概率暴击+20，物理攻击+6%，持续5秒；\n近战职业击杀魔物时，装备攻速+5%，移动速度+5%，持续5秒",
+        "adventureBuff": "物理攻击+8",
+        "storageBuff": "物理防御+3，生命上限+45",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48048",
+        "name": "厨神之魂",
+        "icon": "item_48048",
+        "rank": 3,
+        "position": 11,
+        "effect": "",
+        "buff": "全能力+1\n对植物、动物种族加伤+5%",
+        "adventureBuff": "魔法攻击+3，生命上限+30",
+        "storageBuff": "物理防御+2，生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 1
+      },
+      {
+        "id": "48046",
+        "name": "星灯游鱼",
+        "icon": "item_48046",
+        "rank": 3,
+        "position": 11,
+        "effect": "",
+        "buff": "对暗属性魔物伤害+10%\n受到暗属性伤害-10%",
+        "adventureBuff": "",
+        "storageBuff": "生命上限+120",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "47126",
+        "name": "奈伯利安·星切",
+        "icon": "item_47126",
         "rank": 4,
         "position": 10,
         "effect": "",
-        "buff": "受到伤害时，10%概率使敌人【净化】\n【净化】：下一次攻击伤害为0，持续5秒，对MINI、MVP无效",
+        "buff": "物理穿刺+5%\n攻击目标时15%概率获得星切buff，自身物理攻击+200，物理、魔法防御-100，持续10秒\n攻击目标时有概率召唤“星辰爆破”，对自身周围目标造成一定的物理伤害。（装备在时装栏时不产生伤害）",
+        "adventureBuff": "",
+        "storageBuff": "物理攻击+1%\n魔法攻击+1%",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "47122",
+        "name": "鹗枭宝宝",
+        "icon": "item_47122",
+        "rank": 4,
+        "position": 10,
+        "effect": "",
+        "buff": "全能力+1\n物理穿刺+5%\n魔法穿刺+5%",
+        "adventureBuff": "魔法攻击+4.5，生命上限+45",
+        "storageBuff": "物理防御+3，生命上限+45",
+        "storageRefineBuff": [
+          {
+            "lv": 6,
+            "buff": "物理防御+3，魔法防御+3"
+          },
+          {
+            "lv": 8,
+            "buff": "精炼魔攻+10"
+          }
+        ],
+        "isCompose": 1
+      },
+      {
+        "id": "47121",
+        "name": "幽灵船舵",
+        "icon": "item_47121",
+        "rank": 4,
+        "position": 10,
+        "effect": "",
+        "buff": "生命上限+1500\n精炼+10时，生命上限+10%",
         "adventureBuff": "生命上限+90",
         "storageBuff": "物理攻击+4.5，生命上限+45",
         "storageRefineBuff": null,
         "isCompose": 1
       },
       {
-        "id": "47103",
-        "name": "瓦蓝之章",
-        "icon": "item_47103",
+        "id": "47120",
+        "name": "恶魔咕波钟",
+        "icon": "item_47120",
         "rank": 4,
         "position": 10,
         "effect": "",
-        "buff": "物伤减免+5%\n魔法上限+200",
+        "buff": "受到魔法伤害-15%\n物理防御-15%",
         "adventureBuff": "生命上限+90",
         "storageBuff": "魔法攻击+4.5，生命上限+45",
         "storageRefineBuff": null,
         "isCompose": 1
       },
       {
-        "id": "47102",
-        "name": "瓦蓝之轮",
-        "icon": "item_47102",
-        "rank": 4,
+        "id": "47117",
+        "name": "海拉的仆从",
+        "icon": "item_47117",
+        "rank": 2,
         "position": 10,
         "effect": "",
-        "buff": "物伤减免+5%\n生命上限+600",
-        "adventureBuff": "生命上限+90",
-        "storageBuff": "物理攻击+4.5，生命上限+45",
+        "buff": "生命上限+200\n物理防御+2%\n魔法防御+2%",
+        "adventureBuff": "",
+        "storageBuff": "生命上限+30",
         "storageRefineBuff": null,
         "isCompose": 1
       },
       {
-        "id": "47101",
-        "name": "瓦蓝之印",
-        "icon": "item_47101",
-        "rank": 4,
-        "position": 10,
+        "id": "45939",
+        "name": "章鱼头饰",
+        "icon": "item_45939",
+        "rank": 2,
+        "position": 7,
         "effect": "",
-        "buff": "物伤减免+5%\n体质+4",
-        "adventureBuff": "生命上限+90",
-        "storageBuff": "生命上限+90",
+        "buff": "生命上限+100\n物理攻击+15",
+        "adventureBuff": "",
+        "storageBuff": "生命上限+30",
         "storageRefineBuff": null,
-        "isCompose": 1
+        "isCompose": 0
       },
       {
-        "id": "47100",
-        "name": "绯红之章",
-        "icon": "item_47100",
-        "rank": 4,
-        "position": 10,
+        "id": "45938",
+        "name": "惊吓猫",
+        "icon": "item_45938",
+        "rank": 3,
+        "position": 7,
         "effect": "",
-        "buff": "魔伤减免+5%\n智力+2\n灵巧+2",
-        "adventureBuff": "魔法攻击+4.5，生命上限+45",
-        "storageBuff": "魔法防御+3，生命上限+45",
+        "buff": "生命上限+400\n物理攻击+45\n魔法攻击+30",
+        "adventureBuff": "",
+        "storageBuff": "生命上限+60",
         "storageRefineBuff": null,
-        "isCompose": 1
+        "isCompose": 0
       },
       {
-        "id": "47099",
-        "name": "绯红之轮",
-        "icon": "item_47099",
-        "rank": 4,
-        "position": 10,
+        "id": "45937",
+        "name": "执事的谢礼",
+        "icon": "item_45937",
+        "rank": 1,
+        "position": 7,
         "effect": "",
-        "buff": "魔伤减免+5%\n力量+2\n幸运+2",
-        "adventureBuff": "物理攻击+4.5，生命上限+45",
-        "storageBuff": "物理防御+3，生命上限+45",
+        "buff": "物理防御+3，魔法防御+3",
+        "adventureBuff": "",
+        "storageBuff": "生命上限+15",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "45889",
+        "name": "薇格的女巫帽",
+        "icon": "item_45889",
+        "rank": 1,
+        "position": 7,
+        "effect": "",
+        "buff": "全能力+1\n生命上限+200",
+        "adventureBuff": "生命上限+30",
+        "storageBuff": "生命上限+30",
+        "storageRefineBuff": null,
+        "isCompose": 0
+      },
+      {
+        "id": "45867",
+        "name": "海拉的翼盔",
+        "icon": "item_45867",
+        "rank": 2,
+        "position": 7,
+        "effect": "",
+        "buff": "全能力+1\n物理攻击+10\n魔法攻击+10",
+        "adventureBuff": "",
+        "storageBuff": "生命上限+30",
         "storageRefineBuff": null,
         "isCompose": 1
       }

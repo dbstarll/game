@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839751,
+  "timeStamp": 1643702212,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 17,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "20049",
+        "name": "大脚熊卡片",
+        "icon": "Bigfoot",
+        "picture": "card_10055",
+        "quality": 1,
+        "position": 2,
+        "buff": "受到昆虫种族魔物伤害-15%",
+        "adventureBuff": "昆虫种族加伤+2%",
+        "storageBuff": "昆虫种族加伤+8%",
+        "isCompose": 0
+      },
+      {
+        "id": "20048",
+        "name": "长老树精卡片",
+        "icon": "Wilow2",
+        "picture": "card_10054",
+        "quality": 2,
+        "position": 7,
+        "buff": "智力+3",
+        "adventureBuff": "魔法防御+2",
+        "storageBuff": "物理攻击+6",
+        "isCompose": 0
+      },
       {
         "id": "20047",
         "name": "蛇女伊丝卡片",
@@ -346,30 +370,6 @@
         "buff": "可使用技能【狂击】Lv.6",
         "adventureBuff": "物理攻击+4",
         "storageBuff": "魔法攻击+10",
-        "isCompose": 0
-      },
-      {
-        "id": "20019",
-        "name": "白幽灵卡片",
-        "icon": "Whisper",
-        "picture": "card_10019",
-        "quality": 3,
-        "position": 4,
-        "buff": "受到念属性伤害+50%\n闪避+20",
-        "adventureBuff": "对念属性魔物伤害+2%",
-        "storageBuff": "装备白幽灵卡片时，受到念属性伤害-50%",
-        "isCompose": 0
-      },
-      {
-        "id": "20018",
-        "name": "罗达蛙卡片",
-        "icon": "RodaFrog",
-        "picture": "card_10018",
-        "quality": 1,
-        "position": 3,
-        "buff": "生命上限+150\n魔法上限+50",
-        "adventureBuff": "生命上限+24",
-        "storageBuff": "装备罗达蛙卡片时，魔法恢复+1",
         "isCompose": 0
       }
     ]

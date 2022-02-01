@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839680,
+  "timeStamp": 1643702142,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 10,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "23034",
+        "name": "炎之领主卡浩卡片",
+        "icon": "LordKaho",
+        "picture": "card_30044",
+        "quality": 4,
+        "position": 1,
+        "buff": "对地属性魔物伤害+20%\n火属性攻击+10%",
+        "adventureBuff": "物理攻击+12",
+        "storageBuff": "火属性攻击+1%",
+        "isCompose": 0
+      },
+      {
+        "id": "22025",
+        "name": "炎之小魔女卡片",
+        "icon": "RedExplosion",
+        "picture": "card_20027",
+        "quality": 3,
+        "position": 6,
+        "buff": "魔法攻击+20\n忽视魔法防御+4%",
+        "adventureBuff": "物理攻击+8",
+        "storageBuff": "生命上限+72",
+        "isCompose": 0
+      },
       {
         "id": "20126",
         "name": "烈鬃马卡片",
@@ -346,30 +370,6 @@
         "buff": "智力+2\n闪避+5",
         "adventureBuff": "生命上限+30",
         "storageBuff": "魔法自然恢复+1%",
-        "isCompose": 1
-      },
-      {
-        "id": "24044",
-        "name": "九尾狐★卡片",
-        "icon": "cardhead_24044",
-        "picture": "card_24044",
-        "quality": 2,
-        "position": 5,
-        "buff": "灵巧+2\n闪避+5",
-        "adventureBuff": "生命上限+30",
-        "storageBuff": "生命自然恢复+1%",
-        "isCompose": 1
-      },
-      {
-        "id": "24043",
-        "name": "黑魔女★卡片",
-        "icon": "cardhead_24043",
-        "picture": "card_24043",
-        "quality": 3,
-        "position": 5,
-        "buff": "魔法攻击+20\n体质+2\n智力+2",
-        "adventureBuff": "物理攻击+8",
-        "storageBuff": "敏捷+1\n生命上限+30",
         "isCompose": 1
       }
     ]

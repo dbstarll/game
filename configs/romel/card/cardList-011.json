@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839690,
+  "timeStamp": 1643702152,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 11,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "24044",
+        "name": "九尾狐★卡片",
+        "icon": "cardhead_24044",
+        "picture": "card_24044",
+        "quality": 2,
+        "position": 5,
+        "buff": "灵巧+2\n闪避+5",
+        "adventureBuff": "生命上限+30",
+        "storageBuff": "生命自然恢复+1%",
+        "isCompose": 1
+      },
+      {
+        "id": "24043",
+        "name": "黑魔女★卡片",
+        "icon": "cardhead_24043",
+        "picture": "card_24043",
+        "quality": 3,
+        "position": 5,
+        "buff": "魔法攻击+20\n体质+2\n智力+2",
+        "adventureBuff": "物理攻击+8",
+        "storageBuff": "敏捷+1\n生命上限+30",
+        "isCompose": 1
+      },
       {
         "id": "24042",
         "name": "拉链熊★卡片",
@@ -346,30 +370,6 @@
         "buff": "对无形种族伤害+10%\n对恶魔种族伤害+10%",
         "adventureBuff": "生命上限+14",
         "storageBuff": "物理攻击+10，魔法攻击+10",
-        "isCompose": 0
-      },
-      {
-        "id": "20111",
-        "name": "重金属蝗虫卡片",
-        "icon": "Metaller",
-        "picture": "card_10123",
-        "quality": 2,
-        "position": 1,
-        "buff": "力量+3\n物理攻击+20\n装备攻速+2%",
-        "adventureBuff": "装备攻速+1%",
-        "storageBuff": "物理攻击+7.5",
-        "isCompose": 0
-      },
-      {
-        "id": "20110",
-        "name": "兽人女战士卡片",
-        "icon": "Orc_Lady",
-        "picture": "card_10135",
-        "quality": 2,
-        "position": 1,
-        "buff": "对昆虫种族伤害+5%",
-        "adventureBuff": "物理攻击+4.5",
-        "storageBuff": "对昆虫种族伤害+2%",
         "isCompose": 0
       }
     ]

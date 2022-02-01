@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839710,
+  "timeStamp": 1643702172,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 13,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "24014",
+        "name": "邪骸矿工卡片",
+        "icon": "cardhead_400300",
+        "picture": "card_400300",
+        "quality": 3,
+        "position": 1,
+        "buff": "对中型魔物伤害+15%\n物理攻击+5",
+        "adventureBuff": "生命上限+28",
+        "storageBuff": "物理攻击+10",
+        "isCompose": 0
+      },
+      {
+        "id": "24013",
+        "name": "蝎子卡片",
+        "icon": "cardhead_400290",
+        "picture": "card_400290",
+        "quality": 3,
+        "position": 6,
+        "buff": "对植物种族魔物伤害+10%",
+        "adventureBuff": "生命上限+28",
+        "storageBuff": "植物种族加伤+1%",
+        "isCompose": 1
+      },
       {
         "id": "24012",
         "name": "卡浩卡片",
@@ -346,30 +370,6 @@
         "buff": "生命上限+10%",
         "adventureBuff": "物理防御+1%，魔法防御+1%",
         "storageBuff": "装备圣天使波利卡片时，每10秒恢复5%最大生命\n装备圣天使波利卡片时，每10秒恢复5%最大魔法",
-        "isCompose": 0
-      },
-      {
-        "id": "23021",
-        "name": "巴风特卡片",
-        "icon": "Baphomet",
-        "picture": "card_30021",
-        "quality": 4,
-        "position": 1,
-        "buff": "命中+10\n对所有种族魔物伤害+10%\n近战普攻时对目标及周围小范围内所有目标造成溅射伤害",
-        "adventureBuff": "命中+10",
-        "storageBuff": "物理攻击+10，魔法攻击+10",
-        "isCompose": 0
-      },
-      {
-        "id": "23020",
-        "name": "血腥骑士卡片",
-        "icon": "Bloody_Knight",
-        "picture": "card_30020",
-        "quality": 3,
-        "position": 1,
-        "buff": "普攻时有5%概率自动施放【陨石术】Lv.10技能\n【苍白领主卡片】【血腥骑士卡片】一起装备时，普攻伤害+5%，普攻时自动施放【陨石术】概率提高3%",
-        "adventureBuff": "生命上限+21",
-        "storageBuff": "生命上限+70",
         "isCompose": 0
       }
     ]

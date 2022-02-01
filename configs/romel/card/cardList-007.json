@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839650,
+  "timeStamp": 1643702111,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 7,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "23133",
+        "name": "恋之双子星卡片",
+        "icon": "cardhead_23133",
+        "picture": "card_23133",
+        "quality": 3,
+        "position": 2,
+        "buff": "忽视魔法防御+3%\n魔法攻击+5",
+        "adventureBuff": "魔法防御+2，生命上限+30",
+        "storageBuff": "物理攻击+3，生命上限+30",
+        "isCompose": 1
+      },
+      {
+        "id": "24611",
+        "name": "皮里恩★卡片",
+        "icon": "cardhead_24611",
+        "picture": "card_24611",
+        "quality": 4,
+        "position": 1,
+        "buff": "命中+100\n技能伤害+10%",
+        "adventureBuff": "生命上限+120",
+        "storageBuff": "装备皮里恩★卡片时，技能伤害+1%",
+        "isCompose": 1
+      },
       {
         "id": "24610",
         "name": "蜂后★卡片",
@@ -346,30 +370,6 @@
         "buff": "生命上限+200\n击杀魔物Base经验+3%",
         "adventureBuff": "物理攻击+3",
         "storageBuff": "生命上限+30",
-        "isCompose": 0
-      },
-      {
-        "id": "23127",
-        "name": "魔王梦罗克卡片",
-        "icon": "cardhead_23127",
-        "picture": "card_23127",
-        "quality": 3,
-        "position": 2,
-        "buff": "对无属性魔物伤害+5%\n受到无属性伤害-5%",
-        "adventureBuff": "物理攻击+2，生命上限+30",
-        "storageBuff": "魔法攻击+2，生命上限+30",
-        "isCompose": 0
-      },
-      {
-        "id": "23122",
-        "name": "2周年限定卡片",
-        "icon": "cardhead_23122",
-        "picture": "card_23122",
-        "quality": 3,
-        "position": 6,
-        "buff": "全能力+2\n物理攻击+20\n魔法攻击+20",
-        "adventureBuff": "魔法攻击+3，生命上限+30",
-        "storageBuff": "物理攻击+3，生命上限+30",
         "isCompose": 0
       }
     ]

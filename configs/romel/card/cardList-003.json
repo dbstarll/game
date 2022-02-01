@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839610,
+  "timeStamp": 1643702071,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 3,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "23171",
+        "name": "B格猫皇家庆典",
+        "icon": "cardhead_23171",
+        "picture": "card_23171",
+        "quality": 3,
+        "position": 2,
+        "buff": "全能力+4\n对普通魔物（不包含MVP、Mini魔物）增伤+4%",
+        "adventureBuff": "魔法攻击+3，生命上限+30",
+        "storageBuff": "生命上限+60",
+        "isCompose": 0
+      },
+      {
+        "id": "23165",
+        "name": "莉娜·因巴斯卡片",
+        "icon": "cardhead_23165",
+        "picture": "card_23165",
+        "quality": 3,
+        "position": 1,
+        "buff": "全能力+3\n物理攻击+30",
+        "adventureBuff": "生命上限+60",
+        "storageBuff": "魔法攻击+3，生命上限+30",
+        "isCompose": 0
+      },
       {
         "id": "23057",
         "name": "灵魂奏者卡片",
@@ -346,30 +370,6 @@
         "buff": "物理攻击+15\n普攻时有15%概率自动施放【火球术】Lv.10\n【火球术】降低目标15%物伤减免，持续10秒",
         "adventureBuff": "智力+1，生命上限+36",
         "storageBuff": "生命上限+120",
-        "isCompose": 1
-      },
-      {
-        "id": "24631",
-        "name": "弑神者★卡片",
-        "icon": "cardhead_24631",
-        "picture": "card_24631",
-        "quality": 4,
-        "position": 5,
-        "buff": "对小型魔物伤害+10%\n受到小型魔物伤害-30%\n物理防御+10\n物理防御+10%",
-        "adventureBuff": "物理防御+1%",
-        "storageBuff": "受到小型魔物伤害-1%",
-        "isCompose": 1
-      },
-      {
-        "id": "24101",
-        "name": "猫咪乐园卡片",
-        "icon": "cardhead_24101",
-        "picture": "card_24101",
-        "quality": 3,
-        "position": 7,
-        "buff": "【猫飞碟轰炸】消耗的蓝色魔力矿石数量-1",
-        "adventureBuff": "魔法攻击+3，生命上限+30",
-        "storageBuff": "物理攻击+3，生命上限+30",
         "isCompose": 1
       }
     ]

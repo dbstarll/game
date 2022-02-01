@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839620,
+  "timeStamp": 1643702081,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 4,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "24631",
+        "name": "弑神者★卡片",
+        "icon": "cardhead_24631",
+        "picture": "card_24631",
+        "quality": 4,
+        "position": 5,
+        "buff": "对小型魔物伤害+10%\n受到小型魔物伤害-30%\n物理防御+10\n物理防御+10%",
+        "adventureBuff": "物理防御+1%",
+        "storageBuff": "受到小型魔物伤害-1%",
+        "isCompose": 1
+      },
+      {
+        "id": "24101",
+        "name": "猫咪乐园卡片",
+        "icon": "cardhead_24101",
+        "picture": "card_24101",
+        "quality": 3,
+        "position": 7,
+        "buff": "【猫飞碟轰炸】消耗的蓝色魔力矿石数量-1",
+        "adventureBuff": "魔法攻击+3，生命上限+30",
+        "storageBuff": "物理攻击+3，生命上限+30",
+        "isCompose": 1
+      },
       {
         "id": "23150",
         "name": "魔神坛斗士卡片",
@@ -347,30 +371,6 @@
         "adventureBuff": "物理攻击+12",
         "storageBuff": "物理防御+6，生命上限+30",
         "isCompose": 0
-      },
-      {
-        "id": "23140",
-        "name": "爱之代理人",
-        "icon": "cardhead_23140",
-        "picture": "card_23140",
-        "quality": 3,
-        "position": 2,
-        "buff": "物理攻击+5\n忽视物理防御+3%",
-        "adventureBuff": "魔法防御+2，生命上限+30",
-        "storageBuff": "魔法攻击+3，生命上限+30",
-        "isCompose": 1
-      },
-      {
-        "id": "23139",
-        "name": "子神祝福",
-        "icon": "cardhead_23139",
-        "picture": "card_23139",
-        "quality": 3,
-        "position": 1,
-        "buff": "魔法攻击+20\n忽视魔法防御+2%",
-        "adventureBuff": "物理防御+2，生命上限+30",
-        "storageBuff": "物理攻击+3，生命上限+30",
-        "isCompose": 1
       }
     ]
   }

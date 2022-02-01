@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839670,
+  "timeStamp": 1643702131,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 9,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "24078",
+        "name": "贤者之书",
+        "icon": "cardhead_24078",
+        "picture": "card_24078",
+        "quality": 4,
+        "position": 3,
+        "buff": "当佩戴者是贤者系职业时，每20点敏捷增加自身1%忽视魔法防御，1%装备攻速",
+        "adventureBuff": "生命上限+112",
+        "storageBuff": "当佩戴者是贤者职业时，装备攻速+3%",
+        "isCompose": 1
+      },
+      {
+        "id": "24077",
+        "name": "移动援护",
+        "icon": "cardhead_24077",
+        "picture": "card_24077",
+        "quality": 4,
+        "position": 5,
+        "buff": "施放技能【舍命庇护】之后可以移动",
+        "adventureBuff": "物理攻击+12",
+        "storageBuff": "魔法攻击+12",
+        "isCompose": 1
+      },
       {
         "id": "24076",
         "name": "倾城卡片",
@@ -345,30 +369,6 @@
         "position": 6,
         "buff": "对动物、恶魔种族魔物伤害+8%\n人形种族减伤+2%",
         "adventureBuff": "物理防御+4.5",
-        "storageBuff": "生命上限+72",
-        "isCompose": 0
-      },
-      {
-        "id": "23034",
-        "name": "炎之领主卡浩卡片",
-        "icon": "LordKaho",
-        "picture": "card_30044",
-        "quality": 4,
-        "position": 1,
-        "buff": "对地属性魔物伤害+20%\n火属性攻击+10%",
-        "adventureBuff": "物理攻击+12",
-        "storageBuff": "火属性攻击+1%",
-        "isCompose": 0
-      },
-      {
-        "id": "22025",
-        "name": "炎之小魔女卡片",
-        "icon": "RedExplosion",
-        "picture": "card_20027",
-        "quality": 3,
-        "position": 6,
-        "buff": "魔法攻击+20\n忽视魔法防御+4%",
-        "adventureBuff": "物理攻击+8",
         "storageBuff": "生命上限+72",
         "isCompose": 0
       }

@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839700,
+  "timeStamp": 1643702162,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 12,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "20111",
+        "name": "重金属蝗虫卡片",
+        "icon": "Metaller",
+        "picture": "card_10123",
+        "quality": 2,
+        "position": 1,
+        "buff": "力量+3\n物理攻击+20\n装备攻速+2%",
+        "adventureBuff": "装备攻速+1%",
+        "storageBuff": "物理攻击+7.5",
+        "isCompose": 0
+      },
+      {
+        "id": "20110",
+        "name": "兽人女战士卡片",
+        "icon": "Orc_Lady",
+        "picture": "card_10135",
+        "quality": 2,
+        "position": 1,
+        "buff": "对昆虫种族伤害+5%",
+        "adventureBuff": "物理攻击+4.5",
+        "storageBuff": "对昆虫种族伤害+2%",
+        "isCompose": 0
+      },
       {
         "id": "20109",
         "name": "灰森灵卡片",
@@ -346,30 +370,6 @@
         "buff": "对念属性魔物伤害+15%",
         "adventureBuff": "生命上限+28",
         "storageBuff": "对念属性魔物伤害+1%",
-        "isCompose": 1
-      },
-      {
-        "id": "24014",
-        "name": "邪骸矿工卡片",
-        "icon": "cardhead_400300",
-        "picture": "card_400300",
-        "quality": 3,
-        "position": 1,
-        "buff": "对中型魔物伤害+15%\n物理攻击+5",
-        "adventureBuff": "生命上限+28",
-        "storageBuff": "物理攻击+10",
-        "isCompose": 0
-      },
-      {
-        "id": "24013",
-        "name": "蝎子卡片",
-        "icon": "cardhead_400290",
-        "picture": "card_400290",
-        "quality": 3,
-        "position": 6,
-        "buff": "对植物种族魔物伤害+10%",
-        "adventureBuff": "生命上限+28",
-        "storageBuff": "植物种族加伤+1%",
         "isCompose": 1
       }
     ]

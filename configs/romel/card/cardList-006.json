@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839640,
+  "timeStamp": 1643702101,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 6,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "22034",
+        "name": "寒冰雕像卡片",
+        "icon": "Ice_titan",
+        "picture": "card_20032",
+        "quality": 3,
+        "position": 5,
+        "buff": "移动速度+3%\n物伤减免+10%",
+        "adventureBuff": "物理防御+1%，魔法防御+1%",
+        "storageBuff": "装备寒冰雕像卡片时，移动速度+2%",
+        "isCompose": 0
+      },
+      {
+        "id": "22033",
+        "name": "巴西里斯克卡片",
+        "icon": "Basilisk",
+        "picture": "card_20035",
+        "quality": 3,
+        "position": 2,
+        "buff": "受到大、中型魔物伤害-20%\n受到小型魔物伤害+15%",
+        "adventureBuff": "受到大型魔物伤害-1%",
+        "storageBuff": "受到小型魔物伤害-1%",
+        "isCompose": 0
+      },
       {
         "id": "20166",
         "name": "冰波利卡片",
@@ -347,30 +371,6 @@
         "adventureBuff": "魔法攻击+8",
         "storageBuff": "物理防御+3，生命上限+36",
         "isCompose": 0
-      },
-      {
-        "id": "23133",
-        "name": "恋之双子星卡片",
-        "icon": "cardhead_23133",
-        "picture": "card_23133",
-        "quality": 3,
-        "position": 2,
-        "buff": "忽视魔法防御+3%\n魔法攻击+5",
-        "adventureBuff": "魔法防御+2，生命上限+30",
-        "storageBuff": "物理攻击+3，生命上限+30",
-        "isCompose": 1
-      },
-      {
-        "id": "24611",
-        "name": "皮里恩★卡片",
-        "icon": "cardhead_24611",
-        "picture": "card_24611",
-        "quality": 4,
-        "position": 1,
-        "buff": "命中+100\n技能伤害+10%",
-        "adventureBuff": "生命上限+120",
-        "storageBuff": "装备皮里恩★卡片时，技能伤害+1%",
-        "isCompose": 1
       }
     ]
   }

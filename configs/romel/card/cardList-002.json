@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642842372,
+  "timeStamp": 1643702061,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 2,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "24521",
+        "name": "兽人酋长亡者卡片",
+        "icon": "Orc_R",
+        "picture": "card_24521",
+        "quality": 4,
+        "position": 7,
+        "buff": "人形种族加伤+5%\n人形种族减伤+5%\n自身生命值大于50%时，人形种族加伤+5%\n自身生命值低于50%时,人形种族减伤+5%",
+        "adventureBuff": "魔法攻击+12",
+        "storageBuff": "魔法防御+6，生命上限+30",
+        "isCompose": 0
+      },
+      {
+        "id": "24520",
+        "name": "黑暗之主亡者卡片",
+        "icon": "Dark_Lord_R",
+        "picture": "card_24520",
+        "quality": 4,
+        "position": 6,
+        "buff": "魔法穿刺+5%\n攻击目标时，有100%概率降低目标3%魔伤减免，持续5秒（效果不叠加）",
+        "adventureBuff": "物理攻击+12",
+        "storageBuff": "物理防御+6，生命上限+30",
+        "isCompose": 0
+      },
       {
         "id": "23059",
         "name": "塔奥群卡卡片",
@@ -346,30 +370,6 @@
         "buff": "魔法伤害+5%\n攻击处于流血、灼烧异常状态的目标时，自身魔法伤害+10%，持续10秒",
         "adventureBuff": "魔法攻击+12",
         "storageBuff": "物理防御+6，生命上限+30",
-        "isCompose": 0
-      },
-      {
-        "id": "23171",
-        "name": "B格猫皇家庆典",
-        "icon": "cardhead_23171",
-        "picture": "card_23171",
-        "quality": 3,
-        "position": 2,
-        "buff": "全能力+4\n对普通魔物（不包含MVP、Mini魔物）增伤+4%",
-        "adventureBuff": "魔法攻击+3，生命上限+30",
-        "storageBuff": "生命上限+60",
-        "isCompose": 0
-      },
-      {
-        "id": "23165",
-        "name": "莉娜·因巴斯卡片",
-        "icon": "cardhead_23165",
-        "picture": "card_23165",
-        "quality": 3,
-        "position": 1,
-        "buff": "全能力+3\n物理攻击+30",
-        "adventureBuff": "生命上限+60",
-        "storageBuff": "魔法攻击+3，生命上限+30",
         "isCompose": 0
       }
     ]

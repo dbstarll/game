@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642839731,
+  "timeStamp": 1643702192,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 15,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "22011",
+        "name": "兽人婴儿卡片",
+        "icon": "Orc_Baby",
+        "picture": "card_20010",
+        "quality": 3,
+        "position": 4,
+        "buff": "受到无属性伤害-30%\n闪避+10",
+        "adventureBuff": "生命上限+84",
+        "storageBuff": "装备兽人婴儿卡片时，受到无属性伤害-5%\n每次受到无属性攻击时，有概率根据对方和自己的等级差恢复生命值",
+        "isCompose": 0
+      },
+      {
+        "id": "22010",
+        "name": "狮鹫兽卡片",
+        "icon": "Grypjon",
+        "picture": "card_20009",
+        "quality": 3,
+        "position": 1,
+        "buff": "闪避+10\n暴击+5\n当装备的职业为剑士系时普攻有3%概率自动施放【怪物互击】Lv.5",
+        "adventureBuff": "物理攻击+8",
+        "storageBuff": "装备狮鹫兽卡片时，提升剑士系普攻释放【怪物互击】的概率",
+        "isCompose": 0
+      },
       {
         "id": "22009",
         "name": "枯树精卡片",
@@ -346,30 +370,6 @@
         "buff": "普攻时有3%概率自动施放【音速投掷】Lv.5",
         "adventureBuff": "力量+1",
         "storageBuff": "魔法攻击+4.5",
-        "isCompose": 0
-      },
-      {
-        "id": "20079",
-        "name": "蓝鼠卡片",
-        "icon": "Cramp",
-        "picture": "card_10085",
-        "quality": 2,
-        "position": 7,
-        "buff": "幸运+3\n闪避+5",
-        "adventureBuff": "闪避+4",
-        "storageBuff": "生命上限+18",
-        "isCompose": 0
-      },
-      {
-        "id": "20078",
-        "name": "深渊骑士卡片",
-        "icon": "Abyssknight",
-        "picture": "card_10084",
-        "quality": 4,
-        "position": 1,
-        "buff": "对MVP、Mini魔物伤害+10%",
-        "adventureBuff": "对MVP、Mini魔物伤害+1%",
-        "storageBuff": "装备深渊骑士卡片时，对MVP、Mini魔物伤害+5%（不可叠加）",
         "isCompose": 0
       }
     ]

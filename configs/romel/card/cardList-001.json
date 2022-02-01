@@ -1,17 +1,41 @@
 {
   "code": 0,
   "status": "success",
-  "timeStamp": 1642841680,
+  "timeStamp": 1643702051,
   "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
-  "ip": "101.87.200.160",
+  "ip": "101.87.201.112",
   "language": "cn",
   "dbArea": 0,
   "data": {
     "page": 1,
     "pageSize": 30,
     "pageCount": 18,
-    "total": 527,
+    "total": 529,
     "list": [
+      {
+        "id": "24110",
+        "name": "海葵★卡片",
+        "icon": "cardhead_24110",
+        "picture": "card_24110",
+        "quality": 4,
+        "position": 1,
+        "buff": "人形种族加伤+15%\nPVP\/GVG中对玩家伤害+5%",
+        "adventureBuff": "生命上限+120",
+        "storageBuff": "PVP\/GVG中对玩家伤害+1%",
+        "isCompose": 1
+      },
+      {
+        "id": "23195",
+        "name": "虎王贺新春卡片",
+        "icon": "cardhead_23195",
+        "picture": "card_23195",
+        "quality": 3,
+        "position": 5,
+        "buff": "移动速度+5%\n人形种族加伤+3%",
+        "adventureBuff": "魔法防御+2，生命上限+30",
+        "storageBuff": "物理攻击+3，生命上限+30",
+        "isCompose": 0
+      },
       {
         "id": "24648",
         "name": "塔妮小姐★卡片",
@@ -347,30 +371,6 @@
         "adventureBuff": "生命上限+120",
         "storageBuff": "物理防御+1%",
         "isCompose": 1
-      },
-      {
-        "id": "24521",
-        "name": "兽人酋长亡者卡片",
-        "icon": "Orc_R",
-        "picture": "card_24521",
-        "quality": 4,
-        "position": 7,
-        "buff": "人形种族加伤+5%\n人形种族减伤+5%\n自身生命值大于50%时，人形种族加伤+5%\n自身生命值低于50%时,人形种族减伤+5%",
-        "adventureBuff": "魔法攻击+12",
-        "storageBuff": "魔法防御+6，生命上限+30",
-        "isCompose": 0
-      },
-      {
-        "id": "24520",
-        "name": "黑暗之主亡者卡片",
-        "icon": "Dark_Lord_R",
-        "picture": "card_24520",
-        "quality": 4,
-        "position": 6,
-        "buff": "魔法穿刺+5%\n攻击目标时，有100%概率降低目标3%魔伤减免，持续5秒（效果不叠加）",
-        "adventureBuff": "物理攻击+12",
-        "storageBuff": "物理防御+6，生命上限+30",
-        "isCompose": 0
       }
     ],
     "partner": {
