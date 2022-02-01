@@ -66,10 +66,6 @@ func (b Buff) resolveItem(item string) ([]model.CharacterModifier, error) {
 		return nil, err
 	} else if match {
 		return modifiers, nil
-		//} else if match, modifiers, err := b.resolvePerRefineItem(item); err != nil {
-		//	return nil, err
-		//} else if match {
-		//	return modifiers, nil
 	} else if modifiers, err := b.resolveEffects(item, 1); err != nil {
 		zap.S().Warnf("resolveItem: %s", item)
 		return nil, nil
@@ -330,6 +326,7 @@ func (b Buff) resolveEffect(effectStr string, rate int) (model.CharacterModifier
 			} else if strings.Index(key, "【") >= 0 {
 				//过滤掉技能
 				BuffIgnore++
+				return nil, nil
 			} else if strings.Index(key, "恢复") >= 0 {
 				BuffIgnore++
 				//忽略"生命自然恢复", "SP恢复", "Sp恢复", "魔法恢复", "生命恢复", "Hp恢复"
@@ -362,12 +359,14 @@ func (b Buff) resolveEffect(effectStr string, rate int) (model.CharacterModifier
 					} else {
 						Buffs[key] = 1
 					}
-					fmt.Printf("\tresolveEffect: [%t]%s[%s]%f - %s || %s\n", percentage, key, string(char), floatVal, condition, effectStr)
+					//fmt.Printf("\tresolveEffect: [%t]%s[%s]%f - %s || %s\n", percentage, key, string(char), floatVal, condition, effectStr)
 					log.Printf("resolveEffect: [%t]%s[%s]%f - %s || %s", percentage, key, string(char), floatVal, condition, effectStr)
+					return nil, nil
 				}
 			}
-			break
 		}
 	}
+	fmt.Printf("\tresolveEffect: [%t] - %s || %s\n", percentage, condition, effectStr)
+	log.Printf("resolveEffect: [%t] - %s || %s", percentage, condition, effectStr)
 	return nil, nil
 }
