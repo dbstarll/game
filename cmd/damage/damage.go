@@ -159,24 +159,32 @@ func EarthBash() {
 			//model.AddGeneral(&general.General{CriticalDamageResist: 22}),
 		)
 
-		buff.ProfitDetect(player, true, func(player *model.Player) float64 {
+		profitDetect(player, func(player *model.Player) float64 {
 			return player.SkillEarth() * player.SkillDamageRate(monster2, false, nature.Earth)
-		}, nil)
+		})
 	}
 }
 
 func profitDetect(player *model.Player, fn buff.FinalDamage) {
-	positionEquips := []position.Position{
-		position.Weapon,
-		position.Shield,
-		position.Armor,
-		position.Cloak,
-		position.Shoes,
-		position.Ring,
-	}
-	for _, pos := range positionEquips {
-		fmt.Printf("Equips: %s\n", pos)
+	for _, pos := range []position.Position{position.Weapon, position.Shield, position.Armor, position.Cloak, position.Shoes, position.Ring} {
+		fmt.Printf("装备: %s\n", pos)
 		for idx, p := range buff.ProfitDetect(player, false, fn, Equips(pos, player.Job())) {
+			if idx < 10 {
+				fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
+			}
+		}
+	}
+	for _, pos := range []position.Position{position.Head, position.Face, position.Mouth, position.Back, position.Tail} {
+		fmt.Printf("头饰: %s\n", pos)
+		for idx, p := range buff.ProfitDetect(player, false, fn, Hats(pos)) {
+			if idx < 10 {
+				fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
+			}
+		}
+	}
+	for _, pos := range []position.Position{position.Weapon, position.Shield, position.Armor, position.Cloak, position.Shoes, position.Ring, position.Head} {
+		fmt.Printf("卡片: %s\n", pos)
+		for idx, p := range buff.ProfitDetect(player, false, fn, Cards(pos)) {
 			if idx < 10 {
 				fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
 			}
@@ -219,7 +227,7 @@ func Equips(pos position.Position, _job job.Job) map[string]model.CharacterModif
 	return modifiers
 }
 
-func Cards() map[string]model.CharacterModifier {
+func Cards(pos position.Position) map[string]model.CharacterModifier {
 	modifiers := make(map[string]model.CharacterModifier)
 	if _, err := romel.Cards.Filter(func(card *romel.Card) error {
 		if m, err := card.Buff.Effect(); err != nil {
@@ -229,7 +237,7 @@ func Cards() map[string]model.CharacterModifier {
 		}
 		return nil
 	}, func(filter *romel.Card) {
-		filter.Position = position.Head
+		filter.Position = pos
 	}); err != nil {
 		zap.S().Errorf("%+v", err)
 	}
