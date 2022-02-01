@@ -16,7 +16,7 @@ type BuffItem struct {
 }
 
 func init() {
-	if logger, err := zap.NewDevelopment(zap.AddStacktrace(zap.ErrorLevel), zap.IncreaseLevel(zap.InfoLevel)); err != nil {
+	if logger, err := zap.NewDevelopment(zap.AddStacktrace(zap.ErrorLevel), zap.IncreaseLevel(zap.WarnLevel)); err != nil {
 		log.Fatalf("%+v", err)
 	} else {
 		zap.RedirectStdLog(logger)
@@ -25,8 +25,8 @@ func init() {
 }
 
 func main() {
-	updateApi()
-	//detectBuffEffect()
+	//updateApi()
+	detectBuffEffect()
 }
 
 func detectBuffEffect() {

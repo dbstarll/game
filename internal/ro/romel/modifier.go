@@ -750,6 +750,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"恶魔种族伤害": func(val float64) model.CharacterModifier {
 		return model.AddRaceResist(&map[race.Race]float64{race.Demon: -val})
 	},
+	"受恶魔种族魔物伤害": func(val float64) model.CharacterModifier {
+		return model.AddRaceResist(&map[race.Race]float64{race.Demon: -val})
+	},
 	"恶魔种族减伤和不死种族减伤": func(val float64) model.CharacterModifier {
 		return model.AddRaceResist(&map[race.Race]float64{
 			race.Demon:  val,
@@ -794,6 +797,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 			shape.Medium: val,
 			shape.Small:  val,
 		})
+	},
+	"对中体型魔物伤害": func(val float64) model.CharacterModifier {
+		return model.AddShapeDamage(&map[shape.Shape]float64{shape.Medium: val})
 	},
 
 	//体型减伤%
@@ -858,7 +864,7 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 }
 
 func init() {
-	//180
+	//177
 	for _, item := range nature.Natures {
 		_nature := item
 		//属性攻击%
