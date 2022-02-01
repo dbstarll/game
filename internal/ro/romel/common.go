@@ -2,7 +2,6 @@ package romel
 
 import (
 	"encoding/json"
-	"github.com/dbstarll/game/internal/ro/client"
 	"github.com/pkg/errors"
 	"io/ioutil"
 )
@@ -14,7 +13,7 @@ func iterate(root string, fn func(item map[string]interface{}, data []byte) erro
 		return errors.WithStack(err)
 	} else {
 		for _, file := range files {
-			result := &client.Result{}
+			result := &Result{}
 			if data, err := ioutil.ReadFile(root + "/" + file.Name()); err != nil {
 				return errors.WithStack(err)
 			} else if err := json.Unmarshal(data, result); err != nil {

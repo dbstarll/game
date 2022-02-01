@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/dbstarll/game/internal/ro/client"
 	"github.com/dbstarll/game/internal/ro/dimension/position"
 	"github.com/dbstarll/game/internal/ro/romel"
 	"go.uber.org/zap"
@@ -17,7 +16,7 @@ type BuffItem struct {
 }
 
 func init() {
-	if logger, err := zap.NewDevelopment(zap.AddStacktrace(zap.ErrorLevel), zap.IncreaseLevel(zap.WarnLevel)); err != nil {
+	if logger, err := zap.NewDevelopment(zap.AddStacktrace(zap.ErrorLevel), zap.IncreaseLevel(zap.InfoLevel)); err != nil {
 		log.Fatalf("%+v", err)
 	} else {
 		zap.RedirectStdLog(logger)
@@ -26,8 +25,8 @@ func init() {
 }
 
 func main() {
-	//updateApi()
-	detectBuffEffect()
+	updateApi()
+	//detectBuffEffect()
 }
 
 func detectBuffEffect() {
@@ -163,13 +162,13 @@ func detectBuffEffect() {
 }
 
 func updateApi() {
-	api := client.NewRomelApi("sd32rfgfe344edsd")
-	if err := getMonsterList(api); err != nil {
+	api := romel.NewRomelApi("sd32rfgfe344edsd")
+	if err := getCardList(api); err != nil {
 		fmt.Printf("err: %+v\n", err)
 	}
 }
 
-func getCardList(api *client.RomelApi) error {
+func getCardList(api *romel.RomelApi) error {
 	if result, err := api.GetCardList(1); err != nil {
 		return err
 	} else {
@@ -183,7 +182,7 @@ func getCardList(api *client.RomelApi) error {
 	}
 }
 
-func getHatList(api *client.RomelApi) error {
+func getHatList(api *romel.RomelApi) error {
 	if result, err := api.GetHatList(1); err != nil {
 		return err
 	} else {
@@ -197,7 +196,7 @@ func getHatList(api *client.RomelApi) error {
 	}
 }
 
-func getEquipList(api *client.RomelApi) error {
+func getEquipList(api *romel.RomelApi) error {
 	if result, err := api.GetEquipList(1); err != nil {
 		return err
 	} else {
@@ -211,7 +210,7 @@ func getEquipList(api *client.RomelApi) error {
 	}
 }
 
-func getPetList(api *client.RomelApi) error {
+func getPetList(api *romel.RomelApi) error {
 	if result, err := api.GetPetList(1); err != nil {
 		return err
 	} else {
@@ -225,7 +224,7 @@ func getPetList(api *client.RomelApi) error {
 	}
 }
 
-func getMonsterList(api *client.RomelApi) error {
+func getMonsterList(api *romel.RomelApi) error {
 	if result, err := api.GetMonsterList(1); err != nil {
 		return err
 	} else {
