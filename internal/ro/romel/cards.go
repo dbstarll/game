@@ -28,6 +28,7 @@ type Card struct {
 }
 
 func init() {
+	initModifier()
 	if cards, err := loadCards(); err != nil {
 		log.Fatalf("load cards failed: %+v", err)
 	} else {

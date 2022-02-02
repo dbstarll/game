@@ -13,6 +13,8 @@ import (
 
 type BuffModifier func(val float64) model.CharacterModifier
 
+var inited = false
+
 var buffModifiers = &map[string]BuffModifier{
 	// 素质属性
 	"全能力": func(val float64) model.CharacterModifier {
@@ -864,88 +866,95 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 }
 
 func init() {
+	initModifier()
+}
+
+func initModifier() {
 	//177
-	for _, item := range nature.Natures {
-		_nature := item
-		//属性攻击%
-		(*percentageBuffModifiers)[fmt.Sprintf("%s属性攻击", _nature)] = func(val float64) model.CharacterModifier {
-			return model.AddNatureAttack(&map[nature.Nature]float64{_nature: val})
+	if !inited {
+		inited = true
+		for _, item := range nature.Natures {
+			_nature := item
+			//属性攻击%
+			(*percentageBuffModifiers)[fmt.Sprintf("%s属性攻击", _nature)] = func(val float64) model.CharacterModifier {
+				return model.AddNatureAttack(&map[nature.Nature]float64{_nature: val})
+			}
+			//属性增伤%
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s属性魔物伤害", _nature)] = func(val float64) model.CharacterModifier {
+				return model.AddNatureDamage(&map[nature.Nature]float64{_nature: val})
+			}
+			//属性减伤%
+			(*percentageBuffModifiers)[fmt.Sprintf("受到%s属性伤害", _nature)] = func(val float64) model.CharacterModifier {
+				return model.AddNatureResist(&map[nature.Nature]float64{_nature: -val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("受%s属性伤害", _nature)] = func(val float64) model.CharacterModifier {
+				return model.AddNatureResist(&map[nature.Nature]float64{_nature: -val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s属性伤害减免", _nature)] = func(val float64) model.CharacterModifier {
+				return model.AddNatureResist(&map[nature.Nature]float64{_nature: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("%s属性减伤", _nature)] = func(val float64) model.CharacterModifier {
+				return model.AddNatureResist(&map[nature.Nature]float64{_nature: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("%s属性伤害减免", _nature)] = func(val float64) model.CharacterModifier {
+				return model.AddNatureResist(&map[nature.Nature]float64{_nature: val})
+			}
 		}
-		//属性增伤%
-		(*percentageBuffModifiers)[fmt.Sprintf("对%s属性魔物伤害", _nature)] = func(val float64) model.CharacterModifier {
-			return model.AddNatureDamage(&map[nature.Nature]float64{_nature: val})
+		for _, item := range race.Races {
+			_race := item
+			//种族增伤%
+			(*percentageBuffModifiers)[fmt.Sprintf("%s加伤", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s伤害", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s加伤", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s魔物伤害", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
+			}
+			//种族减伤%
+			(*percentageBuffModifiers)[fmt.Sprintf("%s减伤", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceResist(&map[race.Race]float64{_race: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("受到%s魔物伤害", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceResist(&map[race.Race]float64{_race: -val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("受%s伤害", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceResist(&map[race.Race]float64{_race: -val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("受到%s伤害", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceResist(&map[race.Race]float64{_race: -val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("受%s种族魔物伤害", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceResist(&map[race.Race]float64{_race: -val})
+			}
 		}
-		//属性减伤%
-		(*percentageBuffModifiers)[fmt.Sprintf("受到%s属性伤害", _nature)] = func(val float64) model.CharacterModifier {
-			return model.AddNatureResist(&map[nature.Nature]float64{_nature: -val})
+		for _, item := range shape.Shapes {
+			_shape := item
+			//体型增伤%
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s魔物伤害", _shape)] = func(val float64) model.CharacterModifier {
+				return model.AddShapeDamage(&map[shape.Shape]float64{_shape: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s魔物的伤害", _shape)] = func(val float64) model.CharacterModifier {
+				return model.AddShapeDamage(&map[shape.Shape]float64{_shape: val})
+			}
+			//体型减伤%
+			(*percentageBuffModifiers)[fmt.Sprintf("受到%s魔物伤害", _shape)] = func(val float64) model.CharacterModifier {
+				return model.AddShapeResist(&map[shape.Shape]float64{_shape: -val})
+			}
 		}
-		(*percentageBuffModifiers)[fmt.Sprintf("受%s属性伤害", _nature)] = func(val float64) model.CharacterModifier {
-			return model.AddNatureResist(&map[nature.Nature]float64{_nature: -val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("对%s属性伤害减免", _nature)] = func(val float64) model.CharacterModifier {
-			return model.AddNatureResist(&map[nature.Nature]float64{_nature: val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("%s属性减伤", _nature)] = func(val float64) model.CharacterModifier {
-			return model.AddNatureResist(&map[nature.Nature]float64{_nature: val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("%s属性伤害减免", _nature)] = func(val float64) model.CharacterModifier {
-			return model.AddNatureResist(&map[nature.Nature]float64{_nature: val})
-		}
-	}
-	for _, item := range race.Races {
-		_race := item
-		//种族增伤%
-		(*percentageBuffModifiers)[fmt.Sprintf("%s加伤", _race.Name())] = func(val float64) model.CharacterModifier {
-			return model.AddRaceDamage(&map[race.Race]float64{_race: val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("对%s伤害", _race.Name())] = func(val float64) model.CharacterModifier {
-			return model.AddRaceDamage(&map[race.Race]float64{_race: val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("对%s加伤", _race.Name())] = func(val float64) model.CharacterModifier {
-			return model.AddRaceDamage(&map[race.Race]float64{_race: val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("对%s魔物伤害", _race.Name())] = func(val float64) model.CharacterModifier {
-			return model.AddRaceDamage(&map[race.Race]float64{_race: val})
-		}
-		//种族减伤%
-		(*percentageBuffModifiers)[fmt.Sprintf("%s减伤", _race.Name())] = func(val float64) model.CharacterModifier {
-			return model.AddRaceResist(&map[race.Race]float64{_race: val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("受到%s魔物伤害", _race.Name())] = func(val float64) model.CharacterModifier {
-			return model.AddRaceResist(&map[race.Race]float64{_race: -val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("受%s伤害", _race.Name())] = func(val float64) model.CharacterModifier {
-			return model.AddRaceResist(&map[race.Race]float64{_race: -val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("受到%s伤害", _race.Name())] = func(val float64) model.CharacterModifier {
-			return model.AddRaceResist(&map[race.Race]float64{_race: -val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("受%s种族魔物伤害", _race.Name())] = func(val float64) model.CharacterModifier {
-			return model.AddRaceResist(&map[race.Race]float64{_race: -val})
-		}
-	}
-	for _, item := range shape.Shapes {
-		_shape := item
-		//体型增伤%
-		(*percentageBuffModifiers)[fmt.Sprintf("对%s魔物伤害", _shape)] = func(val float64) model.CharacterModifier {
-			return model.AddShapeDamage(&map[shape.Shape]float64{_shape: val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("对%s魔物的伤害", _shape)] = func(val float64) model.CharacterModifier {
-			return model.AddShapeDamage(&map[shape.Shape]float64{_shape: val})
-		}
-		//体型减伤%
-		(*percentageBuffModifiers)[fmt.Sprintf("受到%s魔物伤害", _shape)] = func(val float64) model.CharacterModifier {
-			return model.AddShapeResist(&map[shape.Shape]float64{_shape: -val})
-		}
-	}
-	for _, item := range abnormal.Abnormals {
-		_abnormal := item
-		//异常状态抵抗%
-		(*percentageBuffModifiers)[fmt.Sprintf("%s抵抗", _abnormal)] = func(val float64) model.CharacterModifier {
-			return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: val})
-		}
-		(*percentageBuffModifiers)[fmt.Sprintf("%s抗性", _abnormal)] = func(val float64) model.CharacterModifier {
-			return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: val})
+		for _, item := range abnormal.Abnormals {
+			_abnormal := item
+			//异常状态抵抗%
+			(*percentageBuffModifiers)[fmt.Sprintf("%s抵抗", _abnormal)] = func(val float64) model.CharacterModifier {
+				return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("%s抗性", _abnormal)] = func(val float64) model.CharacterModifier {
+				return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: val})
+			}
 		}
 	}
 }

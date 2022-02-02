@@ -33,6 +33,7 @@ type Monster struct {
 }
 
 func init() {
+	initModifier()
 	if monsters, err := loadMonsters(); err != nil {
 		log.Fatalf("load monsters failed: %+v", err)
 	} else {

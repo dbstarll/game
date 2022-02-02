@@ -34,6 +34,7 @@ type Equip struct {
 }
 
 func init() {
+	initModifier()
 	if equips, err := loadEquips(); err != nil {
 		log.Fatalf("load equips failed: %+v", err)
 	} else {

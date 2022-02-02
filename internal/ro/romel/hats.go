@@ -33,6 +33,7 @@ type RefineBuff struct {
 }
 
 func init() {
+	initModifier()
 	if hats, err := loadHats(); err != nil {
 		log.Fatalf("load hats failed: %+v", err)
 	} else {

@@ -51,6 +51,7 @@ type Cost struct {
 }
 
 func init() {
+	initModifier()
 	if pets, err := loadPets(); err != nil {
 		log.Fatalf("load pets failed: %+v", err)
 	} else {
