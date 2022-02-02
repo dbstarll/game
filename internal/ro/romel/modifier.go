@@ -950,7 +950,7 @@ func init() {
 	}
 }
 
-func (b Buff) find(key string, val float64, percentage bool) (model.CharacterModifier, bool) {
+func (b *Buff) find(key string, val float64, percentage bool) (model.CharacterModifier, bool) {
 	if percentage {
 		if fn, exist := (*percentageBuffModifiers)[key]; exist {
 			return fn(val), true

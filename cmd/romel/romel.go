@@ -26,7 +26,38 @@ func init() {
 
 func main() {
 	//updateApi()
-	detectBuffEffect()
+	detectBuffEffect2()
+}
+
+func detectBuffEffect2() {
+	fmt.Printf("Buff Total: %d\n", romel.BuffTotal)
+	fmt.Printf("\t[%2.2f%%]Detected: %d\n", 100*float64(romel.BuffDetected)/float64(romel.BuffTotal), romel.BuffDetected)
+	fmt.Printf("\t[%2.2f%%]Unknown: %d\n", 100*float64(romel.BuffUnknown)/float64(romel.BuffTotal), romel.BuffUnknown)
+	fmt.Printf("\t[%2.2f%%]Ignore: %d\n", 100*float64(romel.BuffIgnore)/float64(romel.BuffTotal), romel.BuffIgnore)
+	fmt.Printf("\t[%2.2f%%]Error: %d\n", 100*float64(romel.BuffError)/float64(romel.BuffTotal), romel.BuffError)
+	var items []*BuffItem
+	for k, v := range romel.Buffs {
+		items = append(items, &BuffItem{
+			name:  k,
+			count: v,
+		})
+	}
+	sort.Slice(items, func(i, j int) bool {
+		//if items[i].count < items[j].count {
+		//	return false
+		//} else if items[i].count > items[j].count {
+		//	return true
+		//} else {
+		return items[i].name < items[j].name
+		//}
+	})
+	for idx, item := range items {
+		if idx > 20 {
+			//break
+		}
+		//fmt.Printf("占比：%2.4f%% - [%d]%s\n", 100*float64(item.count)/float64(romel.BuffUnknown), item.count, item.name)
+		fmt.Printf("%s\n", item.name)
+	}
 }
 
 func detectBuffEffect() {
@@ -37,19 +68,6 @@ func detectBuffEffect() {
 			cnt[token] = ov + 1
 		} else {
 			cnt[token] = 1
-		}
-		if _, err := item.Buff.Effect(); err != nil {
-			return err
-		} else if _, err := item.AdventureBuff.Effect(); err != nil {
-			return err
-		} else if _, err := item.StorageBuff.Effect(); err != nil {
-			return err
-		} else if item.StorageRefineBuff != nil {
-			for _, rb := range *item.StorageRefineBuff {
-				if _, err := rb.Buff.Effect(); err != nil {
-					return err
-				}
-			}
 		}
 		//fmt.Printf("%s: %s\n", item.Name, item.Position)
 		return nil
@@ -70,13 +88,6 @@ func detectBuffEffect() {
 		} else {
 			cnt[token] = 1
 		}
-		if _, err := item.Effect.Effect(); err != nil {
-			return err
-		} else if _, err := item.Buff.Effect(); err != nil {
-			return err
-		} else if _, err := item.RandomBuff.Effect(); err != nil {
-			return err
-		}
 		//fmt.Printf("%s: %s\n", item.Name, item.Position)
 		return nil
 	}); err != nil {
@@ -96,13 +107,6 @@ func detectBuffEffect() {
 		} else {
 			cnt[token] = 1
 		}
-		if _, err := item.Buff.Effect(); err != nil {
-			return err
-		} else if _, err := item.AdventureBuff.Effect(); err != nil {
-			return err
-		} else if _, err := item.StorageBuff.Effect(); err != nil {
-			return err
-		}
 		//fmt.Printf("%s: %s\n", item.Name, item.Position)
 		return nil
 	}); err != nil {
@@ -115,49 +119,12 @@ func detectBuffEffect() {
 	}
 
 	if count, err := romel.Pets.Filter(func(item *romel.Pet) error {
-		if _, err := item.AdventureBuff.Effect(); err != nil {
-			return err
-		} else {
-			for _, skill := range *item.Skill {
-				if _, err := skill.Intro.Effect(); err != nil {
-					return err
-				}
-			}
-		}
 		//fmt.Printf("%s: %s\n", item.Name, item.Position)
 		return nil
 	}); err != nil {
 		zap.S().Errorf("%+v", err)
 	} else {
 		fmt.Printf("count: %d\n", count)
-	}
-
-	fmt.Printf("Buff Total: %d\n", romel.BuffTotal)
-	fmt.Printf("\t[%2.2f%%]Detected: %d\n", 100*float64(romel.BuffDetected)/float64(romel.BuffTotal), romel.BuffDetected)
-	fmt.Printf("\t[%2.2f%%]Unknown: %d\n", 100*float64(romel.BuffUnknown)/float64(romel.BuffTotal), romel.BuffUnknown)
-	fmt.Printf("\t[%2.2f%%]Ignore: %d\n", 100*float64(romel.BuffIgnore)/float64(romel.BuffTotal), romel.BuffIgnore)
-	fmt.Printf("\t[%2.2f%%]Error: %d\n", 100*float64(romel.BuffError)/float64(romel.BuffTotal), romel.BuffError)
-	var items []*BuffItem
-	for k, v := range romel.Buffs {
-		items = append(items, &BuffItem{
-			name:  k,
-			count: v,
-		})
-	}
-	sort.Slice(items, func(i, j int) bool {
-		if items[i].count < items[j].count {
-			return false
-		} else if items[i].count > items[j].count {
-			return true
-		} else {
-			return items[i].name < items[j].name
-		}
-	})
-	for idx, item := range items {
-		if idx > 20 {
-			break
-		}
-		fmt.Printf("占比：%2.4f%% - [%d]%s\n", 100*float64(item.count)/float64(romel.BuffUnknown), item.count, item.name)
 	}
 }
 

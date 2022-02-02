@@ -10,7 +10,10 @@ import (
 	"strings"
 )
 
-type Buff string
+type Buff struct {
+	effect    string
+	modifiers []model.CharacterModifier
+}
 
 var (
 	BuffTotal    = 0
@@ -21,43 +24,75 @@ var (
 	Buffs        = make(map[string]int)
 )
 
-func (b Buff) Contains(o Buff) bool {
-	return strings.Index(string(b), string(o)) >= 0
+func (b *Buff) UnmarshalJSON(data []byte) error {
+	if effect, err := strconv.Unquote(string(data)); err != nil {
+		return errors.WithStack(err)
+	} else if len(effect) == 0 {
+		return nil
+	} else if modifiers, err := b.parseEffect(effect); err != nil {
+		return err
+	} else {
+		b.effect = effect
+		b.modifiers = modifiers
+		return nil
+	}
 }
 
-func (b Buff) Empty() bool {
-	return len(string(b)) == 0
+func (b *Buff) Empty() bool {
+	return b == nil || len(b.effect) == 0
 }
 
-func (b Buff) Size() int {
+func (b *Buff) Contains(o *Buff) bool {
+	if o.Empty() {
+		return true
+	} else if b.Empty() {
+		return false
+	} else {
+		return strings.Index(b.effect, o.effect) >= 0
+	}
+}
+
+func (b *Buff) Effect() []model.CharacterModifier {
+	if b.Empty() {
+		return nil
+	} else {
+		return b.modifiers
+	}
+}
+
+func (b *Buff) Size() int {
 	return len(b.Items())
 }
 
-func (b Buff) Items() []string {
-	return strings.Split(string(b), "\n")
+func (b *Buff) Items() []string {
+	return strings.Split(b.effect, "\n")
 }
 
-func (b Buff) Effect() ([]model.CharacterModifier, error) {
-	if len(b) == 0 {
-		return nil, nil
-	}
+func (b *Buff) parseEffect(effect string) ([]model.CharacterModifier, error) {
 	var modifiers []model.CharacterModifier
-	for _, line := range strings.Split(string(b), "\n") {
-		if strings.HasPrefix(line, "达纳托斯之塔") {
-			continue
-		}
+	for _, line := range strings.Split(effect, "\n") {
 		for _, item := range strings.Split(line, "；") {
-			if ms, err := b.resolveItem(item); err != nil {
-				return nil, err
-			} else if len(ms) > 0 {
-				modifiers = append(modifiers, ms...)
+			BuffTotal += 1
+			BuffUnknown += 1
+			if oc, ok := Buffs[item]; ok {
+				Buffs[item] = oc + 1
+			} else {
+				Buffs[item] = 1
 			}
+			//if strings.HasPrefix(line, "达纳托斯之塔") {
+			//	continue
+			//}
+			//	if ms, err := b.resolveItem(item); err != nil {
+			//		return nil, err
+			//	} else if len(ms) > 0 {
+			//		modifiers = append(modifiers, ms...)
+			//	}
 		}
 	}
 	return modifiers, nil
 }
 
-func (b Buff) resolveItem(item string) ([]model.CharacterModifier, error) {
+func (b *Buff) resolveItem(item string) ([]model.CharacterModifier, error) {
 	if match, modifiers, err := b.resolveCombineItem(item); err != nil {
 		return nil, err
 	} else if match {
@@ -74,12 +109,12 @@ func (b Buff) resolveItem(item string) ([]model.CharacterModifier, error) {
 	}
 }
 
-func (b Buff) resolveCombineItem(item string) (bool, []model.CharacterModifier, error) {
+func (b *Buff) resolveCombineItem(item string) (bool, []model.CharacterModifier, error) {
 	//TODO 忽略装备组合增益
 	return strings.Index(item, "】+【") > 0 || strings.Index(item, "）+【") > 0, nil, nil
 }
 
-func (b Buff) resolveRefineItem(item string) (bool, []model.CharacterModifier, error) {
+func (b *Buff) resolveRefineItem(item string) (bool, []model.CharacterModifier, error) {
 	cap := 0
 	if strings.HasPrefix(item, "精炼+") {
 		cap = 6
@@ -132,7 +167,7 @@ func (b Buff) resolveRefineItem(item string) (bool, []model.CharacterModifier, e
 	}
 }
 
-func (b Buff) resolveRefineItemSplit(refineStr, effectStr, split string) ([]model.CharacterModifier, error) {
+func (b *Buff) resolveRefineItemSplit(refineStr, effectStr, split string) ([]model.CharacterModifier, error) {
 	var refines []int
 	for _, refineStrSplit := range strings.Split(refineStr, split) {
 		if refine, err := strconv.Atoi(refineStrSplit); err != nil {
@@ -156,7 +191,7 @@ func (b Buff) resolveRefineItemSplit(refineStr, effectStr, split string) ([]mode
 	}
 }
 
-func (b Buff) resolveRefinesSplit(base, effectStr, split string, refines ...int) ([]model.CharacterModifier, error) {
+func (b *Buff) resolveRefinesSplit(base, effectStr, split string, refines ...int) ([]model.CharacterModifier, error) {
 	if effects := strings.Split(effectStr, split); len(effects) != len(refines) {
 		return nil, errors.Errorf("count mismatch: [%d]%d --> [%d]%s", len(refines), refines, len(effects), effects)
 	} else {
@@ -172,7 +207,7 @@ func (b Buff) resolveRefinesSplit(base, effectStr, split string, refines ...int)
 	}
 }
 
-func (b Buff) resolveRefineItemCond(refineStr, effectStr, cond string) ([]model.CharacterModifier, error) {
+func (b *Buff) resolveRefineItemCond(refineStr, effectStr, cond string) ([]model.CharacterModifier, error) {
 	if refine, err := strconv.Atoi(refineStr); err != nil {
 		return nil, errors.WithStack(err)
 	} else if modifiers, err := b.resolveRefine(effectStr, refine); err != nil {
@@ -186,7 +221,7 @@ func (b Buff) resolveRefineItemCond(refineStr, effectStr, cond string) ([]model.
 	}
 }
 
-func (b Buff) resolveRefine(effectStr string, refine int) ([]model.CharacterModifier, error) {
+func (b *Buff) resolveRefine(effectStr string, refine int) ([]model.CharacterModifier, error) {
 	if modifiers, err := b.resolveEffects(effectStr, 1); err != nil {
 		return nil, err
 	} else if len(modifiers) == 0 {
@@ -198,7 +233,7 @@ func (b Buff) resolveRefine(effectStr string, refine int) ([]model.CharacterModi
 	}
 }
 
-func (b Buff) resolveEffects(effectStr string, rate int) ([]model.CharacterModifier, error) {
+func (b *Buff) resolveEffects(effectStr string, rate int) ([]model.CharacterModifier, error) {
 	var modifiers []model.CharacterModifier
 	pos, runeArray := 0, []rune(effectStr)
 	for idx, char := range runeArray {
@@ -233,7 +268,7 @@ func (b Buff) resolveEffects(effectStr string, rate int) ([]model.CharacterModif
 	return modifiers, nil
 }
 
-func (b Buff) resolvePerRefineItem(effectStr string) ([]model.CharacterModifier, error) {
+func (b *Buff) resolvePerRefineItem(effectStr string) ([]model.CharacterModifier, error) {
 	condition, effect := "", ""
 	if idx := strings.Index(effectStr, "每精炼+1时"); idx >= 0 {
 		condition, effect = strings.TrimSuffix(effectStr[:idx], "，"), strings.TrimPrefix(effectStr[idx+14:], "，")
@@ -275,11 +310,11 @@ func (b Buff) resolvePerRefineItem(effectStr string) ([]model.CharacterModifier,
 	}
 }
 
-func (b Buff) isEndOfDigit(s rune) bool {
+func (b *Buff) isEndOfDigit(s rune) bool {
 	return s == '%' || s == '）' || (s >= '0' && s <= '9')
 }
 
-func (b Buff) inBrackets(str string) (string, []string) {
+func (b *Buff) inBrackets(str string) (string, []string) {
 	var brackets []string
 	after, pos, runeArray := "", 0, []rune(str)
 	for idx, char := range runeArray {
@@ -295,7 +330,7 @@ func (b Buff) inBrackets(str string) (string, []string) {
 	return after, brackets
 }
 
-func (b Buff) resolveEffect(effectStr string, rate int) (model.CharacterModifier, error) {
+func (b *Buff) resolveEffect(effectStr string, rate int) (model.CharacterModifier, error) {
 	rateStr := ""
 	if strings.Index(effectStr, "（总计") > 0 {
 		if afterEffect, brackets := b.inBrackets(effectStr); len(brackets) > 0 {

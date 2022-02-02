@@ -31,7 +31,7 @@ type Pet struct {
 	Equip         *[]Hobby            `json:"equip"`
 	Skill         *[]Skill            `json:"skill"`
 	Cost          *[]Cost             `json:"cost"`
-	AdventureBuff Buff                `json:"adventureBuff"`
+	AdventureBuff *Buff               `json:"adventureBuff"`
 }
 
 type Hobby struct {
@@ -41,7 +41,7 @@ type Hobby struct {
 
 type Skill struct {
 	Name  string `json:"name"`
-	Intro Buff   `json:"intro"`
+	Intro *Buff  `json:"intro"`
 	Lv    int    `json:"lv"`
 }
 
@@ -150,7 +150,7 @@ func (p *Pet) match(filter *Pet) bool {
 		return false
 	} else if len(filter.Name) > 0 && strings.Index(p.Name, filter.Name) < 0 {
 		return false
-	} else if len(filter.AdventureBuff) > 0 && !p.AdventureBuff.Contains(filter.AdventureBuff) {
+	} else if !p.AdventureBuff.Contains(filter.AdventureBuff) {
 		return false
 	} else if filter.Cost != nil && !p.matchAllCost(filter.Cost) {
 		return false
@@ -198,10 +198,8 @@ func (p *Pet) matchAllSkill(filters *[]Skill) bool {
 
 func (s *Skill) matchAll(filters *[]Skill) bool {
 	for _, filter := range *filters {
-		if len(filter.Intro) > 0 {
-			if !s.Intro.Contains(filter.Intro) {
-				return false
-			}
+		if !s.Intro.Contains(filter.Intro) {
+			return false
 		}
 	}
 	return true
