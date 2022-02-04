@@ -95,6 +95,10 @@ func (b *Buff) parseItem(item string) ([]model.CharacterModifier, error) {
 		return nil, err
 	} else if match {
 		return modifiers, nil
+	} else if match, modifiers, err := b.parseConditionItem(item); err != nil {
+		return nil, err
+	} else if match {
+		return modifiers, nil
 	} else if match, modifiers, err := b.parseEffects(item, 1); err != nil {
 		BuffError++
 		//TODO 处理异常
@@ -109,7 +113,7 @@ func (b *Buff) parseItem(item string) ([]model.CharacterModifier, error) {
 		} else {
 			Buffs[item] = 1
 		}
-		return nil, nil
+		return modifiers, nil
 	}
 }
 
@@ -182,15 +186,15 @@ func (b *Buff) parsePerRefineItem(item string) (bool, []model.CharacterModifier,
 	}
 	var modifiers []model.CharacterModifier
 	if len(condition) > 0 {
-		if match, ms, err := b.parseEffects(condition, 1); err != nil {
+		if _, ms, err := b.parseEffects(condition, 1); err != nil {
 			return false, nil, err
-		} else if match && len(ms) > 0 {
+		} else if len(ms) > 0 {
 			modifiers = append(modifiers, ms...)
 		}
 	}
-	if match, ms, err := b.parseEffects(effect, rate); err != nil {
+	if _, ms, err := b.parseEffects(effect, rate); err != nil {
 		return false, nil, err
-	} else if match && len(ms) > 0 {
+	} else if len(ms) > 0 {
 		modifiers = append(modifiers, ms...)
 	}
 	return true, modifiers, nil
@@ -224,7 +228,7 @@ func (b *Buff) parseRefineWithCondition(refineStr string) (int, string, error) {
 }
 
 func (b *Buff) parseRefineItem(item string) (bool, []model.CharacterModifier, error) {
-	if cap := b.cap(item, "精炼+", "精炼值+", "精炼等级+", "精炼等级达到+", "精炼至+", "当精炼+", "武器精炼+", "当盔甲精炼+", "当武器精炼+", "当副手精炼+"); cap <= 0 {
+	if cap := b.cap(item, "精炼+", "精炼值+", "精炼等级+", "精炼等级达到+", "精炼至+", "当精炼+", "当精炼到+", "武器精炼+", "当盔甲精炼+", "当武器精炼+", "当副手精炼+"); cap <= 0 {
 		return false, nil, nil
 	} else if idx := strings.Index(item, "时"); idx < 0 {
 		return false, nil, nil
@@ -303,17 +307,54 @@ func (b *Buff) parseRefineSplit(base, effectStr, split string, refines ...int) (
 }
 
 func (b *Buff) parseRefineEffects(refine int, effectStr string) (bool, []model.CharacterModifier, error) {
-	if match, modifiers, err := b.parseEffects(effectStr, 1); err != nil {
+	if _, modifiers, err := b.parseEffects(effectStr, 1); err != nil {
 		return false, nil, err
-	} else if !match {
-		//TODO 解析不match的情况
-		return true, nil, nil
 	} else if len(modifiers) == 0 {
 		return true, nil, nil
 	} else {
 		// TODO 限制精炼等级
 		return true, modifiers, nil
 	}
+}
+
+func (b *Buff) parseConditionItem(item string) (bool, []model.CharacterModifier, error) {
+	condition, effect := "", ""
+	if idx := strings.Index(item, "时，"); idx > 0 {
+		condition, effect = item[:idx+3], item[idx+6:]
+	} else if idx := strings.Index(item, "时,"); idx > 0 {
+		condition, effect = item[:idx+3], item[idx+4:]
+	} else {
+		return false, nil, nil
+	}
+	var modifiers []model.CharacterModifier
+	if _, sub, err := b.parseEffects(condition, 1); err != nil {
+		return false, nil, err
+	} else if len(sub) > 0 {
+		modifiers = append(modifiers, sub...)
+	}
+	switch condition {
+	case "物理攻击时", "普通攻击时", "技能攻击时", "使用技能时", "使用拳刃类武器时", "使用物理伤害技能攻击时", "使用短剑类武器时",
+		"使用演奏类技能时", "魔法技能攻击时", "魔法攻击目标时", "远程普通攻击时", "装备来复枪类武器时", "装备弓类型武器时",
+		"力量在75以上时", "当诗人或舞娘系职业演奏时", "技能攻击玩家时", "技能攻击目标时", "攻击时", "攻击目标时", "普通攻击暴击时",
+		"生命值100%时", "SP值100%时", "自身生命值大于50%时", "击杀目标时":
+	case "普攻伤害+7.5%，当敏捷大于180时":
+	default:
+		if strings.Index(condition, "装备") >= 0 && strings.HasSuffix(condition, "卡片时") {
+		} else if strings.Index(condition, "达到") >= 0 {
+		} else if strings.Index(condition, "佩戴者是") >= 0 {
+		} else if strings.HasSuffix(condition, "族装备时") || strings.HasSuffix(condition, "系装备时") {
+		} else {
+			//TODO 其他需要解析的条件
+			BuffIgnore++
+			return true, modifiers, nil
+		}
+	}
+	if _, sub, err := b.parseEffects(effect, 1); err != nil {
+		return false, nil, err
+	} else if len(sub) > 0 {
+		modifiers = append(modifiers, sub...)
+	}
+	return true, modifiers, nil
 }
 
 func (b *Buff) parseEffects(effectStr string, rate int) (bool, []model.CharacterModifier, error) {
@@ -325,7 +366,7 @@ func (b *Buff) parseEffects(effectStr string, rate int) (bool, []model.Character
 				//TODO 处理异常
 				return false, nil, nil
 			} else if !match {
-				return false, nil, nil
+				return false, modifiers, nil
 			} else if modifier != nil {
 				modifiers = append(modifiers, modifier)
 			}
@@ -336,7 +377,7 @@ func (b *Buff) parseEffects(effectStr string, rate int) (bool, []model.Character
 		//TODO 处理异常
 		return false, nil, nil
 	} else if !match {
-		return false, nil, nil
+		return false, modifiers, nil
 	} else if modifier != nil {
 		modifiers = append(modifiers, modifier)
 	}

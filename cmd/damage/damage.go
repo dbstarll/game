@@ -196,23 +196,17 @@ func Equips(pos position.Position, _job job.Job) map[string]model.CharacterModif
 	modifiers := make(map[string]model.CharacterModifier)
 	if _, err := romel.Equips.Filter(func(equip *romel.Equip) error {
 		var ms []model.CharacterModifier
-		if m, err := equip.Effect.Effect(); err != nil {
-			return err
-		} else if len(m) > 0 {
+		if m := equip.Effect.Effect(); len(m) > 0 {
 			ms = append(ms, m...)
 		}
-		if m, err := equip.Buff.Effect(); err != nil {
-			return err
-		} else if len(m) > 0 {
+		if m := equip.Buff.Effect(); len(m) > 0 {
 			ms = append(ms, m...)
 		}
 		if equip.RandomBuff.Empty() {
 			if len(ms) > 0 {
 				modifiers[equip.Name] = model.Merge(ms...)
 			}
-		} else if m, err := equip.RandomBuff.Effect(); err != nil {
-			return err
-		} else if len(m) == equip.RandomBuff.Size() {
+		} else if m := equip.RandomBuff.Effect(); len(m) == equip.RandomBuff.Size() {
 			for idx, item := range equip.RandomBuff.Items() {
 				modifiers[equip.Name+":"+item] = model.Merge(model.Merge(ms...), m[idx])
 			}
@@ -230,9 +224,7 @@ func Equips(pos position.Position, _job job.Job) map[string]model.CharacterModif
 func Cards(pos position.Position) map[string]model.CharacterModifier {
 	modifiers := make(map[string]model.CharacterModifier)
 	if _, err := romel.Cards.Filter(func(card *romel.Card) error {
-		if m, err := card.Buff.Effect(); err != nil {
-			return err
-		} else if len(m) > 0 {
+		if m := card.Buff.Effect(); len(m) > 0 {
 			modifiers[card.Name] = model.Merge(m...)
 		}
 		return nil
@@ -247,9 +239,7 @@ func Cards(pos position.Position) map[string]model.CharacterModifier {
 func Hats(pos position.Position) map[string]model.CharacterModifier {
 	modifiers := make(map[string]model.CharacterModifier)
 	if _, err := romel.Hats.Filter(func(card *romel.Hat) error {
-		if m, err := card.Buff.Effect(); err != nil {
-			return err
-		} else if len(m) > 0 {
+		if m := card.Buff.Effect(); len(m) > 0 {
 			modifiers[card.Name] = model.Merge(m...)
 		}
 		return nil
