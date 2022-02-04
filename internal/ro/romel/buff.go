@@ -162,6 +162,7 @@ func (b *Buff) parsePerRefineItem(item string) (bool, []model.CharacterModifier,
 	} else {
 		return false, nil, nil
 	}
+	var modifiers []model.CharacterModifier
 	switch condition {
 	case "", "头饰", "副手", "盔甲", "装备这张卡片的武器", "使用演奏类技能时":
 		rate = 15
@@ -179,14 +180,10 @@ func (b *Buff) parsePerRefineItem(item string) (bool, []model.CharacterModifier,
 			condition = strings.TrimSuffix(condition, "，精炼+1至+6")
 		} else if strings.HasPrefix(condition, "精炼+10时，") {
 			rate = 5
-			condition = strings.TrimPrefix(condition, "精炼+10时，")
 		} else {
 			rate = 15
 		}
-	}
-	var modifiers []model.CharacterModifier
-	if len(condition) > 0 {
-		if _, ms, err := b.parseEffects(condition, 1); err != nil {
+		if ms, err := b.parseItem(condition); err != nil {
 			return false, nil, err
 		} else if len(ms) > 0 {
 			modifiers = append(modifiers, ms...)
@@ -228,7 +225,8 @@ func (b *Buff) parseRefineWithCondition(refineStr string) (int, string, error) {
 }
 
 func (b *Buff) parseRefineItem(item string) (bool, []model.CharacterModifier, error) {
-	if cap := b.cap(item, "精炼+", "精炼值+", "精炼等级+", "精炼等级达到+", "精炼至+", "当精炼+", "当精炼到+", "武器精炼+", "当盔甲精炼+", "当武器精炼+", "当副手精炼+"); cap <= 0 {
+	if cap := b.cap(item, "精炼+", "精炼值+", "精炼等级+", "精炼等级达到+", "精炼至+", "当精炼+", "当精炼到+",
+		"武器精炼+", "当盔甲精炼+", "当武器精炼+", "当副手精炼+"); cap <= 0 {
 		return false, nil, nil
 	} else if idx := strings.Index(item, "时"); idx < 0 {
 		return false, nil, nil
@@ -240,10 +238,8 @@ func (b *Buff) parseRefineItem(item string) (bool, []model.CharacterModifier, er
 		return b.parseRefineItemSplit(refineStr, effectStr, ",")
 	} else if refine, condition, err := b.parseRefineWithCondition(refineStr); err != nil {
 		return false, nil, errors.Wrapf(err, "parseRefineItem: %s", item)
-	} else if match, modifiers, err := b.parseRefineEffects(refine, effectStr); err != nil {
+	} else if _, modifiers, err := b.parseRefineEffects(refine, effectStr); err != nil {
 		return false, nil, errors.Wrapf(err, "parseRefineItem: %s", item)
-	} else if !match {
-		return false, nil, nil
 	} else if len(modifiers) == 0 || len(condition) == 0 {
 		return true, modifiers, nil
 	} else {
@@ -294,10 +290,8 @@ func (b *Buff) parseRefineSplit(base, effectStr, split string, refines ...int) (
 	} else {
 		var modifiers []model.CharacterModifier
 		for idx, refine := range refines {
-			if match, sub, err := b.parseRefineEffects(refine, base+prefix+strings.TrimPrefix(effects[idx], prefix)); err != nil {
+			if _, sub, err := b.parseRefineEffects(refine, base+prefix+strings.TrimPrefix(effects[idx], prefix)); err != nil {
 				return false, nil, err
-			} else if !match {
-				return false, nil, nil
 			} else if len(sub) > 0 {
 				modifiers = append(modifiers, sub...)
 			}
@@ -323,29 +317,48 @@ func (b *Buff) parseConditionItem(item string) (bool, []model.CharacterModifier,
 		condition, effect = item[:idx+3], item[idx+6:]
 	} else if idx := strings.Index(item, "时,"); idx > 0 {
 		condition, effect = item[:idx+3], item[idx+4:]
-	} else {
+	} else if idx := strings.Index(item, "时"); idx < 0 {
 		return false, nil, nil
+	} else if strings.Index(item, "时间") == idx {
+		return false, nil, nil
+	} else if strings.Index(item, "时刻") == idx {
+		return false, nil, nil
+	} else if strings.Index(item, "时长") == idx {
+		return false, nil, nil
+	} else if strings.Index(item, "同时") == idx-3 {
+		return false, nil, nil
+	} else {
+		condition, effect = item[:idx+3], item[idx+3:]
 	}
 	var modifiers []model.CharacterModifier
-	if _, sub, err := b.parseEffects(condition, 1); err != nil {
-		return false, nil, err
-	} else if len(sub) > 0 {
-		modifiers = append(modifiers, sub...)
-	}
 	switch condition {
 	case "物理攻击时", "普通攻击时", "技能攻击时", "使用技能时", "使用拳刃类武器时", "使用物理伤害技能攻击时", "使用短剑类武器时",
-		"使用演奏类技能时", "魔法技能攻击时", "魔法攻击目标时", "远程普通攻击时", "装备来复枪类武器时", "装备弓类型武器时",
+		"普攻时", "使用演奏类技能时", "魔法技能攻击时", "魔法攻击目标时", "远程普通攻击时", "装备来复枪类武器时", "装备弓类型武器时",
 		"力量在75以上时", "当诗人或舞娘系职业演奏时", "技能攻击玩家时", "技能攻击目标时", "攻击时", "攻击目标时", "普通攻击暴击时",
-		"生命值100%时", "SP值100%时", "自身生命值大于50%时", "击杀目标时":
-	case "普攻伤害+7.5%，当敏捷大于180时":
+		"生命值100%时", "SP值100%时", "自身生命值大于50%时", "击杀目标时", "当装备的职业为剑士系时", "普通攻击攻击目标时",
+		"物理技能攻击攻击目标时", "普通攻击，暴击时", "近战攻击时", "任何攻击时", "近战普攻时", "使用物理技能攻击时", "物理技能攻击时",
+		"使用锁定单体类技能攻击时", "使用长剑类武器时", "近战职业装备时", "每次魔法技能攻击时", "装备时", "但技能使用时", "技能使用时",
+		"法，弓，服，多兰族，悟灵士装备时", "剑，商，盗，超初，忍者，枪手装备时", "主人使用技能时", "主人和宠物普通攻击时", "佩戴时",
+		"佩戴者受到伤害时", "使用单体锁定类魔法技能时", "使用普攻或任何技能攻击时", "主人使用普通攻击、释放技能时", "主人击杀目标时",
+		"主人攻击时", "主人释放技能时", "使主人在吟唱时", "使用单体锁定类魔法技能击杀魔物时", "使用技能（不含普通攻击）时", "暴击时",
+		"使用法系技能时", "使用魔法技能攻击时", "宠物和主人击杀目标时", "宠物和主人攻击时", "宠物和主人普攻时", "当装备短剑时",
+		"攻击血量低于自身的目标时", "攻击血量高于自身的目标时", "生命值低于70%时", "生命值高于50%时", "装备拳刃时", "近战职业击杀魔物时",
+		"获得转运锦鲤的祝福：魔法技能攻击时", "阿特罗斯卡片触发急速效果时":
+	case "冒险时":
+		return true, nil, nil
 	default:
+		if _, sub, err := b.parseEffects(condition, 1); err != nil {
+			return false, nil, err
+		} else if len(sub) > 0 {
+			modifiers = append(modifiers, sub...)
+		}
 		if strings.Index(condition, "装备") >= 0 && strings.HasSuffix(condition, "卡片时") {
-		} else if strings.Index(condition, "达到") >= 0 {
+		} else if strings.Index(condition, "达到") >= 0 || strings.Index(condition, "大于") >= 0 {
 		} else if strings.Index(condition, "佩戴者是") >= 0 {
 		} else if strings.HasSuffix(condition, "族装备时") || strings.HasSuffix(condition, "系装备时") {
 		} else {
-			//TODO 其他需要解析的条件
 			BuffIgnore++
+			//TODO 解析条件并忽略
 			return true, modifiers, nil
 		}
 	}
@@ -354,6 +367,7 @@ func (b *Buff) parseConditionItem(item string) (bool, []model.CharacterModifier,
 	} else if len(sub) > 0 {
 		modifiers = append(modifiers, sub...)
 	}
+	//TODO 解析条件并限制
 	return true, modifiers, nil
 }
 
