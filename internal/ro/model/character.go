@@ -66,8 +66,15 @@ func Merge(modifiers ...CharacterModifier) CharacterModifier {
 
 func Rate(modifier CharacterModifier, rate func(character *Character) int) CharacterModifier {
 	return func(character *Character) func() {
+		size := rate(character)
+		cancelList := make([]func(), size)
+		for idx, _ := range cancelList {
+			cancelList[idx] = modifier(character)
+		}
 		return func() {
-
+			for _, cancel := range cancelList {
+				cancel()
+			}
 		}
 	}
 }
