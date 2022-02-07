@@ -91,6 +91,10 @@ func (b *Buff) parseItem(item string) ([]model.CharacterModifier, error) {
 		return nil, err
 	} else if match {
 		return modifiers, nil
+	} else if match, modifiers, err := b.parsePerIntensifyItem(item); err != nil {
+		return nil, err
+	} else if match {
+		return modifiers, nil
 	} else if match, modifiers, err := b.parseRefineItem(item); err != nil {
 		return nil, err
 	} else if match {
@@ -99,7 +103,15 @@ func (b *Buff) parseItem(item string) ([]model.CharacterModifier, error) {
 		return nil, err
 	} else if match {
 		return modifiers, nil
+	} else if match, modifiers, err := b.parseSkillItem(item); err != nil {
+		return nil, err
+	} else if match {
+		return modifiers, nil
 	} else if match, modifiers, err := b.parseConditionItem(item); err != nil {
+		return nil, err
+	} else if match {
+		return modifiers, nil
+	} else if match, modifiers, err := b.parsePerQualityItem(item); err != nil {
 		return nil, err
 	} else if match {
 		return modifiers, nil
@@ -199,6 +211,26 @@ func (b *Buff) parsePerRefineItem(item string) (bool, []model.CharacterModifier,
 		modifiers = append(modifiers, ms...)
 	}
 	return true, modifiers, nil
+}
+
+func (b *Buff) parsePerIntensifyItem(item string) (bool, []model.CharacterModifier, error) {
+	condition, effect, rate := "", "", 1
+	if idx := strings.Index(item, "每强化+1"); idx >= 0 {
+		rate, condition, effect = 170, strings.TrimSuffix(item[:idx], "，"), strings.TrimPrefix(item[idx+11:], "，")
+	} else if idx := strings.Index(item, "每强化10级"); idx >= 0 {
+		rate, condition, effect = 17, strings.TrimSuffix(item[:idx], "，"), strings.TrimPrefix(item[idx+14:], "，")
+	} else {
+		return false, nil, nil
+	}
+	if len(condition) > 0 {
+		if _, modifiers, err := b.parseEffects(effect, rate); err != nil {
+			return false, nil, err
+		} else {
+			return true, modifiers, nil
+		}
+	} else {
+		return false, nil, errors.Errorf("parsePerIntensifyItem: %s", item)
+	}
 }
 
 func (b *Buff) cap(item string, prefixes ...string) int {
@@ -315,6 +347,79 @@ func (b *Buff) parseRefineEffects(refine int, effectStr string) (bool, []model.C
 	}
 }
 
+func (b *Buff) parsePetItem(item string) (bool, []model.CharacterModifier, error) {
+	if strings.Index(item, "<em>") < 0 {
+		return false, nil, nil
+	} else if strings.HasPrefix(item, "冒险") {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.HasPrefix(item, "增加宠物在") && strings.HasSuffix(item, "的打工效率") {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.Index(item, "对敌方") >= 0 {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.Index(item, "持续") >= 0 || strings.Index(item, "秒内") >= 0 {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.Index(item, "几率") >= 0 || strings.Index(item, "机率") >= 0 ||
+		strings.Index(item, "概率") >= 0 {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.Index(item, "每隔") >= 0 {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.HasPrefix(item, "增加宠物和主人") {
+		return b.parsePetEffects(item[21:], true)
+	} else if strings.HasPrefix(item, "减少宠物和主人") {
+		return b.parsePetEffects(item[21:], false)
+	} else if strings.HasPrefix(item, "宠物和主人") {
+		return b.parsePetEffects(item[15:], true)
+	} else if strings.HasPrefix(item, "主人和宠物") {
+		return b.parsePetEffects(item[15:], true)
+	} else if strings.HasPrefix(item, "主人") {
+		return b.parsePetEffects(item[6:], true)
+	} else if strings.HasPrefix(item, "增加主人") {
+		return b.parsePetEffects(item[12:], true)
+	} else {
+		BuffIgnore++
+		return true, nil, nil
+	}
+}
+
+func (b *Buff) parseSkillItem(item string) (bool, []model.CharacterModifier, error) {
+	if strings.Index(item, "【") < 0 {
+		return false, nil, nil
+	} else if strings.HasPrefix(item, "【") || strings.HasPrefix(item, "使【") {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.HasPrefix(item, "可使用【") || strings.HasPrefix(item, "可以使用") {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.HasPrefix(item, "可使用技能【") || strings.HasPrefix(item, "技能【") {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.HasPrefix(item, "获得技能【") || strings.HasPrefix(item, "获得被动技能【") {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.HasPrefix(item, "习得【") || strings.Index(item, "使用【") >= 0 {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.Index(item, "施放【") >= 0 || strings.Index(item, "触发【") >= 0 {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.Index(item, "发动【") >= 0 || strings.Index(item, "施展【") >= 0 {
+		BuffIgnore++
+		return true, nil, nil
+	} else if strings.Index(item, "获得【") >= 0 || strings.Index(item, "释放【") >= 0 {
+		BuffIgnore++
+		return true, nil, nil
+	} else {
+		BuffIgnore++
+		return true, nil, nil
+	}
+}
+
 func (b *Buff) parseConditionItem(item string) (bool, []model.CharacterModifier, error) {
 	condition, effect := "", ""
 	if idx := strings.Index(item, "时，"); idx > 0 {
@@ -373,27 +478,38 @@ func (b *Buff) parseConditionItem(item string) (bool, []model.CharacterModifier,
 	return true, modifiers, nil
 }
 
-func (b *Buff) parsePetItem(item string) (bool, []model.CharacterModifier, error) {
-	if strings.HasPrefix(item, "冒险时") {
-		BuffIgnore++
-		return true, nil, nil
-	} else if strings.HasPrefix(item, "增加宠物在") && strings.HasSuffix(item, "的打工效率") {
-		BuffIgnore++
-		return true, nil, nil
-	} else if strings.HasPrefix(item, "冒险外出时间") {
-		BuffIgnore++
-		return true, nil, nil
-	} else if strings.Index(item, "敌方单体") >= 0 || strings.Index(item, "敌方群体") >= 0 {
-		BuffIgnore++
-		return true, nil, nil
-	} else if !strings.HasPrefix(item, "增加宠物和主人") {
+func (b *Buff) parsePerQualityItem(item string) (bool, []model.CharacterModifier, error) {
+	if strings.Index(item, "每") < 0 {
 		return false, nil, nil
+	} else if idx := strings.Index(item, "会为装备者提供"); idx > 0 {
+		if idxStart := strings.Index(item, "每"); idxStart >= 0 && idxStart < idx {
+			return b.parsePerQualityEffects(item[idxStart+3:idx], item[idx+21:])
+		} else {
+			return false, nil, errors.Errorf("parsePerQualityItem: %s", item)
+		}
+	} else if idx := strings.Index(item, "额外增加自身"); idx > 0 {
+		if idxStart := strings.Index(item, "每"); idxStart >= 0 && idxStart < idx {
+			return b.parsePerQualityEffects(item[idxStart+3:idx], item[idx+18:])
+		} else {
+			return false, nil, errors.Errorf("parsePerQualityItem: %s", item)
+		}
+	} else if idx := strings.Index(item, "额外增加"); idx > 0 {
+		if idxStart := strings.Index(item, "每"); idxStart >= 0 && idxStart < idx {
+			return b.parsePerQualityEffects(item[idxStart+3:idx], item[idx+12:])
+		} else {
+			return false, nil, errors.Errorf("parsePerQualityItem: %s", item)
+		}
 	}
+	//fmt.Printf("\tparsePerQualityItem: %s\n", item)
+	return false, nil, nil
+}
+
+func (b *Buff) parsePerQualityEffects(quality, effectStr string) (bool, []model.CharacterModifier, error) {
 	var modifiers []model.CharacterModifier
-	runeArray, pos := []rune(item[21:]), 0
+	runeArray, pos := []rune(effectStr), 0
 	for idx, char := range runeArray {
-		if char == '，' || char == ',' {
-			if modifier, err := b.parsePetEffect(string(runeArray[pos:idx])); err != nil {
+		if char == '，' || char == ',' || char == '、' {
+			if modifier, err := b.parsePerQualityEffect(quality, string(runeArray[pos:idx])); err != nil {
 				return false, nil, err
 			} else if modifier != nil {
 				modifiers = append(modifiers, modifier)
@@ -401,7 +517,7 @@ func (b *Buff) parsePetItem(item string) (bool, []model.CharacterModifier, error
 			pos = idx + 1
 		}
 	}
-	if modifier, err := b.parsePetEffect(string(runeArray[pos:])); err != nil {
+	if modifier, err := b.parsePerQualityEffect(quality, string(runeArray[pos:])); err != nil {
 		return false, nil, err
 	} else if modifier != nil {
 		modifiers = append(modifiers, modifier)
@@ -409,8 +525,95 @@ func (b *Buff) parsePetItem(item string) (bool, []model.CharacterModifier, error
 	return true, modifiers, nil
 }
 
-func (b *Buff) parsePetEffect(effectStr string) (model.CharacterModifier, error) {
+func (b *Buff) parsePerQualityEffect(quality, effectStr string) (model.CharacterModifier, error) {
+	val, effect, percentage := "", "", false
+	if idx := strings.Index(effectStr, "点"); idx > 0 {
+		val, effect, percentage = effectStr[:idx], effectStr[idx+3:], false
+	} else if idx := strings.Index(effectStr, "%"); idx > 0 {
+		val, effect, percentage = effectStr[:idx], effectStr[idx+1:], true
+	} else {
+		return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
+	}
+	if floatVal, err := strconv.ParseFloat(val, 64); err != nil {
+		return nil, errors.WithStack(err)
+	} else if modifier, exist := b.find(effect, floatVal, percentage); !exist || modifier == nil {
+		return nil, nil
+	} else if idx := strings.Index(quality, "点"); idx > 0 {
+		if num, err := strconv.Atoi(quality[:idx]); err != nil {
+			return nil, errors.WithStack(err)
+		} else {
+			qualityStr := quality[idx+3:]
+			switch qualityStr {
+			case "力量":
+				return model.Rate(modifier, func(character *model.Character) int {
+					return character.Quality.Str / num
+				}), nil
+			case "敏捷":
+				return model.Rate(modifier, func(character *model.Character) int {
+					return character.Quality.Agi / num
+				}), nil
+			case "智力", "智力可":
+				return model.Rate(modifier, func(character *model.Character) int {
+					return character.Quality.Int / num
+				}), nil
+			case "灵巧":
+				return model.Rate(modifier, func(character *model.Character) int {
+					return character.Quality.Dex / num
+				}), nil
+			case "体质":
+				return model.Rate(modifier, func(character *model.Character) int {
+					return character.Quality.Vit / num
+				}), nil
+			case "幸运":
+				return model.Rate(modifier, func(character *model.Character) int {
+					return character.Quality.Luk / num
+				}), nil
+			case "暴击":
+				return model.Rate(modifier, func(character *model.Character) int {
+					return character.Profits.General.Critical / num
+				}), nil
+			case "闪避":
+				return model.Rate(modifier, func(character *model.Character) int {
+					return character.Profits.General.Dodge / num
+				}), nil
+			default:
+				return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
+			}
+		}
+	} else if quality == "百分之一魔伤减免" {
+		return model.Rate(modifier, func(character *model.Character) int {
+			return int(character.Profits.Gains(true).Resist)
+		}), nil
+	} else {
+		return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
+	}
+}
+
+func (b *Buff) parsePetEffects(effectStr string, plus bool) (bool, []model.CharacterModifier, error) {
+	var modifiers []model.CharacterModifier
+	runeArray, pos := []rune(effectStr), 0
+	for idx, char := range runeArray {
+		if char == '，' || char == ',' {
+			if modifier, err := b.parsePetEffect(string(runeArray[pos:idx]), plus); err != nil {
+				return false, nil, err
+			} else if modifier != nil {
+				modifiers = append(modifiers, modifier)
+			}
+			pos = idx + 1
+		}
+	}
+	if modifier, err := b.parsePetEffect(string(runeArray[pos:]), plus); err != nil {
+		return false, nil, err
+	} else if modifier != nil {
+		modifiers = append(modifiers, modifier)
+	}
+	return true, modifiers, nil
+}
+
+func (b *Buff) parsePetEffect(effectStr string, plus bool) (model.CharacterModifier, error) {
 	if strings.HasPrefix(effectStr, "持续") {
+		return nil, nil
+	} else if effectStr == "如果主人拥有体型增伤触发的【洞察】效果" {
 		return nil, nil
 	} else if idxStart := strings.Index(effectStr, "<em>"); idxStart < 0 {
 		return nil, errors.Errorf("parsePetEffect: %s", effectStr)
@@ -421,14 +624,37 @@ func (b *Buff) parsePetEffect(effectStr string) (model.CharacterModifier, error)
 		percentage := strings.HasSuffix(val, "%")
 		if floatVal, err := strconv.ParseFloat(strings.TrimSuffix(val, "%"), 64); err != nil {
 			return nil, errors.WithStack(err)
-		} else if len(suffix) > 0 {
+		} else if len(prefix) == 0 && len(suffix) > 0 {
+			if !plus {
+				floatVal = -floatVal
+			}
 			modifier, _ := b.find(strings.TrimPrefix(suffix, "点"), floatVal, percentage)
+			return modifier, nil
+		} else if len(suffix) == 0 && strings.HasSuffix(prefix, "+") {
+			modifier, _ := b.find(strings.TrimSuffix(prefix, "+"), floatVal, percentage)
+			return modifier, nil
+		} else if len(suffix) == 0 && strings.HasSuffix(prefix, "减少") {
+			modifier, _ := b.find(strings.TrimSuffix(prefix, "减少"), -floatVal, percentage)
+			return modifier, nil
+		} else if len(suffix) == 0 && strings.HasSuffix(prefix, "增加") {
+			modifier, _ := b.find(strings.TrimSuffix(prefix, "增加"), floatVal, percentage)
+			return modifier, nil
+		} else if len(suffix) > 0 && strings.HasSuffix(prefix, "降低") {
+			modifier, _ := b.find(suffix, -floatVal, percentage)
+			return modifier, nil
+		} else if len(suffix) > 0 && strings.HasSuffix(prefix, "增加") {
+			modifier, _ := b.find(suffix, floatVal, percentage)
 			return modifier, nil
 		} else if prefix == "但移动速度会降低" {
 			modifier, _ := b.find("移动速度", -floatVal, percentage)
 			return modifier, nil
+		} else if prefix == "普通攻击时附加魔法攻击*" {
+			return nil, nil
+		} else if prefix == "每" {
+			//TODO 每<em>6</em>点体质增加0.1%生命上限
+			return nil, nil
 		} else {
-			return nil, errors.Errorf("parsePetEffect: %s", effectStr)
+			return nil, errors.Errorf("parsePetEffect: [%t][%t]%s|%s %f -- %s", plus, percentage, prefix, suffix, floatVal, effectStr)
 		}
 	}
 }
@@ -474,11 +700,11 @@ func (b *Buff) parseEffect(effectStr string, rate int) (bool, model.CharacterMod
 				if char == '-' {
 					floatVal = -floatVal
 				}
-				if strings.Index(key, "恢复") >= 0 {
+				if modifier, exist := b.find(key, floatVal, percentage); !exist {
+					return false, nil, nil
+				} else if modifier == nil {
 					BuffIgnore++
 					return true, nil, nil
-				} else if modifier, exist := b.find(key, floatVal, percentage); !exist {
-					return false, nil, nil
 				} else {
 					return true, modifier, nil
 				}

@@ -9,6 +9,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/model"
 	"github.com/dbstarll/game/internal/ro/model/buff"
 	"github.com/dbstarll/game/internal/ro/model/general"
+	"strings"
 )
 
 type BuffModifier func(val float64) model.CharacterModifier
@@ -960,7 +961,11 @@ func initModifier() {
 }
 
 func (b *Buff) find(key string, val float64, percentage bool) (model.CharacterModifier, bool) {
-	if percentage {
+	if strings.Index(key, "恢复") >= 0 {
+		return nil, true
+	} else if strings.Index(key, "消耗") >= 0 {
+		return nil, true
+	} else if percentage {
 		if fn, exist := (*percentageBuffModifiers)[key]; exist {
 			return fn(val), true
 		} else {
