@@ -29,7 +29,7 @@ type Character struct {
 	race          race.Race
 	shape         shape.Shape
 	level         Level
-	quality       Quality
+	Quality       Quality
 	profits       Profits
 	detectByPanel DetectByPanel
 }
@@ -76,9 +76,9 @@ func Job(job job.Job) CharacterModifier {
 
 func AddQuality(quality *Quality) CharacterModifier {
 	return func(character *Character) func() {
-		character.quality.Add(quality)
+		character.Quality.Add(quality)
 		return func() {
-			character.quality.Del(quality)
+			character.Quality.Del(quality)
 		}
 	}
 }
@@ -208,7 +208,7 @@ func (c *Character) Apply(modifiers ...CharacterModifier) func() {
 
 //素质攻击
 func (c *Character) QualityAttack(magic, remote bool) int {
-	return c.quality.Attack(magic, remote)
+	return c.Quality.Attack(magic, remote)
 }
 
 //装备攻击
@@ -233,7 +233,7 @@ func (c *Character) PanelAttack(magic, remote bool) float64 {
 
 //素质防御
 func (c *Character) QualityDefence(magic bool) int {
-	return c.quality.Defence(magic)
+	return c.Quality.Defence(magic)
 }
 
 //装备防御
@@ -342,19 +342,19 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 	damage = c.EquipmentAttack(attack.IsMagic()) //装备攻击
 	if attack.IsOrdinary() {
 		if c.job >= job.Archer && c.job <= job.Hunter4 {
-			damage += float64(c.quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
+			damage += float64(c.Quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
 			damage += float64(c.profits.general.Ordinary)                                    //TODO 这里存疑普攻攻击力
 		} else if attack.IsCritical() {
-			damage += float64(c.quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
+			damage += float64(c.Quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
 		}
 		if c.job >= job.Hunter2 && c.job <= job.Hunter4 {
-			damage += float64(200 + c.quality.Dex*5) //猎人进阶二转技能：元素箭矢20级被动效果
+			damage += float64(200 + c.Quality.Dex*5) //猎人进阶二转技能：元素箭矢20级被动效果
 		}
 	}
 	damage *= 1 + c.profits.gains(attack.IsMagic()).AttackPer/100 //*(1+攻击%)
 
 	if attack.IsMagic() {
-		damage += float64(c.quality.Int) * c.profits.gains(true).AttackPer / 100 //+智力*魔法攻击%
+		damage += float64(c.Quality.Int) * c.profits.gains(true).AttackPer / 100 //+智力*魔法攻击%
 	} else {
 		damage *= attack.GetWeapon().Restraint(target.shape)                                            //*武器体型修正
 		damage *= 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
@@ -488,7 +488,7 @@ func (c *Character) UnmarshalYAML(value *yaml.Node) (err error) {
 						return
 					}
 				case "quality":
-					if err = sub.Decode(&c.quality); err != nil {
+					if err = sub.Decode(&c.Quality); err != nil {
 						return
 					}
 				case "profits":

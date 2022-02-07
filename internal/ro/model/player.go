@@ -60,7 +60,7 @@ func LoadMonsterFromYaml(name string) (*Character, error) {
 }
 
 func (p *Player) SkillEarth() (damage float64) {
-	damage = float64(p.quality.Vit*p.quality.Vit) *
+	damage = float64(p.Quality.Vit*p.Quality.Vit) *
 		p.PanelDefence(false) / 10000 *
 		9.6 //基础技能倍率
 	damage *= 1 + 10.0/100 //*(1+守护之盾技能增伤%)
