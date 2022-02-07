@@ -17,8 +17,8 @@ import (
 func main() {
 	//Template()
 	//Shooter()
-	Hunter()
-	//EarthBash()
+	//Hunter()
+	EarthBash()
 }
 
 func ff(b, d float64) float64 {
@@ -189,6 +189,10 @@ func profitDetect(player *model.Player, fn buff.FinalDamage) {
 				fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
 			}
 		}
+	}
+	fmt.Printf("素质:\n")
+	for _, p := range buff.ProfitDetect(player, true, fn, nil) {
+		fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
 	}
 }
 

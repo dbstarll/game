@@ -1,7 +1,6 @@
 package buff
 
 import (
-	"fmt"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/race"
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
@@ -165,11 +164,6 @@ func ProfitDetect(player *model.Player, baseDetect bool, fn FinalDamage, customD
 			return profits[i].Name < profits[j].Name
 		}
 	})
-	if baseDetect {
-		for _, profit := range profits {
-			fmt.Printf("增幅：%2.4f%% - %s\n", profit.Value, profit.Name)
-		}
-	}
 	return profits
 }
 
