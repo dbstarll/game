@@ -19,7 +19,7 @@ type Refine struct {
 type Profits struct {
 	physical       Gains
 	magical        Gains
-	general        general.General
+	General        general.General
 	refine         Refine
 	natureAttack   map[nature.Nature]float64     //属性攻击%
 	raceDamage     map[race.Race]float64         //种族增伤%
@@ -31,7 +31,7 @@ type Profits struct {
 	abnormalResist map[abnormal.Abnormal]float64 //异常状态抵抗%
 }
 
-func (p *Profits) gains(magic bool) *Gains {
+func (p *Profits) Gains(magic bool) *Gains {
 	if magic {
 		return &p.magical
 	} else {
@@ -317,7 +317,7 @@ func (p *Profits) UnmarshalYAML(value *yaml.Node) (err error) {
 						return
 					}
 				case "general":
-					if err = sub.Decode(&p.general); err != nil {
+					if err = sub.Decode(&p.General); err != nil {
 						return
 					}
 				case "refine":

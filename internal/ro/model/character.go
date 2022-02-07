@@ -30,7 +30,7 @@ type Character struct {
 	shape         shape.Shape
 	level         Level
 	Quality       Quality
-	profits       Profits
+	Profits       Profits
 	detectByPanel DetectByPanel
 }
 
@@ -60,6 +60,14 @@ func Merge(modifiers ...CharacterModifier) CharacterModifier {
 			for _, cancel := range cancelList {
 				cancel()
 			}
+		}
+	}
+}
+
+func Rate(modifier CharacterModifier, rate func(character *Character) int) CharacterModifier {
+	return func(character *Character) func() {
+		return func() {
+
 		}
 	}
 }
@@ -94,90 +102,90 @@ func AddLevel(level *Level) CharacterModifier {
 
 func AddGains(magic bool, gains *Gains) CharacterModifier {
 	return func(character *Character) func() {
-		character.profits.gains(magic).Add(gains)
+		character.Profits.Gains(magic).Add(gains)
 		return func() {
-			character.profits.gains(magic).Del(gains)
+			character.Profits.Gains(magic).Del(gains)
 		}
 	}
 }
 
 func AddGeneral(incr *general.General) CharacterModifier {
 	return func(character *Character) func() {
-		character.profits.general.Add(incr)
+		character.Profits.General.Add(incr)
 		return func() {
-			character.profits.general.Del(incr)
+			character.Profits.General.Del(incr)
 		}
 	}
 }
 
 func AddNatureAttack(incr *map[nature.Nature]float64) CharacterModifier {
 	return func(character *Character) func() {
-		character.profits.AddNatureAttack(incr)
+		character.Profits.AddNatureAttack(incr)
 		return func() {
-			character.profits.DelNatureAttack(incr)
+			character.Profits.DelNatureAttack(incr)
 		}
 	}
 }
 
 func AddRaceDamage(incr *map[race.Race]float64) CharacterModifier {
 	return func(character *Character) func() {
-		character.profits.AddRaceDamage(incr)
+		character.Profits.AddRaceDamage(incr)
 		return func() {
-			character.profits.DelRaceDamage(incr)
+			character.Profits.DelRaceDamage(incr)
 		}
 	}
 }
 
 func AddRaceResist(incr *map[race.Race]float64) CharacterModifier {
 	return func(character *Character) func() {
-		character.profits.AddRaceResist(incr)
+		character.Profits.AddRaceResist(incr)
 		return func() {
-			character.profits.DelRaceResist(incr)
+			character.Profits.DelRaceResist(incr)
 		}
 	}
 }
 
 func AddShapeDamage(incr *map[shape.Shape]float64) CharacterModifier {
 	return func(character *Character) func() {
-		character.profits.AddShapeDamage(incr)
+		character.Profits.AddShapeDamage(incr)
 		return func() {
-			character.profits.DelShapeDamage(incr)
+			character.Profits.DelShapeDamage(incr)
 		}
 	}
 }
 
 func AddShapeResist(incr *map[shape.Shape]float64) CharacterModifier {
 	return func(character *Character) func() {
-		character.profits.AddShapeResist(incr)
+		character.Profits.AddShapeResist(incr)
 		return func() {
-			character.profits.DelShapeResist(incr)
+			character.Profits.DelShapeResist(incr)
 		}
 	}
 }
 
 func AddNatureDamage(incr *map[nature.Nature]float64) CharacterModifier {
 	return func(character *Character) func() {
-		character.profits.AddNatureDamage(incr)
+		character.Profits.AddNatureDamage(incr)
 		return func() {
-			character.profits.DelNatureDamage(incr)
+			character.Profits.DelNatureDamage(incr)
 		}
 	}
 }
 
 func AddNatureResist(incr *map[nature.Nature]float64) CharacterModifier {
 	return func(character *Character) func() {
-		character.profits.AddNatureResist(incr)
+		character.Profits.AddNatureResist(incr)
 		return func() {
-			character.profits.DelNatureResist(incr)
+			character.Profits.DelNatureResist(incr)
 		}
 	}
 }
 
 func AddAbnormalResist(incr *map[abnormal.Abnormal]float64) CharacterModifier {
 	return func(character *Character) func() {
-		character.profits.AddAbnormalResist(incr)
+		character.Profits.AddAbnormalResist(incr)
 		return func() {
-			character.profits.DelAbnormalResist(incr)
+			character.Profits.DelAbnormalResist(incr)
 		}
 	}
 }
@@ -213,7 +221,7 @@ func (c *Character) QualityAttack(magic, remote bool) int {
 
 //装备攻击
 func (c *Character) EquipmentAttack(magic bool) (atk float64) {
-	atk = c.profits.gains(magic).Attack
+	atk = c.Profits.Gains(magic).Attack
 	if !magic {
 		//装备物理攻击 = (装备，强化，附魔，卡片，头饰，祈祷，buff等合计)+ BaseLvAtkRate*人物等级
 		atk += float64(c.job.BaseLvAtkRate() * c.level.Base)
@@ -228,7 +236,7 @@ func (c *Character) Attack(magic, remote bool) float64 {
 
 //面板攻击 = 攻击 * (1 + 攻击%)
 func (c *Character) PanelAttack(magic, remote bool) float64 {
-	return c.Attack(magic, remote) * (1 + c.profits.gains(magic).AttackPer/100)
+	return c.Attack(magic, remote) * (1 + c.Profits.Gains(magic).AttackPer/100)
 }
 
 //素质防御
@@ -238,7 +246,7 @@ func (c *Character) QualityDefence(magic bool) int {
 
 //装备防御
 func (c *Character) EquipmentDefence(magic bool) float64 {
-	return c.profits.gains(magic).Defence
+	return c.Profits.Gains(magic).Defence
 }
 
 //防御 = 素质防御 + 装备防御
@@ -248,7 +256,7 @@ func (c *Character) Defence(magic bool) float64 {
 
 //面板防御 = 防御 * (1 + 防御%)
 func (c *Character) PanelDefence(magic bool) float64 {
-	return c.Defence(magic) * (1 + c.profits.gains(magic).DefencePer/100)
+	return c.Defence(magic) * (1 + c.Profits.Gains(magic).DefencePer/100)
 }
 
 func (c *Character) AttackWithWeapon(weapon weapon.Weapon) *attack.Attack {
@@ -256,29 +264,29 @@ func (c *Character) AttackWithWeapon(weapon weapon.Weapon) *attack.Attack {
 }
 
 func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
-	gains, targetGains := c.profits.gains(magic), target.profits.gains(magic)
+	gains, targetGains := c.Profits.Gains(magic), target.Profits.Gains(magic)
 
 	//finalAttack
-	rate = 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
+	rate = 1 + c.Profits.shapeDamage[target.shape]/100 - target.Profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
 	rate *= skillNature.Restraint(target.nature)                                                 //*属性克制
-	rate *= 1 + c.profits.natureAttack[skillNature]/100                                          //*(1+属性攻击%)
-	rate *= 1 + c.profits.natureDamage[target.nature]/100                                        //*(1+属性魔物增伤%)
-	rate *= 1 - target.profits.natureResist[skillNature]/100                                     //*(1-属性减伤%)
-	//rate *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100    //*(1+种族增伤%-种族减伤%)
-	rate *= 1 + c.profits.raceDamage[target.race]/100 //*(1+种族增伤%)
-	rate *= 1 - target.profits.raceResist[c.race]/100 //*(1-种族减伤%)
+	rate *= 1 + c.Profits.natureAttack[skillNature]/100                                          //*(1+属性攻击%)
+	rate *= 1 + c.Profits.natureDamage[target.nature]/100                                        //*(1+属性魔物增伤%)
+	rate *= 1 - target.Profits.natureResist[skillNature]/100                                     //*(1-属性减伤%)
+	//rate *= 1 + c.Profits.raceDamage[target.race]/100 - target.Profits.raceResist[c.race]/100    //*(1+种族增伤%-种族减伤%)
+	rate *= 1 + c.Profits.raceDamage[target.race]/100 //*(1+种族增伤%)
+	rate *= 1 - target.Profits.raceResist[c.race]/100 //*(1-种族减伤%)
 	if target.types.IsPlayer() {
 		//TODO *(1+玩家增伤%)
 	} else if target.types.IsBoss() {
-		rate *= 1 + c.profits.general.MVP/100 //*(1+MVP增伤%)
+		rate *= 1 + c.Profits.General.MVP/100 //*(1+MVP增伤%)
 	} else {
-		rate *= 1 + c.profits.general.NoMVP/100 //*(1+普通魔物增伤%)
+		rate *= 1 + c.Profits.General.NoMVP/100 //*(1+普通魔物增伤%)
 	}
 
 	//baseDamage
-	rate *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+穿刺%-伤害减免%)
+	rate *= 1 + c.Profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+穿刺%-伤害减免%)
 	rate *= 1 + gains.Damage/100 + gains.NearDamage/100                                 //*(1+伤害加成%+近战伤害%)
-	rate *= 1 + c.profits.general.Skill/100                                             //*(1+技能伤害加成%)
+	rate *= 1 + c.Profits.General.Skill/100                                             //*(1+技能伤害加成%)
 
 	//finalDamage
 
@@ -299,23 +307,23 @@ func (c *Character) FinalDamage(target *Character, attack *attack.Attack) (damag
 
 //基础伤害
 func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage float64) {
-	gains, targetGains := c.profits.gains(attack.IsMagic()), target.profits.gains(attack.IsMagic())
+	gains, targetGains := c.Profits.Gains(attack.IsMagic()), target.Profits.Gains(attack.IsMagic())
 	damage = c.finalAttack(target, attack) //最终物攻/最终魔攻
 	// 物理最终减伤系数=1-(1+装备穿刺+物理穿刺-物理减免)*物理技能伤害减免
-	damage *= 1 + c.profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+穿刺%-伤害减免%)
+	damage *= 1 + c.Profits.weaponSpikes()/100 + gains.Spike/100 - targetGains.Resist/100 //*(1+装备穿刺%+穿刺%-伤害减免%)
 	if attack.IsMagic() {
 		damage *= target.defenceMultiplier(c, attack)                     //*魔防乘数
 		damage += gains.Refine                                            //+精炼魔攻
 		damage *= attack.SkillRate()                                      //*技能倍率
 		damage *= 1 + gains.Damage                                        //*(1+魔伤加成)
 		damage *= attack.GetNature().Restraint(target.nature)             //*属性克制
-		damage *= 1 - target.profits.natureResist[attack.GetNature()]/100 //*(1-属性减伤)
+		damage *= 1 - target.Profits.natureResist[attack.GetNature()]/100 //*(1-属性减伤)
 		damage -= float64(target.QualityDefence(true))                    //-素质魔防
 		damage -= float64(target.QualityDefence(false))                   //-素质物防/2
 	} else {
 		if attack.IsCritical() && attack.IsOrdinary() { //普攻暴击
 			damage += gains.Refine
-			damage *= 1.5 + c.profits.general.CriticalDamage/100 - target.profits.general.CriticalDamageResist/100 //*(1+暴伤%-爆伤减免%)
+			damage *= 1.5 + c.Profits.General.CriticalDamage/100 - target.Profits.General.CriticalDamageResist/100 //*(1+暴伤%-爆伤减免%)
 		} else { // 普攻未暴击或技能
 			damage *= target.defenceMultiplier(c, attack)   //*物防乘数
 			damage += gains.Refine                          //+精炼物攻
@@ -328,9 +336,9 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 			damage *= 1 + gains.Damage/100 + gains.NearDamage/100 - targetGains.NearResist/100 //*(1+物伤加成%+近战物理伤害%-近战伤害减免%)
 		}
 		if attack.IsOrdinary() {
-			damage *= 1 + c.profits.general.OrdinaryDamage/100 - target.profits.general.OrdinaryResist/100 //*(1+普攻伤害加成%-普攻伤害减免%)
+			damage *= 1 + c.Profits.General.OrdinaryDamage/100 - target.Profits.General.OrdinaryResist/100 //*(1+普攻伤害加成%-普攻伤害减免%)
 		} else {
-			damage *= 1 + c.profits.general.Skill/100 - target.profits.general.SkillResist/100 //*(1+技能伤害加成%-技能伤害减免%)
+			damage *= 1 + c.Profits.General.Skill/100 - target.Profits.General.SkillResist/100 //*(1+技能伤害加成%-技能伤害减免%)
 		}
 	}
 
@@ -343,7 +351,7 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 	if attack.IsOrdinary() {
 		if c.job >= job.Archer && c.job <= job.Hunter4 {
 			damage += float64(c.Quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
-			damage += float64(c.profits.general.Ordinary)                                    //TODO 这里存疑普攻攻击力
+			damage += float64(c.Profits.General.Ordinary)                                    //TODO 这里存疑普攻攻击力
 		} else if attack.IsCritical() {
 			damage += float64(c.Quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
 		}
@@ -351,35 +359,35 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 			damage += float64(200 + c.Quality.Dex*5) //猎人进阶二转技能：元素箭矢20级被动效果
 		}
 	}
-	damage *= 1 + c.profits.gains(attack.IsMagic()).AttackPer/100 //*(1+攻击%)
+	damage *= 1 + c.Profits.Gains(attack.IsMagic()).AttackPer/100 //*(1+攻击%)
 
 	if attack.IsMagic() {
-		damage += float64(c.Quality.Int) * c.profits.gains(true).AttackPer / 100 //+智力*魔法攻击%
+		damage += float64(c.Quality.Int) * c.Profits.Gains(true).AttackPer / 100 //+智力*魔法攻击%
 	} else {
 		damage *= attack.GetWeapon().Restraint(target.shape)                                            //*武器体型修正
-		damage *= 1 + c.profits.shapeDamage[target.shape]/100 - target.profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
+		damage *= 1 + c.Profits.shapeDamage[target.shape]/100 - target.Profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
 		damage *= attack.GetNature().Restraint(target.nature)                                           //*属性克制
-		damage *= 1 + c.profits.natureAttack[attack.GetNature()]/100                                    //*(1+属性攻击%)
-		damage *= 1 + c.profits.natureDamage[target.nature]/100                                         //*(1+属性魔物增伤%)
-		damage *= 1 - target.profits.natureResist[attack.GetNature()]/100                               //*(1-属性减伤%)
+		damage *= 1 + c.Profits.natureAttack[attack.GetNature()]/100                                    //*(1+属性攻击%)
+		damage *= 1 + c.Profits.natureDamage[target.nature]/100                                         //*(1+属性魔物增伤%)
+		damage *= 1 - target.Profits.natureResist[attack.GetNature()]/100                               //*(1-属性减伤%)
 	}
 	damage += float64(c.QualityAttack(attack.IsMagic(), attack.IsRemote())) //+素质攻击
-	//damage *= 1 + c.profits.raceDamage[target.race]/100 - target.profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
-	damage *= 1 + c.profits.raceDamage[target.race]/100 //*(1+种族增伤%)
-	damage *= 1 - target.profits.raceResist[c.race]/100 //*(1-种族减伤%)
+	//damage *= 1 + c.Profits.raceDamage[target.race]/100 - target.Profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
+	damage *= 1 + c.Profits.raceDamage[target.race]/100 //*(1+种族增伤%)
+	damage *= 1 - target.Profits.raceResist[c.race]/100 //*(1-种族减伤%)
 	if target.types.IsPlayer() {
 		//TODO *(1+玩家增伤%)
 	} else if target.types.IsBoss() {
-		damage *= 1 + c.profits.general.MVP/100 //*(1+MVP增伤%)
+		damage *= 1 + c.Profits.General.MVP/100 //*(1+MVP增伤%)
 	} else {
-		damage *= 1 + c.profits.general.NoMVP/100 //*(1+普通魔物增伤%)
+		damage *= 1 + c.Profits.General.NoMVP/100 //*(1+普通魔物增伤%)
 	}
 	return
 }
 
 //最终物防/最终魔防
 func (c *Character) finalDefence(target *Character, attack *attack.Attack) (defence float64) {
-	gain, targetGain := c.profits.gains(attack.IsMagic()), target.profits.gains(attack.IsMagic())
+	gain, targetGain := c.Profits.Gains(attack.IsMagic()), target.Profits.Gains(attack.IsMagic())
 	defence = c.EquipmentDefence(attack.IsMagic()) //装备防御
 	if attack.IsMagic() {
 		//TODO 最终魔防
@@ -404,7 +412,7 @@ func (c *Character) defenceMultiplier(target *Character, attack *attack.Attack) 
 }
 
 func (c *Character) detectAttackByPanel(magic, remote bool, expect float64) (optimumAttack int, optimumPanel float64) {
-	gains := c.profits.gains(magic)
+	gains := c.Profits.Gains(magic)
 	for min, max, current := 0, 100000, int(gains.Attack); ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
 		gains.Attack = float64(current)
 		actual := c.PanelAttack(magic, remote)
@@ -430,7 +438,7 @@ func (c *Character) detectAttackByPanel(magic, remote bool, expect float64) (opt
 }
 
 func (c *Character) detectDefenceByPanel(magic bool, expect float64) (optimumDefence int, optimumPanel float64) {
-	gains := c.profits.gains(magic)
+	gains := c.Profits.Gains(magic)
 	for min, max, current := 0, 100000, int(gains.Defence); ; current = int(math.Floor(float64(min+max)/2.0 + 0.5)) {
 		gains.Defence = float64(current)
 		actual := c.PanelDefence(magic)
@@ -492,7 +500,7 @@ func (c *Character) UnmarshalYAML(value *yaml.Node) (err error) {
 						return
 					}
 				case "profits":
-					if err = sub.Decode(&c.profits); err != nil {
+					if err = sub.Decode(&c.Profits); err != nil {
 						return
 					}
 				case "detectByPanel":
