@@ -956,6 +956,18 @@ func initModifier() {
 			(*percentageBuffModifiers)[fmt.Sprintf("%s抗性", _abnormal)] = func(val float64) model.CharacterModifier {
 				return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: val})
 			}
+			(*buffModifiers)[fmt.Sprintf("避免陷入%s状态", _abnormal)] = func(float64) model.CharacterModifier {
+				return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: 100})
+			}
+			(*buffModifiers)[fmt.Sprintf("避免陷入%s的状态", _abnormal)] = func(float64) model.CharacterModifier {
+				return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: 100})
+			}
+			(*buffModifiers)[fmt.Sprintf("%s免疫", _abnormal)] = func(float64) model.CharacterModifier {
+				return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: 100})
+			}
+			(*buffModifiers)[fmt.Sprintf("不会陷入%s效果", _abnormal)] = func(float64) model.CharacterModifier {
+				return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: 100})
+			}
 		}
 	}
 }
@@ -964,6 +976,8 @@ func (b *Buff) find(key string, val float64, percentage bool) (model.CharacterMo
 	if strings.Index(key, "恢复") >= 0 {
 		return nil, true
 	} else if strings.Index(key, "消耗") >= 0 {
+		return nil, true
+	} else if strings.Index(key, "不包括自身") >= 0 {
 		return nil, true
 	} else if percentage {
 		if fn, exist := (*percentageBuffModifiers)[key]; exist {

@@ -1,10 +1,12 @@
 package romel
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ro/model"
 	"github.com/pkg/errors"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 )
 
 type Buff struct {
@@ -70,7 +72,7 @@ func (b *Buff) parseBuff(effect string) ([]model.CharacterModifier, error) {
 	for _, line := range strings.Split(effect, "\n") {
 		for _, item := range strings.Split(line, "；") {
 			if ms, err := b.parseItem(item); err != nil {
-				return nil, err
+				return nil, errors.Wrapf(err, "%s", item)
 			} else if len(ms) > 0 {
 				modifiers = append(modifiers, ms...)
 			}
@@ -80,41 +82,25 @@ func (b *Buff) parseBuff(effect string) ([]model.CharacterModifier, error) {
 }
 
 func (b *Buff) parseItem(item string) ([]model.CharacterModifier, error) {
-	BuffTotal += 1
-	if match, modifiers := b.parseCombineItem(item); match {
-		return modifiers, nil
-	} else if match, modifiers := b.parsePvpItem(item); match {
-		return modifiers, nil
-	} else if match, modifiers := b.parseTowerItem(item); match {
-		return modifiers, nil
-	} else if match, modifiers, err := b.parsePerRefineItem(item); err != nil {
-		return nil, err
-	} else if match {
-		return modifiers, nil
-	} else if match, modifiers, err := b.parsePerIntensifyItem(item); err != nil {
-		return nil, err
-	} else if match {
-		return modifiers, nil
-	} else if match, modifiers, err := b.parseRefineItem(item); err != nil {
-		return nil, err
-	} else if match {
-		return modifiers, nil
-	} else if match, modifiers, err := b.parsePetItem(item); err != nil {
-		return nil, err
-	} else if match {
-		return modifiers, nil
-	} else if match, modifiers, err := b.parseSkillItem(item); err != nil {
-		return nil, err
-	} else if match {
-		return modifiers, nil
-	} else if match, modifiers, err := b.parseConditionItem(item); err != nil {
-		return nil, err
-	} else if match {
-		return modifiers, nil
-	} else if match, modifiers, err := b.parsePerQualityItem(item); err != nil {
-		return nil, err
-	} else if match {
-		return modifiers, nil
+	BuffTotal++
+	if b.parseIgnoreItem(item) {
+		BuffIgnore++
+		return nil, nil
+	} else if match, modifiers, err := b.parsePerRefineItem(item); match || err != nil {
+		return modifiers, err
+	} else if match, modifiers, err := b.parsePerIntensifyItem(item); match || err != nil {
+		return modifiers, err
+	} else if match, modifiers, err := b.parseRefineItem(item); match || err != nil {
+		return modifiers, err
+	} else if match, modifiers, err := b.parsePetItem(item); match || err != nil {
+		return modifiers, err
+	} else if b.parseSkillItem(item) {
+		BuffIgnore++
+		return nil, nil
+	} else if match, modifiers, err := b.parseConditionItem(item); match || err != nil {
+		return modifiers, err
+	} else if match, modifiers, err := b.parsePerQualityItem(item); match || err != nil {
+		return modifiers, err
 	} else if match, modifiers, err := b.parseEffects(item, 1); err != nil {
 		BuffError++
 		//TODO 处理异常
@@ -133,34 +119,23 @@ func (b *Buff) parseItem(item string) ([]model.CharacterModifier, error) {
 	}
 }
 
-func (b *Buff) parseCombineItem(item string) (bool, []model.CharacterModifier) {
+func (b *Buff) parseIgnoreItem(item string) bool {
+	if strings.Index(item, "竞技场模式") >= 0 {
+		return true
+	} else if strings.Index(item, "达纳托斯之塔") >= 0 {
+		return true
+	} else if strings.Index(item, "野外地图") >= 0 {
+		return true
+	} else if b.parseCombineItem(item) {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (b *Buff) parseCombineItem(item string) bool {
 	// 忽略装备组合增益
-	if strings.Index(item, "】+【") > 0 || strings.Index(item, "）+【") > 0 {
-		BuffIgnore++
-		return true, nil
-	} else {
-		return false, nil
-	}
-}
-
-func (b *Buff) parsePvpItem(item string) (bool, []model.CharacterModifier) {
-	// 忽略竞技场模式
-	if strings.HasPrefix(item, "竞技场模式") {
-		BuffIgnore++
-		return true, nil
-	} else {
-		return false, nil
-	}
-}
-
-func (b *Buff) parseTowerItem(item string) (bool, []model.CharacterModifier) {
-	// 忽略竞技场模式
-	if strings.HasPrefix(item, "达纳托斯之塔") {
-		BuffIgnore++
-		return true, nil
-	} else {
-		return false, nil
-	}
+	return strings.Index(item, "】+【") > 0 || strings.Index(item, "）+【") > 0
 }
 
 func (b *Buff) parsePerRefineItem(item string) (bool, []model.CharacterModifier, error) {
@@ -199,7 +174,11 @@ func (b *Buff) parsePerRefineItem(item string) (bool, []model.CharacterModifier,
 		} else {
 			rate = 15
 		}
-		if ms, err := b.parseItem(condition); err != nil {
+		if match, ms, err := b.parseRefineItem(condition); err != nil {
+			return false, nil, err
+		} else if match {
+			modifiers = append(modifiers, ms...)
+		} else if _, ms, err := b.parseEffects(condition, 1); err != nil {
 			return false, nil, err
 		} else if len(ms) > 0 {
 			modifiers = append(modifiers, ms...)
@@ -214,22 +193,18 @@ func (b *Buff) parsePerRefineItem(item string) (bool, []model.CharacterModifier,
 }
 
 func (b *Buff) parsePerIntensifyItem(item string) (bool, []model.CharacterModifier, error) {
-	condition, effect, rate := "", "", 1
+	effect, rate := "", 1
 	if idx := strings.Index(item, "每强化+1"); idx >= 0 {
-		rate, condition, effect = 170, strings.TrimSuffix(item[:idx], "，"), strings.TrimPrefix(item[idx+11:], "，")
+		rate, effect = 170, strings.TrimPrefix(item[idx+11:], "，")
 	} else if idx := strings.Index(item, "每强化10级"); idx >= 0 {
-		rate, condition, effect = 17, strings.TrimSuffix(item[:idx], "，"), strings.TrimPrefix(item[idx+14:], "，")
+		rate, effect = 17, strings.TrimPrefix(item[idx+14:], "，")
 	} else {
 		return false, nil, nil
 	}
-	if len(condition) > 0 {
-		if _, modifiers, err := b.parseEffects(effect, rate); err != nil {
-			return false, nil, err
-		} else {
-			return true, modifiers, nil
-		}
+	if _, modifiers, err := b.parseEffects(effect, rate); err != nil {
+		return false, nil, err
 	} else {
-		return false, nil, errors.Errorf("parsePerIntensifyItem: %s", item)
+		return true, modifiers, nil
 	}
 }
 
@@ -261,20 +236,29 @@ func (b *Buff) parseRefineWithCondition(refineStr string) (int, string, error) {
 }
 
 func (b *Buff) parseRefineItem(item string) (bool, []model.CharacterModifier, error) {
+	refineStr, effectStr := "", ""
 	if cap := b.cap(item, "精炼+", "精炼值+", "精炼等级+", "精炼等级达到+", "精炼至+", "当精炼+", "当精炼到+",
 		"武器精炼+", "当盔甲精炼+", "当武器精炼+", "当副手精炼+"); cap <= 0 {
 		return false, nil, nil
-	} else if idx := strings.Index(item, "时"); idx < 0 {
-		return false, nil, nil
-	} else if refineStr, effectStr := item[cap:idx], strings.TrimPrefix(item[idx+3:], "，"); strings.Index(refineStr, "、") >= 0 {
-		return b.parseRefineItemSplit(refineStr, effectStr, "、")
+	} else if idx := strings.Index(item, "时"); idx > 0 {
+		refineStr, effectStr = item[cap:idx], strings.TrimPrefix(item[idx+3:], "，")
+	} else if idx := strings.Index(item, "，"); idx > 0 {
+		refineStr, effectStr = item[cap:idx], item[idx+3:]
+	} else {
+		return false, nil, errors.Errorf("parseRefineItem: %s", item)
+	}
+	if strings.Index(refineStr, "、") >= 0 {
+		modifiers, err := b.parseRefineItemSplit(refineStr, effectStr, "、")
+		return err == nil, modifiers, err
 	} else if strings.Index(refineStr, "，") >= 0 {
-		return b.parseRefineItemSplit(refineStr, effectStr, "，")
+		modifiers, err := b.parseRefineItemSplit(refineStr, effectStr, "，")
+		return err == nil, modifiers, err
 	} else if strings.Index(refineStr, ",") >= 0 {
-		return b.parseRefineItemSplit(refineStr, effectStr, ",")
+		modifiers, err := b.parseRefineItemSplit(refineStr, effectStr, ",")
+		return err == nil, modifiers, err
 	} else if refine, condition, err := b.parseRefineWithCondition(refineStr); err != nil {
 		return false, nil, errors.Wrapf(err, "parseRefineItem: %s", item)
-	} else if _, modifiers, err := b.parseRefineEffects(refine, effectStr); err != nil {
+	} else if modifiers, err := b.parseRefineEffects(refine, effectStr); err != nil {
 		return false, nil, errors.Wrapf(err, "parseRefineItem: %s", item)
 	} else if len(modifiers) == 0 || len(condition) == 0 {
 		return true, modifiers, nil
@@ -284,11 +268,11 @@ func (b *Buff) parseRefineItem(item string) (bool, []model.CharacterModifier, er
 	}
 }
 
-func (b *Buff) parseRefineItemSplit(refineStr, effectStr, split string) (bool, []model.CharacterModifier, error) {
+func (b *Buff) parseRefineItemSplit(refineStr, effectStr, split string) ([]model.CharacterModifier, error) {
 	var refines []int
 	for _, refineStrSplit := range strings.Split(refineStr, split) {
 		if refine, err := strconv.Atoi(refineStrSplit); err != nil {
-			return false, nil, errors.WithStack(err)
+			return nil, errors.WithStack(err)
 		} else {
 			refines = append(refines, refine)
 		}
@@ -310,11 +294,11 @@ func (b *Buff) parseRefineItemSplit(refineStr, effectStr, split string) (bool, [
 	} else if idx := strings.Index(effectStr, "分别提升"); idx >= 0 {
 		return b.parseRefineSplit(effectStr[:idx], "+"+effectStr[idx+12:], split, refines...)
 	} else {
-		return false, nil, errors.Errorf("parseRefineItemSplit[%s] -- %d%s\n", split, refines, effectStr)
+		return nil, errors.Errorf("parseRefineItemSplit[%s]: %d%s", split, refines, effectStr)
 	}
 }
 
-func (b *Buff) parseRefineSplit(base, effectStr, split string, refines ...int) (bool, []model.CharacterModifier, error) {
+func (b *Buff) parseRefineSplit(base, effectStr, split string, refines ...int) ([]model.CharacterModifier, error) {
 	prefix := ""
 	if strings.HasPrefix(effectStr, "+") {
 		prefix = "+"
@@ -322,28 +306,28 @@ func (b *Buff) parseRefineSplit(base, effectStr, split string, refines ...int) (
 		prefix = "-"
 	}
 	if effects := strings.Split(effectStr, split); len(effects) != len(refines) {
-		return false, nil, errors.Errorf("count mismatch: [%d]%d --> [%d]%s", len(refines), refines, len(effects), effects)
+		return nil, errors.Errorf("count mismatch: [%d]%d --> [%d]%s", len(refines), refines, len(effects), effects)
 	} else {
 		var modifiers []model.CharacterModifier
 		for idx, refine := range refines {
-			if _, sub, err := b.parseRefineEffects(refine, base+prefix+strings.TrimPrefix(effects[idx], prefix)); err != nil {
-				return false, nil, err
+			if sub, err := b.parseRefineEffects(refine, base+prefix+strings.TrimPrefix(effects[idx], prefix)); err != nil {
+				return nil, err
 			} else if len(sub) > 0 {
 				modifiers = append(modifiers, sub...)
 			}
 		}
-		return true, modifiers, nil
+		return modifiers, nil
 	}
 }
 
-func (b *Buff) parseRefineEffects(refine int, effectStr string) (bool, []model.CharacterModifier, error) {
+func (b *Buff) parseRefineEffects(refine int, effectStr string) ([]model.CharacterModifier, error) {
 	if _, modifiers, err := b.parseEffects(effectStr, 1); err != nil {
-		return false, nil, err
+		return nil, err
 	} else if len(modifiers) == 0 {
-		return true, nil, nil
+		return nil, nil
 	} else {
 		// TODO 限制精炼等级
-		return true, modifiers, nil
+		return modifiers, nil
 	}
 }
 
@@ -359,64 +343,51 @@ func (b *Buff) parsePetItem(item string) (bool, []model.CharacterModifier, error
 	} else if strings.Index(item, "对敌方") >= 0 {
 		BuffIgnore++
 		return true, nil, nil
-	} else if strings.Index(item, "持续") >= 0 || strings.Index(item, "秒内") >= 0 {
-		BuffIgnore++
-		return true, nil, nil
-	} else if strings.Index(item, "几率") >= 0 || strings.Index(item, "机率") >= 0 ||
-		strings.Index(item, "概率") >= 0 {
-		BuffIgnore++
-		return true, nil, nil
-	} else if strings.Index(item, "每隔") >= 0 {
-		BuffIgnore++
-		return true, nil, nil
 	} else if strings.HasPrefix(item, "增加宠物和主人") {
-		return b.parsePetEffects(item[21:], true)
+		modifiers, err := b.parsePetEffects(item[21:], true)
+		return err == nil, modifiers, err
 	} else if strings.HasPrefix(item, "减少宠物和主人") {
-		return b.parsePetEffects(item[21:], false)
+		modifiers, err := b.parsePetEffects(item[21:], false)
+		return err == nil, modifiers, err
 	} else if strings.HasPrefix(item, "宠物和主人") {
-		return b.parsePetEffects(item[15:], true)
+		modifiers, err := b.parsePetEffects(item[15:], true)
+		return err == nil, modifiers, err
 	} else if strings.HasPrefix(item, "主人和宠物") {
-		return b.parsePetEffects(item[15:], true)
+		modifiers, err := b.parsePetEffects(item[15:], true)
+		return err == nil, modifiers, err
 	} else if strings.HasPrefix(item, "主人") {
-		return b.parsePetEffects(item[6:], true)
+		modifiers, err := b.parsePetEffects(item[6:], true)
+		return err == nil, modifiers, err
 	} else if strings.HasPrefix(item, "增加主人") {
-		return b.parsePetEffects(item[12:], true)
+		modifiers, err := b.parsePetEffects(item[12:], true)
+		return err == nil, modifiers, err
 	} else {
 		BuffIgnore++
 		return true, nil, nil
 	}
 }
 
-func (b *Buff) parseSkillItem(item string) (bool, []model.CharacterModifier, error) {
+func (b *Buff) parseSkillItem(item string) bool {
 	if strings.Index(item, "【") < 0 {
-		return false, nil, nil
+		return false
 	} else if strings.HasPrefix(item, "【") || strings.HasPrefix(item, "使【") {
-		BuffIgnore++
-		return true, nil, nil
+		return true
 	} else if strings.HasPrefix(item, "可使用【") || strings.HasPrefix(item, "可以使用") {
-		BuffIgnore++
-		return true, nil, nil
+		return true
 	} else if strings.HasPrefix(item, "可使用技能【") || strings.HasPrefix(item, "技能【") {
-		BuffIgnore++
-		return true, nil, nil
+		return true
 	} else if strings.HasPrefix(item, "获得技能【") || strings.HasPrefix(item, "获得被动技能【") {
-		BuffIgnore++
-		return true, nil, nil
+		return true
 	} else if strings.HasPrefix(item, "习得【") || strings.Index(item, "使用【") >= 0 {
-		BuffIgnore++
-		return true, nil, nil
+		return true
 	} else if strings.Index(item, "施放【") >= 0 || strings.Index(item, "触发【") >= 0 {
-		BuffIgnore++
-		return true, nil, nil
+		return true
 	} else if strings.Index(item, "发动【") >= 0 || strings.Index(item, "施展【") >= 0 {
-		BuffIgnore++
-		return true, nil, nil
+		return true
 	} else if strings.Index(item, "获得【") >= 0 || strings.Index(item, "释放【") >= 0 {
-		BuffIgnore++
-		return true, nil, nil
+		return true
 	} else {
-		BuffIgnore++
-		return true, nil, nil
+		return true
 	}
 }
 
@@ -465,6 +436,7 @@ func (b *Buff) parseConditionItem(item string) (bool, []model.CharacterModifier,
 		} else if strings.HasSuffix(condition, "族装备时") || strings.HasSuffix(condition, "系装备时") {
 		} else {
 			BuffIgnore++
+			//fmt.Printf("\tparseConditionItem: [%s]%s -- %s\n", condition, effect, item)
 			//TODO 解析条件并忽略
 			return true, modifiers, nil
 		}
@@ -478,30 +450,34 @@ func (b *Buff) parseConditionItem(item string) (bool, []model.CharacterModifier,
 	return true, modifiers, nil
 }
 
+func (b *Buff) perQuality(item, prefix string, splits ...string) (bool, string, string) {
+	for _, split := range splits {
+		if idxSplit := strings.Index(item, split); idxSplit > 0 {
+			if idxStart := strings.Index(item, prefix); idxStart < 0 || idxStart >= idxSplit {
+				continue
+			} else {
+				quality, effect := item[idxStart+len(prefix):idxSplit], item[idxSplit+len(split):]
+				if r, _ := utf8.DecodeRuneInString(quality); r >= '0' && r <= '9' {
+					return true, quality, effect
+				} else {
+					continue
+				}
+			}
+		}
+	}
+	return false, "", ""
+}
+
 func (b *Buff) parsePerQualityItem(item string) (bool, []model.CharacterModifier, error) {
 	if strings.Index(item, "每") < 0 {
 		return false, nil, nil
-	} else if idx := strings.Index(item, "会为装备者提供"); idx > 0 {
-		if idxStart := strings.Index(item, "每"); idxStart >= 0 && idxStart < idx {
-			return b.parsePerQualityEffects(item[idxStart+3:idx], item[idx+21:])
-		} else {
-			return false, nil, errors.Errorf("parsePerQualityItem: %s", item)
-		}
-	} else if idx := strings.Index(item, "额外增加自身"); idx > 0 {
-		if idxStart := strings.Index(item, "每"); idxStart >= 0 && idxStart < idx {
-			return b.parsePerQualityEffects(item[idxStart+3:idx], item[idx+18:])
-		} else {
-			return false, nil, errors.Errorf("parsePerQualityItem: %s", item)
-		}
-	} else if idx := strings.Index(item, "额外增加"); idx > 0 {
-		if idxStart := strings.Index(item, "每"); idxStart >= 0 && idxStart < idx {
-			return b.parsePerQualityEffects(item[idxStart+3:idx], item[idx+12:])
-		} else {
-			return false, nil, errors.Errorf("parsePerQualityItem: %s", item)
-		}
+	} else if match, quality, effect := b.perQuality(item, "每", "会为装备者提供", "额外增加自身",
+		"额外增加", "额外带来", "额外提高", "增加自身", "增加", "加"); !match {
+		//fmt.Printf("\tparsePerQualityItem: %s\n", item)
+		return false, nil, nil
+	} else {
+		return b.parsePerQualityEffects(quality, effect)
 	}
-	//fmt.Printf("\tparsePerQualityItem: %s\n", item)
-	return false, nil, nil
 }
 
 func (b *Buff) parsePerQualityEffects(quality, effectStr string) (bool, []model.CharacterModifier, error) {
@@ -534,6 +510,29 @@ func (b *Buff) parsePerQualityEffect(quality, effectStr string) (model.Character
 	} else {
 		return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
 	}
+
+	max := 0
+	if after, brackets := b.inBrackets(effect); len(brackets) > 0 {
+		effect = after
+		if strings.Index(brackets[0], "额外") > 0 {
+			switch brackets[0] {
+			case "最多额外增加1500点物理攻击":
+				max = 1500
+			case "额外最多15%":
+				max = 15
+			default:
+				return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
+			}
+		}
+	}
+	fmt.Printf("\tparsePerQualityEffect: [%t][%s]%s\n", percentage, val, effect)
+	if percentage {
+		fmt.Printf("\t\t%s+%s%%\n", effect, val)
+	} else {
+		fmt.Printf("\t\t%s+%s\n", effect, val)
+	}
+
+	//TODO 使用b.parseEffect()替代b.find()
 	if floatVal, err := strconv.ParseFloat(val, 64); err != nil {
 		return nil, errors.WithStack(err)
 	} else if modifier, exist := b.find(effect, floatVal, percentage); !exist || modifier == nil {
@@ -545,57 +544,69 @@ func (b *Buff) parsePerQualityEffect(quality, effectStr string) (model.Character
 			qualityStr := quality[idx+3:]
 			switch qualityStr {
 			case "力量":
-				return model.Rate(modifier, func(character *model.Character) int {
+				return model.Rate(modifier, max, func(character *model.Character) int {
 					return character.Quality.Str / num
 				}), nil
 			case "敏捷":
-				return model.Rate(modifier, func(character *model.Character) int {
+				return model.Rate(modifier, max, func(character *model.Character) int {
 					return character.Quality.Agi / num
 				}), nil
 			case "智力", "智力可":
-				return model.Rate(modifier, func(character *model.Character) int {
+				return model.Rate(modifier, max, func(character *model.Character) int {
 					return character.Quality.Int / num
 				}), nil
 			case "灵巧":
-				return model.Rate(modifier, func(character *model.Character) int {
+				return model.Rate(modifier, max, func(character *model.Character) int {
 					return character.Quality.Dex / num
 				}), nil
 			case "体质":
-				return model.Rate(modifier, func(character *model.Character) int {
+				return model.Rate(modifier, max, func(character *model.Character) int {
 					return character.Quality.Vit / num
 				}), nil
 			case "幸运":
-				return model.Rate(modifier, func(character *model.Character) int {
+				return model.Rate(modifier, max, func(character *model.Character) int {
 					return character.Quality.Luk / num
 				}), nil
 			case "暴击":
-				return model.Rate(modifier, func(character *model.Character) int {
+				return model.Rate(modifier, max, func(character *model.Character) int {
 					return character.Profits.General.Critical / num
 				}), nil
 			case "闪避":
-				return model.Rate(modifier, func(character *model.Character) int {
+				return model.Rate(modifier, max, func(character *model.Character) int {
 					return character.Profits.General.Dodge / num
 				}), nil
+			case "生命上限":
+				return model.Rate(modifier, max, func(character *model.Character) int {
+					//TODO 计算生命上限
+					return character.Profits.General.Hp / num
+				}), nil
 			default:
-				return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
+				return nil, errors.Errorf("parsePerQualityEffect: [%d]%s -- [%t][%f]%s", num, qualityStr, percentage, floatVal, effect)
 			}
 		}
-	} else if quality == "百分之一魔伤减免" {
-		return model.Rate(modifier, func(character *model.Character) int {
-			return int(character.Profits.Gains(true).Resist)
-		}), nil
 	} else {
-		return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
+		switch quality {
+		case "百分之一魔伤减免":
+			return model.Rate(modifier, max, func(character *model.Character) int {
+				return int(character.Profits.Gains(true).Resist)
+			}), nil
+		case "1%忽视魔法防御":
+			return model.Rate(modifier, max, func(character *model.Character) int {
+				return int(character.Profits.Gains(true).Ignore)
+			}), nil
+		default:
+			return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
+		}
 	}
 }
 
-func (b *Buff) parsePetEffects(effectStr string, plus bool) (bool, []model.CharacterModifier, error) {
+func (b *Buff) parsePetEffects(effectStr string, plus bool) ([]model.CharacterModifier, error) {
 	var modifiers []model.CharacterModifier
 	runeArray, pos := []rune(effectStr), 0
 	for idx, char := range runeArray {
-		if char == '，' || char == ',' {
+		if char == '，' || char == ',' || char == ';' {
 			if modifier, err := b.parsePetEffect(string(runeArray[pos:idx]), plus); err != nil {
-				return false, nil, err
+				return nil, err
 			} else if modifier != nil {
 				modifiers = append(modifiers, modifier)
 			}
@@ -603,58 +614,65 @@ func (b *Buff) parsePetEffects(effectStr string, plus bool) (bool, []model.Chara
 		}
 	}
 	if modifier, err := b.parsePetEffect(string(runeArray[pos:]), plus); err != nil {
-		return false, nil, err
+		return nil, err
 	} else if modifier != nil {
 		modifiers = append(modifiers, modifier)
 	}
-	return true, modifiers, nil
+	return modifiers, nil
 }
 
 func (b *Buff) parsePetEffect(effectStr string, plus bool) (model.CharacterModifier, error) {
-	if strings.HasPrefix(effectStr, "持续") {
+	if idxStart := strings.Index(effectStr, "<em>"); idxStart < 0 {
+		if effectStr == "并增加5%物理攻击力和5%攻速" {
+			if _, modifiers, err := b.parseEffects("物理攻击力+5%、攻速+5%", 1); err != nil {
+				return nil, err
+			} else if len(modifiers) > 0 {
+				return model.Merge(modifiers...), nil
+			}
+		}
 		return nil, nil
-	} else if effectStr == "如果主人拥有体型增伤触发的【洞察】效果" {
-		return nil, nil
-	} else if idxStart := strings.Index(effectStr, "<em>"); idxStart < 0 {
-		return nil, errors.Errorf("parsePetEffect: %s", effectStr)
 	} else if idxEnd := strings.Index(effectStr, "</em>"); idxEnd < 0 {
 		return nil, errors.Errorf("parsePetEffect: %s", effectStr)
 	} else {
-		prefix, suffix, val := effectStr[:idxStart], effectStr[idxEnd+5:], effectStr[idxStart+4:idxEnd]
-		percentage := strings.HasSuffix(val, "%")
-		if floatVal, err := strconv.ParseFloat(strings.TrimSuffix(val, "%"), 64); err != nil {
-			return nil, errors.WithStack(err)
-		} else if len(prefix) == 0 && len(suffix) > 0 {
-			if !plus {
-				floatVal = -floatVal
+		prefix, suffix, val, effect := effectStr[:idxStart], effectStr[idxEnd+5:], effectStr[idxStart+4:idxEnd], ""
+		suffix = strings.TrimPrefix(suffix, "的")
+		if len(prefix) == 0 && len(suffix) > 0 {
+			if plus {
+				effect = fmt.Sprintf("%s+%s", strings.TrimPrefix(suffix, "点"), val)
+			} else {
+				effect = fmt.Sprintf("%s-%s", strings.TrimPrefix(suffix, "点"), val)
 			}
-			modifier, _ := b.find(strings.TrimPrefix(suffix, "点"), floatVal, percentage)
-			return modifier, nil
 		} else if len(suffix) == 0 && strings.HasSuffix(prefix, "+") {
-			modifier, _ := b.find(strings.TrimSuffix(prefix, "+"), floatVal, percentage)
-			return modifier, nil
+			effect = fmt.Sprintf("%s%s", prefix, val)
 		} else if len(suffix) == 0 && strings.HasSuffix(prefix, "减少") {
-			modifier, _ := b.find(strings.TrimSuffix(prefix, "减少"), -floatVal, percentage)
-			return modifier, nil
+			effect = fmt.Sprintf("%s-%s", strings.TrimSuffix(prefix, "减少"), val)
 		} else if len(suffix) == 0 && strings.HasSuffix(prefix, "增加") {
-			modifier, _ := b.find(strings.TrimSuffix(prefix, "增加"), floatVal, percentage)
-			return modifier, nil
+			effect = fmt.Sprintf("%s+%s", strings.TrimSuffix(prefix, "增加"), val)
 		} else if len(suffix) > 0 && strings.HasSuffix(prefix, "降低") {
-			modifier, _ := b.find(suffix, -floatVal, percentage)
-			return modifier, nil
+			effect = fmt.Sprintf("%s-%s", suffix, val)
 		} else if len(suffix) > 0 && strings.HasSuffix(prefix, "增加") {
-			modifier, _ := b.find(suffix, floatVal, percentage)
-			return modifier, nil
+			effect = fmt.Sprintf("%s+%s", suffix, val)
+		} else if len(suffix) > 0 && strings.HasSuffix(prefix, "提升") {
+			effect = fmt.Sprintf("%s+%s", suffix, val)
 		} else if prefix == "但移动速度会降低" {
-			modifier, _ := b.find("移动速度", -floatVal, percentage)
-			return modifier, nil
-		} else if prefix == "普通攻击时附加魔法攻击*" {
-			return nil, nil
+			effect = fmt.Sprintf("移动速度-%s", val)
+		} else if prefix == "击杀目标时有" && suffix == "概率使自身物理攻击增加60点" {
+			effect = "物理攻击+60"
+		} else if prefix == "击杀目标时有" && suffix == "概率额外获得6Zeny" {
+			effect = "Zeny+6"
 		} else if prefix == "每" {
-			//TODO 每<em>6</em>点体质增加0.1%生命上限
+			if _, modifiers, err := b.parsePerQualityItem(fmt.Sprintf("%s%s%s", prefix, val, suffix)); err != nil {
+				return nil, err
+			} else if len(modifiers) > 0 {
+				return model.Merge(modifiers...), nil
+			}
+		}
+		if len(effect) == 0 {
 			return nil, nil
+		} else if _, modifier, err := b.parseEffect(effect, 1); err != nil {
+			return nil, err
 		} else {
-			return nil, errors.Errorf("parsePetEffect: [%t][%t]%s|%s %f -- %s", plus, percentage, prefix, suffix, floatVal, effectStr)
+			return modifier, nil
 		}
 	}
 }
@@ -691,7 +709,7 @@ func (b *Buff) parseEffect(effectStr string, rate int) (bool, model.CharacterMod
 	for idx, char := range runeArray {
 		if char == '+' || char == '-' {
 			key, val := string(runeArray[pos:idx]), strings.TrimSuffix(string(runeArray[idx+1:]), "%")
-			if floatVal, err := strconv.ParseFloat(val, 64); err != nil {
+			if floatVal, err := strconv.ParseFloat(strings.TrimSpace(val), 64); err != nil {
 				return false, nil, errors.WithStack(err)
 			} else {
 				if rate > 1 {
@@ -701,7 +719,7 @@ func (b *Buff) parseEffect(effectStr string, rate int) (bool, model.CharacterMod
 					floatVal = -floatVal
 				}
 				if modifier, exist := b.find(key, floatVal, percentage); !exist {
-					return false, nil, nil
+					return true, nil, nil
 				} else if modifier == nil {
 					BuffIgnore++
 					return true, nil, nil
@@ -711,11 +729,18 @@ func (b *Buff) parseEffect(effectStr string, rate int) (bool, model.CharacterMod
 			}
 		}
 	}
-	return false, nil, nil
+	if modifier, exist := b.find(effectStr, 0, percentage); !exist {
+		return false, nil, nil
+	} else if modifier == nil {
+		BuffIgnore++
+		return false, nil, nil
+	} else {
+		return true, modifier, nil
+	}
 }
 
 func (b *Buff) isEndOfDigit(s rune) bool {
-	return s == '%' || (s >= '0' && s <= '9')
+	return s == '%' || s == ' ' || (s >= '0' && s <= '9')
 }
 
 func (b *Buff) inBrackets(str string) (string, []string) {

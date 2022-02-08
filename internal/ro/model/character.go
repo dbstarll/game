@@ -64,9 +64,12 @@ func Merge(modifiers ...CharacterModifier) CharacterModifier {
 	}
 }
 
-func Rate(modifier CharacterModifier, rate func(character *Character) int) CharacterModifier {
+func Rate(modifier CharacterModifier, max int, rate func(character *Character) int) CharacterModifier {
 	return func(character *Character) func() {
 		size := rate(character)
+		if max > 0 && size > max {
+			size = max
+		}
 		cancelList := make([]func(), size)
 		for idx, _ := range cancelList {
 			cancelList[idx] = modifier(character)
