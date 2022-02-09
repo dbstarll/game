@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	_ "github.com/dbstarll/game/internal/logger"
 	"github.com/dbstarll/game/internal/ro/dimension/position"
 	"github.com/dbstarll/game/internal/ro/romel"
 	"go.uber.org/zap"
-	"log"
 	"sort"
 	"time"
 )
@@ -13,15 +13,6 @@ import (
 type BuffItem struct {
 	name  string
 	count int
-}
-
-func init() {
-	if logger, err := zap.NewDevelopment(zap.AddStacktrace(zap.ErrorLevel), zap.IncreaseLevel(zap.WarnLevel)); err != nil {
-		log.Fatalf("%+v", err)
-	} else {
-		zap.RedirectStdLog(logger)
-		zap.ReplaceGlobals(logger)
-	}
 }
 
 func main() {

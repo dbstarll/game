@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	_ "github.com/dbstarll/game/internal/logger"
 	"github.com/dbstarll/game/internal/ro/dimension/job"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/position"
@@ -17,8 +18,8 @@ import (
 func main() {
 	//Template()
 	//Shooter()
-	//Hunter()
-	EarthBash()
+	Hunter()
+	//EarthBash()
 }
 
 func ff(b, d float64) float64 {
