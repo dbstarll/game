@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ro/model"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -15,12 +16,51 @@ type Buff struct {
 }
 
 var (
-	BuffTotal    = 0
-	BuffUnknown  = 0
-	BuffError    = 0
-	BuffIgnore   = 0
-	BuffDetected = 0
-	Buffs        = make(map[string]int)
+	BuffTotal       = 0
+	BuffUnknown     = 0
+	BuffError       = 0
+	BuffIgnore      = 0
+	BuffDetected    = 0
+	Buffs           = make(map[string]int)
+	perQualityRates = map[string]func(character *model.Character, num int) int{
+		"力量": func(character *model.Character, num int) int {
+			return character.Quality.Str / num
+		},
+		"敏捷": func(character *model.Character, num int) int {
+			return character.Quality.Agi / num
+		},
+		"智力": func(character *model.Character, num int) int {
+			return character.Quality.Int / num
+		},
+		"智力可": func(character *model.Character, num int) int {
+			return character.Quality.Int / num
+		},
+		"灵巧": func(character *model.Character, num int) int {
+			return character.Quality.Dex / num
+		},
+		"体质": func(character *model.Character, num int) int {
+			return character.Quality.Vit / num
+		},
+		"幸运": func(character *model.Character, num int) int {
+			return character.Quality.Luk / num
+		},
+		"暴击": func(character *model.Character, num int) int {
+			return character.Profits.General.Critical / num
+		},
+		"闪避": func(character *model.Character, num int) int {
+			return character.Profits.General.Dodge / num
+		},
+		"生命上限": func(character *model.Character, num int) int {
+			//TODO 计算生命上限
+			return character.Profits.General.Hp / num
+		},
+		"百分之一魔伤减免": func(character *model.Character, num int) int {
+			return int(character.Profits.Gains(true).Resist) / num
+		},
+		"1%忽视魔法防御": func(character *model.Character, num int) int {
+			return int(character.Profits.Gains(true).Ignore) / num
+		},
+	}
 )
 
 func (b *Buff) UnmarshalJSON(data []byte) error {
@@ -501,101 +541,54 @@ func (b *Buff) parsePerQualityEffects(quality, effectStr string) (bool, []model.
 	return true, modifiers, nil
 }
 
-func (b *Buff) parsePerQualityEffect(quality, effectStr string) (model.CharacterModifier, error) {
-	val, effect, percentage := "", "", false
-	if idx := strings.Index(effectStr, "点"); idx > 0 {
-		val, effect, percentage = effectStr[:idx], effectStr[idx+3:], false
-	} else if idx := strings.Index(effectStr, "%"); idx > 0 {
-		val, effect, percentage = effectStr[:idx], effectStr[idx+1:], true
-	} else {
-		return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
-	}
-
-	max := 0
-	if after, brackets := b.inBrackets(effect); len(brackets) > 0 {
-		effect = after
-		if strings.Index(brackets[0], "额外") > 0 {
+func (b *Buff) parsePerQualityEffect(qualityStr, effectStr string) (model.CharacterModifier, error) {
+	max, effectNoBrackets := 0, effectStr
+	if after, brackets := b.inBrackets(effectStr); len(brackets) > 0 {
+		effectNoBrackets = after
+		if strings.Index(brackets[0], "额外") >= 0 {
 			switch brackets[0] {
 			case "最多额外增加1500点物理攻击":
 				max = 1500
 			case "额外最多15%":
 				max = 15
 			default:
-				return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
+				return nil, errors.Errorf("parsePerQualityEffect: [%s]%s -- %s", qualityStr, effectNoBrackets, brackets)
 			}
 		}
-	}
-	fmt.Printf("\tparsePerQualityEffect: [%t][%s]%s\n", percentage, val, effect)
-	if percentage {
-		fmt.Printf("\t\t%s+%s%%\n", effect, val)
-	} else {
-		fmt.Printf("\t\t%s+%s\n", effect, val)
 	}
 
-	//TODO 使用b.parseEffect()替代b.find()
-	if floatVal, err := strconv.ParseFloat(val, 64); err != nil {
-		return nil, errors.WithStack(err)
-	} else if modifier, exist := b.find(effect, floatVal, percentage); !exist || modifier == nil {
-		return nil, nil
-	} else if idx := strings.Index(quality, "点"); idx > 0 {
-		if num, err := strconv.Atoi(quality[:idx]); err != nil {
-			return nil, errors.WithStack(err)
-		} else {
-			qualityStr := quality[idx+3:]
-			switch qualityStr {
-			case "力量":
-				return model.Rate(modifier, max, func(character *model.Character) int {
-					return character.Quality.Str / num
-				}), nil
-			case "敏捷":
-				return model.Rate(modifier, max, func(character *model.Character) int {
-					return character.Quality.Agi / num
-				}), nil
-			case "智力", "智力可":
-				return model.Rate(modifier, max, func(character *model.Character) int {
-					return character.Quality.Int / num
-				}), nil
-			case "灵巧":
-				return model.Rate(modifier, max, func(character *model.Character) int {
-					return character.Quality.Dex / num
-				}), nil
-			case "体质":
-				return model.Rate(modifier, max, func(character *model.Character) int {
-					return character.Quality.Vit / num
-				}), nil
-			case "幸运":
-				return model.Rate(modifier, max, func(character *model.Character) int {
-					return character.Quality.Luk / num
-				}), nil
-			case "暴击":
-				return model.Rate(modifier, max, func(character *model.Character) int {
-					return character.Profits.General.Critical / num
-				}), nil
-			case "闪避":
-				return model.Rate(modifier, max, func(character *model.Character) int {
-					return character.Profits.General.Dodge / num
-				}), nil
-			case "生命上限":
-				return model.Rate(modifier, max, func(character *model.Character) int {
-					//TODO 计算生命上限
-					return character.Profits.General.Hp / num
-				}), nil
-			default:
-				return nil, errors.Errorf("parsePerQualityEffect: [%d]%s -- [%t][%f]%s", num, qualityStr, percentage, floatVal, effect)
+	effect := ""
+	if idx := strings.Index(effectNoBrackets, "点"); idx > 0 {
+		effect = fmt.Sprintf("%s+%s", effectNoBrackets[idx+3:], effectNoBrackets[:idx])
+	} else if idx := strings.Index(effectNoBrackets, "%"); idx > 0 {
+		effect = fmt.Sprintf("%s+%s", effectNoBrackets[idx+1:], effectNoBrackets[:idx+1])
+	} else {
+		return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", qualityStr, effectNoBrackets)
+	}
+
+	if max > 0 {
+		_, modifier, err := b.parseEffect(effect, max)
+		return modifier, err
+	} else {
+		quality, num := qualityStr, 1
+		if idx := strings.Index(qualityStr, "点"); idx > 0 {
+			if qualityVal, err := strconv.Atoi(qualityStr[:idx]); err != nil {
+				return nil, errors.WithStack(err)
+			} else {
+				quality, num = qualityStr[idx+3:], qualityVal
 			}
 		}
-	} else {
-		switch quality {
-		case "百分之一魔伤减免":
-			return model.Rate(modifier, max, func(character *model.Character) int {
-				return int(character.Profits.Gains(true).Resist)
-			}), nil
-		case "1%忽视魔法防御":
-			return model.Rate(modifier, max, func(character *model.Character) int {
-				return int(character.Profits.Gains(true).Ignore)
-			}), nil
-		default:
-			return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", quality, effectStr)
+		if rateFn, exist := perQualityRates[quality]; !exist {
+			return nil, errors.Errorf("parsePerQualityEffect: [%d][%s] -- %s", num, quality, effect)
+		} else {
+			return func(character *model.Character) func() {
+				if _, modifier, err := b.parseEffect(effect, rateFn(character, num)); err != nil {
+					zap.S().Warnf("%+v", err)
+				} else if modifier != nil {
+					return modifier(character)
+				}
+				return func() {}
+			}, nil
 		}
 	}
 }
