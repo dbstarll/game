@@ -412,20 +412,21 @@ func (b *Buff) parseSkillItem(item string) bool {
 }
 
 func (b *Buff) parseConditionItem(item string) (bool, []model.CharacterModifier, error) {
+	itemNoBracket, _ := b.trimBracket(item)
 	condition, effect := "", ""
-	if idx := strings.Index(item, "时，"); idx > 0 {
+	if idx := strings.Index(itemNoBracket, "时，"); idx > 0 {
 		condition, effect = item[:idx+3], item[idx+6:]
-	} else if idx := strings.Index(item, "时,"); idx > 0 {
+	} else if idx := strings.Index(itemNoBracket, "时,"); idx > 0 {
 		condition, effect = item[:idx+3], item[idx+4:]
-	} else if idx := strings.Index(item, "时"); idx < 0 {
+	} else if idx := strings.Index(itemNoBracket, "时"); idx < 0 {
 		return false, nil, nil
-	} else if strings.Index(item, "时间") == idx {
+	} else if strings.Index(itemNoBracket, "时间") == idx {
 		return false, nil, nil
-	} else if strings.Index(item, "时刻") == idx {
+	} else if strings.Index(itemNoBracket, "时刻") == idx {
 		return false, nil, nil
-	} else if strings.Index(item, "时长") == idx {
+	} else if strings.Index(itemNoBracket, "时长") == idx {
 		return false, nil, nil
-	} else if strings.Index(item, "同时") == idx-3 {
+	} else if strings.Index(itemNoBracket, "同时") == idx-3 {
 		return false, nil, nil
 	} else {
 		condition, effect = item[:idx+3], item[idx+3:]
@@ -521,33 +522,32 @@ func (b *Buff) parsePerQualityEffects(quality, effectStr string) (bool, []model.
 }
 
 func (b *Buff) parsePerQualityEffect(qualityStr, effectStr string) (model.CharacterModifier, error) {
-	max, effectNoBrackets := 0, effectStr
-	if after, brackets := b.inBrackets(effectStr); len(brackets) > 0 {
-		effectNoBrackets = after
-		if strings.Index(brackets[0], "额外") >= 0 {
-			switch brackets[0] {
+	max, effectNoBracket := 0, effectStr
+	if after, bracket := b.trimBracket(effectStr); len(bracket) > 0 {
+		effectNoBracket = after
+		if strings.Index(bracket, "额外") >= 0 {
+			switch bracket {
 			case "最多额外增加1500点物理攻击":
 				max = 1500
 			case "额外最多15%":
 				max = 15
 			default:
-				return nil, errors.Errorf("parsePerQualityEffect: [%s]%s -- %s", qualityStr, effectNoBrackets, brackets)
+				return nil, errors.Errorf("parsePerQualityEffect: [%s]%s -- %s", qualityStr, effectNoBracket, bracket)
 			}
 		}
 	}
 
 	effect := ""
-	if idx := strings.Index(effectNoBrackets, "点"); idx > 0 {
-		effect = fmt.Sprintf("%s+%s", effectNoBrackets[idx+3:], effectNoBrackets[:idx])
-	} else if idx := strings.Index(effectNoBrackets, "%"); idx > 0 {
-		effect = fmt.Sprintf("%s+%s", effectNoBrackets[idx+1:], effectNoBrackets[:idx+1])
+	if idx := strings.Index(effectNoBracket, "点"); idx > 0 {
+		effect = fmt.Sprintf("%s+%s", effectNoBracket[idx+3:], effectNoBracket[:idx])
+	} else if idx := strings.Index(effectNoBracket, "%"); idx > 0 {
+		effect = fmt.Sprintf("%s+%s", effectNoBracket[idx+1:], effectNoBracket[:idx+1])
 	} else {
-		return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", qualityStr, effectNoBrackets)
+		return nil, errors.Errorf("parsePerQualityEffect: [%s]%s", qualityStr, effectNoBracket)
 	}
 
 	if max > 0 {
-		_, modifier, err := b.parseEffect(effect, max)
-		return modifier, err
+		return b.parseEffect(effect, max)
 	} else {
 		quality, num := qualityStr, 1
 		if idx := strings.Index(qualityStr, "点"); idx > 0 {
@@ -561,7 +561,7 @@ func (b *Buff) parsePerQualityEffect(qualityStr, effectStr string) (model.Charac
 			return nil, errors.Errorf("parsePerQualityEffect: [%d][%s] -- %s", num, quality, effect)
 		} else {
 			return func(character *model.Character) func() {
-				if _, modifier, err := b.parseEffect(effect, rateFn(character, num)); err != nil {
+				if modifier, err := b.parseEffect(effect, rateFn(character, num)); err != nil {
 					zap.S().Warnf("%+v", err)
 				} else if modifier != nil {
 					return modifier(character)
@@ -641,98 +641,112 @@ func (b *Buff) parsePetEffect(effectStr string, plus bool) (model.CharacterModif
 		}
 		if len(effect) == 0 {
 			return nil, nil
-		} else if _, modifier, err := b.parseEffect(effect, 1); err != nil {
-			return nil, err
 		} else {
-			return modifier, nil
+			return b.parseEffect(effect, 1)
 		}
 	}
 }
 
 func (b *Buff) parseEffects(effectStr string, rate int) ([]model.CharacterModifier, error) {
 	var modifiers []model.CharacterModifier
-	runeArray, pos := []rune(effectStr), 0
+	runeArray, pos, inBracket := []rune(effectStr), 0, false
 	for idx, char := range runeArray {
-		if (char == '、' || char == '，' || char == ',') && b.isEndOfDigit(runeArray[idx-1]) {
-			if match, modifier, err := b.parseEffect(string(runeArray[pos:idx]), rate); err != nil {
-				//TODO 处理异常
-				return nil, nil
-			} else if !match {
-				return modifiers, nil
-			} else if modifier != nil {
-				modifiers = append(modifiers, modifier)
+		switch char {
+		case '（', '(':
+			inBracket = true
+		case '）', ')':
+			inBracket = false
+		case '、', '，', ',', '和':
+			if !inBracket && b.isEndOfDigit(runeArray[idx-1]) {
+				if modifier, err := b.parseEffect(string(runeArray[pos:idx]), rate); err != nil {
+					return nil, err
+				} else if modifier != nil {
+					modifiers = append(modifiers, modifier)
+				}
+				pos = idx + 1
 			}
-			pos = idx + 1
 		}
 	}
-	if match, modifier, err := b.parseEffect(string(runeArray[pos:]), rate); err != nil {
-		//TODO 处理异常
-		return nil, nil
-	} else if !match {
-		return modifiers, nil
+	if modifier, err := b.parseEffect(string(runeArray[pos:]), rate); err != nil {
+		return nil, err
 	} else if modifier != nil {
 		modifiers = append(modifiers, modifier)
 	}
 	return modifiers, nil
 }
 
-func (b *Buff) parseEffect(effectStr string, rate int) (bool, model.CharacterModifier, error) {
-	runeArray, pos, percentage := []rune(effectStr), 0, strings.HasSuffix(effectStr, "%")
+func (b *Buff) parseEffect(effectStr string, rate int) (model.CharacterModifier, error) {
+	effectNoBracket, _ := b.trimBracket(effectStr)
+	runeArray, pos, inBracket, percentage := []rune(effectNoBracket), 0, false, strings.HasSuffix(effectNoBracket, "%")
 	for idx, char := range runeArray {
-		if char == '+' || char == '-' {
-			key, val := string(runeArray[pos:idx]), strings.TrimSuffix(string(runeArray[idx+1:]), "%")
-			if floatVal, err := strconv.ParseFloat(strings.TrimSpace(val), 64); err != nil {
-				return false, nil, errors.WithStack(err)
-			} else {
-				if rate > 1 {
-					floatVal *= float64(rate)
-				}
-				if char == '-' {
-					floatVal = -floatVal
-				}
-				if modifier, exist := b.find(key, floatVal, percentage); !exist {
-					return true, nil, nil
-				} else if modifier == nil {
-					return true, nil, nil
+		switch char {
+		case '（', '(':
+			inBracket = true
+		case '）', ')':
+			inBracket = false
+		case '+', '-':
+			if !inBracket && runeArray[idx+1] >= '0' && runeArray[idx+1] <= '9' {
+				key, val := string(runeArray[pos:idx]), string(runeArray[idx+1:])
+				val = strings.TrimSuffix(val, "%")
+				val = strings.TrimSuffix(val, "秒")
+				val = strings.TrimSuffix(val, "点")
+				if floatVal, err := strconv.ParseFloat(strings.TrimSpace(val), 64); err != nil {
+					zap.S().Warnf("parseEffect.ParseFloat: %s", effectStr)
 				} else {
+					if rate > 1 {
+						floatVal *= float64(rate)
+					}
+					if char == '-' {
+						floatVal = -floatVal
+					}
+					if modifier, exist := b.find(key, floatVal, percentage); !exist {
+						return nil, nil
+					} else if modifier == nil {
+						return nil, nil
+					} else {
 
-					//BuffUnknown += 1
-					//if oc, ok := Buffs[item]; ok {
-					//	Buffs[item] = oc + 1
-					//} else {
-					//	Buffs[item] = 1
-					//}
+						//BuffUnknown += 1
+						//if oc, ok := Buffs[item]; ok {
+						//	Buffs[item] = oc + 1
+						//} else {
+						//	Buffs[item] = 1
+						//}
 
-					return true, modifier, nil
+						return modifier, nil
+					}
 				}
 			}
 		}
 	}
-	if modifier, exist := b.find(effectStr, 0, percentage); !exist {
-		return false, nil, nil
+	//fmt.Printf("\tparseEffect: %s -- %s\n", effectNoBracket, bracket)
+	if modifier, exist := b.find(effectNoBracket, 0, percentage); !exist {
+		return nil, nil
 	} else if modifier == nil {
-		return false, nil, nil
+		//fmt.Printf("\tparseEffect: %s -- %s\n", effectNoBracket, bracket)
+		return nil, nil
 	} else {
-		return true, modifier, nil
+		return modifier, nil
 	}
 }
 
 func (b *Buff) isEndOfDigit(s rune) bool {
-	return s == '%' || s == ' ' || (s >= '0' && s <= '9')
+	switch s {
+	case '%', ' ', '点', '）', ')':
+		return true
+	default:
+		return s >= '0' && s <= '9'
+	}
 }
 
-func (b *Buff) inBrackets(str string) (string, []string) {
-	var brackets []string
-	after, pos, runeArray := "", 0, []rune(str)
-	for idx, char := range runeArray {
-		if char == '（' {
-			after += string(runeArray[pos:idx])
-			pos = idx + 1
-		} else if char == '）' {
-			brackets = append(brackets, string(runeArray[pos:idx]))
-			pos = idx + 1
+func (b *Buff) trimBracket(str string) (string, string) {
+	if r, _ := utf8.DecodeLastRuneInString(str); r == '）' {
+		if idx := strings.LastIndex(str, "（"); idx >= 0 {
+			return str[:idx], str[idx+3 : len(str)-3]
+		}
+	} else if r == ')' {
+		if idx := strings.LastIndex(str, "("); idx >= 0 {
+			return str[:idx], str[idx+1 : len(str)-1]
 		}
 	}
-	after += string(runeArray[pos:])
-	return after, brackets
+	return str, ""
 }
