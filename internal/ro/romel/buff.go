@@ -122,9 +122,7 @@ func (b *Buff) parseBuff(effect string) ([]model.CharacterModifier, error) {
 }
 
 func (b *Buff) parseItem(item string) ([]model.CharacterModifier, error) {
-	BuffTotal++
 	if b.parseIgnoreItem(item) {
-		BuffIgnore++
 		return nil, nil
 	} else if match, modifiers, err := b.parsePerRefineItem(item); match || err != nil {
 		return modifiers, err
@@ -135,27 +133,13 @@ func (b *Buff) parseItem(item string) ([]model.CharacterModifier, error) {
 	} else if match, modifiers, err := b.parsePetItem(item); match || err != nil {
 		return modifiers, err
 	} else if b.parseSkillItem(item) {
-		BuffIgnore++
 		return nil, nil
 	} else if match, modifiers, err := b.parseConditionItem(item); match || err != nil {
 		return modifiers, err
 	} else if match, modifiers, err := b.parsePerQualityItem(item); match || err != nil {
 		return modifiers, err
-	} else if match, modifiers, err := b.parseEffects(item, 1); err != nil {
-		BuffError++
-		//TODO 处理异常
-		return nil, nil
-	} else if match {
-		BuffDetected++
-		return modifiers, nil
 	} else {
-		BuffUnknown += 1
-		if oc, ok := Buffs[item]; ok {
-			Buffs[item] = oc + 1
-		} else {
-			Buffs[item] = 1
-		}
-		return modifiers, nil
+		return b.parseEffects(item, 1)
 	}
 }
 
@@ -218,13 +202,13 @@ func (b *Buff) parsePerRefineItem(item string) (bool, []model.CharacterModifier,
 			return false, nil, err
 		} else if match {
 			modifiers = append(modifiers, ms...)
-		} else if _, ms, err := b.parseEffects(condition, 1); err != nil {
+		} else if ms, err := b.parseEffects(condition, 1); err != nil {
 			return false, nil, err
 		} else if len(ms) > 0 {
 			modifiers = append(modifiers, ms...)
 		}
 	}
-	if _, ms, err := b.parseEffects(effect, rate); err != nil {
+	if ms, err := b.parseEffects(effect, rate); err != nil {
 		return false, nil, err
 	} else if len(ms) > 0 {
 		modifiers = append(modifiers, ms...)
@@ -241,7 +225,7 @@ func (b *Buff) parsePerIntensifyItem(item string) (bool, []model.CharacterModifi
 	} else {
 		return false, nil, nil
 	}
-	if _, modifiers, err := b.parseEffects(effect, rate); err != nil {
+	if modifiers, err := b.parseEffects(effect, rate); err != nil {
 		return false, nil, err
 	} else {
 		return true, modifiers, nil
@@ -361,7 +345,7 @@ func (b *Buff) parseRefineSplit(base, effectStr, split string, refines ...int) (
 }
 
 func (b *Buff) parseRefineEffects(refine int, effectStr string) ([]model.CharacterModifier, error) {
-	if _, modifiers, err := b.parseEffects(effectStr, 1); err != nil {
+	if modifiers, err := b.parseEffects(effectStr, 1); err != nil {
 		return nil, err
 	} else if len(modifiers) == 0 {
 		return nil, nil
@@ -375,13 +359,10 @@ func (b *Buff) parsePetItem(item string) (bool, []model.CharacterModifier, error
 	if strings.Index(item, "<em>") < 0 {
 		return false, nil, nil
 	} else if strings.HasPrefix(item, "冒险") {
-		BuffIgnore++
 		return true, nil, nil
 	} else if strings.HasPrefix(item, "增加宠物在") && strings.HasSuffix(item, "的打工效率") {
-		BuffIgnore++
 		return true, nil, nil
 	} else if strings.Index(item, "对敌方") >= 0 {
-		BuffIgnore++
 		return true, nil, nil
 	} else if strings.HasPrefix(item, "增加宠物和主人") {
 		modifiers, err := b.parsePetEffects(item[21:], true)
@@ -402,7 +383,6 @@ func (b *Buff) parsePetItem(item string) (bool, []model.CharacterModifier, error
 		modifiers, err := b.parsePetEffects(item[12:], true)
 		return err == nil, modifiers, err
 	} else {
-		BuffIgnore++
 		return true, nil, nil
 	}
 }
@@ -465,7 +445,7 @@ func (b *Buff) parseConditionItem(item string) (bool, []model.CharacterModifier,
 		"攻击血量低于自身的目标时", "攻击血量高于自身的目标时", "生命值低于70%时", "生命值高于50%时", "装备拳刃时", "近战职业击杀魔物时",
 		"获得转运锦鲤的祝福：魔法技能攻击时", "阿特罗斯卡片触发急速效果时":
 	default:
-		if _, sub, err := b.parseEffects(condition, 1); err != nil {
+		if sub, err := b.parseEffects(condition, 1); err != nil {
 			return false, nil, err
 		} else if len(sub) > 0 {
 			modifiers = append(modifiers, sub...)
@@ -475,13 +455,12 @@ func (b *Buff) parseConditionItem(item string) (bool, []model.CharacterModifier,
 		} else if strings.Index(condition, "佩戴者是") >= 0 {
 		} else if strings.HasSuffix(condition, "族装备时") || strings.HasSuffix(condition, "系装备时") {
 		} else {
-			BuffIgnore++
 			//fmt.Printf("\tparseConditionItem: [%s]%s -- %s\n", condition, effect, item)
 			//TODO 解析条件并忽略
 			return true, modifiers, nil
 		}
 	}
-	if _, sub, err := b.parseEffects(effect, 1); err != nil {
+	if sub, err := b.parseEffects(effect, 1); err != nil {
 		return false, nil, err
 	} else if len(sub) > 0 {
 		modifiers = append(modifiers, sub...)
@@ -617,7 +596,7 @@ func (b *Buff) parsePetEffects(effectStr string, plus bool) ([]model.CharacterMo
 func (b *Buff) parsePetEffect(effectStr string, plus bool) (model.CharacterModifier, error) {
 	if idxStart := strings.Index(effectStr, "<em>"); idxStart < 0 {
 		if effectStr == "并增加5%物理攻击力和5%攻速" {
-			if _, modifiers, err := b.parseEffects("物理攻击力+5%、攻速+5%", 1); err != nil {
+			if modifiers, err := b.parseEffects("物理攻击力+5%、攻速+5%", 1); err != nil {
 				return nil, err
 			} else if len(modifiers) > 0 {
 				return model.Merge(modifiers...), nil
@@ -670,16 +649,16 @@ func (b *Buff) parsePetEffect(effectStr string, plus bool) (model.CharacterModif
 	}
 }
 
-func (b *Buff) parseEffects(effectStr string, rate int) (bool, []model.CharacterModifier, error) {
+func (b *Buff) parseEffects(effectStr string, rate int) ([]model.CharacterModifier, error) {
 	var modifiers []model.CharacterModifier
 	runeArray, pos := []rune(effectStr), 0
 	for idx, char := range runeArray {
 		if (char == '、' || char == '，' || char == ',') && b.isEndOfDigit(runeArray[idx-1]) {
 			if match, modifier, err := b.parseEffect(string(runeArray[pos:idx]), rate); err != nil {
 				//TODO 处理异常
-				return false, nil, nil
+				return nil, nil
 			} else if !match {
-				return false, modifiers, nil
+				return modifiers, nil
 			} else if modifier != nil {
 				modifiers = append(modifiers, modifier)
 			}
@@ -688,13 +667,13 @@ func (b *Buff) parseEffects(effectStr string, rate int) (bool, []model.Character
 	}
 	if match, modifier, err := b.parseEffect(string(runeArray[pos:]), rate); err != nil {
 		//TODO 处理异常
-		return false, nil, nil
+		return nil, nil
 	} else if !match {
-		return false, modifiers, nil
+		return modifiers, nil
 	} else if modifier != nil {
 		modifiers = append(modifiers, modifier)
 	}
-	return true, modifiers, nil
+	return modifiers, nil
 }
 
 func (b *Buff) parseEffect(effectStr string, rate int) (bool, model.CharacterModifier, error) {
@@ -714,9 +693,16 @@ func (b *Buff) parseEffect(effectStr string, rate int) (bool, model.CharacterMod
 				if modifier, exist := b.find(key, floatVal, percentage); !exist {
 					return true, nil, nil
 				} else if modifier == nil {
-					BuffIgnore++
 					return true, nil, nil
 				} else {
+
+					//BuffUnknown += 1
+					//if oc, ok := Buffs[item]; ok {
+					//	Buffs[item] = oc + 1
+					//} else {
+					//	Buffs[item] = 1
+					//}
+
 					return true, modifier, nil
 				}
 			}
@@ -725,7 +711,6 @@ func (b *Buff) parseEffect(effectStr string, rate int) (bool, model.CharacterMod
 	if modifier, exist := b.find(effectStr, 0, percentage); !exist {
 		return false, nil, nil
 	} else if modifier == nil {
-		BuffIgnore++
 		return false, nil, nil
 	} else {
 		return true, modifier, nil
