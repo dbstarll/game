@@ -34,20 +34,19 @@ func detectBuffEffect2() {
 		})
 	}
 	sort.Slice(items, func(i, j int) bool {
-		//if items[i].count < items[j].count {
-		//	return false
-		//} else if items[i].count > items[j].count {
-		//	return true
-		//} else {
-		return items[i].name < items[j].name
-		//}
+		if items[i].count < items[j].count {
+			return false
+		} else if items[i].count > items[j].count {
+			return true
+		} else {
+			return items[i].name < items[j].name
+		}
 	})
 	for idx, item := range items {
 		if idx > 20 {
-			//break
+			break
 		}
-		//fmt.Printf("占比：%2.4f%% - [%d]%s\n", 100*float64(item.count)/float64(romel.BuffUnknown), item.count, item.name)
-		fmt.Printf("%s\n", item.name)
+		fmt.Printf("占比：%2.4f%% - [%d]%s\n", 100*float64(item.count)/float64(romel.BuffUnknown), item.count, item.name)
 	}
 }
 
@@ -121,6 +120,18 @@ func detectBuffEffect() {
 
 func updateApi() {
 	api := romel.NewRomelApi("sd32rfgfe344edsd")
+	if err := getCardList(api); err != nil {
+		fmt.Printf("err: %+v\n", err)
+	}
+	if err := getHatList(api); err != nil {
+		fmt.Printf("err: %+v\n", err)
+	}
+	if err := getEquipList(api); err != nil {
+		fmt.Printf("err: %+v\n", err)
+	}
+	if err := getPetList(api); err != nil {
+		fmt.Printf("err: %+v\n", err)
+	}
 	if err := getMonsterList(api); err != nil {
 		fmt.Printf("err: %+v\n", err)
 	}
