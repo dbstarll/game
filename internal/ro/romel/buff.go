@@ -132,6 +132,8 @@ func (b *Buff) parseItem(item string) ([]model.CharacterModifier, error) {
 		return modifiers, err
 	} else if match, modifiers, err := b.parsePetItem(item); match || err != nil {
 		return modifiers, err
+	} else if match, modifiers, err := b.parseContinuedItem(item); match || err != nil {
+		return modifiers, err
 	} else if b.parseSkillItem(item) {
 		return nil, nil
 	} else if match, modifiers, err := b.parseConditionItem(item); match || err != nil {
@@ -385,6 +387,131 @@ func (b *Buff) parsePetItem(item string) (bool, []model.CharacterModifier, error
 	} else {
 		return true, nil, nil
 	}
+}
+
+func (b *Buff) parseContinuedItem(item string) (bool, []model.CharacterModifier, error) {
+	if strings.Index(item, "持续") < 0 {
+		return false, nil, nil
+	}
+
+	var effects []string
+	runeArray, pos := []rune(item), 0
+	for idx, char := range runeArray {
+		switch char {
+		case '，', '。', '（', '）', ',':
+			effects = append(effects, string(runeArray[pos:idx]))
+			pos = idx + 1
+		case '：':
+			if runeArray[idx-1] != 'D' {
+				effects = append(effects, string(runeArray[pos:idx]))
+				pos = idx + 1
+			}
+		}
+	}
+	effects = append(effects, string(runeArray[pos:]))
+
+	if effects, rate, _, _, err := b.parseContinuedTimes(effects); err != nil {
+		return false, nil, err
+	} else if effects, _, _, _, err := b.parseContinuedTimes(effects); err != nil {
+		return false, nil, err
+	} else {
+		var modifiers []model.CharacterModifier
+		for _, effect := range effects {
+			if modifier, err := b.parseEffect(effect, rate); err != nil {
+				return false, nil, err
+			} else if modifier != nil {
+				modifiers = append(modifiers, modifier)
+			}
+		}
+		return true, modifiers, nil
+	}
+}
+
+func (b *Buff) parseContinuedTimes(effects []string) ([]string, int, int, int, error) {
+	var after []string
+	rate, cont, cd := 1, 0, 0
+	for _, effect := range effects {
+		if idxStart := strings.Index(effect, "持续"); idxStart >= 0 {
+			condition, suffer := effect[:idxStart], strings.TrimPrefix(effect[idxStart+6:], "时间")
+			if idxEnd := strings.Index(suffer, "秒"); idxEnd > 0 {
+				if intVal, err := strconv.Atoi(strings.TrimSpace(suffer[:idxEnd])); err != nil {
+					return nil, 0, 0, 0, errors.WithStack(err)
+				} else {
+					cont = intVal
+				}
+			} else if idxEnd := strings.Index(suffer, "s"); idxEnd > 0 {
+				if intVal, err := strconv.Atoi(suffer[:idxEnd]); err != nil {
+					return nil, 0, 0, 0, errors.WithStack(err)
+				} else {
+					cont = intVal
+				}
+			} else if idxEnd := strings.Index(suffer, "分钟"); idxEnd > 0 {
+				if intVal, err := strconv.Atoi(suffer[:idxEnd]); err != nil {
+					return nil, 0, 0, 0, errors.WithStack(err)
+				} else {
+					cont = intVal * 60
+				}
+			} else if suffer == "一定时间" {
+				cont = -1
+			} else {
+				after = append(after, effect)
+				continue
+			}
+			if len(condition) > 0 {
+				after = append(after, condition)
+			}
+		} else if idxStart := strings.Index(effect, "CD"); idxStart >= 0 {
+			suffer := strings.TrimPrefix(effect[idxStart+2:], "：")
+			suffer = strings.TrimSuffix(suffer, "秒")
+			suffer = strings.TrimSuffix(suffer, "s")
+			if intVal, err := strconv.Atoi(suffer); err != nil {
+				return nil, 0, 0, 0, errors.WithStack(err)
+			} else {
+				cd = intVal
+			}
+		} else if idxStart := strings.Index(effect, "冷却"); idxStart >= 0 {
+			suffer := strings.TrimPrefix(effect[idxStart+6:], "时间")
+			suffer = strings.TrimSuffix(suffer, "秒")
+			suffer = strings.TrimSuffix(suffer, "s")
+			if intVal, err := strconv.Atoi(strings.TrimSpace(suffer)); err != nil {
+				return nil, 0, 0, 0, errors.WithStack(err)
+			} else {
+				cd = intVal
+			}
+		} else if idxStart := strings.Index(effect, "叠加"); idxStart >= 0 {
+			suffer := effect[idxStart+6:]
+			if idxEnd := strings.Index(suffer, "层"); idxEnd > 0 {
+				if rateStr := suffer[:idxEnd]; rateStr == "三" {
+					rate = 3
+				} else if intVal, err := strconv.Atoi(rateStr); err != nil {
+					return nil, 0, 0, 0, errors.WithStack(err)
+				} else {
+					rate = intVal
+				}
+				continue
+			} else if len(suffer) > 0 {
+				after = append(after, effect)
+			}
+		} else if idxStart := strings.Index(effect, "率"); idxStart >= 0 {
+			if strings.HasPrefix(effect, "增加") {
+				after = append(after, effect)
+			} else if suffer := strings.TrimPrefix(effect[idxStart+3:], "使"); len(suffer) > 0 {
+				after = append(after, suffer)
+			}
+		} else if idxStart := strings.Index(effect, "时"); idxStart >= 0 {
+			if suffer := effect[idxStart+3:]; len(suffer) > 0 {
+				switch []rune(suffer)[0] {
+				case '刻', '间':
+					after = append(after, effect)
+				default:
+					after = append(after, suffer)
+				}
+			}
+		} else if len(effect) > 0 {
+			after = append(after, effect)
+		}
+	}
+	return after, rate, cont, cd, nil
 }
 
 func (b *Buff) parseSkillItem(item string) bool {
@@ -691,7 +818,7 @@ func (b *Buff) parseEffect(effectStr string, rate int) (model.CharacterModifier,
 				val = strings.TrimSuffix(val, "秒")
 				val = strings.TrimSuffix(val, "点")
 				if floatVal, err := strconv.ParseFloat(strings.TrimSpace(val), 64); err != nil {
-					zap.S().Warnf("parseEffect.ParseFloat: %s", effectStr)
+					zap.S().Warnf("parseEffect.ParseFloat: %s --- %s", val, effectStr)
 				} else {
 					if rate > 1 {
 						floatVal *= float64(rate)
@@ -699,32 +826,61 @@ func (b *Buff) parseEffect(effectStr string, rate int) (model.CharacterModifier,
 					if char == '-' {
 						floatVal = -floatVal
 					}
-					if modifier, exist := b.find(key, floatVal, percentage); !exist {
-						return nil, nil
-					} else if modifier == nil {
-						return nil, nil
-					} else {
-
-						//BuffUnknown += 1
-						//if oc, ok := Buffs[item]; ok {
-						//	Buffs[item] = oc + 1
-						//} else {
-						//	Buffs[item] = 1
-						//}
-
-						return modifier, nil
-					}
+					return b.findEffect(key, floatVal, percentage)
 				}
 			}
 		}
 	}
-	//fmt.Printf("\tparseEffect: %s -- %s\n", effectNoBracket, bracket)
-	if modifier, exist := b.find(effectNoBracket, 0, percentage); !exist {
+	return b.findEffect(effectNoBracket, 0, percentage)
+}
+
+func (b *Buff) findEffect(key string, val float64, percentage bool) (model.CharacterModifier, error) {
+	BuffTotal++
+	if strings.Index(key, "恢复") >= 0 {
+		BuffIgnore++
+		return nil, nil
+	} else if strings.Index(key, "消耗") >= 0 {
+		BuffIgnore++
+		return nil, nil
+	} else if strings.Index(key, "不包括自身") >= 0 {
+		BuffIgnore++
+		return nil, nil
+	} else if !percentage && val == 0 && strings.HasSuffix(key, "时") {
+		BuffIgnore++
+		return nil, nil
+	} else if strings.HasSuffix(key, "技能倍率") {
+		BuffIgnore++
+		return nil, nil
+	} else if strings.HasPrefix(key, "【") {
+		BuffIgnore++
+		return nil, nil
+	} else if strings.HasPrefix(key, "使【") {
+		BuffIgnore++
+		return nil, nil
+	} else if strings.HasPrefix(key, "使用【") {
+		BuffIgnore++
+		return nil, nil
+		//} else if strings.Index(key, "持续") >= 0 {
+		//	fmt.Printf("\t%s\n", key)
+		//	BuffIgnore++
+		//	return nil, nil
+	} else if modifier, exist := b.find(key, val, percentage); !exist {
+		BuffUnknown += 1
+		item := key
+		if percentage {
+			item += "%"
+		}
+		if oc, ok := Buffs[item]; ok {
+			Buffs[item] = oc + 1
+		} else {
+			Buffs[item] = 1
+		}
 		return nil, nil
 	} else if modifier == nil {
-		//fmt.Printf("\tparseEffect: %s -- %s\n", effectNoBracket, bracket)
+		BuffIgnore++
 		return nil, nil
 	} else {
+		BuffDetected++
 		return modifier, nil
 	}
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/dbstarll/game/internal/ro/model"
 	"github.com/dbstarll/game/internal/ro/model/buff"
 	"github.com/dbstarll/game/internal/ro/model/general"
-	"strings"
 )
 
 type BuffModifier func(val float64) model.CharacterModifier
@@ -228,33 +227,6 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"技能延迟": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{SkillDelay: val})
 	},
-	"使用技能时SP消耗量": func(val float64) model.CharacterModifier {
-		return model.AddGeneral(&general.General{SpCost: val})
-	},
-	"所有技能SP消耗": func(val float64) model.CharacterModifier {
-		return model.AddGeneral(&general.General{SpCost: val})
-	},
-	"SP消耗": func(val float64) model.CharacterModifier {
-		return model.AddGeneral(&general.General{SpCost: val})
-	},
-	"Sp消耗": func(val float64) model.CharacterModifier {
-		return model.AddGeneral(&general.General{SpCost: val})
-	},
-	"但SP消耗": func(val float64) model.CharacterModifier {
-		return model.AddGeneral(&general.General{SpCost: val})
-	},
-	"SP消耗量": func(val float64) model.CharacterModifier {
-		return model.AddGeneral(&general.General{SpCost: val})
-	},
-	"Sp消耗量": func(val float64) model.CharacterModifier {
-		return model.AddGeneral(&general.General{SpCost: val})
-	},
-	"使用技能Sp消耗量": func(val float64) model.CharacterModifier {
-		return model.AddGeneral(&general.General{SpCost: val})
-	},
-	"使用技能时Sp消耗量": func(val float64) model.CharacterModifier {
-		return model.AddGeneral(&general.General{SpCost: val})
-	},
 	"法术普攻暴击概率": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{MagicOrdinaryCriticalRate: val})
 	},
@@ -383,6 +355,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"物伤减免": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{Resist: val})
 	},
+	"物理伤害减免": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{Resist: val})
+	},
 	"物伤防御": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{Resist: val})
 	},
@@ -422,6 +397,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		return model.AddGains(true, &model.Gains{Ignore: val})
 	},
 	"魔伤减免": func(val float64) model.CharacterModifier {
+		return model.AddGains(true, &model.Gains{Resist: val})
+	},
+	"魔法伤害减免": func(val float64) model.CharacterModifier {
 		return model.AddGains(true, &model.Gains{Resist: val})
 	},
 	"魔法减免": func(val float64) model.CharacterModifier {
@@ -973,13 +951,7 @@ func initModifier() {
 }
 
 func (b *Buff) find(key string, val float64, percentage bool) (model.CharacterModifier, bool) {
-	if strings.Index(key, "恢复") >= 0 {
-		return nil, true
-	} else if strings.Index(key, "消耗") >= 0 {
-		return nil, true
-	} else if strings.Index(key, "不包括自身") >= 0 {
-		return nil, true
-	} else if percentage {
+	if percentage {
 		if fn, exist := (*percentageBuffModifiers)[key]; exist {
 			return fn(val), true
 		} else {
