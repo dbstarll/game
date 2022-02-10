@@ -67,6 +67,9 @@ var buffModifiers = &map[string]BuffModifier{
 	"闪避": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{Dodge: int(val)})
 	},
+	"可变吟唱时间": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{SingElasticity: val})
+	},
 
 	// 物理增益
 	"物理攻击": func(val float64) model.CharacterModifier {
@@ -894,8 +897,15 @@ func initModifier() {
 			(*percentageBuffModifiers)[fmt.Sprintf("对%s魔物伤害", _race.Name())] = func(val float64) model.CharacterModifier {
 				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
 			}
+			(*percentageBuffModifiers)[fmt.Sprintf("%s增伤", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
+			}
+
 			//种族减伤%
 			(*percentageBuffModifiers)[fmt.Sprintf("%s减伤", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceResist(&map[race.Race]float64{_race: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("%s伤害减免", _race.Name())] = func(val float64) model.CharacterModifier {
 				return model.AddRaceResist(&map[race.Race]float64{_race: val})
 			}
 			(*percentageBuffModifiers)[fmt.Sprintf("受到%s魔物伤害", _race.Name())] = func(val float64) model.CharacterModifier {

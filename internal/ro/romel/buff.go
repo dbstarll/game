@@ -902,6 +902,9 @@ func (b *Buff) findEffect(key string, val float64, percentage bool) (model.Chara
 	} else if strings.Index(key, "消耗") >= 0 {
 		BuffIgnore++
 		return nil, nil
+	} else if strings.Index(key, "目标") >= 0 {
+		BuffIgnore++
+		return nil, nil
 	} else if strings.Index(key, "不包括自身") >= 0 {
 		BuffIgnore++
 		return nil, nil
@@ -923,10 +926,6 @@ func (b *Buff) findEffect(key string, val float64, percentage bool) (model.Chara
 	} else if strings.Index(key, "持续") >= 0 {
 		BuffIgnore++
 		return nil, nil
-		//} else if strings.Index(key, "每") >= 0 {
-		//	fmt.Printf("\t%s\n", key)
-		//	BuffIgnore++
-		//	return nil, nil
 		//} else if key == "获得基于移动速度的额外物理攻击加成，移动速度每提升1%" {
 		//	BuffIgnore++
 		//	return nil, errors.Errorf("[%t]%s -- %f", percentage, key, val)

@@ -34,6 +34,7 @@ type General struct {
 	DodgePer                    float64 //闪避%
 	SingPerFixed                float64 //固定吟唱时间%
 	SingPerElasticity           float64 //可变吟唱时间%
+	SingElasticity              float64 //可变吟唱时间
 	SkillCooling                float64 //技能冷却%
 	SkillDelay                  float64 //技能延迟%
 	Cure                        float64 //治疗加成%
