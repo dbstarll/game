@@ -57,6 +57,9 @@ var buffModifiers = &map[string]BuffModifier{
 	"普攻攻击力": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{Ordinary: int(val)})
 	},
+	"普通攻击力": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{Ordinary: int(val)})
+	},
 	"普攻攻击": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{Ordinary: int(val)})
 	},
@@ -141,6 +144,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"普攻伤害": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{OrdinaryDamage: val})
 	},
+	"普通攻击伤害": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{OrdinaryDamage: val})
+	},
 	"剑士系普通攻击伤害": func(val float64) model.CharacterModifier {
 		//TODO 限制剑士系
 		return model.AddGeneral(&general.General{OrdinaryDamage: val})
@@ -202,7 +208,13 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"攻击速度": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{AttackSpeed: val})
 	},
+	"攻速": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{AttackSpeed: val})
+	},
 	"移动速度": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{MoveSpeed: val})
+	},
+	"移速": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{MoveSpeed: val})
 	},
 	"命中": func(val float64) model.CharacterModifier {
@@ -312,6 +324,12 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 			model.AddGains(true, &model.Gains{Resist: val}),
 		)
 	},
+	"受到的伤害": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Resist: -val}),
+			model.AddGains(true, &model.Gains{Resist: -val}),
+		)
+	},
 
 	// 物理增益
 	"物理穿刺": func(val float64) model.CharacterModifier {
@@ -402,6 +420,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		return model.AddGains(true, &model.Gains{DefencePer: val})
 	},
 	"魔法伤害": func(val float64) model.CharacterModifier {
+		return model.AddGains(true, &model.Gains{Damage: val})
+	},
+	"魔法范围型技能伤害": func(val float64) model.CharacterModifier {
 		return model.AddGains(true, &model.Gains{Damage: val})
 	},
 	"忽视魔法防御": func(val float64) model.CharacterModifier {

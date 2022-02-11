@@ -883,7 +883,7 @@ func (b *Buff) parseEffect(effectStr string, rate int) (model.CharacterModifier,
 					return nil, errors.Wrapf(err, "parseEffect.ParseFloat: %s", effectStr)
 				} else {
 					switch suffix {
-					case "", "秒", "点", "效果":
+					case "", "秒", "点", "效果", "米":
 					default:
 						return nil, errors.Errorf("parseEffect.UnknownSuffix: %s -- [%t][%f]%s -- %s", key, percentage, floatVal, suffix, effectStr)
 					}
@@ -921,18 +921,44 @@ func (b *Buff) findEffect(key string, valExist bool, val float64, percentage boo
 	} else if strings.Index(key, "【") >= 0 {
 		BuffIgnore++
 		return nil, nil
-		//} else if idx := strings.Index(key, "提升"); !valExist && idx >= 0 {
-		//	prefix, suffix := key[:idx], key[idx+6:]
-		//	fmt.Printf("\t%s -- %s\n", prefix, suffix)
-		//	BuffIgnore++
-		//	return nil, nil
-		//} else if strings.Index(key, "持续") >= 0 {
-		//	fmt.Printf("\t%s\n", key)
-		//	BuffIgnore++
-		//	return nil, nil
-		//} else if key == "获得基于移动速度的额外物理攻击加成，移动速度每提升1%" {
-		//	BuffIgnore++
-		//	return nil, errors.Errorf("[%t]%s -- %f", percentage, key, val)
+	} else if strings.Index(key, "敌人") >= 0 {
+		BuffIgnore++
+		return nil, nil
+	} else if strings.Index(key, "攻击者") >= 0 {
+		BuffIgnore++
+		return nil, nil
+	} else if strings.Index(key, "真实伤害") >= 0 {
+		//fmt.Printf("\t%s\n", key)
+		BuffIgnore++
+		return nil, nil
+	} else if !valExist {
+		if idx := strings.Index(key, "获得"); idx >= 0 {
+			suffix := key[idx+6:]
+			if idx := strings.IndexAny(suffix, "0123456789"); idx < 0 {
+				BuffIgnore++
+				return nil, nil
+			} else if idx > 0 {
+				BuffTotal--
+				return b.findEffect(suffix, valExist, val, percentage)
+			} else if _, _, effect, err := b.parseFloat([]rune(suffix)); err != nil {
+				return nil, err
+			} else {
+				BuffTotal--
+				return b.parseEffect(fmt.Sprintf("%s+%s", effect, strings.TrimSuffix(suffix, effect)), 1)
+			}
+		} else if match, modifier, err := b.parsePlus(key, true, "提升", "提高"); match || err != nil {
+			return modifier, err
+		} else if match, modifier, err := b.parsePlus(key, false, "降低", "减低"); match || err != nil {
+			return modifier, err
+		} else {
+			//prefix, suffix := key[:idx], key[idx+6:]
+			//fmt.Printf("\t%s -- %s\n", prefix, suffix)
+			//	BuffIgnore++
+			//	return nil, nil
+			//} else if key == "获得基于移动速度的额外物理攻击加成，移动速度每提升1%" {
+			//	BuffIgnore++
+			//	return nil, errors.Errorf("[%t]%s -- %f", percentage, key, val)
+		}
 	}
 
 	if modifier, exist := b.find(key, val, percentage); exist {
@@ -947,10 +973,6 @@ func (b *Buff) findEffect(key string, valExist bool, val float64, percentage boo
 		BuffIgnore++
 		return nil, nil
 	} else {
-		//减低
-		//降低
-		//提升
-		//提高
 		BuffUnknown += 1
 		item := key
 		if percentage {
@@ -1012,4 +1034,43 @@ func (b *Buff) trimBracket(str string) (string, string) {
 		}
 	}
 	return str, ""
+}
+
+func (b *Buff) parsePlus(effect string, plus bool, keys ...string) (bool, model.CharacterModifier, error) {
+	plusChar := "+"
+	if !plus {
+		plusChar = "-"
+	}
+	for _, key := range keys {
+		if idx := strings.Index(effect, key); idx >= 0 {
+			prefix, suffix, subEffect := effect[:idx], effect[idx+len(key):], ""
+			if idxNum := strings.IndexAny(suffix, "0123456789"); idxNum < 0 {
+				BuffIgnore++
+				return true, nil, nil
+			} else if idxNum > 0 {
+				sub := suffix[:idxNum]
+				switch sub {
+				case "至", "为":
+					BuffIgnore++
+					return true, nil, nil
+				default:
+					subEffect = fmt.Sprintf("%s%s%s", sub, plusChar, suffix[idxNum:])
+				}
+			} else if _, _, sub, err := b.parseFloat([]rune(suffix)); err != nil {
+				return false, nil, err
+			} else {
+				switch sub {
+				case "", "秒", "点", "效果", "米":
+					subEffect = fmt.Sprintf("%s%s%s", prefix, plusChar, suffix)
+				default:
+					subEffect = fmt.Sprintf("%s%s%s", strings.TrimPrefix(sub, "点"), plusChar, strings.TrimSuffix(suffix, sub))
+				}
+			}
+
+			BuffTotal--
+			modifier, err := b.parseEffect(subEffect, 1)
+			return err != nil, modifier, err
+		}
+	}
+	return false, nil, nil
 }
