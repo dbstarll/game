@@ -46,6 +46,11 @@ var buffModifiers = &map[string]BuffModifier{
 	"暴击": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{Critical: int(val)})
 	},
+	"使暴击翻倍": func(val float64) model.CharacterModifier {
+		return func(character *model.Character) func() {
+			return model.AddGeneral(&general.General{Critical: character.Profits.General.Critical})(character)
+		}
+	},
 	"暴击防护": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{CriticalResist: int(val)})
 	},
@@ -102,6 +107,9 @@ var buffModifiers = &map[string]BuffModifier{
 			model.AddGains(false, &model.Gains{Defence: val}),
 			model.AddGains(true, &model.Gains{Defence: val}),
 		)
+	},
+	"避免陷入晕眩的状态": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{abnormal.Vertigo: 100})
 	},
 }
 
@@ -954,6 +962,9 @@ func initModifier() {
 				return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: 100})
 			}
 			(*buffModifiers)[fmt.Sprintf("不会陷入%s效果", _abnormal)] = func(float64) model.CharacterModifier {
+				return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: 100})
+			}
+			(*buffModifiers)[fmt.Sprintf("避免进入%s状态", _abnormal)] = func(float64) model.CharacterModifier {
 				return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{_abnormal: 100})
 			}
 		}

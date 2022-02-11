@@ -443,12 +443,10 @@ func (b *Buff) parseContinuedItem(item string) (bool, []model.CharacterModifier,
 	} else {
 		var modifiers []model.CharacterModifier
 		for _, effect := range effects {
-			if strings.IndexAny(effect, "0123456789") > 0 {
-				if modifier, err := b.parseEffect(effect, rate); err != nil {
-					return false, nil, err
-				} else if modifier != nil {
-					modifiers = append(modifiers, modifier)
-				}
+			if modifier, err := b.parseEffect(effect, rate); err != nil {
+				return false, nil, err
+			} else if modifier != nil {
+				modifiers = append(modifiers, modifier)
 			}
 		}
 		return true, modifiers, nil
@@ -548,6 +546,13 @@ func (b *Buff) parseContinuedTimes(effects []string) ([]string, int, int, int, e
 					after = append(after, effect)
 				default:
 					after = append(after, suffer)
+				}
+			}
+		} else if strings.Index(effect, "敌人") >= 0 {
+		} else if idxStart := strings.Index(effect, "、"); idxStart >= 0 {
+			if strings.HasPrefix(effect, "使用后") {
+				for _, sub := range strings.Split(effect[6:], "、") {
+					after = append(after, sub)
 				}
 			}
 		} else if len(effect) > 0 {
@@ -873,28 +878,30 @@ func (b *Buff) parseEffect(effectStr string, rate int) (model.CharacterModifier,
 			inBracket = false
 		case '+', '-':
 			if !inBracket && runeArray[idx+1] >= '0' && runeArray[idx+1] <= '9' {
-				key, val := string(runeArray[pos:idx]), string(runeArray[idx+1:])
-				val = strings.TrimSuffix(val, "%")
-				val = strings.TrimSuffix(val, "秒")
-				val = strings.TrimSuffix(val, "点")
-				if floatVal, err := strconv.ParseFloat(strings.TrimSpace(val), 64); err != nil {
-					zap.S().Warnf("parseEffect.ParseFloat: %s --- %s", val, effectStr)
+				key := string(runeArray[pos:idx])
+				if floatVal, percentage, suffix, err := b.parseFloat(runeArray[idx+1:]); err != nil {
+					return nil, errors.Wrapf(err, "parseEffect.ParseFloat: %s", effectStr)
 				} else {
+					switch suffix {
+					case "", "秒", "点", "效果":
+					default:
+						return nil, errors.Errorf("parseEffect.UnknownSuffix: %s -- [%t][%f]%s -- %s", key, percentage, floatVal, suffix, effectStr)
+					}
 					if rate > 1 {
 						floatVal *= float64(rate)
 					}
 					if char == '-' {
 						floatVal = -floatVal
 					}
-					return b.findEffect(key, floatVal, percentage)
+					return b.findEffect(key, true, floatVal, percentage)
 				}
 			}
 		}
 	}
-	return b.findEffect(effectNoBracket, 0, percentage)
+	return b.findEffect(effectNoBracket, false, 0, percentage)
 }
 
-func (b *Buff) findEffect(key string, val float64, percentage bool) (model.CharacterModifier, error) {
+func (b *Buff) findEffect(key string, valExist bool, val float64, percentage bool) (model.CharacterModifier, error) {
 	BuffTotal++
 	if strings.Index(key, "恢复") >= 0 {
 		BuffIgnore++
@@ -908,32 +915,49 @@ func (b *Buff) findEffect(key string, val float64, percentage bool) (model.Chara
 	} else if strings.Index(key, "不包括自身") >= 0 {
 		BuffIgnore++
 		return nil, nil
-	} else if !percentage && val == 0 && strings.HasSuffix(key, "时") {
-		BuffIgnore++
-		return nil, nil
 	} else if strings.HasSuffix(key, "技能倍率") {
 		BuffIgnore++
 		return nil, nil
-	} else if strings.HasPrefix(key, "【") {
+	} else if strings.Index(key, "【") >= 0 {
 		BuffIgnore++
 		return nil, nil
-	} else if strings.HasPrefix(key, "使【") {
-		BuffIgnore++
-		return nil, nil
-	} else if strings.HasPrefix(key, "使用【") {
-		BuffIgnore++
-		return nil, nil
-	} else if strings.Index(key, "持续") >= 0 {
-		BuffIgnore++
-		return nil, nil
+		//} else if idx := strings.Index(key, "提升"); !valExist && idx >= 0 {
+		//	prefix, suffix := key[:idx], key[idx+6:]
+		//	fmt.Printf("\t%s -- %s\n", prefix, suffix)
+		//	BuffIgnore++
+		//	return nil, nil
+		//} else if strings.Index(key, "持续") >= 0 {
+		//	fmt.Printf("\t%s\n", key)
+		//	BuffIgnore++
+		//	return nil, nil
 		//} else if key == "获得基于移动速度的额外物理攻击加成，移动速度每提升1%" {
 		//	BuffIgnore++
 		//	return nil, errors.Errorf("[%t]%s -- %f", percentage, key, val)
-	} else if modifier, exist := b.find(key, val, percentage); !exist {
+	}
+
+	if modifier, exist := b.find(key, val, percentage); exist {
+		if modifier == nil {
+			BuffIgnore++
+			return nil, nil
+		} else {
+			BuffDetected++
+			return modifier, nil
+		}
+	} else if !valExist && strings.IndexAny(key, "0123456789") < 0 {
+		BuffIgnore++
+		return nil, nil
+	} else {
+		//减低
+		//降低
+		//提升
+		//提高
 		BuffUnknown += 1
 		item := key
 		if percentage {
 			item = "[%]" + item
+		}
+		if valExist {
+			item = "[t]" + item
 		}
 		if oc, ok := Buffs[item]; ok {
 			Buffs[item] = oc + 1
@@ -941,12 +965,6 @@ func (b *Buff) findEffect(key string, val float64, percentage bool) (model.Chara
 			Buffs[item] = 1
 		}
 		return nil, nil
-	} else if modifier == nil {
-		BuffIgnore++
-		return nil, nil
-	} else {
-		BuffDetected++
-		return modifier, nil
 	}
 }
 
@@ -956,6 +974,30 @@ func (b *Buff) isEndOfDigit(s rune) bool {
 		return true
 	default:
 		return s >= '0' && s <= '9'
+	}
+}
+
+func (b *Buff) parseFloat(runeArray []rune) (float64, bool, string, error) {
+	percentage, val, suffix := false, string(runeArray), ""
+	for idx, char := range runeArray {
+		if char >= '0' && char <= '9' {
+			continue
+		} else if char == ' ' {
+			continue
+		} else if char == '.' {
+			continue
+		} else if char == '%' {
+			percentage, val, suffix = true, string(runeArray[:idx]), strings.TrimSpace(string(runeArray[idx+1:]))
+			break
+		} else {
+			percentage, val, suffix = false, string(runeArray[:idx]), strings.TrimSpace(string(runeArray[idx:]))
+			break
+		}
+	}
+	if floatVal, err := strconv.ParseFloat(strings.TrimSpace(val), 64); err != nil {
+		return 0, percentage, suffix, errors.WithStack(err)
+	} else {
+		return floatVal, percentage, suffix, nil
 	}
 }
 
