@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	_ "github.com/dbstarll/game/internal/logger"
-	"github.com/dbstarll/game/internal/ro/dimension/position"
 	"github.com/dbstarll/game/internal/ro/romel"
-	"go.uber.org/zap"
 	"sort"
 	"time"
 )
@@ -17,10 +15,10 @@ type BuffItem struct {
 
 func main() {
 	//updateApi()
-	detectBuffEffect2()
+	detectBuffEffect()
 }
 
-func detectBuffEffect2() {
+func detectBuffEffect() {
 	fmt.Printf("Buff Total: %d\n", romel.BuffTotal)
 	fmt.Printf("\t[%2.2f%%]Detected: %d\n", 100*float64(romel.BuffDetected)/float64(romel.BuffTotal), romel.BuffDetected)
 	fmt.Printf("\t[%2.2f%%]Unknown: %d\n", 100*float64(romel.BuffUnknown)/float64(romel.BuffTotal), romel.BuffUnknown)
@@ -43,78 +41,7 @@ func detectBuffEffect2() {
 		}
 	})
 	for idx, item := range items {
-		if idx > 20 {
-			break
-		}
-		fmt.Printf("占比：%2.4f%% - [%d]%s\n", 100*float64(item.count)/float64(romel.BuffUnknown), item.count, item.name)
-	}
-}
-
-func detectBuffEffect() {
-	cnt := make(map[position.Position]int)
-	if count, err := romel.Hats.Filter(func(item *romel.Hat) error {
-		token := item.Position
-		if ov, exist := cnt[token]; exist {
-			cnt[token] = ov + 1
-		} else {
-			cnt[token] = 1
-		}
-		//fmt.Printf("%s: %s\n", item.Name, item.Position)
-		return nil
-	}); err != nil {
-		zap.S().Errorf("%+v", err)
-	} else {
-		fmt.Printf("count: %d\n", count)
-		for token, c := range cnt {
-			fmt.Printf("\t%+v=%d\n", token, c)
-		}
-	}
-
-	cnt = make(map[position.Position]int)
-	if count, err := romel.Equips.Filter(func(item *romel.Equip) error {
-		token := item.Position
-		if ov, exist := cnt[token]; exist {
-			cnt[token] = ov + 1
-		} else {
-			cnt[token] = 1
-		}
-		//fmt.Printf("%s: %s\n", item.Name, item.Position)
-		return nil
-	}); err != nil {
-		zap.S().Errorf("%+v", err)
-	} else {
-		fmt.Printf("count: %d\n", count)
-		for token, c := range cnt {
-			fmt.Printf("\t%+v=%d\n", token, c)
-		}
-	}
-
-	cnt = make(map[position.Position]int)
-	if count, err := romel.Cards.Filter(func(item *romel.Card) error {
-		token := item.Position
-		if ov, exist := cnt[token]; exist {
-			cnt[token] = ov + 1
-		} else {
-			cnt[token] = 1
-		}
-		//fmt.Printf("%s: %s\n", item.Name, item.Position)
-		return nil
-	}); err != nil {
-		zap.S().Errorf("%+v", err)
-	} else {
-		fmt.Printf("count: %d\n", count)
-		for token, c := range cnt {
-			fmt.Printf("\t%+v=%d\n", token, c)
-		}
-	}
-
-	if count, err := romel.Pets.Filter(func(item *romel.Pet) error {
-		//fmt.Printf("%s: %s\n", item.Name, item.Position)
-		return nil
-	}); err != nil {
-		zap.S().Errorf("%+v", err)
-	} else {
-		fmt.Printf("count: %d\n", count)
+		fmt.Printf("%d.占比：%2.4f%% - [%d]%s\n", idx, 100*float64(item.count)/float64(romel.BuffUnknown), item.count, item.name)
 	}
 }
 
