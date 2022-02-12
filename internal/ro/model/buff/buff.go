@@ -228,6 +228,22 @@ func AddRaceResist(n float64) model.CharacterModifier {
 	})
 }
 
+//所有属性攻击+N
+func AddNatureAttack(n float64) model.CharacterModifier {
+	return model.AddNatureAttack(&map[nature.Nature]float64{
+		nature.Neutral: n,
+		nature.Earth:   n,
+		nature.Wind:    n,
+		nature.Water:   n,
+		nature.Fire:    n,
+		nature.Holy:    n,
+		nature.Dark:    n,
+		nature.Ghost:   n,
+		nature.Undead:  n,
+		nature.Poison:  n,
+	})
+}
+
 //力量料理A
 func StrA() model.CharacterModifier {
 	return model.Merge(

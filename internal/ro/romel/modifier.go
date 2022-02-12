@@ -89,6 +89,18 @@ var buffModifiers = &map[string]BuffModifier{
 	"物理攻击": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{Attack: val})
 	},
+	"增加自身物理攻击": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{Attack: val})
+	},
+	"自身物理攻击": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{Attack: val})
+	},
+	"获得物理攻击": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{Attack: val})
+	},
+	"使自身与所有生命体的物理攻击": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{Attack: val})
+	},
 	"物理攻击分别": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{Attack: val})
 	},
@@ -103,6 +115,9 @@ var buffModifiers = &map[string]BuffModifier{
 	"魔法攻击": func(val float64) model.CharacterModifier {
 		return model.AddGains(true, &model.Gains{Attack: val})
 	},
+	"增加自身魔法攻击": func(val float64) model.CharacterModifier {
+		return model.AddGains(true, &model.Gains{Attack: val})
+	},
 	"魔法防御": func(val float64) model.CharacterModifier {
 		return model.AddGains(true, &model.Gains{Defence: val})
 	},
@@ -115,6 +130,24 @@ var buffModifiers = &map[string]BuffModifier{
 		return model.Merge(
 			model.AddGains(false, &model.Gains{Defence: val}),
 			model.AddGains(true, &model.Gains{Defence: val}),
+		)
+	},
+	"物理防御和魔法防御": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Defence: val}),
+			model.AddGains(true, &model.Gains{Defence: val}),
+		)
+	},
+	"物理攻击和魔法攻击": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Attack: val}),
+			model.AddGains(true, &model.Gains{Attack: val}),
+		)
+	},
+	"物理攻击力与魔法攻击力": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Attack: val}),
+			model.AddGains(true, &model.Gains{Attack: val}),
 		)
 	},
 	"避免陷入晕眩的状态": func(val float64) model.CharacterModifier {
@@ -217,7 +250,13 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"攻速": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{AttackSpeed: val})
 	},
+	"且自身移动速度": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{MoveSpeed: val})
+	},
 	"移动速度": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{MoveSpeed: val})
+	},
+	"自身移动速度": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{MoveSpeed: val})
 	},
 	"移速": func(val float64) model.CharacterModifier {
@@ -276,6 +315,12 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 			model.AddGains(true, &model.Gains{Spike: val}),
 		)
 	},
+	"物理穿刺和魔法穿刺": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Spike: val}),
+			model.AddGains(true, &model.Gains{Spike: val}),
+		)
+	},
 	"物理和魔法防御": func(val float64) model.CharacterModifier {
 		return model.Merge(
 			model.AddGains(false, &model.Gains{DefencePer: val}),
@@ -312,6 +357,12 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 			model.AddGains(true, &model.Gains{Damage: val}),
 		)
 	},
+	"在隐匿的状态下，自身物理、魔法伤害": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Damage: val}),
+			model.AddGains(true, &model.Gains{Damage: val}),
+		)
+	},
 	"最终伤害": func(val float64) model.CharacterModifier {
 		return model.Merge(
 			model.AddGains(false, &model.Gains{Damage: val}),
@@ -331,6 +382,12 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		)
 	},
 	"物理、魔法伤害减免": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Resist: val}),
+			model.AddGains(true, &model.Gains{Resist: val}),
+		)
+	},
+	"冰冻状态下，物伤、魔伤减免": func(val float64) model.CharacterModifier {
 		return model.Merge(
 			model.AddGains(false, &model.Gains{Resist: val}),
 			model.AddGains(true, &model.Gains{Resist: val}),
@@ -408,6 +465,12 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"物理防御": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{DefencePer: val})
 	},
+	"展开绝对领域：物理防御": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{DefencePer: val})
+	},
+	"异常状态下，物理防御": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{DefencePer: val})
+	},
 	"则物理防御": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{DefencePer: val})
 	},
@@ -421,6 +484,12 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		return model.AddGains(false, &model.Gains{NearDamage: val})
 	},
 	"忽视物理防御": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{Ignore: val})
+	},
+	"洞察：忽视物理防御": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{Ignore: val})
+	},
+	"忽视物防": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{Ignore: val})
 	},
 	"物伤减免": func(val float64) model.CharacterModifier {
@@ -470,7 +539,22 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"魔法伤害": func(val float64) model.CharacterModifier {
 		return model.AddGains(true, &model.Gains{Damage: val})
 	},
+	"自身魔法伤害": func(val float64) model.CharacterModifier {
+		return model.AddGains(true, &model.Gains{Damage: val})
+	},
+	"获得魔法伤害": func(val float64) model.CharacterModifier {
+		return model.AddGains(true, &model.Gains{Damage: val})
+	},
 	"魔法范围型技能伤害": func(val float64) model.CharacterModifier {
+		return model.AddGains(true, &model.Gains{Damage: val})
+	},
+	"提升贤者系范围型技能伤害": func(val float64) model.CharacterModifier {
+		return model.AddGains(true, &model.Gains{Damage: val})
+	},
+	"法师系范围型技能伤害": func(val float64) model.CharacterModifier {
+		return model.AddGains(true, &model.Gains{Damage: val})
+	},
+	"魔语者系范围型技能伤害": func(val float64) model.CharacterModifier {
 		return model.AddGains(true, &model.Gains{Damage: val})
 	},
 	"忽视魔法防御": func(val float64) model.CharacterModifier {
@@ -532,6 +616,15 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 			nature.Dark:    val,
 			nature.Neutral: val,
 		})
+	},
+	"水属性和地属性伤害": func(val float64) model.CharacterModifier {
+		return model.AddNatureAttack(&map[nature.Nature]float64{
+			nature.Water: val,
+			nature.Earth: val,
+		})
+	},
+	"所有属性攻击": func(val float64) model.CharacterModifier {
+		return buff.AddNatureAttack(val)
 	},
 
 	// 属性增伤%
@@ -710,6 +803,12 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 			nature.Poison: -val,
 		})
 	},
+	"使自身5米范围内的队友（包括自身）受到地、火属性伤害": func(val float64) model.CharacterModifier {
+		return model.AddNatureResist(&map[nature.Nature]float64{
+			nature.Earth: -val,
+			nature.Fire:  -val,
+		})
+	},
 
 	// 种族增伤%
 	"对全种族伤害": func(val float64) model.CharacterModifier {
@@ -737,6 +836,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		return model.AddRaceDamage(&map[race.Race]float64{race.Plant: val})
 	},
 	"龙形种族加伤": func(val float64) model.CharacterModifier {
+		return model.AddRaceDamage(&map[race.Race]float64{race.Dragon: val})
+	},
+	"对龙族种族增伤": func(val float64) model.CharacterModifier {
 		return model.AddRaceDamage(&map[race.Race]float64{race.Dragon: val})
 	},
 	"对动物、恶魔种族魔物伤害": func(val float64) model.CharacterModifier {
@@ -906,6 +1008,52 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 			abnormal.Frozen:  val,
 		})
 	},
+	"定身、冰冻抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
+			abnormal.Fixed:  val,
+			abnormal.Frozen: val,
+		})
+	},
+	"中毒抵抗和冰冻抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
+			abnormal.Poisoning: val,
+			abnormal.Frozen:    val,
+		})
+	},
+	"恐惧抵抗和黑暗抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
+			abnormal.Fear: val,
+			abnormal.Dark: val,
+		})
+	},
+	"恐惧抵抗和冰冻抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
+			abnormal.Fear:   val,
+			abnormal.Frozen: val,
+		})
+	},
+	"晕眩抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{abnormal.Vertigo: val})
+	},
+	"晕眩抵抗和定身抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
+			abnormal.Vertigo: val,
+			abnormal.Fixed:   val,
+		})
+	},
+	"晕眩抵抗和恐惧抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
+			abnormal.Vertigo: val,
+			abnormal.Fear:    val,
+		})
+	},
+	"晕眩抵抗、恐惧抵抗和石化抵抗": func(val float64) model.CharacterModifier {
+		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
+			abnormal.Vertigo: val,
+			abnormal.Fear:    val,
+			abnormal.Petrify: val,
+		})
+	},
 	"异常状态抵抗": func(val float64) model.CharacterModifier {
 		return model.AddAbnormalResist(&map[abnormal.Abnormal]float64{
 			abnormal.Poisoning: val,
@@ -938,8 +1086,17 @@ func initModifier() {
 			(*percentageBuffModifiers)[fmt.Sprintf("%s属性攻击", _nature)] = func(val float64) model.CharacterModifier {
 				return model.AddNatureAttack(&map[nature.Nature]float64{_nature: val})
 			}
+			(*percentageBuffModifiers)[fmt.Sprintf("自身%s属性攻击", _nature)] = func(val float64) model.CharacterModifier {
+				return model.AddNatureAttack(&map[nature.Nature]float64{_nature: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("%s属性攻击", _nature)] = func(val float64) model.CharacterModifier {
+				return model.AddNatureAttack(&map[nature.Nature]float64{_nature: val})
+			}
 			//属性增伤%
 			(*percentageBuffModifiers)[fmt.Sprintf("对%s属性魔物伤害", _nature)] = func(val float64) model.CharacterModifier {
+				return model.AddNatureDamage(&map[nature.Nature]float64{_nature: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s属性魔物增伤", _nature)] = func(val float64) model.CharacterModifier {
 				return model.AddNatureDamage(&map[nature.Nature]float64{_nature: val})
 			}
 			//属性减伤%
@@ -977,6 +1134,9 @@ func initModifier() {
 			(*percentageBuffModifiers)[fmt.Sprintf("%s增伤", _race.Name())] = func(val float64) model.CharacterModifier {
 				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
 			}
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s增伤", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
+			}
 
 			//种族减伤%
 			(*percentageBuffModifiers)[fmt.Sprintf("%s减伤", _race.Name())] = func(val float64) model.CharacterModifier {
@@ -1005,6 +1165,12 @@ func initModifier() {
 				return model.AddShapeDamage(&map[shape.Shape]float64{_shape: val})
 			}
 			(*percentageBuffModifiers)[fmt.Sprintf("对%s魔物的伤害", _shape)] = func(val float64) model.CharacterModifier {
+				return model.AddShapeDamage(&map[shape.Shape]float64{_shape: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("%s体型增伤", _shape)] = func(val float64) model.CharacterModifier {
+				return model.AddShapeDamage(&map[shape.Shape]float64{_shape: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s体型魔物增伤", _shape)] = func(val float64) model.CharacterModifier {
 				return model.AddShapeDamage(&map[shape.Shape]float64{_shape: val})
 			}
 			//体型减伤%

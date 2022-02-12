@@ -958,6 +958,9 @@ func (b *Buff) findEffect(key string, valExist bool, val float64, percentage boo
 		//fmt.Printf("\t%s\n", key)
 		BuffIgnore++
 		return nil, nil
+		//} else if key == "念属性伤害" {
+		//	BuffIgnore++
+		//	return nil, errors.Errorf("[%t]%s -- %f", percentage, key, val)
 	} else if !valExist {
 		if idx := strings.Index(key, "获得"); idx >= 0 {
 			suffix := key[idx+6:]
@@ -977,13 +980,13 @@ func (b *Buff) findEffect(key string, valExist bool, val float64, percentage boo
 			return modifier, err
 		} else if match, modifier, err := b.parsePlus(key, false, "降低", "减低"); match || err != nil {
 			return modifier, err
+			//} else if key == "念属性伤害" {
+			//	BuffIgnore++
+			//	return nil, errors.Errorf("[%t]%s -- %f", percentage, key, val)
 			//prefix, suffix := key[:idx], key[idx+6:]
 			//fmt.Printf("\t%s -- %s\n", prefix, suffix)
 			//	BuffIgnore++
 			//	return nil, nil
-			//} else if key == "提升30点敏捷" {
-			//	BuffIgnore++
-			//	return nil, errors.Errorf("[%t]%s -- %f", percentage, key, val)
 		}
 	}
 
