@@ -45,6 +45,8 @@ type General struct {
 	JobExp                      float64 //击杀魔物Job经验%
 	Player                      float64 //玩家增伤%
 	PlayerResist                float64 //玩家减伤%
+	Zeny                        int     //Zeny
+	Bag                         int     //包包格子
 }
 
 func (d *General) Add(incr *General) {

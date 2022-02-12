@@ -78,6 +78,12 @@ var buffModifiers = &map[string]BuffModifier{
 	"可变吟唱时间": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{SingElasticity: val})
 	},
+	"Zeny": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{Zeny: int(val)})
+	},
+	"包包格子": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{Bag: int(val)})
+	},
 
 	// 物理增益
 	"物理攻击": func(val float64) model.CharacterModifier {
@@ -264,6 +270,12 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	},
 
 	// 物理、魔法兼得的增益
+	"物理和魔法穿刺": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Spike: val}),
+			model.AddGains(true, &model.Gains{Spike: val}),
+		)
+	},
 	"物理和魔法防御": func(val float64) model.CharacterModifier {
 		return model.Merge(
 			model.AddGains(false, &model.Gains{DefencePer: val}),
@@ -313,6 +325,36 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		)
 	},
 	"物伤、魔伤减免": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Resist: val}),
+			model.AddGains(true, &model.Gains{Resist: val}),
+		)
+	},
+	"物理、魔法伤害减免": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Resist: val}),
+			model.AddGains(true, &model.Gains{Resist: val}),
+		)
+	},
+	"物理和魔法伤害减免": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Resist: val}),
+			model.AddGains(true, &model.Gains{Resist: val}),
+		)
+	},
+	"物伤减免与魔伤减免": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Resist: val}),
+			model.AddGains(true, &model.Gains{Resist: val}),
+		)
+	},
+	"物伤减免和魔伤减免": func(val float64) model.CharacterModifier {
+		return model.Merge(
+			model.AddGains(false, &model.Gains{Resist: val}),
+			model.AddGains(true, &model.Gains{Resist: val}),
+		)
+	},
+	"物理伤害减免和魔法伤害减免": func(val float64) model.CharacterModifier {
 		return model.Merge(
 			model.AddGains(false, &model.Gains{Resist: val}),
 			model.AddGains(true, &model.Gains{Resist: val}),
@@ -384,8 +426,14 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"物伤减免": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{Resist: val})
 	},
+	"但物伤减免": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{Resist: val})
+	},
 	"物理伤害减免": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{Resist: val})
+	},
+	"精炼物伤减免": func(val float64) model.CharacterModifier {
+		return model.AddGains(false, &model.Gains{RefineResist: val})
 	},
 	"物伤防御": func(val float64) model.CharacterModifier {
 		return model.AddGains(false, &model.Gains{Resist: val})

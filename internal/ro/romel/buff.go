@@ -3,6 +3,7 @@ package romel
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ro/model"
+	"github.com/dbstarll/game/internal/ro/model/general"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"strconv"
@@ -151,6 +152,8 @@ func (b *Buff) parseItem(item string) ([]model.CharacterModifier, error) {
 	} else if match, modifiers, err := b.parseConditionItem(item); match || err != nil {
 		return modifiers, err
 	} else if match, modifiers, err := b.parsePerQualityItem(item); match || err != nil {
+		return modifiers, err
+	} else if match, modifiers, err := b.parseMultiplyItem(item); match || err != nil {
 		return modifiers, err
 	} else {
 		return b.parseEffects(item, 1)
@@ -839,6 +842,30 @@ func (b *Buff) parsePetEffect(effectStr string, plus bool) (model.CharacterModif
 	}
 }
 
+func (b *Buff) parseMultiplyItem(item string) (bool, []model.CharacterModifier, error) {
+	if idx := strings.IndexAny(item, "×*"); idx < 0 {
+		return false, nil, nil
+	}
+	switch item {
+	case "增加魔法攻击×0.3的普攻攻击力":
+		m := func(character *model.Character) func() {
+			rate := character.Profits.Gains(true).Attack * 0.3
+			return model.AddGeneral(&general.General{Ordinary: int(rate)})(character)
+		}
+		return true, []model.CharacterModifier{m}, nil
+	case "触发触手攻击，普通攻击的伤害增加BaseLv×10":
+	case "流血状态下增加（BaseLv*3）的普攻攻击力":
+		modifiers, err := b.parseEffects("普攻攻击力+510", 1)
+		return err == nil, modifiers, err
+	case "额外造成自身（物理攻击+魔法攻击）*10%的真实伤害":
+	default:
+		if strings.Index(item, "攻击") > 0 {
+			return false, nil, errors.Errorf("parseMultiplyItem: %s", item)
+		}
+	}
+	return true, nil, nil
+}
+
 func (b *Buff) parseEffects(effectStr string, rate int) ([]model.CharacterModifier, error) {
 	var modifiers []model.CharacterModifier
 	runeArray, pos, inBracket := []rune(effectStr), 0, false
@@ -946,16 +973,15 @@ func (b *Buff) findEffect(key string, valExist bool, val float64, percentage boo
 				BuffTotal--
 				return b.parseEffect(fmt.Sprintf("%s+%s", effect, strings.TrimSuffix(suffix, effect)), 1)
 			}
-		} else if match, modifier, err := b.parsePlus(key, true, "提升", "提高"); match || err != nil {
+		} else if match, modifier, err := b.parsePlus(key, true, "提升", "提高", "额外增加", "增加"); match || err != nil {
 			return modifier, err
 		} else if match, modifier, err := b.parsePlus(key, false, "降低", "减低"); match || err != nil {
 			return modifier, err
-		} else {
 			//prefix, suffix := key[:idx], key[idx+6:]
 			//fmt.Printf("\t%s -- %s\n", prefix, suffix)
 			//	BuffIgnore++
 			//	return nil, nil
-			//} else if key == "获得基于移动速度的额外物理攻击加成，移动速度每提升1%" {
+			//} else if key == "提升30点敏捷" {
 			//	BuffIgnore++
 			//	return nil, errors.Errorf("[%t]%s -- %f", percentage, key, val)
 		}
@@ -1069,7 +1095,7 @@ func (b *Buff) parsePlus(effect string, plus bool, keys ...string) (bool, model.
 
 			BuffTotal--
 			modifier, err := b.parseEffect(subEffect, 1)
-			return err != nil, modifier, err
+			return err == nil, modifier, err
 		}
 	}
 	return false, nil, nil
