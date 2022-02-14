@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RO计算器</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script>
+        $(function () {
+            $("#tabs").tabs();
+
+            $.post('/player/load').done(function (data) {
+                console.log('done', data);
+            }).fail(function (xhr, status, errorThrown) {
+                console.log("Error: " + errorThrown);
+                console.log("Status: " + status);
+                console.dir(xhr);
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-manual">冒险手册</a></li>
+        <li><a href="#tabs-pray">女神祈祷</a></li>
+        <li><a href="#tabs-blessing">女神祝福</a></li>
+        <li><a href="#tabs-quality">素质加点</a></li>
+        <li><a href="#tabs-rune">阿萨神碑</a></li>
+        <li><a href="#tabs-gem">符文之匣</a></li>
+        <li><a href="#tabs-equip">随身装备</a></li>
+    </ul>
+    <div id="tabs-manual">
+    </div>
+    <div id="tabs-pray">
+    </div>
+    <div id="tabs-blessing">
+    </div>
+    <div id="tabs-quality">
+    </div>
+    <div id="tabs-rune">
+    </div>
+    <div id="tabs-gem">
+    </div>
+    <div id="tabs-equip">
+    </div>
+</div>
+</body>
+</html>
