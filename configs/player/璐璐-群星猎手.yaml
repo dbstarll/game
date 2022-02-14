@@ -1,0 +1,127 @@
+character:
+  job: 群星猎手
+  level:
+    base: 170
+    job: 80
+  quality:
+    str: 42
+    agi: 241
+    vit: 29
+    int: 86
+    dex: 352
+    luk: 199
+  detectByPanel: #根据面板来预测装备攻击/装备防御
+    atk: 10965 #面板物理攻击
+    def: 1919 #面板物理防御
+    matk: 1675 #面板魔法攻击
+    mdef: 654 #面板魔法防御
+  profits:
+    general:
+      critical: 73 #暴击
+      criticalDamage: 133.9 #暴伤%
+      criticalResist: 52 #暴击防护
+      criticalDamageResist: 0 #爆伤减免%
+      ordinary: 0 #普攻攻击力
+      ordinaryDamage: 25 #普攻伤害加成%
+      ordinaryResist: 12.4 #普攻伤害减免%
+      skill: 0 #技能伤害加成%
+      skillResist: 5 #技能伤害减免%
+      mvp: 10 #MVP增伤%
+      mvpResist: 0 #MVP减伤%
+      noMvp: 10 #普通魔物增伤%
+      noMvpResist: 0 #普通魔物减伤%
+      moveSpeed: 0 #移动速度%
+      attackSpeed: 0 #攻击速度%
+    physical: #物理属性
+      attack: 0 #攻击
+      defence: 0 #防御
+      spike: 37 #物理穿刺
+      attackPer: 51.5 #物理攻击%
+      defencePer: 46 #物理防御%
+      damage: 53 #物伤加成%
+      nearDamage: 0 #近战物理伤害%
+      remoteDamage: 0 #远程物理伤害%
+      ignore: 4.5 #忽视物防%
+      resist: 28 #物伤减免%
+      nearResist: 0 #近战物理伤害减免%
+      remoteResist: 0 #远程物理伤害减免%
+      refine: 1288 #精炼物攻
+      refineResist: 31.5 #精炼物免%
+    magical: #魔法属性
+      attack: 0 #攻击
+      defence: 0 #防御
+      spike: 1 #魔法穿刺
+      attackPer: 30 #魔法攻击%
+      defencePer: 29 #魔法防御%
+      damage: 2 #魔伤加成%
+      ignore: 1.5 #忽视魔防%
+      resist: 26.7 #魔伤减免%
+      refine: 84 #精炼魔攻
+      refineResist: 12 #精炼魔免%
+    refine: #装备和首饰精炼等级
+      weapon: 0
+      ring1: 0
+      ring2: 0
+    natureAttack: #属性-技能增强
+      风: 51
+      地: 19.5
+      火: 32
+      水: 4
+      无: 0
+      圣: 11
+      暗: 0
+      念: 3
+      毒: 0
+      不死: 0
+    natureDamage: #属性-攻击增加
+      风: 6
+      地: 7
+      水: 69
+      火: 7
+      无: 0
+      圣: 6
+      暗: 1
+      念: 2
+      毒: 1
+      不死: 0
+    natureResist: #属性-伤害减免
+      风: 0
+      地: 2
+      水: 15
+      火: 0
+      无: 1
+      圣: 0
+      暗: 4
+      念: 0
+      不死: 0
+      毒: 0
+    raceDamage: #种族-攻击增加
+      动物: 24.4
+      人形: 6.4
+      恶魔: 7.4
+      植物: 5.4
+      不死: 11.4
+      无形: 5.4
+      鱼贝: 10.4
+      天使: 5.4
+      昆虫: 18.4
+      龙: 7.4
+    raceResist: #种族-伤害减免
+      动物: 7.4
+      人形: 5.4
+      恶魔: 6.4
+      植物: 5.4
+      不死: 9.4
+      无形: 5.4
+      鱼贝: 5.4
+      天使: 5.4
+      昆虫: 5.4
+      龙: 5.4
+    shapeDamage: #体型-攻击增强
+      小型: 0
+      中型: 0
+      大型: 0
+    shapeResist: #体型-伤害减免
+      小型: 1
+      中型: 0
+      大型: 0
