@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	_ "github.com/dbstarll/game/internal/logger"
+	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/dbstarll/game/internal/ro/romel"
 	"sort"
-	"time"
 )
 
 type BuffItem struct {
@@ -14,8 +14,8 @@ type BuffItem struct {
 }
 
 func main() {
-	//updateApi()
-	detectBuffEffect()
+	updateApi()
+	//detectBuffEffect()
 }
 
 func detectBuffEffect() {
@@ -62,6 +62,11 @@ func updateApi() {
 	if err := getMonsterList(api); err != nil {
 		fmt.Printf("err: %+v\n", err)
 	}
+	for _, weapon := range weapon.Weapons {
+		if err := getEquipListWithArms(api, weapon); err != nil {
+			fmt.Printf("err: %+v\n", err)
+		}
+	}
 }
 
 func getCardList(api *romel.RomelApi) error {
@@ -69,7 +74,6 @@ func getCardList(api *romel.RomelApi) error {
 		return err
 	} else {
 		for page := 2; page <= result.Data.PageCount; page++ {
-			time.Sleep(time.Second * 10)
 			if _, err := api.GetCardList(page); err != nil {
 				return err
 			}
@@ -83,7 +87,6 @@ func getHatList(api *romel.RomelApi) error {
 		return err
 	} else {
 		for page := 2; page <= result.Data.PageCount; page++ {
-			time.Sleep(time.Second * 10)
 			if _, err := api.GetHatList(page); err != nil {
 				return err
 			}
@@ -97,8 +100,20 @@ func getEquipList(api *romel.RomelApi) error {
 		return err
 	} else {
 		for page := 2; page <= result.Data.PageCount; page++ {
-			time.Sleep(time.Second * 10)
 			if _, err := api.GetEquipList(page); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+}
+
+func getEquipListWithArms(api *romel.RomelApi, arms weapon.Weapon) error {
+	if result, err := api.GetEquipListWithArms(1, arms); err != nil {
+		return err
+	} else {
+		for page := 2; page <= result.Data.PageCount; page++ {
+			if _, err := api.GetEquipListWithArms(page, arms); err != nil {
 				return err
 			}
 		}
@@ -111,7 +126,6 @@ func getPetList(api *romel.RomelApi) error {
 		return err
 	} else {
 		for page := 2; page <= result.Data.PageCount; page++ {
-			time.Sleep(time.Second * 10)
 			if _, err := api.GetPetList(page); err != nil {
 				return err
 			}
@@ -125,7 +139,6 @@ func getMonsterList(api *romel.RomelApi) error {
 		return err
 	} else {
 		for page := 2; page <= result.Data.PageCount; page++ {
-			time.Sleep(time.Second * 10)
 			if _, err := api.GetMonsterList(page); err != nil {
 				return err
 			}

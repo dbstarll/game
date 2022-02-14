@@ -2,9 +2,11 @@ package romel
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/dbstarll/game/internal/ro/dimension/job"
 	"github.com/dbstarll/game/internal/ro/dimension/position"
 	"github.com/dbstarll/game/internal/ro/dimension/quality"
+	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/pkg/errors"
 	"log"
 	"strings"
@@ -23,6 +25,7 @@ type Equip struct {
 	Rank       quality.Quality   `json:"rank"`
 	Job        *[]job.Job        `json:"job"`
 	Position   position.Position `json:"position"`
+	Arms       weapon.Weapon     `json:"arms"`
 	Effect     *Buff             `json:"effect"`
 	Buff       *Buff             `json:"buff"`
 	IsCompose  int               `json:"isCompose"`
@@ -53,6 +56,22 @@ func loadEquips() (*equips, error) {
 		return nil, err
 	} else {
 		log.Printf("load %d equips from %s", equips.Size(), root)
+		for _, arms := range weapon.Weapons {
+			if err := iterate(fmt.Sprintf("%s/%d", root, arms.Code()), func(item map[string]interface{}, data []byte) error {
+				if id, exist := item["id"]; exist {
+					if idStr, ok := id.(string); ok {
+						if equip, exist := equips.ids[idStr]; exist {
+							equip.Arms = arms
+						}
+					}
+				}
+				return nil
+			}); err != nil {
+				return nil, err
+			} else {
+				log.Printf("load %d %s from %s/%d", equips.SizeOfArms(arms), arms, root, arms.Code())
+			}
+		}
 		return equips, nil
 	}
 }
@@ -91,6 +110,15 @@ func (e *equips) Size() int {
 	return len(e.ids)
 }
 
+func (e *equips) SizeOfArms(arms weapon.Weapon) int {
+	count, _ := e.Filter(func(equip *Equip) error {
+		return nil
+	}, func(filter *Equip) {
+		filter.Arms = arms
+	})
+	return count
+}
+
 func (e *equips) Get(name string) *Equip {
 	return e.names[name]
 }
@@ -125,6 +153,8 @@ func (e *Equip) match(filter *Equip) bool {
 	if filter.Rank > quality.Unlimited && filter.Rank != e.Rank {
 		return false
 	} else if filter.Position > position.Unlimited && filter.Position != e.Position {
+		return false
+	} else if filter.Arms > weapon.Unlimited && filter.Arms != e.Arms {
 		return false
 	} else if filter.IsCompose >= 0 && filter.IsCompose != e.IsCompose {
 		return false

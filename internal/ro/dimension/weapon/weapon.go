@@ -128,3 +128,7 @@ func (w Weapon) IsRemote(j job.Job) bool {
 		return false
 	}
 }
+
+func (w Weapon) Code() int {
+	return int(w)
+}

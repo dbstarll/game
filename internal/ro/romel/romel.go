@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -31,8 +32,34 @@ type Query struct {
 	dataJson string
 }
 
+type Pager interface {
+	getPage() int
+	getDir() string
+}
+
 type Page struct {
 	Page int `json:"page"`
+}
+
+func (p *Page) getPage() int {
+	return p.Page
+}
+
+func (p *Page) getDir() string {
+	return ""
+}
+
+type PageAndArms struct {
+	Page int `json:"page"`
+	Arms int `json:"arms"`
+}
+
+func (p *PageAndArms) getPage() int {
+	return p.Page
+}
+
+func (p *PageAndArms) getDir() string {
+	return fmt.Sprintf("/%d", p.Arms)
 }
 
 type Result struct {
@@ -60,15 +87,19 @@ func NewRomelApi(secret string) *RomelApi {
 }
 
 func (a *RomelApi) GetCardList(page int) (*Result, error) {
-	return a.getListAndSave("card", page, Cards.Size())
+	return a.getListAndSave("card", &Page{Page: page}, Cards.Size())
 }
 
 func (a *RomelApi) GetHatList(page int) (*Result, error) {
-	return a.getListAndSave("hat", page, Hats.Size())
+	return a.getListAndSave("hat", &Page{Page: page}, Hats.Size())
 }
 
 func (a *RomelApi) GetEquipList(page int) (*Result, error) {
-	return a.getListAndSave("equip", page, Equips.Size())
+	return a.getListAndSave("equip", &Page{Page: page}, Equips.Size())
+}
+
+func (a *RomelApi) GetEquipListWithArms(page int, arms weapon.Weapon) (*Result, error) {
+	return a.getListAndSave("equip", &PageAndArms{Page: page, Arms: arms.Code()}, Equips.SizeOfArms(arms))
 }
 
 func (a *RomelApi) GetPetList(page int) (*Result, error) {
@@ -79,13 +110,14 @@ func (a *RomelApi) GetMonsterList(page int) (*Result, error) {
 	return a.getListAndSave2("monster", page, Monsters.Size())
 }
 
-func (a *RomelApi) getListAndSave(list string, page, check int) (*Result, error) {
-	log.Printf("getListAndSave: %s-%d", list, page)
+func (a *RomelApi) getListAndSave(list string, data Pager, check int) (*Result, error) {
+	log.Printf("getListAndSave: %s-%+v", list, data)
+	time.Sleep(time.Second * 5)
 	query := &Query{
 		apiId:    a.apiId,
 		version:  a.version,
 		language: a.language,
-		data:     &Page{Page: page},
+		data:     data,
 	}
 
 	if err := query.signature(a.apiSecret); err != nil {
@@ -107,14 +139,14 @@ func (a *RomelApi) getListAndSave(list string, page, check int) (*Result, error)
 		} else if err := json.Unmarshal(body, result); err != nil {
 			return nil, err
 		} else if result.Data.Total == check {
-			log.Printf("getListAndSave: %s-%d -- not changed", list, page)
+			log.Printf("getListAndSave: %s-%+v -- not changed", list, data)
 			result.Data.PageCount = 0
 			return result, nil
-		} else if err := ioutil.WriteFile(fmt.Sprintf("configs/romel/%s/%sList-%03d.json", list, list, page), body, 0644); err != nil {
+		} else if err := ioutil.WriteFile(fmt.Sprintf("configs/romel/%s%s/%sList-%03d.json", list, data.getDir(), list, data.getPage()), body, 0644); err != nil {
 			return nil, err
 		} else {
-			if page == 1 {
-				log.Printf("getListAndSave: %s-%d -- updated[%d]: %d --> %d", list, page, result.Data.PageCount, check, result.Data.Total)
+			if data.getPage() == 1 {
+				log.Printf("getListAndSave: %s-%+v -- updated[%d]: %d --> %d", list, data, result.Data.PageCount, check, result.Data.Total)
 			}
 			return result, nil
 		}
@@ -123,6 +155,7 @@ func (a *RomelApi) getListAndSave(list string, page, check int) (*Result, error)
 
 func (a *RomelApi) getListAndSave2(list string, page, check int) (*Result, error) {
 	log.Printf("getListAndSave2: %s-%d", list, page)
+	time.Sleep(time.Second * 5)
 	query := &Query{
 		apiId:    a.apiId,
 		version:  a.version,

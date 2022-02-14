@@ -13,17 +13,19 @@ func iterate(root string, fn func(item map[string]interface{}, data []byte) erro
 		return errors.WithStack(err)
 	} else {
 		for _, file := range files {
-			result := &Result{}
-			if data, err := ioutil.ReadFile(root + "/" + file.Name()); err != nil {
-				return errors.WithStack(err)
-			} else if err := json.Unmarshal(data, result); err != nil {
-				return errors.WithStack(err)
-			} else {
-				for _, item := range result.Data.List {
-					if jsonItem, err := json.Marshal(item); err != nil {
-						return errors.WithStack(err)
-					} else if err := fn(item, jsonItem); err != nil {
-						return err
+			if !file.IsDir() {
+				result := &Result{}
+				if data, err := ioutil.ReadFile(root + "/" + file.Name()); err != nil {
+					return errors.WithStack(err)
+				} else if err := json.Unmarshal(data, result); err != nil {
+					return errors.WithStack(err)
+				} else {
+					for _, item := range result.Data.List {
+						if jsonItem, err := json.Marshal(item); err != nil {
+							return errors.WithStack(err)
+						} else if err := fn(item, jsonItem); err != nil {
+							return err
+						}
 					}
 				}
 			}
