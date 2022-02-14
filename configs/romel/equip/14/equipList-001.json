@@ -1,0 +1,158 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1644809454,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "124.74.160.162",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 1,
+    "pageSize": 10,
+    "pageCount": 1,
+    "total": 7,
+    "list": [
+      {
+        "id": "44609",
+        "name": "百鬼封尽·神铸",
+        "icon": "item_44609",
+        "rank": 4,
+        "job": [
+          "163",
+          "164",
+          "165"
+        ],
+        "position": 14,
+        "effect": "魔法攻击+800\n物理攻击+800",
+        "buff": "力量+20\n智力+20\n全能力+20\n移动速度+15%\n忽视物理、魔法防御+25%\n物理、魔法伤害+20%\n人形种族伤害+50%\n生命上限+32000\n物伤减免+10%，魔伤减免+10%\n获得技能【地缚法印】：施展一道法印，限制周围9m内所有敌人，使其物理攻击强制无法命中，同时自身进入无敌状态，持续6秒，技能冷却时间75秒",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44608",
+        "name": "百鬼封尽·精锻",
+        "icon": "item_44608",
+        "rank": 4,
+        "job": [
+          "163",
+          "164",
+          "165"
+        ],
+        "position": 14,
+        "effect": "魔法攻击+600\n物理攻击+600",
+        "buff": "力量+20\n智力+20\n全能力+14\n移动速度+15%\n忽视物理、魔法防御+20%\n物理、魔法伤害+16%\n人形种族伤害+40%\n生命上限+24000\n物伤减免+5%，魔伤减免+5%\n获得技能【地缚法印】：施展一道法印，限制周围9m内所有敌人，使其物理攻击强制无法命中，同时自身进入无敌状态，持续5秒，技能冷却时间90秒",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44607",
+        "name": "百鬼封尽",
+        "icon": "item_44607",
+        "rank": 4,
+        "job": [
+          "163",
+          "164",
+          "165"
+        ],
+        "position": 14,
+        "effect": "魔法攻击+400\n物理攻击+400",
+        "buff": "力量+20\n智力+20\n全能力+8\n移动速度+15%\n忽视物理、魔法防御+15%\n物理、魔法伤害+12%\n人形种族伤害+30%\n生命上限+16000",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44605",
+        "name": "风魔手里剑-疾影[1]",
+        "icon": "item_44605",
+        "rank": 4,
+        "job": [
+          "163",
+          "164",
+          "165"
+        ],
+        "position": 1,
+        "effect": "物理攻击+610",
+        "buff": "力量+18、命中+50\n忽视物理防御+5%\n每精炼+1，移动速度+1%；每精炼+1，【风魔飞镖扔】伤害+2%\n精炼+5时，忽视物理防御+5%；精炼+10时，忽视物理防御+10%；精炼+15时，物理伤害+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 1,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44604",
+        "name": "风魔手里剑[1]",
+        "icon": "item_44604",
+        "rank": 3,
+        "job": [
+          "163",
+          "164",
+          "165"
+        ],
+        "position": 1,
+        "effect": "物理攻击+175",
+        "buff": "力量+4、命中+20\n忽视物理防御+5%\n每精炼+1，【风魔飞镖扔】伤害+1%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "44601",
+        "name": "风魔飞镖-启明星[1]",
+        "icon": "item_44601",
+        "rank": 4,
+        "job": [
+          "163",
+          "164",
+          "165"
+        ],
+        "position": 1,
+        "effect": "魔法攻击+418",
+        "buff": "智力+18\n风、地、水、火属性攻击+15%；忽视魔法防御+5%\n每精炼+1，移动速度+1%；每精炼+1，忽视魔法防御+1%\n精炼+5时，可变吟唱时间-10%；精炼+10时，忽视魔法防御+10%；精炼+15时，魔法伤害+5%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 1,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "44600",
+        "name": "风魔轮飞镖[1]",
+        "icon": "item_44600",
+        "rank": 3,
+        "job": [
+          "163",
+          "164",
+          "165"
+        ],
+        "position": 1,
+        "effect": "魔法攻击+108",
+        "buff": "智力+4\n风、地、水、火属性攻击+10%\n精炼+10时，忽视魔法防御+5%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      }
+    ],
+    "partner": {
+      "id": 30301,
+      "pos": 6,
+      "title": "交易所订阅",
+      "tip": "",
+      "pic": "\/\/rosc3.zhaiwuyu.com\/partner\/self\/find-exchange-202103.jpg",
+      "link": "http:\/\/romel.wiki\/article\/exchange-remind"
+    }
+  }
+}

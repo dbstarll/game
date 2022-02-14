@@ -1,0 +1,216 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1644809423,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "124.74.160.162",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 2,
+    "pageSize": 10,
+    "pageCount": 3,
+    "total": 29,
+    "list": [
+      {
+        "id": "40746",
+        "name": "破甲短锥[1]",
+        "icon": "item_40746",
+        "rank": 3,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+340",
+        "buff": "生命上限+300\n幸运+3\n忽视物理防御+25%\n精炼+5、+10、+15时，使【卸除饰品】【卸除盾牌】基础触发率上升5%、5%、10%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40745",
+        "name": "牙科手术刀[1]",
+        "icon": "item_40745",
+        "rank": 3,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+428",
+        "buff": "力量+8\n生命上限+1000\n精炼+10，+15时，【背刺】对人型魔物伤害+5，+10%",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40744",
+        "name": "手术刀[1]",
+        "icon": "item_40744",
+        "rank": 3,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+180",
+        "buff": "力量+4\n生命上限+500\n精炼+10，+15时，【背刺】对人型魔物伤害+5，+10%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40743",
+        "name": "象牙匕首[1]",
+        "icon": "item_40743",
+        "rank": 3,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+180",
+        "buff": "幸运+4\n灵巧+4\n【卸除饰品】【卸除盾牌】基础触发率上升3%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40742",
+        "name": "考尔德短剑[1]",
+        "icon": "item_40742",
+        "rank": 2,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+132",
+        "buff": "力量+4\n敏捷+3\n普通攻击有概率（8%）获得【消散】效果，【消散】：【背刺】，【致残袭击】伤害+50%，持续2秒",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40346",
+        "name": "卡仑之牙[1]",
+        "icon": "item_40346",
+        "rank": 4,
+        "job": [
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+355",
+        "buff": "敏捷+8\n攻击速度+5%\n物理攻击+5%\n对火属性魔物伤害+10%\n精炼+10时，物理攻击+5%、对火属性魔物伤害+10%；精炼+15时，物理攻击+5%、对火属性魔物伤害+10%\n普通攻击有概率施放【寒风】效果，【寒风】：物理攻击+5%，对火属性魔物伤害+15%，持续5秒",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "40920",
+        "name": "漆黑之牙[1]",
+        "icon": "item_40920",
+        "rank": 2,
+        "job": [
+          "31",
+          "32",
+          "33",
+          "34",
+          "35",
+          "92",
+          "93",
+          "94",
+          "95"
+        ],
+        "position": 1,
+        "effect": "物理攻击+57",
+        "buff": "使暴击翻倍\n力量+2\n物理攻击+10\n力量达到75以上时近战物理攻击力+10%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40738",
+        "name": "紫毒短剑[1]",
+        "icon": "item_40738",
+        "rank": 3,
+        "job": [
+          "32",
+          "33",
+          "34",
+          "35"
+        ],
+        "position": 1,
+        "effect": "物理攻击+210",
+        "buff": "力量+5\n有较高几率在普攻时使目标陷入中毒状态\n精炼每+1，忽视物理防御+3%\n使中毒效果不可被万能药驱散\n【病毒散播】和【毒刃】伤害效果提升100%",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40736",
+        "name": "水灵短剑[1]",
+        "icon": "item_40736",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 1,
+        "effect": "物理攻击+120",
+        "buff": "水属性\n力量+5\n精炼每+1物理伤害+1%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "40735",
+        "name": "地灵短剑[1]",
+        "icon": "item_40735",
+        "rank": 3,
+        "job": [
+          "0"
+        ],
+        "position": 1,
+        "effect": "物理攻击+120",
+        "buff": "地属性\n力量+5\n精炼每+1物理伤害+1%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      }
+    ]
+  }
+}

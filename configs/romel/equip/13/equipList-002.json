@@ -1,0 +1,157 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1644809449,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "124.74.160.162",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 2,
+    "pageSize": 10,
+    "pageCount": 2,
+    "total": 17,
+    "list": [
+      {
+        "id": "62509",
+        "name": "巨灵拳套[1]",
+        "icon": "item_62509",
+        "rank": 4,
+        "job": [
+          "122",
+          "123",
+          "124",
+          "125"
+        ],
+        "position": 1,
+        "effect": "物理攻击+320",
+        "buff": "力量+10\n对大型魔物伤害+15%\n精炼每+1对大型魔物伤害+2%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "62508",
+        "name": "鹰爪拳套[1]",
+        "icon": "item_62508",
+        "rank": 4,
+        "job": [
+          "122",
+          "123",
+          "124",
+          "125"
+        ],
+        "position": 1,
+        "effect": "物理攻击+320",
+        "buff": "智力+10\n可变吟唱时间-10%\n精炼等级+5、+10、+15时，魔法上限+6%、+9%、+12%\n使【阿修罗霸凰拳】公式中【技能等级*4+剩余SP\/100】部分的伤害倍率增加5",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "62507",
+        "name": "龙爪拳套[1]",
+        "icon": "item_62507",
+        "rank": 3,
+        "job": [
+          "122",
+          "123",
+          "124",
+          "125"
+        ],
+        "position": 1,
+        "effect": "物理攻击+303",
+        "buff": "力量+10\n精炼+5，+10，+15时，物理攻击+5%，+10%，+15%\n每精炼+1，普通攻击力提高60点",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "62506",
+        "name": "升龙拳套[1]",
+        "icon": "item_62506",
+        "rank": 4,
+        "job": [
+          "122",
+          "123",
+          "124",
+          "125"
+        ],
+        "position": 1,
+        "effect": "物理攻击+320",
+        "buff": "智力+5\n【六合拳】伤害提升10%，【连环全身掌】伤害提升10%，【猛龙夸强】伤害提升15%\n【塔卡罗】（【升龙拳套IV】）+【华贵腕甲IV】（【金腕】）：每次普通攻击获得气弹的概率提升至60%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "62505",
+        "name": "贺勒拳套[1]",
+        "icon": "item_62505",
+        "rank": 3,
+        "job": [
+          "122",
+          "123",
+          "124",
+          "125"
+        ],
+        "position": 1,
+        "effect": "物理攻击+390",
+        "buff": "体质+6\n生命上限+1600\n生命自然恢复+15\n使装备者在【金刚不坏】状态下移动速度惩罚移除\n【贺勒拳套】+【圣者法袍IV】：生命上限+5%",
+        "isCompose": 0,
+        "isUpgrade": 1,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      },
+      {
+        "id": "62504",
+        "name": "钢铁拳套[1]",
+        "icon": "item_62504",
+        "rank": 3,
+        "job": [
+          "122",
+          "123",
+          "124",
+          "125"
+        ],
+        "position": 1,
+        "effect": "物理攻击+223",
+        "buff": "体质+3\n生命上限+800\n生命自然恢复+10",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "62503",
+        "name": "虎爪拳套[1]",
+        "icon": "item_62503",
+        "rank": 3,
+        "job": [
+          "122",
+          "123",
+          "124",
+          "125"
+        ],
+        "position": 1,
+        "effect": "物理攻击+202",
+        "buff": "力量+3\n精炼+5，+10时，物理攻击+5%，+10%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      }
+    ]
+  }
+}

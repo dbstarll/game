@@ -1,0 +1,73 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1644809317,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "124.74.160.162",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 3,
+    "pageSize": 10,
+    "pageCount": 3,
+    "total": 22,
+    "list": [
+      {
+        "id": "40008",
+        "name": "镰戟[1]",
+        "icon": "item_40008",
+        "rank": 2,
+        "job": [
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "72",
+          "73",
+          "74",
+          "75",
+          "203",
+          "204",
+          "205"
+        ],
+        "position": 1,
+        "effect": "物理攻击+157",
+        "buff": "力量+3\n命中+15",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "40007",
+        "name": "象牙长矛[1]",
+        "icon": "item_40007",
+        "rank": 3,
+        "job": [
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "72",
+          "73",
+          "74",
+          "75",
+          "203",
+          "204",
+          "205"
+        ],
+        "position": 1,
+        "effect": "物理攻击+175",
+        "buff": "攻击时无视敌方乘算物理防御（对MVP、Mini魔物无效）\n对无属性魔物伤害+25%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 0
+      }
+    ]
+  }
+}

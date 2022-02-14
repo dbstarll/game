@@ -1,0 +1,158 @@
+{
+  "code": 0,
+  "status": "success",
+  "timeStamp": 1644809459,
+  "staticDomain": "http:\/\/rosc1.zhaiwuyu.com",
+  "ip": "124.74.160.162",
+  "language": "cn",
+  "dbArea": 0,
+  "data": {
+    "page": 1,
+    "pageSize": 10,
+    "pageCount": 1,
+    "total": 7,
+    "list": [
+      {
+        "id": "63611",
+        "name": "白银凶星·神铸",
+        "icon": "item_63611",
+        "rank": 4,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 14,
+        "effect": "物理攻击+1000",
+        "buff": "灵巧+20\n敏捷+10\n全能力+20\n流血攻击+20%\n忽视物理防御+20%\n物理穿刺+20%\n人形种族伤害+50%\n生命上限+32000\n物伤减免+10%，魔伤减免+10%\n获得技能【白银时刻】：使自身周围半径5米的敌人强制晕眩，并且受到伤害提升50%，持续3秒，技能冷却时间75秒",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "63610",
+        "name": "白银凶星·精锻",
+        "icon": "item_63610",
+        "rank": 4,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 14,
+        "effect": "物理攻击+725",
+        "buff": "灵巧+20\n敏捷+10\n全能力+14\n流血攻击+20%\n忽视物理防御+16%\n物理穿刺+16%\n人形种族伤害+40%\n生命上限+24000\n物伤减免+5%，魔伤减免+5%\n获得技能【白银时刻】：使自身周围半径5米的敌人强制晕眩，并且受到伤害提升30%，持续3秒，技能冷却时间90秒",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "63609",
+        "name": "白银凶星",
+        "icon": "item_63609",
+        "rank": 4,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 14,
+        "effect": "物理攻击+450",
+        "buff": "灵巧+20\n敏捷+10\n全能力+8\n流血攻击+20%\n忽视物理防御+12%\n物理穿刺+12%\n人形种族伤害+30%\n生命上限+16000",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "63615",
+        "name": "地狱火手枪[1]",
+        "icon": "item_63615",
+        "rank": 4,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 1,
+        "effect": "物理攻击+605",
+        "buff": "弹药量：15\n灵巧+8、体质+8\n生命上限+1000\n流血攻击+30%\n人形种族加伤+5%；精炼+5时，人形种族加伤+5%；精炼+10时，生命上限+5%；精炼+15时，人形种族加伤+5%、生命上限+5%\n每精炼+1，人形种族加伤、减伤+1%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 1,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "63614",
+        "name": "红翼左轮手枪[1]",
+        "icon": "item_63614",
+        "rank": 3,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 1,
+        "effect": "物理攻击+165",
+        "buff": "弹药量：15\n灵巧+4\n生命上限+200\n人形种族加伤+5%\n流血攻击+10%\n每精炼+1，人形种族减伤+1%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      },
+      {
+        "id": "63613",
+        "name": "黄金执法者[1]",
+        "icon": "item_63613",
+        "rank": 4,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 1,
+        "effect": "物理攻击+615",
+        "buff": "弹药量：10\n灵巧+12、敏捷+8\n移动速度+5%\n忽视物理防御+5%；精炼+5时，物理攻击+5%；精炼+10时，忽视物理防御+10%；精炼+15时，物理伤害+5%\n每精炼+1，【亡命之徒】伤害+2%",
+        "isCompose": 0,
+        "isUpgrade": 0,
+        "isHigh": 1,
+        "canSlot": 0,
+        "canUpgrade": 0
+      },
+      {
+        "id": "63612",
+        "name": "黄金勒克斯手枪[1]",
+        "icon": "item_63612",
+        "rank": 3,
+        "job": [
+          "173",
+          "174",
+          "175"
+        ],
+        "position": 1,
+        "effect": "物理攻击+175",
+        "buff": "弹药量：10\n灵巧+4、敏捷+4\n忽视物理防御+5%\n每精炼+1，【亡命之徒】伤害+1%",
+        "isCompose": 1,
+        "isUpgrade": 0,
+        "isHigh": 0,
+        "canSlot": 1,
+        "canUpgrade": 1
+      }
+    ],
+    "partner": {
+      "id": 30301,
+      "pos": 6,
+      "title": "交易所订阅",
+      "tip": "",
+      "pic": "\/\/rosc3.zhaiwuyu.com\/partner\/self\/find-exchange-202103.jpg",
+      "link": "http:\/\/romel.wiki\/article\/exchange-remind"
+    }
+  }
+}
