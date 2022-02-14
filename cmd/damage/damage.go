@@ -6,8 +6,12 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/job"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/position"
+	"github.com/dbstarll/game/internal/ro/dimension/race"
+	"github.com/dbstarll/game/internal/ro/dimension/shape"
+	"github.com/dbstarll/game/internal/ro/dimension/types"
 	"github.com/dbstarll/game/internal/ro/dimension/weapon"
 	"github.com/dbstarll/game/internal/ro/model"
+	"github.com/dbstarll/game/internal/ro/model/attack"
 	"github.com/dbstarll/game/internal/ro/model/buff"
 	"github.com/dbstarll/game/internal/ro/model/general"
 	"github.com/dbstarll/game/internal/ro/romel"
@@ -18,8 +22,8 @@ import (
 func main() {
 	//Template()
 	//Shooter()
-	Hunter()
-	//EarthBash()
+	//Hunter()
+	EarthBash()
 }
 
 func ff(b, d float64) float64 {
@@ -119,9 +123,9 @@ func Hunter() {
 		)
 
 		fmt.Printf("%f\n", player.FinalDamage(monster, attack))
-		profitDetect(player, func(player *model.Player) float64 {
+		profitDetect(player, attack, func(player *model.Player) float64 {
 			return player.FinalDamage(monster, attack)
-		})
+		}, nil)
 	}
 }
 
@@ -135,10 +139,14 @@ func EarthBash() {
 	} else if monster3, err := model.LoadMonsterFromYaml("月夜蝙蝠"); err != nil {
 		log.Fatalf("%+v\n", err)
 	} else {
+		monster := model.NewCharacter(types.MVP, race.Formless, nature.Dark, shape.Large)
 		player.Apply(
 		//buff.Manor(),
 		//model.AddGains(false, &model.Gains{Defence: 6}),
+		//model.AddGeneral(&general.General{MoveSpeed: 15}),
 		)
+
+		attack := player.AttackWithWeapon(weapon.Spear).WithNature(nature.Earth).WithSkill(player.SkillEarth())
 
 		skillEarth, rate := player.SkillEarth(), player.SkillDamageRate(monster1, false, nature.Earth)
 		fmt.Printf("%f * %f = %f\n", skillEarth, rate, rate*skillEarth)
@@ -154,22 +162,49 @@ func EarthBash() {
 		//34.5/6265294/8959937/8063944/23982/26646
 		//34.9/6289276/8986584/8087926/23982/26647
 
-		monster2.Apply(
-			model.AddGains(false, &model.Gains{Resist: 30, DefencePer: 100}),
+		monster.Apply(
+			model.AddGains(false, &model.Gains{Resist: 100, DefencePer: 100}),
 			//model.AddRaceResist(&map[race.Race]float64{race.Human: 15}),
 			//model.AddGeneral(&general.General{CriticalDamageResist: 22}),
 		)
 
-		profitDetect(player, func(player *model.Player) float64 {
-			return player.SkillEarth() * player.SkillDamageRate(monster2, false, nature.Earth)
+		profitDetect(player, attack, func(player *model.Player) float64 {
+			return player.SkillEarth2() * player.SkillDamageRate(monster, false, nature.Earth)
+			//return 100 / (100 + player.Profits.General.SkillCooling)
+			//return 100 + player.Profits.General.Cured
+		}, map[string]model.CharacterModifier{
+			"舍命加速": model.AddGeneral(&general.General{MoveSpeed: 15}),
+			"奶妈": model.Merge(
+				model.AddGains(false, &model.Gains{Defence: 600 + 90}),
+				model.AddQuality(&model.Quality{Str: 25, Int: 25, Dex: 25, Agi: 20}),
+				model.AddGeneral(&general.General{MoveSpeed: 30}),
+				model.AddGains(false, &model.Gains{DefencePer: 50}),
+				model.AddGains(true, &model.Gains{DefencePer: 50}),
+			),
+			"领主光环": model.AddGains(false, &model.Gains{Damage: 40}),
+			"诗人": model.Merge(
+				buff.Quality(45),
+				model.AddGeneral(&general.General{MoveSpeed: 20}),
+			),
+			"all": model.Merge(
+				model.AddGains(false, &model.Gains{Defence: 600}),
+				model.AddQuality(&model.Quality{Str: 25, Int: 25, Dex: 25, Agi: 20}),
+				model.AddGeneral(&general.General{MoveSpeed: 30}),
+				model.AddGeneral(&general.General{MoveSpeed: 20}),
+				model.AddGains(false, &model.Gains{DefencePer: 50}),
+				model.AddGains(true, &model.Gains{DefencePer: 50}),
+				model.AddGains(false, &model.Gains{Damage: 40}),
+				buff.Quality(45),
+			),
 		})
 	}
 }
 
-func profitDetect(player *model.Player, fn buff.FinalDamage) {
-	for _, pos := range []position.Position{position.Weapon, position.Shield, position.Armor, position.Cloak, position.Shoes, position.Ring} {
+func profitDetect(player *model.Player, attack *attack.Attack, fn buff.FinalDamage, customDetects map[string]model.CharacterModifier) {
+	fmt.Printf("base: %f\n", fn(player))
+	for _, pos := range []position.Position{position.Weapon, position.Armor, position.Shield, position.Cloak, position.Shoes, position.Ring} {
 		fmt.Printf("装备: %s\n", pos)
-		for idx, p := range buff.ProfitDetect(player, false, fn, Equips(pos, player.Job())) {
+		for idx, p := range buff.ProfitDetect(player, false, fn, Equips(pos, player.Job(), attack.GetWeapon())) {
 			if idx < 10 {
 				fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
 			}
@@ -192,12 +227,12 @@ func profitDetect(player *model.Player, fn buff.FinalDamage) {
 		}
 	}
 	fmt.Printf("素质:\n")
-	for _, p := range buff.ProfitDetect(player, true, fn, nil) {
+	for _, p := range buff.ProfitDetect(player, true, fn, customDetects) {
 		fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
 	}
 }
 
-func Equips(pos position.Position, _job job.Job) map[string]model.CharacterModifier {
+func Equips(pos position.Position, _job job.Job, arms weapon.Weapon) map[string]model.CharacterModifier {
 	modifiers := make(map[string]model.CharacterModifier)
 	if _, err := romel.Equips.Filter(func(equip *romel.Equip) error {
 		var ms []model.CharacterModifier
@@ -219,6 +254,9 @@ func Equips(pos position.Position, _job job.Job) map[string]model.CharacterModif
 		return nil
 	}, func(filter *romel.Equip) {
 		filter.Position = pos
+		if pos == position.Weapon {
+			filter.Arms = arms
+		}
 		filter.Job = &[]job.Job{_job}
 	}); err != nil {
 		zap.S().Errorf("%+v", err)

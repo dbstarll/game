@@ -68,6 +68,15 @@ func (p *Player) SkillEarth() (damage float64) {
 	return
 }
 
+func (p *Player) SkillEarth2() (damage float64) {
+	damage = float64(p.Quality.Vit*p.Quality.Vit) *
+		p.PanelDefence(false) / 10000 *
+		(9.6 + 0.46*(p.Profits.General.MoveSpeed+100)/10) //基础技能倍率 + 冲锋领袖符文,每提高10%%移动速度，【大地猛击】技能倍率 +10% ~ 50%
+	damage *= 1 + 10.0/100 //*(1+守护之盾技能增伤%)
+	damage *= 1 + 16.2/100 //*(1+铁蹄直驱符文增伤%)
+	return
+}
+
 func (p *Player) UnmarshalYAML(value *yaml.Node) (err error) {
 	if value.Kind == yaml.MappingNode {
 		var lastAttr string

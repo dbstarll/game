@@ -66,6 +66,11 @@ func (d *General) Add(incr *General) {
 		d.NoMVPResist += incr.NoMVPResist
 		d.AttackSpeed += incr.AttackSpeed
 		d.MoveSpeed += incr.MoveSpeed
+
+		d.Cure += incr.Cure
+		d.Cured += incr.Cured
+		d.SkillDelay += incr.SkillDelay
+		d.SkillCooling += incr.SkillCooling
 	}
 }
 
@@ -86,6 +91,11 @@ func (d *General) Del(incr *General) {
 		d.NoMVPResist -= incr.NoMVPResist
 		d.AttackSpeed -= incr.AttackSpeed
 		d.MoveSpeed -= incr.MoveSpeed
+
+		d.Cure -= incr.Cure
+		d.Cured -= incr.Cured
+		d.SkillDelay -= incr.SkillDelay
+		d.SkillCooling -= incr.SkillCooling
 	}
 }
 
