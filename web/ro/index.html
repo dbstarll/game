@@ -5,11 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>RO计算器</title>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/static/material-icons.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script src="/static/common.js"></script>
+    <script src="/static/ro.js"></script>
+    <style>
+        #tabs {
+            float: left;
+            width: 60%;
+        }
+
+        #board {
+            float: right;
+            width: 39%;
+        }
+
+        h4 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: antiquewhite;
+        }
+
+        h4.top {
+            margin-top: 0;
+        }
+
+        .buffs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .buff {
+            width: 35%;
+            background-color: azure;
+        }
+
+        .buff .buff-name {
+            float: left;
+        }
+
+        .buff .buff-value {
+            float: right;
+        }
+
+    </style>
     <script>
+        function initAddEffectDialog() {
+            let form;
+            const dialog = $("#dialog-add-effect").dialog({
+                autoOpen: false,
+                width: 380,
+                modal: true,
+                buttons: {
+                    "添加": function () {
+                        if (addEffect.call(form)) {
+                            dialog.dialog("close");
+                        }
+                    },
+                    "取消": function () {
+                        dialog.dialog("close");
+                    }
+                },
+                close: function () {
+                    form[0].reset();
+                }
+            });
+            form = dialog.find("form").on("submit", function (event) {
+                event.preventDefault();
+                if (addEffect.call(form)) {
+                    dialog.dialog("close");
+                }
+            });
+
+            $("#create-effect").on("click", function () {
+                dialog.dialog("open");
+            });
+            const spinner = $("#effect-value").spinner({
+                numberFormat: "n",
+                min: 0
+            });
+            $("#effect-name").autocomplete({
+                source: Object.keys(manualEffects),
+                select: function (event, ui) {
+                    const cfg = manualEffects[ui.item.value];
+                    spinner.spinner("option", "step", cfg.accuracy);
+                }
+            });
+        }
+
+        function addEffect() {
+            const name = $('#effect-name').val();
+            const val = $('#effect-value').val();
+
+            const cfg = manualEffects[name];
+            if (!cfg) {
+                window.alert("未知属性: " + name);
+                return false;
+            }
+
+            const num = parseFloat(val);
+            if (isNaN(num)) {
+                window.alert("幅度错误: " + val);
+                return false;
+            } else if (num <= 0) {
+                window.alert("幅度错误: " + val);
+                return false;
+            }
+
+            $('#manual').append(
+                $.html.div().addClass('buff')
+                    .append($.html.div().addClass('buff-name').text(name))
+                    .append($.html.div().addClass('buff-value').text('+' + num + cfg.unit))
+            );
+            return true;
+        }
+
         $(function () {
             $("#tabs").tabs();
+            $("#board").accordion({
+                heightStyle: "content"
+            });
+
+            initAddEffectDialog();
 
             $.post('/player/load').done(function (data) {
                 console.log('done', data);
@@ -22,17 +143,57 @@
     </script>
 </head>
 <body>
+<div id="dialog-add-effect" title="添加新的手册属性">
+    <form>
+        <label for="effect-name">属性: </label>
+        <input type="text" id="effect-name">
+        <label for="effect-value">幅度: </label>
+        <input type="text" id="effect-value" size="4" value="0">
+        <!-- Allow form submission with keyboard without duplicating the dialog button -->
+        <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </form>
+</div>
 <div id="tabs">
     <ul>
         <li><a href="#tabs-manual">冒险手册</a></li>
         <li><a href="#tabs-pray">女神祈祷</a></li>
         <li><a href="#tabs-blessing">女神祝福</a></li>
-        <li><a href="#tabs-quality">素质加点</a></li>
+        <li><a href="#tabs-quality">职业素质</a></li>
         <li><a href="#tabs-rune">阿萨神碑</a></li>
         <li><a href="#tabs-gem">符文之匣</a></li>
         <li><a href="#tabs-equip">随身装备</a></li>
     </ul>
     <div id="tabs-manual">
+        <h4 class="top">B级冒险家属性</h4>
+        <div id="adventurer" class="buffs">
+            <div class="buff">
+                <div class="buff-name">灵巧</div>
+                <div class="buff-value">+9</div>
+            </div>
+            <div class="buff">
+                <div class="buff-name">力量</div>
+                <div class="buff-value">+9</div>
+            </div>
+            <div class="buff">
+                <div class="buff-name">智力</div>
+                <div class="buff-value">+9</div>
+            </div>
+            <div class="buff">
+                <div class="buff-name">敏捷</div>
+                <div class="buff-value">+9</div>
+            </div>
+            <div class="buff">
+                <div class="buff-name">体质</div>
+                <div class="buff-value">+9</div>
+            </div>
+            <div class="buff">
+                <div class="buff-name">幸运</div>
+                <div class="buff-value">+9</div>
+            </div>
+        </div>
+        <h4>手册属性<span id="create-effect" class="material-icons md-18">post_add</span></h4>
+        <div id="manual" class="buffs">
+        </div>
     </div>
     <div id="tabs-pray">
     </div>
@@ -45,6 +206,54 @@
     <div id="tabs-gem">
     </div>
     <div id="tabs-equip">
+    </div>
+</div>
+<div id="board">
+    <h3>Section 1</h3>
+    <div>
+        <p>
+            Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+            ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+            amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+            odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+        </p>
+    </div>
+    <h3>Section 2</h3>
+    <div>
+        <p>
+            Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+            purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+            velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+            suscipit faucibus urna.
+        </p>
+    </div>
+    <h3>Section 3</h3>
+    <div>
+        <p>
+            Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
+            Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
+            ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
+            lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
+        </p>
+        <ul>
+            <li>List item one</li>
+            <li>List item two</li>
+            <li>List item three</li>
+        </ul>
+    </div>
+    <h3>Section 4</h3>
+    <div>
+        <p>
+            Cras dictum. Pellentesque habitant morbi tristique senectus et netus
+            et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
+            faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
+            mauris vel est.
+        </p>
+        <p>
+            Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
+            Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
+            inceptos himenaeos.
+        </p>
     </div>
 </div>
 </body>
