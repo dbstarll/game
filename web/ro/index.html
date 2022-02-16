@@ -6,9 +6,11 @@
     <title>RO计算器</title>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="http://hayageek.github.io/jQuery-Upload-File/4.0.11/uploadfile.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/material-icons.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script src="http://hayageek.github.io/jQuery-Upload-File/4.0.11/jquery.uploadfile.min.js"></script>
     <script src="/static/common.js"></script>
     <script src="/static/ro.js"></script>
     <style>
@@ -124,6 +126,36 @@
             return true;
         }
 
+        function save() {
+            let manualEffects = [];
+            $('.buff', '#manual').each(function (idx, sub) {
+                const name = $('.buff-name', sub).text();
+                const value = $('.buff-value', sub).text();
+                manualEffects.push(name + value);
+            });
+
+            let data = {manual: manualEffects};
+
+            $.post({
+                url: '/player/save',
+                data: JSON.stringify(data),
+                dataType: "json"
+            }).done(function (data) {
+                console.log('done', data);
+            }).fail(function (xhr, status, errorThrown) {
+                console.log("Error: " + errorThrown);
+                console.log("Status: " + status);
+                console.dir(xhr);
+            });
+        }
+
+        function download() {
+            window.open('/player/download', '_blank');
+        }
+
+        function upload() {
+        }
+
         $(function () {
             $("#tabs").tabs();
             $("#board").accordion({
@@ -132,12 +164,32 @@
 
             initAddEffectDialog();
 
-            $.post('/player/load').done(function (data) {
-                console.log('done', data);
-            }).fail(function (xhr, status, errorThrown) {
-                console.log("Error: " + errorThrown);
-                console.log("Status: " + status);
-                console.dir(xhr);
+            $("#save").on("click", function () {
+                save();
+            });
+            $("#download").on("click", function () {
+                download();
+            });
+            $("#upload").on("click", function () {
+                upload();
+            });
+            $("#file-uploader").uploadFile({
+                url: "/player/upload",
+                fileName: "player",
+                allowedTypes: "json",
+                maxFileSize: 10240,
+                dragDrop: false,
+                uploadStr: "上传"
+            });
+
+            $('#refresh').on("click", function () {
+                $.post('/player/load').done(function (data) {
+                    console.log('done', data);
+                }).fail(function (xhr, status, errorThrown) {
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                });
             });
         });
     </script>
@@ -192,8 +244,7 @@
             </div>
         </div>
         <h4>手册属性<span id="create-effect" class="material-icons md-18">post_add</span></h4>
-        <div id="manual" class="buffs">
-        </div>
+        <div id="manual" class="buffs"></div>
     </div>
     <div id="tabs-pray">
     </div>
@@ -206,6 +257,13 @@
     <div id="tabs-gem">
     </div>
     <div id="tabs-equip">
+    </div>
+    <div>
+        <span id="save" class="material-icons">save</span>
+        <span id="refresh" class="material-icons">refresh</span>
+        <span id="download" class="material-icons">download</span>
+        <span id="upload" class="material-icons">upload</span>
+        <div id="file-uploader">Upload</div>
     </div>
 </div>
 <div id="board">

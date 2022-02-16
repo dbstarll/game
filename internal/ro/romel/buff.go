@@ -90,6 +90,18 @@ func (b *Buff) UnmarshalJSON(data []byte) error {
 	}
 }
 
+func (b *Buff) MarshalJSON() ([]byte, error) {
+	return []byte(strconv.Quote(b.buff)), nil
+}
+
+func (b *Buff) UnmarshalBinary(data []byte) error {
+	return b.UnmarshalJSON(data)
+}
+
+func (b *Buff) MarshalBinary() (data []byte, err error) {
+	return b.MarshalJSON()
+}
+
 func (b *Buff) Empty() bool {
 	return b == nil || len(b.buff) == 0
 }

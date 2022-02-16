@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/gob"
 	"flag"
 	"github.com/dbstarll/game/internal/ro/transport/api"
+	"github.com/dbstarll/game/internal/ro/transport/model"
 	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-contrib/sessions/memstore"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
@@ -55,15 +57,16 @@ func newGinEngine() *gin.Engine {
 	return gin.New()
 }
 
-func newCookieStore() cookie.Store {
-	return cookie.NewStore([]byte("secret11111"))
+func newMemStore() memstore.Store {
+	gob.Register(model.PlayerModel{})
+	return memstore.NewStore([]byte("secret"))
 }
 
 func newPlayerDispatch() (*api.PlayerDispatch, error) {
 	return api.NewPlayerDispatch()
 }
 
-func initGin(g *gin.Engine, store cookie.Store) {
+func initGin(g *gin.Engine, store memstore.Store) {
 	g.Use(gin.Recovery())
 	g.Use(gin.LoggerWithWriter(os.Stdout, *ptrHealth))
 	g.Use(sessions.Sessions("ro-sid", store))
@@ -99,7 +102,7 @@ func main() {
 		fx.Provide(
 			newZapLogger,
 			newGinEngine,
-			newCookieStore,
+			newMemStore,
 			newPlayerDispatch,
 		),
 		fx.Invoke(
