@@ -141,12 +141,21 @@
                     }).done(function (data) {
                         if (data && data.ok && data.data) {
                             refresh(data.data);
+                            saved();
                         }
                     }).fail(function (xhr, status, errorThrown) {
                         message("上传配置", "上传失败: [" + status + "]" + errorThrown);
                     })
                 }
             });
+        }
+
+        function saving() {
+            $('#save').show();
+        }
+
+        function saved() {
+            $('#save').hide();
         }
 
         function addEffect() {
@@ -166,6 +175,7 @@
             }
 
             appendToManual(name, '+' + num + cfg.unit)
+            saving();
             return true;
         }
 
@@ -226,7 +236,7 @@
                 data: JSON.stringify(data),
                 dataType: "json"
             }).done(function () {
-                message("保存配置", "保存成功");
+                message("保存配置", "保存成功", saved);
             }).fail(function (xhr, status, errorThrown) {
                 message("保存配置", "保存失败: [" + status + "]" + errorThrown);
             });
@@ -236,6 +246,7 @@
             $.get('/player/load').done(function (data) {
                 if (data && data.ok && data.data) {
                     refresh(data.data);
+                    message("载入配置", "载入完成", saved);
                 }
             }).fail(function (xhr, status, errorThrown) {
                 message("载入配置", "载入失败: [" + status + "]" + errorThrown);
@@ -265,11 +276,14 @@
             $("#board").accordion({
                 heightStyle: "content"
             });
-            $('#manual').sortable();
+            $('#manual').sortable().on("sortupdate", saving);
+            $('.saved').on("change", saving);
 
             msgDialog = initMessageDialog();
             initAddEffectDialog();
             initUploadFile();
+
+            load();
         });
     </script>
 </head>
@@ -289,8 +303,8 @@
 </div>
 <div id="tool-bar">
     <label for="character-name">角色名称：</label>
-    <input type="text" id="character-name">
-    <span class="material-icons" onclick="save()">save</span>
+    <input type="text" id="character-name" class="saved">
+    <span id="save" class="material-icons" onclick="save()" style="display: none">save</span>
     <span class="material-icons" onclick="load()">refresh</span>
     <span class="material-icons" onclick="download()">download</span>
     <span class="material-icons" onclick="upload()">upload</span>
