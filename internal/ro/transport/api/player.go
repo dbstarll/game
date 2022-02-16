@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 type PlayerDispatch struct {
@@ -54,7 +55,7 @@ func (d *PlayerDispatch) download(c *gin.Context) {
 	} else if data, err := json.MarshalIndent(player, "", "  "); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	} else {
-		filename := fmt.Sprintf("%s.json", player.CharacterName)
+		filename := fmt.Sprintf("%s-%s.json", player.CharacterName, time.Now().Format("20060102150405"))
 		c.Header("Content-Disposition", "attachment; filename="+filename)
 		c.Header("Content-Transfer-Encoding", "binary")
 		c.Data(http.StatusOK, "application/octet-stream", data)
