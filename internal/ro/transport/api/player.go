@@ -19,7 +19,7 @@ func NewPlayerDispatch() (*PlayerDispatch, error) {
 }
 
 func (d *PlayerDispatch) BindGin(g *gin.RouterGroup) {
-	g.POST("load", d.load)
+	g.GET("load", d.load)
 	g.POST("save", d.save)
 	g.GET("download", d.download)
 	g.POST("upload", d.upload)
@@ -41,7 +41,7 @@ func (d *PlayerDispatch) save(c *gin.Context) {
 		session := sessions.Default(c)
 		session.Set("player", player)
 		session.Save()
-		d.responseOkWithData(c, player)
+		d.responseOkWithData(c, nil)
 	}
 }
 
