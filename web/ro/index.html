@@ -152,11 +152,21 @@
         }
 
         function appendToManual(name, value) {
-            $('#manual').append(
-                $.html.div().addClass('buff')
-                    .append($.html.div().addClass('buff-name').text(name))
-                    .append($.html.div().addClass('buff-value').text(value))
-            );
+            const manual = $('#manual');
+            let exist = false;
+            $('.buff', manual).each(function (idx, sub) {
+                if ($('.buff-name', sub).text() === name) {
+                    exist = true;
+                    $('.buff-value', sub).text(value);
+                }
+            });
+            if (!exist) {
+                manual.append(
+                    $.html.div().addClass('buff')
+                        .append($.html.div().addClass('buff-name').text(name))
+                        .append($.html.div().addClass('buff-value').text(value))
+                );
+            }
         }
 
         function refresh(player) {
@@ -183,13 +193,15 @@
                 url: '/player/save',
                 data: JSON.stringify(data),
                 dataType: "json"
+            }).done(function () {
+                window.alert("保存成功");
             }).fail(function (xhr, status, errorThrown) {
                 window.alert("保存失败: [" + status + "]" + errorThrown);
             });
         }
 
         function load() {
-            $.post('/player/load').done(function (data) {
+            $.get('/player/load').done(function (data) {
                 if (data && data.ok && data.data) {
                     refresh(data.data);
                 }
