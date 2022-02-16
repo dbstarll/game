@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/dbstarll/game/internal/ro/transport/model"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -46,12 +47,15 @@ func (d *PlayerDispatch) save(c *gin.Context) {
 }
 
 func (d *PlayerDispatch) download(c *gin.Context) {
-	if player := sessions.Default(c).Get("player"); player == nil {
+	if playerObj := sessions.Default(c).Get("player"); playerObj == nil {
+		c.AbortWithStatus(http.StatusNotFound)
+	} else if player, ok := playerObj.(model.PlayerModel); !ok {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else if data, err := json.MarshalIndent(player, "", "  "); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	} else {
-		c.Header("Content-Disposition", "attachment; filename=abc.json")
+		filename := fmt.Sprintf("%s.json", player.CharacterName)
+		c.Header("Content-Disposition", "attachment; filename="+filename)
 		c.Header("Content-Transfer-Encoding", "binary")
 		c.Data(http.StatusOK, "application/octet-stream", data)
 	}

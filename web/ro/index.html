@@ -22,6 +22,10 @@
             width: 39%;
         }
 
+        #tool-bar {
+            display: flex;
+        }
+
         h4 {
             display: flex;
             justify-content: center;
@@ -54,6 +58,20 @@
 
     </style>
     <script>
+        let msgDialog;
+
+        function initMessageDialog() {
+            return $("#dialog-message").dialog({
+                autoOpen: false,
+                modal: true,
+                buttons: {
+                    "确定": function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        }
+
         function initAddEffectDialog() {
             let form;
             const dialog = $("#dialog-add-effect").dialog({
@@ -101,13 +119,16 @@
             $('#file').on("change", function () {
                 const files = $(this).prop('files');
                 if (!files || files.length !== 1) {
-                    window.alert("请选择文件");
+                    message("上传配置", "请选择文件");
+                    return false;
                 }
                 const file = files[0];
                 if (!file) {
-                    window.alert("请选择文件");
+                    message("上传配置", "请选择文件");
+                    return false;
                 } else if (file.size > 10240) {
-                    window.alert("文件太大(限制10K)，请重新选择文件");
+                    message("上传配置", "文件太大(限制10K)，请重新选择文件");
+                    return false;
                 } else {
                     const fd = new FormData();
                     fd.append('player', file);
@@ -122,7 +143,7 @@
                             refresh(data.data);
                         }
                     }).fail(function (xhr, status, errorThrown) {
-                        window.alert("上传失败: [" + status + "]" + errorThrown);
+                        message("上传配置", "上传失败: [" + status + "]" + errorThrown);
                     })
                 }
             });
@@ -134,16 +155,13 @@
 
             const cfg = manualEffects[name];
             if (!cfg) {
-                window.alert("未知属性: " + name);
+                message("添加属性", "未知属性: " + name);
                 return false;
             }
 
             const num = parseFloat(val);
-            if (isNaN(num)) {
-                window.alert("幅度错误: " + val);
-                return false;
-            } else if (num <= 0) {
-                window.alert("幅度错误: " + val);
+            if (isNaN(num) || num <= 0) {
+                message("添加属性", "幅度错误: " + val);
                 return false;
             }
 
@@ -180,6 +198,14 @@
         }
 
         function save() {
+            const character = $('#character-name');
+            if (!character.val()) {
+                message("保存配置", "请输入角色名称!", function () {
+                    character.focus();
+                });
+                return false;
+            }
+
             let manualEffects = [];
             $('.buff', '#manual').each(function (idx, sub) {
                 const name = $('.buff-name', sub).text();
@@ -187,16 +213,19 @@
                 manualEffects.push(name + value);
             });
 
-            let data = {manual: manualEffects};
+            let data = {
+                'character-name': character.val(),
+                manual: manualEffects
+            };
 
             $.post({
                 url: '/player/save',
                 data: JSON.stringify(data),
                 dataType: "json"
             }).done(function () {
-                window.alert("保存成功");
+                message("保存配置", "保存成功");
             }).fail(function (xhr, status, errorThrown) {
-                window.alert("保存失败: [" + status + "]" + errorThrown);
+                message("保存配置", "保存失败: [" + status + "]" + errorThrown);
             });
         }
 
@@ -206,7 +235,7 @@
                     refresh(data.data);
                 }
             }).fail(function (xhr, status, errorThrown) {
-                window.alert("载入失败: [" + status + "]" + errorThrown);
+                message("载入配置", "载入失败: [" + status + "]" + errorThrown);
             });
         }
 
@@ -218,12 +247,23 @@
             $('#file').click();
         }
 
+        function message(title, msg, callback) {
+            $('#message').text(msg);
+            if (callback) {
+                msgDialog.on("dialogclose", callback);
+            } else {
+                msgDialog.off("dialogclose");
+            }
+            msgDialog.dialog("option", "title", title).dialog("open");
+        }
+
         $(function () {
             $("#tabs").tabs();
             $("#board").accordion({
                 heightStyle: "content"
             });
 
+            msgDialog = initMessageDialog();
             initAddEffectDialog();
             initUploadFile();
         });
@@ -239,6 +279,18 @@
         <!-- Allow form submission with keyboard without duplicating the dialog button -->
         <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
     </form>
+</div>
+<div id="dialog-message">
+    <p id="message"></p>
+</div>
+<div id="tool-bar">
+    <label for="character-name">角色名称：</label>
+    <input type="text" id="character-name">
+    <span class="material-icons" onclick="save()">save</span>
+    <span class="material-icons" onclick="load()">refresh</span>
+    <span class="material-icons" onclick="download()">download</span>
+    <span class="material-icons" onclick="upload()">upload</span>
+    <input type="file" id="file" accept="application/json" style="display: none"/>
 </div>
 <div id="tabs">
     <ul>
@@ -292,13 +344,6 @@
     <div id="tabs-gem">
     </div>
     <div id="tabs-equip">
-    </div>
-    <div>
-        <span class="material-icons" onclick="save()">save</span>
-        <span class="material-icons" onclick="load()">refresh</span>
-        <span class="material-icons" onclick="download()">download</span>
-        <span class="material-icons" onclick="upload()">upload</span>
-        <input type="file" id="file" accept="application/json" style="display: none"/>
     </div>
 </div>
 <div id="board">
