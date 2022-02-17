@@ -11,44 +11,44 @@ import (
 )
 
 type Refine struct {
-	Weapon int //武器精炼等级
-	Ring1  int //饰品1精炼等级
-	Ring2  int //饰品2精炼等级
+	Weapon int `json:"weapon"` //武器精炼等级
+	Ring1  int `json:"ring1"`  //饰品1精炼等级
+	Ring2  int `json:"ring2"`  //饰品2精炼等级
 }
 
 type Profits struct {
-	physical       Gains
-	magical        Gains
-	General        general.General
-	refine         Refine
-	natureAttack   map[nature.Nature]float64     //属性攻击%
-	raceDamage     map[race.Race]float64         //种族增伤%
-	raceResist     map[race.Race]float64         //种族减伤%
-	shapeDamage    map[shape.Shape]float64       //体型增伤%
-	shapeResist    map[shape.Shape]float64       //体型减伤%
-	natureDamage   map[nature.Nature]float64     //属性增伤%
-	natureResist   map[nature.Nature]float64     //属性减伤%
-	abnormalResist map[abnormal.Abnormal]float64 //异常状态抵抗%
+	Physical       Gains                         `json:"physical"`
+	Magical        Gains                         `json:"magical"`
+	General        general.General               `json:"general"`
+	Refine         Refine                        `json:"refine"`
+	NatureAttack   map[nature.Nature]float64     `json:"nature_attack"`   //属性攻击%
+	RaceDamage     map[race.Race]float64         `json:"race_damage"`     //种族增伤%
+	RaceResist     map[race.Race]float64         `json:"race_resist"`     //种族减伤%
+	ShapeDamage    map[shape.Shape]float64       `json:"shape_damage"`    //体型增伤%
+	ShapeResist    map[shape.Shape]float64       `json:"shape_resist"`    //体型减伤%
+	NatureDamage   map[nature.Nature]float64     `json:"nature_damage"`   //属性增伤%
+	NatureResist   map[nature.Nature]float64     `json:"nature_resist"`   //属性减伤%
+	AbnormalResist map[abnormal.Abnormal]float64 `json:"abnormal_resist"` //异常状态抵抗%
 }
 
 func (p *Profits) Gains(magic bool) *Gains {
 	if magic {
-		return &p.magical
+		return &p.Magical
 	} else {
-		return &p.physical
+		return &p.Physical
 	}
 }
 
 func (p *Profits) AddNatureAttack(incr *map[nature.Nature]float64) {
 	if incr != nil {
-		if p.natureAttack == nil {
-			p.natureAttack = make(map[nature.Nature]float64)
+		if p.NatureAttack == nil {
+			p.NatureAttack = make(map[nature.Nature]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.natureAttack[n]; exist {
-				p.natureAttack[n] = ov + v
+			if ov, exist := p.NatureAttack[n]; exist {
+				p.NatureAttack[n] = ov + v
 			} else {
-				p.natureAttack[n] = v
+				p.NatureAttack[n] = v
 			}
 		}
 	}
@@ -56,14 +56,14 @@ func (p *Profits) AddNatureAttack(incr *map[nature.Nature]float64) {
 
 func (p *Profits) DelNatureAttack(incr *map[nature.Nature]float64) {
 	if incr != nil {
-		if p.natureAttack == nil {
-			p.natureAttack = make(map[nature.Nature]float64)
+		if p.NatureAttack == nil {
+			p.NatureAttack = make(map[nature.Nature]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.natureAttack[n]; exist {
-				p.natureAttack[n] = ov - v
+			if ov, exist := p.NatureAttack[n]; exist {
+				p.NatureAttack[n] = ov - v
 			} else {
-				p.natureAttack[n] = -v
+				p.NatureAttack[n] = -v
 			}
 		}
 	}
@@ -71,14 +71,14 @@ func (p *Profits) DelNatureAttack(incr *map[nature.Nature]float64) {
 
 func (p *Profits) AddRaceDamage(incr *map[race.Race]float64) {
 	if incr != nil {
-		if p.raceDamage == nil {
-			p.raceDamage = make(map[race.Race]float64)
+		if p.RaceDamage == nil {
+			p.RaceDamage = make(map[race.Race]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.raceDamage[n]; exist {
-				p.raceDamage[n] = ov + v
+			if ov, exist := p.RaceDamage[n]; exist {
+				p.RaceDamage[n] = ov + v
 			} else {
-				p.raceDamage[n] = v
+				p.RaceDamage[n] = v
 			}
 		}
 	}
@@ -86,14 +86,14 @@ func (p *Profits) AddRaceDamage(incr *map[race.Race]float64) {
 
 func (p *Profits) DelRaceDamage(incr *map[race.Race]float64) {
 	if incr != nil {
-		if p.raceDamage == nil {
-			p.raceDamage = make(map[race.Race]float64)
+		if p.RaceDamage == nil {
+			p.RaceDamage = make(map[race.Race]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.raceDamage[n]; exist {
-				p.raceDamage[n] = ov - v
+			if ov, exist := p.RaceDamage[n]; exist {
+				p.RaceDamage[n] = ov - v
 			} else {
-				p.raceDamage[n] = -v
+				p.RaceDamage[n] = -v
 			}
 		}
 	}
@@ -101,14 +101,14 @@ func (p *Profits) DelRaceDamage(incr *map[race.Race]float64) {
 
 func (p *Profits) AddRaceResist(incr *map[race.Race]float64) {
 	if incr != nil {
-		if p.raceResist == nil {
-			p.raceResist = make(map[race.Race]float64)
+		if p.RaceResist == nil {
+			p.RaceResist = make(map[race.Race]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.raceResist[n]; exist {
-				p.raceResist[n] = ov + v
+			if ov, exist := p.RaceResist[n]; exist {
+				p.RaceResist[n] = ov + v
 			} else {
-				p.raceResist[n] = v
+				p.RaceResist[n] = v
 			}
 		}
 	}
@@ -116,14 +116,14 @@ func (p *Profits) AddRaceResist(incr *map[race.Race]float64) {
 
 func (p *Profits) DelRaceResist(incr *map[race.Race]float64) {
 	if incr != nil {
-		if p.raceResist == nil {
-			p.raceResist = make(map[race.Race]float64)
+		if p.RaceResist == nil {
+			p.RaceResist = make(map[race.Race]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.raceResist[n]; exist {
-				p.raceResist[n] = ov - v
+			if ov, exist := p.RaceResist[n]; exist {
+				p.RaceResist[n] = ov - v
 			} else {
-				p.raceResist[n] = -v
+				p.RaceResist[n] = -v
 			}
 		}
 	}
@@ -131,14 +131,14 @@ func (p *Profits) DelRaceResist(incr *map[race.Race]float64) {
 
 func (p *Profits) AddShapeDamage(incr *map[shape.Shape]float64) {
 	if incr != nil {
-		if p.shapeDamage == nil {
-			p.shapeDamage = make(map[shape.Shape]float64)
+		if p.ShapeDamage == nil {
+			p.ShapeDamage = make(map[shape.Shape]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.shapeDamage[n]; exist {
-				p.shapeDamage[n] = ov + v
+			if ov, exist := p.ShapeDamage[n]; exist {
+				p.ShapeDamage[n] = ov + v
 			} else {
-				p.shapeDamage[n] = v
+				p.ShapeDamage[n] = v
 			}
 		}
 	}
@@ -146,14 +146,14 @@ func (p *Profits) AddShapeDamage(incr *map[shape.Shape]float64) {
 
 func (p *Profits) DelShapeDamage(incr *map[shape.Shape]float64) {
 	if incr != nil {
-		if p.shapeDamage == nil {
-			p.shapeDamage = make(map[shape.Shape]float64)
+		if p.ShapeDamage == nil {
+			p.ShapeDamage = make(map[shape.Shape]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.shapeDamage[n]; exist {
-				p.shapeDamage[n] = ov - v
+			if ov, exist := p.ShapeDamage[n]; exist {
+				p.ShapeDamage[n] = ov - v
 			} else {
-				p.shapeDamage[n] = -v
+				p.ShapeDamage[n] = -v
 			}
 		}
 	}
@@ -161,14 +161,14 @@ func (p *Profits) DelShapeDamage(incr *map[shape.Shape]float64) {
 
 func (p *Profits) AddShapeResist(incr *map[shape.Shape]float64) {
 	if incr != nil {
-		if p.shapeResist == nil {
-			p.shapeResist = make(map[shape.Shape]float64)
+		if p.ShapeResist == nil {
+			p.ShapeResist = make(map[shape.Shape]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.shapeResist[n]; exist {
-				p.shapeResist[n] = ov + v
+			if ov, exist := p.ShapeResist[n]; exist {
+				p.ShapeResist[n] = ov + v
 			} else {
-				p.shapeResist[n] = v
+				p.ShapeResist[n] = v
 			}
 		}
 	}
@@ -176,14 +176,14 @@ func (p *Profits) AddShapeResist(incr *map[shape.Shape]float64) {
 
 func (p *Profits) DelShapeResist(incr *map[shape.Shape]float64) {
 	if incr != nil {
-		if p.shapeResist == nil {
-			p.shapeResist = make(map[shape.Shape]float64)
+		if p.ShapeResist == nil {
+			p.ShapeResist = make(map[shape.Shape]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.shapeResist[n]; exist {
-				p.shapeResist[n] = ov - v
+			if ov, exist := p.ShapeResist[n]; exist {
+				p.ShapeResist[n] = ov - v
 			} else {
-				p.shapeResist[n] = -v
+				p.ShapeResist[n] = -v
 			}
 		}
 	}
@@ -191,14 +191,14 @@ func (p *Profits) DelShapeResist(incr *map[shape.Shape]float64) {
 
 func (p *Profits) AddNatureDamage(incr *map[nature.Nature]float64) {
 	if incr != nil {
-		if p.natureDamage == nil {
-			p.natureDamage = make(map[nature.Nature]float64)
+		if p.NatureDamage == nil {
+			p.NatureDamage = make(map[nature.Nature]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.natureDamage[n]; exist {
-				p.natureDamage[n] = ov + v
+			if ov, exist := p.NatureDamage[n]; exist {
+				p.NatureDamage[n] = ov + v
 			} else {
-				p.natureDamage[n] = v
+				p.NatureDamage[n] = v
 			}
 		}
 	}
@@ -206,14 +206,14 @@ func (p *Profits) AddNatureDamage(incr *map[nature.Nature]float64) {
 
 func (p *Profits) DelNatureDamage(incr *map[nature.Nature]float64) {
 	if incr != nil {
-		if p.natureDamage == nil {
-			p.natureDamage = make(map[nature.Nature]float64)
+		if p.NatureDamage == nil {
+			p.NatureDamage = make(map[nature.Nature]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.natureDamage[n]; exist {
-				p.natureDamage[n] = ov - v
+			if ov, exist := p.NatureDamage[n]; exist {
+				p.NatureDamage[n] = ov - v
 			} else {
-				p.natureDamage[n] = -v
+				p.NatureDamage[n] = -v
 			}
 		}
 	}
@@ -221,14 +221,14 @@ func (p *Profits) DelNatureDamage(incr *map[nature.Nature]float64) {
 
 func (p *Profits) AddNatureResist(incr *map[nature.Nature]float64) {
 	if incr != nil {
-		if p.natureResist == nil {
-			p.natureResist = make(map[nature.Nature]float64)
+		if p.NatureResist == nil {
+			p.NatureResist = make(map[nature.Nature]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.natureResist[n]; exist {
-				p.natureResist[n] = ov + v
+			if ov, exist := p.NatureResist[n]; exist {
+				p.NatureResist[n] = ov + v
 			} else {
-				p.natureResist[n] = v
+				p.NatureResist[n] = v
 			}
 		}
 	}
@@ -236,14 +236,14 @@ func (p *Profits) AddNatureResist(incr *map[nature.Nature]float64) {
 
 func (p *Profits) DelNatureResist(incr *map[nature.Nature]float64) {
 	if incr != nil {
-		if p.natureResist == nil {
-			p.natureResist = make(map[nature.Nature]float64)
+		if p.NatureResist == nil {
+			p.NatureResist = make(map[nature.Nature]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.natureResist[n]; exist {
-				p.natureResist[n] = ov - v
+			if ov, exist := p.NatureResist[n]; exist {
+				p.NatureResist[n] = ov - v
 			} else {
-				p.natureResist[n] = -v
+				p.NatureResist[n] = -v
 			}
 		}
 	}
@@ -251,14 +251,14 @@ func (p *Profits) DelNatureResist(incr *map[nature.Nature]float64) {
 
 func (p *Profits) AddAbnormalResist(incr *map[abnormal.Abnormal]float64) {
 	if incr != nil {
-		if p.abnormalResist == nil {
-			p.abnormalResist = make(map[abnormal.Abnormal]float64)
+		if p.AbnormalResist == nil {
+			p.AbnormalResist = make(map[abnormal.Abnormal]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.abnormalResist[n]; exist {
-				p.abnormalResist[n] = ov + v
+			if ov, exist := p.AbnormalResist[n]; exist {
+				p.AbnormalResist[n] = ov + v
 			} else {
-				p.abnormalResist[n] = v
+				p.AbnormalResist[n] = v
 			}
 		}
 	}
@@ -266,21 +266,21 @@ func (p *Profits) AddAbnormalResist(incr *map[abnormal.Abnormal]float64) {
 
 func (p *Profits) DelAbnormalResist(incr *map[abnormal.Abnormal]float64) {
 	if incr != nil {
-		if p.abnormalResist == nil {
-			p.abnormalResist = make(map[abnormal.Abnormal]float64)
+		if p.AbnormalResist == nil {
+			p.AbnormalResist = make(map[abnormal.Abnormal]float64)
 		}
 		for n, v := range *incr {
-			if ov, exist := p.abnormalResist[n]; exist {
-				p.abnormalResist[n] = ov - v
+			if ov, exist := p.AbnormalResist[n]; exist {
+				p.AbnormalResist[n] = ov - v
 			} else {
-				p.abnormalResist[n] = -v
+				p.AbnormalResist[n] = -v
 			}
 		}
 	}
 }
 
 func (p *Profits) weaponSpikes() float64 {
-	return p.refine.weaponSpikes()
+	return p.Refine.weaponSpikes()
 }
 
 func (r *Refine) weaponSpikes() float64 {
@@ -309,11 +309,11 @@ func (p *Profits) UnmarshalYAML(value *yaml.Node) (err error) {
 			} else {
 				switch lastAttr {
 				case "physical":
-					if err = sub.Decode(&p.physical); err != nil {
+					if err = sub.Decode(&p.Physical); err != nil {
 						return
 					}
 				case "magical":
-					if err = sub.Decode(&p.magical); err != nil {
+					if err = sub.Decode(&p.Magical); err != nil {
 						return
 					}
 				case "general":
@@ -321,35 +321,35 @@ func (p *Profits) UnmarshalYAML(value *yaml.Node) (err error) {
 						return
 					}
 				case "refine":
-					if err = sub.Decode(&p.refine); err != nil {
+					if err = sub.Decode(&p.Refine); err != nil {
 						return
 					}
 				case "natureAttack":
-					if err = sub.Decode(&p.natureAttack); err != nil {
+					if err = sub.Decode(&p.NatureAttack); err != nil {
 						return
 					}
 				case "raceDamage":
-					if err = sub.Decode(&p.raceDamage); err != nil {
+					if err = sub.Decode(&p.RaceDamage); err != nil {
 						return
 					}
 				case "raceResist":
-					if err = sub.Decode(&p.raceResist); err != nil {
+					if err = sub.Decode(&p.RaceResist); err != nil {
 						return
 					}
 				case "shapeDamage":
-					if err = sub.Decode(&p.shapeDamage); err != nil {
+					if err = sub.Decode(&p.ShapeDamage); err != nil {
 						return
 					}
 				case "shapeResist":
-					if err = sub.Decode(&p.shapeResist); err != nil {
+					if err = sub.Decode(&p.ShapeResist); err != nil {
 						return
 					}
 				case "natureDamage":
-					if err = sub.Decode(&p.natureDamage); err != nil {
+					if err = sub.Decode(&p.NatureDamage); err != nil {
 						return
 					}
 				case "natureResist":
-					if err = sub.Decode(&p.natureResist); err != nil {
+					if err = sub.Decode(&p.NatureResist); err != nil {
 						return
 					}
 				default:

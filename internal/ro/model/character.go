@@ -24,13 +24,13 @@ type DetectByPanel struct {
 
 type Character struct {
 	types         types.Types
-	job           job.Job
+	Job           job.Job `json:"job"`
 	nature        nature.Nature
 	race          race.Race
 	shape         shape.Shape
-	level         Level
-	Quality       Quality
-	Profits       Profits
+	Level         Level   `json:"level"`
+	Quality       Quality `json:"quality"`
+	Profits       Profits `json:"profits"`
 	detectByPanel DetectByPanel
 }
 
@@ -66,10 +66,10 @@ func Merge(modifiers ...CharacterModifier) CharacterModifier {
 
 func Job(job job.Job) CharacterModifier {
 	return func(character *Character) func() {
-		oldJob := character.job
-		character.job = job
+		oldJob := character.Job
+		character.Job = job
 		return func() {
-			character.job = oldJob
+			character.Job = oldJob
 		}
 	}
 }
@@ -85,9 +85,9 @@ func AddQuality(quality *Quality) CharacterModifier {
 
 func AddLevel(level *Level) CharacterModifier {
 	return func(character *Character) func() {
-		character.level.Add(level)
+		character.Level.Add(level)
 		return func() {
-			character.level.Del(level)
+			character.Level.Del(level)
 		}
 	}
 }
@@ -198,10 +198,6 @@ func DetectDefenceByPanel(expectPhysicalPanel, expectMagicalPanel float64) Chara
 	}
 }
 
-func (c *Character) Job() job.Job {
-	return c.job
-}
-
 func (c *Character) Apply(modifiers ...CharacterModifier) func() {
 	return Merge(modifiers...)(c)
 }
@@ -216,7 +212,7 @@ func (c *Character) EquipmentAttack(magic bool) (atk float64) {
 	atk = c.Profits.Gains(magic).Attack
 	if !magic {
 		//装备物理攻击 = (装备，强化，附魔，卡片，头饰，祈祷，buff等合计)+ BaseLvAtkRate*人物等级
-		atk += float64(c.job.BaseLvAtkRate() * c.level.Base)
+		atk += float64(c.Job.BaseLvAtkRate() * c.Level.Base)
 	}
 	return
 }
@@ -252,21 +248,21 @@ func (c *Character) PanelDefence(magic bool) float64 {
 }
 
 func (c *Character) AttackWithWeapon(weapon weapon.Weapon) *attack.Attack {
-	return attack.UseWeapon(c.job, weapon)
+	return attack.UseWeapon(c.Job, weapon)
 }
 
 func (c *Character) SkillDamageRate(target *Character, magic bool, skillNature nature.Nature) (rate float64) {
 	gains, targetGains := c.Profits.Gains(magic), target.Profits.Gains(magic)
 
 	//finalAttack
-	rate = 1 + c.Profits.shapeDamage[target.shape]/100 - target.Profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
+	rate = 1 + c.Profits.ShapeDamage[target.shape]/100 - target.Profits.ShapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
 	rate *= skillNature.Restraint(target.nature)                                                 //*属性克制
-	rate *= 1 + c.Profits.natureAttack[skillNature]/100                                          //*(1+属性攻击%)
-	rate *= 1 + c.Profits.natureDamage[target.nature]/100                                        //*(1+属性魔物增伤%)
-	rate *= 1 - target.Profits.natureResist[skillNature]/100                                     //*(1-属性减伤%)
-	//rate *= 1 + c.Profits.raceDamage[target.race]/100 - target.Profits.raceResist[c.race]/100    //*(1+种族增伤%-种族减伤%)
-	rate *= 1 + c.Profits.raceDamage[target.race]/100 //*(1+种族增伤%)
-	rate *= 1 - target.Profits.raceResist[c.race]/100 //*(1-种族减伤%)
+	rate *= 1 + c.Profits.NatureAttack[skillNature]/100                                          //*(1+属性攻击%)
+	rate *= 1 + c.Profits.NatureDamage[target.nature]/100                                        //*(1+属性魔物增伤%)
+	rate *= 1 - target.Profits.NatureResist[skillNature]/100                                     //*(1-属性减伤%)
+	//rate *= 1 + c.Profits.RaceDamage[target.race]/100 - target.Profits.RaceResist[c.race]/100    //*(1+种族增伤%-种族减伤%)
+	rate *= 1 + c.Profits.RaceDamage[target.race]/100 //*(1+种族增伤%)
+	rate *= 1 - target.Profits.RaceResist[c.race]/100 //*(1-种族减伤%)
 	if target.types.IsPlayer() {
 		//TODO *(1+玩家增伤%)
 	} else if target.types.IsBoss() {
@@ -309,7 +305,7 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 		damage *= attack.SkillRate()                                      //*技能倍率
 		damage *= 1 + gains.Damage                                        //*(1+魔伤加成)
 		damage *= attack.GetNature().Restraint(target.nature)             //*属性克制
-		damage *= 1 - target.Profits.natureResist[attack.GetNature()]/100 //*(1-属性减伤)
+		damage *= 1 - target.Profits.NatureResist[attack.GetNature()]/100 //*(1-属性减伤)
 		damage -= float64(target.QualityDefence(true))                    //-素质魔防
 		damage -= float64(target.QualityDefence(false))                   //-素质物防/2
 	} else {
@@ -341,13 +337,13 @@ func (c *Character) baseDamage(target *Character, attack *attack.Attack) (damage
 func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damage float64) {
 	damage = c.EquipmentAttack(attack.IsMagic()) //装备攻击
 	if attack.IsOrdinary() {
-		if c.job >= job.Archer && c.job <= job.Hunter4 {
+		if c.Job >= job.Archer && c.Job <= job.Hunter4 {
 			damage += float64(c.Quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
 			damage += float64(c.Profits.General.Ordinary)                                    //TODO 这里存疑普攻攻击力
 		} else if attack.IsCritical() {
 			damage += float64(c.Quality.OrdinaryAttack(attack.IsMagic(), attack.IsRemote())) //素质普攻攻击力
 		}
-		if c.job >= job.Hunter2 && c.job <= job.Hunter4 {
+		if c.Job >= job.Hunter2 && c.Job <= job.Hunter4 {
 			damage += float64(200 + c.Quality.Dex*5) //猎人进阶二转技能：元素箭矢20级被动效果
 		}
 	}
@@ -357,16 +353,16 @@ func (c *Character) finalAttack(target *Character, attack *attack.Attack) (damag
 		damage += float64(c.Quality.Int) * c.Profits.Gains(true).AttackPer / 100 //+智力*魔法攻击%
 	} else {
 		damage *= attack.GetWeapon().Restraint(target.shape)                                            //*武器体型修正
-		damage *= 1 + c.Profits.shapeDamage[target.shape]/100 - target.Profits.shapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
+		damage *= 1 + c.Profits.ShapeDamage[target.shape]/100 - target.Profits.ShapeResist[c.shape]/100 //*(1+体型增伤%-体型减伤%)
 		damage *= attack.GetNature().Restraint(target.nature)                                           //*属性克制
-		damage *= 1 + c.Profits.natureAttack[attack.GetNature()]/100                                    //*(1+属性攻击%)
-		damage *= 1 + c.Profits.natureDamage[target.nature]/100                                         //*(1+属性魔物增伤%)
-		damage *= 1 - target.Profits.natureResist[attack.GetNature()]/100                               //*(1-属性减伤%)
+		damage *= 1 + c.Profits.NatureAttack[attack.GetNature()]/100                                    //*(1+属性攻击%)
+		damage *= 1 + c.Profits.NatureDamage[target.nature]/100                                         //*(1+属性魔物增伤%)
+		damage *= 1 - target.Profits.NatureResist[attack.GetNature()]/100                               //*(1-属性减伤%)
 	}
 	damage += float64(c.QualityAttack(attack.IsMagic(), attack.IsRemote())) //+素质攻击
-	//damage *= 1 + c.Profits.raceDamage[target.race]/100 - target.Profits.raceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
-	damage *= 1 + c.Profits.raceDamage[target.race]/100 //*(1+种族增伤%)
-	damage *= 1 - target.Profits.raceResist[c.race]/100 //*(1-种族减伤%)
+	//damage *= 1 + c.Profits.RaceDamage[target.race]/100 - target.Profits.RaceResist[c.race]/100 //*(1+种族增伤%-种族减伤%)
+	damage *= 1 + c.Profits.RaceDamage[target.race]/100 //*(1+种族增伤%)
+	damage *= 1 - target.Profits.RaceResist[c.race]/100 //*(1-种族减伤%)
 	if target.types.IsPlayer() {
 		//TODO *(1+玩家增伤%)
 	} else if target.types.IsBoss() {
@@ -468,7 +464,7 @@ func (c *Character) UnmarshalYAML(value *yaml.Node) (err error) {
 						return
 					}
 				case "job":
-					if err = sub.Decode(&c.job); err != nil {
+					if err = sub.Decode(&c.Job); err != nil {
 						return
 					}
 				case "nature":
@@ -484,7 +480,7 @@ func (c *Character) UnmarshalYAML(value *yaml.Node) (err error) {
 						return
 					}
 				case "level":
-					if err = sub.Decode(&c.level); err != nil {
+					if err = sub.Decode(&c.Level); err != nil {
 						return
 					}
 				case "quality":

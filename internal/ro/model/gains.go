@@ -7,22 +7,22 @@ import (
 
 //装备，强化，附魔，卡片，头饰，祈祷，buff等合计
 type Gains struct {
-	Attack  float64 //攻击
-	Defence float64 //防御
+	Attack  float64 `json:"attack"`  //攻击
+	Defence float64 `json:"defence"` //防御
 
-	Spike float64 //穿刺
+	Spike float64 `json:"spike"` //穿刺
 
-	AttackPer    float64 //攻击%
-	DefencePer   float64 //防御%
-	Damage       float64 //伤害%
-	NearDamage   float64 //近战伤害%
-	RemoteDamage float64 //远程伤害%
-	Ignore       float64 //忽视防御%
-	Resist       float64 //伤害减免%
-	NearResist   float64 //近战伤害减免%
-	RemoteResist float64 //远程伤害减免%
-	Refine       float64 //精炼攻击
-	RefineResist float64 //精炼伤害减免%
+	AttackPer    float64 `json:"attack_per"`    //攻击%
+	DefencePer   float64 `json:"defence_per"`   //防御%
+	Damage       float64 `json:"damage"`        //伤害%
+	NearDamage   float64 `json:"near_damage"`   //近战伤害%
+	RemoteDamage float64 `json:"remote_damage"` //远程伤害%
+	Ignore       float64 `json:"ignore"`        //忽视防御%
+	Resist       float64 `json:"resist"`        //伤害减免%
+	NearResist   float64 `json:"near_resist"`   //近战伤害减免%
+	RemoteResist float64 `json:"remote_resist"` //远程伤害减免%
+	Refine       float64 `json:"refine"`        //精炼攻击
+	RefineResist float64 `json:"refine_resist"` //精炼伤害减免%
 }
 
 func (g *Gains) Add(incr *Gains) {

@@ -2,8 +2,8 @@ package model
 
 //等级
 type Level struct {
-	Base int
-	Job  int
+	Base int `json:"base"`
+	Job  int `json:"job"`
 }
 
 func (l *Level) Add(incr *Level) {

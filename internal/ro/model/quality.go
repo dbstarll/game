@@ -2,12 +2,12 @@ package model
 
 //素质属性
 type Quality struct {
-	Str int
-	Agi int
-	Vit int
-	Int int
-	Dex int
-	Luk int
+	Str int `json:"str"`
+	Agi int `json:"agi"`
+	Vit int `json:"vit"`
+	Int int `json:"int"`
+	Dex int `json:"dex"`
+	Luk int `json:"luk"`
 }
 
 //素质攻击
