@@ -6,6 +6,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/shape"
 	"github.com/dbstarll/game/internal/ro/dimension/types"
 	"github.com/dbstarll/game/internal/ro/model"
+	"github.com/dbstarll/game/internal/ro/model/buff"
 	"github.com/dbstarll/game/internal/ro/romel"
 	"go.uber.org/zap"
 )
@@ -18,6 +19,7 @@ type PlayerModel struct {
 func (m *PlayerModel) character() *model.Character {
 	character := model.NewCharacter(types.Player, race.Human, nature.Neutral, shape.Medium)
 
+	buff.Quality(9)(character) //B级冒险家属性
 	if m.Manual != nil {
 		for _, buff := range *m.Manual {
 			if modifiers := buff.Effect(); len(modifiers) == 0 {
