@@ -154,6 +154,7 @@
                     $.post({
                         url: '/player/upload',
                         data: fd,
+                        cache: false,
                         contentType: false,
                         processData: false,
                         dataType: "json"
@@ -266,6 +267,7 @@
             $.post({
                 url: '/player/save',
                 data: JSON.stringify(data),
+                cache: false,
                 dataType: "json"
             }).done(function () {
                 message("保存配置", "保存成功", function () {
@@ -279,7 +281,11 @@
 
         function load() {
             const fn = function () {
-                $.get('/player/load').done(function (data) {
+                $.get({
+                    url: '/player/load',
+                    cache: false,
+                    dataType: "json"
+                }).done(function (data) {
                     if (data && data.ok && data.data) {
                         refresh(data.data);
                         message("载入配置", "载入完成", saved);
