@@ -31,6 +31,7 @@
             justify-content: center;
             align-items: center;
             background-color: antiquewhite;
+            border-radius: 10px;
         }
 
         h4.top {
@@ -44,8 +45,28 @@
         }
 
         .buff {
-            width: 43%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #tabs-manual .buff {
+            width: 40%;
             border-bottom: 1px dotted black;
+        }
+
+        #tabs-union .buff {
+            padding: 5px;
+            border: 1px dotted gray;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .buff .buff-title {
+            background-color: orange;
+            border-radius: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
         .buff .buff-name {
@@ -54,6 +75,16 @@
 
         .buff .buff-value {
             float: right;
+        }
+
+        #tabs-union .pray {
+            float: left;
+            width: 30%;
+        }
+
+        #tabs-union .blessing {
+            float: right;
+            width: 69%;
         }
 
     </style>
@@ -408,8 +439,7 @@
 <div id="tabs">
     <ul>
         <li><a href="#tabs-manual">冒险手册</a></li>
-        <li><a href="#tabs-pray">女神祈祷</a></li>
-        <li><a href="#tabs-blessing">女神祝福</a></li>
+        <li><a href="#tabs-union">工会女神</a></li>
         <li><a href="#tabs-quality">职业素质</a></li>
         <li><a href="#tabs-rune">阿萨神碑</a></li>
         <li><a href="#tabs-gem">符文之匣</a></li>
@@ -446,9 +476,38 @@
         <h4>手册属性<span id="create-effect" class="material-icons md-18">post_add</span></h4>
         <div id="manual" class="buffs"></div>
     </div>
-    <div id="tabs-pray">
-    </div>
-    <div id="tabs-blessing">
+    <div id="tabs-union">
+        <div class="pray">
+            <h4 class="top">女神祈祷</h4>
+            <div class="buff">
+                <div class="buff-title">生命祝福</div>
+                <div class="buff-name">生命上限</div>
+                <div class="buff-value">+0</div>
+            </div>
+            <div class="buff">
+                <div class="buff-title">战斗祝福</div>
+                <div class="buff-name">物理攻击</div>
+                <div class="buff-value">+0</div>
+            </div>
+            <div class="buff">
+                <div class="buff-title">智慧祝福</div>
+                <div class="buff-name">魔法攻击</div>
+                <div class="buff-value">+0</div>
+            </div>
+            <div class="buff">
+                <div class="buff-title">生存祝福</div>
+                <div class="buff-name">物理防御</div>
+                <div class="buff-value">+0</div>
+            </div>
+            <div class="buff">
+                <div class="buff-title">抗魔祝福</div>
+                <div class="buff-name">魔法防御</div>
+                <div class="buff-value">+0</div>
+            </div>
+        </div>
+        <div class="blessing">
+            <h4 class="top">女神祝福</h4>
+        </div>
     </div>
     <div id="tabs-quality">
     </div>
