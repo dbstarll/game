@@ -58,8 +58,6 @@
 
     </style>
     <script>
-        let msgDialog;
-
         function initMessageDialog() {
             return $("#dialog-message").dialog({
                 autoOpen: false,
@@ -68,6 +66,27 @@
                     "确定": function () {
                         $(this).dialog("close");
                     }
+                },
+                close: function () {
+                    $(this).off("dialogclose");
+                }
+            });
+        }
+
+        function initConfirmDialog() {
+            return $("#dialog-confirm").dialog({
+                autoOpen: false,
+                modal: true,
+                buttons: {
+                    "确定": function () {
+                        $(this).attr('confirm', 'true').dialog("close");
+                    },
+                    "取消": function () {
+                        $(this).dialog("close");
+                    }
+                },
+                close: function () {
+                    $(this).off("dialogclose");
                 }
             });
         }
@@ -142,6 +161,7 @@
                         if (data && data.ok && data.data) {
                             refresh(data.data);
                             saved();
+                            $('#download').hide();
                         }
                     }).fail(function (xhr, status, errorThrown) {
                         message("上传配置", "上传失败: [" + status + "]" + errorThrown);
@@ -236,39 +256,82 @@
                 data: JSON.stringify(data),
                 dataType: "json"
             }).done(function () {
-                message("保存配置", "保存成功", saved);
+                message("保存配置", "保存成功", function () {
+                    saved();
+                    $('#download').show();
+                });
             }).fail(function (xhr, status, errorThrown) {
                 message("保存配置", "保存失败: [" + status + "]" + errorThrown);
             });
         }
 
         function load() {
-            $.get('/player/load').done(function (data) {
-                if (data && data.ok && data.data) {
-                    refresh(data.data);
-                    message("载入配置", "载入完成", saved);
-                }
-            }).fail(function (xhr, status, errorThrown) {
-                message("载入配置", "载入失败: [" + status + "]" + errorThrown);
-            });
+            const fn = function () {
+                $.get('/player/load').done(function (data) {
+                    if (data && data.ok && data.data) {
+                        refresh(data.data);
+                        message("载入配置", "载入完成", saved);
+                    }
+                }).fail(function (xhr, status, errorThrown) {
+                    message("载入配置", "载入失败: [" + status + "]" + errorThrown);
+                });
+            };
+            if ($('#save').css('display') === 'block') {
+                confirm("载入配置", "有修改的内容未保存，继续载入会使新修改的内容丢失，请确认是否需要继续载入？", fn);
+            } else {
+                return fn();
+            }
         }
 
         function download() {
-            window.open('/player/download', '_blank');
+            const fn = function () {
+                window.open('/player/download', '_blank');
+                $('#download').hide();
+            }
+            if ($('#save').css('display') === 'block') {
+                confirm("下载配置", "有修改的内容未保存，继续下载会忽略新修改的内容，请确认是否需要继续下载？", fn);
+            } else {
+                return fn();
+            }
         }
 
         function upload() {
-            $('#file').click();
+            const fn = function () {
+                $('#file').click();
+            }
+            const fn2 = function () {
+                if ($('#download').css('display') === 'block') {
+                    confirm("上传配置", "有修改的内容未下载，继续上传会忽略新修改的内容，请确认是否需要继续上传？", fn);
+                } else {
+                    return fn();
+                }
+            }
+            if ($('#save').css('display') === 'block') {
+                confirm("上传配置", "有修改的内容未保存，继续上传会忽略新修改的内容，请确认是否需要继续上传？", fn2);
+            } else {
+                return fn2();
+            }
         }
 
         function message(title, msg, callback) {
             $('#message').text(msg);
             if (callback) {
-                msgDialog.on("dialogclose", callback);
-            } else {
-                msgDialog.off("dialogclose");
+                $("#dialog-message").on("dialogclose", callback);
             }
-            msgDialog.dialog("option", "title", title).dialog("open");
+            $("#dialog-message").dialog("option", "title", title).dialog("open");
+        }
+
+        function confirm(title, msg, callback) {
+            $('#confirm').text(msg);
+            const dialog = $("#dialog-confirm").attr("confirm", "false");
+            if (callback) {
+                dialog.on("dialogclose", function () {
+                    if (dialog.attr('confirm') === 'true') {
+                        setTimeout(callback, 200);
+                    }
+                });
+            }
+            dialog.dialog("option", "title", title).dialog("open");
         }
 
         $(function () {
@@ -279,7 +342,8 @@
             $('#manual').sortable().on("sortupdate", saving);
             $('.saved').on("change", saving);
 
-            msgDialog = initMessageDialog();
+            initMessageDialog();
+            initConfirmDialog();
             initAddEffectDialog();
             initUploadFile();
 
@@ -301,13 +365,16 @@
 <div id="dialog-message">
     <p id="message"></p>
 </div>
+<div id="dialog-confirm">
+    <p id="confirm"></p>
+</div>
 <div id="tool-bar">
     <label for="character-name">角色名称：</label>
     <input type="text" id="character-name" class="saved">
-    <span id="save" class="material-icons" onclick="save()" style="display: none">save</span>
-    <span class="material-icons" onclick="load()">refresh</span>
-    <span class="material-icons" onclick="download()">download</span>
     <span class="material-icons" onclick="upload()">upload</span>
+    <span class="material-icons" onclick="load()">refresh</span>
+    <span id="save" class="material-icons" onclick="save()" style="display: none">save</span>
+    <span id="download" class="material-icons" onclick="download()" style="display: none">download</span>
     <input type="file" id="file" accept="application/json" style="display: none"/>
 </div>
 <div id="tabs">
