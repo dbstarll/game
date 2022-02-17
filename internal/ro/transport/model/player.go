@@ -7,6 +7,7 @@ import (
 	"github.com/dbstarll/game/internal/ro/dimension/types"
 	"github.com/dbstarll/game/internal/ro/model"
 	"github.com/dbstarll/game/internal/ro/romel"
+	"go.uber.org/zap"
 )
 
 type PlayerModel struct {
@@ -16,6 +17,19 @@ type PlayerModel struct {
 
 func (m *PlayerModel) character() *model.Character {
 	character := model.NewCharacter(types.Player, race.Human, nature.Neutral, shape.Medium)
+
+	if m.Manual != nil {
+		for _, buff := range *m.Manual {
+			if modifiers := buff.Effect(); len(modifiers) == 0 {
+				zap.S().Infof("unknown buff: %s", buff)
+			} else {
+				for _, modifier := range modifiers {
+					modifier(character)
+				}
+			}
+		}
+	}
+
 	return character
 }
 

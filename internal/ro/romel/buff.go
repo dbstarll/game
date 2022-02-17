@@ -132,6 +132,10 @@ func (b *Buff) Items() []string {
 	return strings.Split(b.buff, "\n")
 }
 
+func (b Buff) String() string {
+	return b.buff
+}
+
 func (b *Buff) parseBuff(effect string) ([]model.CharacterModifier, error) {
 	var modifiers []model.CharacterModifier
 	for _, line := range strings.Split(effect, "\n") {
