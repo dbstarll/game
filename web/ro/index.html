@@ -44,8 +44,8 @@
         }
 
         .buff {
-            width: 35%;
-            background-color: azure;
+            width: 43%;
+            border-bottom: 1px dotted black;
         }
 
         .buff .buff-name {
@@ -195,12 +195,13 @@
                 return false;
             }
 
-            appendToManual(name, '+' + num + cfg.unit)
+            appendToManual(name, num, cfg);
             saving();
             return true;
         }
 
-        function appendToManual(name, value) {
+        function appendToManual(name, num, cfg) {
+            const value = '+' + num.toFixed(cfg.accuracy == 0.1 ? 1 : 0) + cfg.unit;
             const manual = $('#manual');
             let exist = false;
             $('.buff', manual).each(function (idx, sub) {
@@ -228,7 +229,16 @@
                     if (manual) {
                         manual.forEach(function (key) {
                             const idx = key.indexOf('+');
-                            appendToManual(key.substr(0, idx), key.substring(idx));
+                            const name = key.substr(0, idx);
+                            const val = key.substring(idx);
+
+                            const cfg = manualEffects[name];
+                            if (cfg) {
+                                const num = parseFloat(val);
+                                if (!isNaN(num) && num > 0) {
+                                    appendToManual(name, num, cfg);
+                                }
+                            }
                         });
                     }
                     if (player['character-name']) {
@@ -375,7 +385,7 @@
         <label for="effect-name">属性: </label>
         <input type="text" id="effect-name">
         <label for="effect-value">幅度: </label>
-        <input type="text" id="effect-value" size="4" value="0">
+        <input type="text" id="effect-value" size="5" value="0">
         <!-- Allow form submission with keyboard without duplicating the dialog button -->
         <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
     </form>

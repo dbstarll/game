@@ -66,7 +66,13 @@ var buffModifiers = &map[string]BuffModifier{
 	"生命上限": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{Hp: int(val)})
 	},
+	"MaxHp": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{Hp: int(val)})
+	},
 	"魔法上限": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{Sp: int(val)})
+	},
+	"MaxSp": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{Sp: int(val)})
 	},
 	"命中": func(val float64) model.CharacterModifier {
@@ -208,6 +214,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"对MVP、Mini魔物的伤害": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{MVP: val})
 	},
+	"对MVP/Mini增伤": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{MVP: val})
+	},
 	"对普通魔物（不包含MVP、Mini魔物）增伤": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{NoMVP: val})
 	},
@@ -227,6 +236,9 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 		return model.AddGeneral(&general.General{NoMVPResist: -val})
 	},
 	"PVP/GVG中对玩家伤害": func(val float64) model.CharacterModifier {
+		return model.AddGeneral(&general.General{Player: val})
+	},
+	"对玩家增伤": func(val float64) model.CharacterModifier {
 		return model.AddGeneral(&general.General{Player: val})
 	},
 	"PVP/GVG中受玩家伤害": func(val float64) model.CharacterModifier {
@@ -964,6 +976,15 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	"对中体型魔物伤害": func(val float64) model.CharacterModifier {
 		return model.AddShapeDamage(&map[shape.Shape]float64{shape.Medium: val})
 	},
+	"对小体型增伤": func(val float64) model.CharacterModifier {
+		return model.AddShapeDamage(&map[shape.Shape]float64{shape.Small: val})
+	},
+	"对中体型增伤": func(val float64) model.CharacterModifier {
+		return model.AddShapeDamage(&map[shape.Shape]float64{shape.Medium: val})
+	},
+	"对大体型增伤": func(val float64) model.CharacterModifier {
+		return model.AddShapeDamage(&map[shape.Shape]float64{shape.Large: val})
+	},
 
 	//体型减伤%
 	"受到大、中、小型魔物伤害": func(val float64) model.CharacterModifier {
@@ -987,6 +1008,15 @@ var percentageBuffModifiers = &map[string]BuffModifier{
 	},
 	"受中体型魔物伤害": func(val float64) model.CharacterModifier {
 		return model.AddShapeResist(&map[shape.Shape]float64{shape.Medium: -val})
+	},
+	"对小体型减伤": func(val float64) model.CharacterModifier {
+		return model.AddShapeResist(&map[shape.Shape]float64{shape.Small: val})
+	},
+	"对中体型减伤": func(val float64) model.CharacterModifier {
+		return model.AddShapeResist(&map[shape.Shape]float64{shape.Medium: val})
+	},
+	"对大体型减伤": func(val float64) model.CharacterModifier {
+		return model.AddShapeResist(&map[shape.Shape]float64{shape.Large: val})
 	},
 
 	//异常状态抵抗%
@@ -1128,6 +1158,9 @@ func initModifier() {
 			(*percentageBuffModifiers)[fmt.Sprintf("对%s加伤", _race.Name())] = func(val float64) model.CharacterModifier {
 				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
 			}
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s增伤", _race)] = func(val float64) model.CharacterModifier {
+				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
+			}
 			(*percentageBuffModifiers)[fmt.Sprintf("对%s魔物伤害", _race.Name())] = func(val float64) model.CharacterModifier {
 				return model.AddRaceDamage(&map[race.Race]float64{_race: val})
 			}
@@ -1140,6 +1173,9 @@ func initModifier() {
 
 			//种族减伤%
 			(*percentageBuffModifiers)[fmt.Sprintf("%s减伤", _race.Name())] = func(val float64) model.CharacterModifier {
+				return model.AddRaceResist(&map[race.Race]float64{_race: val})
+			}
+			(*percentageBuffModifiers)[fmt.Sprintf("对%s减伤", _race)] = func(val float64) model.CharacterModifier {
 				return model.AddRaceResist(&map[race.Race]float64{_race: val})
 			}
 			(*percentageBuffModifiers)[fmt.Sprintf("%s伤害减免", _race.Name())] = func(val float64) model.CharacterModifier {

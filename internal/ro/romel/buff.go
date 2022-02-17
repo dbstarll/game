@@ -921,7 +921,7 @@ func (b *Buff) parseEffect(effectStr string, rate int) (model.CharacterModifier,
 			inBracket = false
 		case '+', '-':
 			if !inBracket && runeArray[idx+1] >= '0' && runeArray[idx+1] <= '9' {
-				key := string(runeArray[pos:idx])
+				key := strings.TrimSuffix(string(runeArray[pos:idx]), "%")
 				if floatVal, percentage, suffix, err := b.parseFloat(runeArray[idx+1:]); err != nil {
 					return nil, errors.Wrapf(err, "parseEffect.ParseFloat: %s", effectStr)
 				} else {
