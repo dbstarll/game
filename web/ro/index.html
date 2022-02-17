@@ -217,16 +217,28 @@
             }
         }
 
-        function refresh(player) {
+        function refresh(data) {
             $('#manual').children().remove();
-            if (player.manual) {
-                player.manual.forEach(function (key) {
-                    const idx = key.indexOf('+');
-                    appendToManual(key.substr(0, idx), key.substring(idx));
-                });
-            }
-            if (player['character-name']) {
-                $('#character-name').val(player['character-name']);
+
+            if (data) {
+                const player = data.player;
+                if (player) {
+                    const manual = player.manual;
+                    if (manual) {
+                        manual.forEach(function (key) {
+                            const idx = key.indexOf('+');
+                            appendToManual(key.substr(0, idx), key.substring(idx));
+                        });
+                    }
+                    if (player['character-name']) {
+                        $('#character-name').val(player['character-name']);
+                    }
+                }
+
+                const character = data.character;
+                if (character) {
+                    console.log(character);
+                }
             }
         }
 

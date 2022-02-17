@@ -28,10 +28,12 @@ func (d *PlayerDispatch) BindGin(g *gin.RouterGroup) {
 }
 
 func (d *PlayerDispatch) load(c *gin.Context) {
-	if player := sessions.Default(c).Get("player"); player == nil {
+	if playerObj := sessions.Default(c).Get("player"); playerObj == nil {
+		d.responseWithError(c, model.Error404, errors.New("player not found"))
+	} else if player, ok := playerObj.(model.PlayerModel); !ok {
 		d.responseWithError(c, model.Error404, errors.New("player not found"))
 	} else {
-		d.responseOkWithData(c, player)
+		d.responseOkWithData(c, player.Result())
 	}
 }
 
@@ -43,7 +45,7 @@ func (d *PlayerDispatch) save(c *gin.Context) {
 		session := sessions.Default(c)
 		session.Set("player", player)
 		session.Save()
-		d.responseOkWithData(c, nil)
+		d.responseOkWithData(c, player.Result())
 	}
 }
 
@@ -74,6 +76,6 @@ func (d *PlayerDispatch) upload(c *gin.Context) {
 		session := sessions.Default(c)
 		session.Set("player", player)
 		session.Save()
-		d.responseOkWithData(c, player)
+		d.responseOkWithData(c, player.Result())
 	}
 }
