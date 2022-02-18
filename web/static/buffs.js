@@ -69,6 +69,14 @@ $.fn.extend({
                 return buffs;
             },
             reset: function () {
+                buffs.that.each(function () {
+                    const config = $.ro.buffs.getConfig(this);
+                    if (config && config.dynamic) {
+                        $(this).children('.buff').remove();
+                    } else {
+                        $(this).children('.buff').buff().reset();
+                    }
+                });
                 return buffs;
             },
             addBuff: function (item, value, errorCallback) {

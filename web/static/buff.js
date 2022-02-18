@@ -103,6 +103,14 @@ $.fn.extend({
             decode: function (newValue) {
                 return buff.value(newValue);
             },
+            reset: function () {
+                buff.that.each(function () {
+                    const config = $.ro.buff.getConfig(this);
+                    if (config && config.zero) {
+                        $.ro.buff.setValue(this, 0);
+                    }
+                })
+            },
             name: function () {
                 return buff.that.children('.buff-name').text();
             },

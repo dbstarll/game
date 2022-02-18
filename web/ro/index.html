@@ -290,13 +290,12 @@
         }
 
         function refresh(data) {
-            $('#manual').children().remove();
-            $('.buff', '#tabs-union').each(function (idx, buff) {
-                const cfg = manualEffects[$(buff).attr('buff-alias') || $('.buff-name', buff).text()];
-                if (cfg) {
-                    $('.buff-value', buff).text('+0' + cfg.unit);
-                }
-            });
+            $('#manual').buffs().reset();
+            const union = $('#tabs-union');
+            $('.pray', union).buffs().reset();
+            $('.attack', union).buffs().reset();
+            $('.defence', union).buffs().reset();
+            $('.element', union).buffs().reset();
 
             if (data) {
                 const player = data.player;
