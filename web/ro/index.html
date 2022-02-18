@@ -11,15 +11,17 @@
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
     <script src="/static/common.js"></script>
     <script src="/static/ro.js"></script>
+    <script src="/static/buff.js"></script>
+    <script src="/static/buffs.js"></script>
     <style>
         #tabs {
             float: left;
-            width: 60%;
+            width: 65%;
         }
 
         #board {
             float: right;
-            width: 39%;
+            width: 34%;
         }
 
         #tool-bar {
@@ -48,6 +50,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: small;
         }
 
         #tabs-manual .buff {
@@ -59,7 +62,7 @@
             padding: 5px;
             border: 1px dotted gray;
             border-radius: 5px;
-            margin: 5px;
+            margin: 2px;
         }
 
         .buff .buff-title {
@@ -83,10 +86,40 @@
         }
 
         #tabs-union .blessing {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
             float: right;
             width: 69%;
         }
 
+        #tabs-union .blessing h4 {
+            width: 100%;
+        }
+
+        #tabs-union .blessing .attack {
+            width: 33%;
+        }
+
+        #tabs-union .blessing .defence {
+            width: 33%;
+        }
+
+        #tabs-union .blessing .element {
+            width: 33%;
+        }
+
+        #tabs-union .blessing .attack .buff {
+            background-color: pink;
+        }
+
+        #tabs-union .blessing .defence .buff {
+            background-color: lightcyan;
+        }
+
+        #tabs-union .blessing .element .buff {
+            background-color: lightyellow;
+        }
     </style>
     <script>
         function initMessageDialog() {
@@ -155,6 +188,8 @@
             const spinner = $("#effect-value").spinner({
                 numberFormat: "n",
                 min: 0
+            }).on('focus', function () {
+                $(this).select();
             });
             $("#effect-name").autocomplete({
                 source: Object.keys(manualEffects),
@@ -163,6 +198,40 @@
                     spinner.spinner("option", "step", cfg.accuracy);
                 }
             });
+        }
+
+        function initEditEffectDialog() {
+            let form;
+            const dialog = $("#dialog-edit-effect").dialog({
+                autoOpen: false,
+                width: 380,
+                modal: true,
+                buttons: {
+                    "修改": function () {
+                        dialog.attr('confirm', 'true').dialog("close");
+                    },
+                    "取消": function () {
+                        dialog.dialog("close");
+                    }
+                },
+                close: function () {
+                    form[0].reset();
+                    dialog.off('dialogclose');
+                }
+            });
+            form = dialog.find("form").on("submit", function (event) {
+                event.preventDefault();
+                dialog.attr('confirm', 'true').dialog("close");
+            });
+
+            $("#edit-effect-value").spinner({
+                numberFormat: "n",
+                step: 0.1,
+                min: 0
+            }).on('focus', function () {
+                $(this).select();
+            });
+            return dialog;
         }
 
         function initUploadFile() {
@@ -226,23 +295,22 @@
                 return false;
             }
 
-            appendToManual(name, num, cfg);
+            appendToManual(name, num, cfg, $('#manual'));
             saving();
             return true;
         }
 
-        function appendToManual(name, num, cfg) {
+        function appendToManual(name, num, cfg, buffs) {
             const value = '+' + num.toFixed(cfg.accuracy == 0.1 ? 1 : 0) + cfg.unit;
-            const manual = $('#manual');
             let exist = false;
-            $('.buff', manual).each(function (idx, sub) {
+            $('.buff', buffs).each(function (idx, sub) {
                 if ($('.buff-name', sub).text() === name) {
                     exist = true;
                     $('.buff-value', sub).text(value);
                 }
             });
             if (!exist) {
-                manual.append(
+                buffs.append(
                     $.html.div().addClass('buff')
                         .append($.html.div().addClass('buff-name').text(name))
                         .append($.html.div().addClass('buff-value').text(value))
@@ -252,10 +320,20 @@
 
         function refresh(data) {
             $('#manual').children().remove();
+            $('.buff', '#tabs-union').each(function (idx, buff) {
+                const cfg = manualEffects[$(buff).attr('buff-alias') || $('.buff-name', buff).text()];
+                if (cfg) {
+                    $('.buff-value', buff).text('+0' + cfg.unit);
+                }
+            });
 
             if (data) {
                 const player = data.player;
                 if (player) {
+                    if (player['character-name']) {
+                        $('#character-name').val(player['character-name']);
+                    }
+
                     const manual = player.manual;
                     if (manual) {
                         manual.forEach(function (key) {
@@ -267,13 +345,23 @@
                             if (cfg) {
                                 const num = parseFloat(val);
                                 if (!isNaN(num) && num > 0) {
-                                    appendToManual(name, num, cfg);
+                                    appendToManual(name, num, cfg, $('#manual'));
                                 }
                             }
                         });
                     }
-                    if (player['character-name']) {
-                        $('#character-name').val(player['character-name']);
+
+                    const union = player.union;
+                    if (union) {
+                        const pray = union.pray;
+                        if (pray) {
+                            pray.forEach(function (key) {
+                                const idx = key.indexOf('+');
+                                const name = key.substr(0, idx);
+                                const val = key.substring(idx);
+                                console.log(name, val);
+                            });
+                        }
                     }
                 }
 
@@ -299,10 +387,48 @@
                 const value = $('.buff-value', sub).text();
                 manualEffects.push(name + value);
             });
+            let unionPrayEffects = [];
+            $('.buff', $('.pray', '#tabs-union')).each(function (idx, sub) {
+                const name = $('.buff-name', sub).text();
+                const value = $('.buff-value', sub).text();
+                if (parseFloat(value)) {
+                    unionPrayEffects.push(name + value);
+                }
+            });
+            let unionAttackEffects = [];
+            $('.buff', $('.attack', '#tabs-union')).each(function (idx, sub) {
+                const name = $('.buff-name', sub).text();
+                const value = $('.buff-value', sub).text();
+                if (parseFloat(value)) {
+                    unionAttackEffects.push(name + value);
+                }
+            });
+            let unionDefenceEffects = [];
+            $('.buff', $('.defence', '#tabs-union')).each(function (idx, sub) {
+                const name = $('.buff-name', sub).text();
+                const value = $('.buff-value', sub).text();
+                if (parseFloat(value)) {
+                    unionDefenceEffects.push(name + value);
+                }
+            });
+            let unionElementEffects = [];
+            $('.buff', $('.element', '#tabs-union')).each(function (idx, sub) {
+                const name = $('.buff-name', sub).text();
+                const value = $('.buff-value', sub).text();
+                if (parseFloat(value)) {
+                    unionElementEffects.push(name + value);
+                }
+            });
 
             let data = {
                 'character-name': character.val(),
-                manual: manualEffects
+                manual: manualEffects,
+                union: {
+                    pray: unionPrayEffects,
+                    attack: unionAttackEffects,
+                    defence: unionDefenceEffects,
+                    element: unionElementEffects
+                }
             };
 
             $.post({
@@ -393,8 +519,29 @@
             dialog.dialog("option", "title", title).dialog("open");
         }
 
+        function editEffect(dialog) {
+            const item = $.ro.buff.getConfig(this);
+            const buff = $(this).buff();
+            $('#edit-effect-name', dialog).text(buff.name() + '：');
+            const spinner = $('#edit-effect-value', dialog).val(buff.value() || 0);
+            if (item && item.max) {
+                spinner.spinner("option", "max", item.max);
+            }
+
+            dialog.on("dialogclose", function () {
+                if (dialog.attr('confirm') === 'true') {
+                    const val = $('#edit-effect-value', dialog).val();
+                    buff.value(val, function (error) {
+                        message("修改属性: " + buff.name(), "幅度错误: " + error);
+                    });
+                }
+            }).attr("confirm", "false").dialog("open");
+        }
+
         $(function () {
-            $("#tabs").tabs();
+            $("#tabs").tabs({
+                active: 1
+            });
             $("#board").accordion({
                 heightStyle: "content"
             });
@@ -404,10 +551,31 @@
             initMessageDialog();
             initConfirmDialog();
             initAddEffectDialog();
+            const editDialog = initEditEffectDialog();
             initUploadFile();
+
+            initUnion(editDialog);
 
             load();
         });
+
+        function initUnion(dialog) {
+            const union = $('#tabs-union');
+            initFixedBuffs(dialog, $('.pray', union), STORE.union.pray);
+            initFixedBuffs(dialog, $('.attack', union), STORE.union.blessing.attack);
+            initFixedBuffs(dialog, $('.defence', union), STORE.union.blessing.defence);
+            initFixedBuffs(dialog, $('.element', union), STORE.union.blessing.element);
+        }
+
+        function initFixedBuffs(dialog, container, items) {
+            container.buffs({
+                buff: {zero: true},
+                click: function () {
+                    editEffect.call(this, dialog);
+                },
+                change: saving
+            }, items);
+        }
     </script>
 </head>
 <body>
@@ -417,6 +585,14 @@
         <input type="text" id="effect-name">
         <label for="effect-value">幅度: </label>
         <input type="text" id="effect-value" size="5" value="0">
+        <!-- Allow form submission with keyboard without duplicating the dialog button -->
+        <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </form>
+</div>
+<div id="dialog-edit-effect" title="修改属性">
+    <form>
+        <label id="edit-effect-name" for="edit-effect-value"></label>
+        <input id="edit-effect-value" type="text" size="5">
         <!-- Allow form submission with keyboard without duplicating the dialog button -->
         <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
     </form>
@@ -479,34 +655,12 @@
     <div id="tabs-union">
         <div class="pray">
             <h4 class="top">女神祈祷</h4>
-            <div class="buff">
-                <div class="buff-title">生命祝福</div>
-                <div class="buff-name">生命上限</div>
-                <div class="buff-value">+0</div>
-            </div>
-            <div class="buff">
-                <div class="buff-title">战斗祝福</div>
-                <div class="buff-name">物理攻击</div>
-                <div class="buff-value">+0</div>
-            </div>
-            <div class="buff">
-                <div class="buff-title">智慧祝福</div>
-                <div class="buff-name">魔法攻击</div>
-                <div class="buff-value">+0</div>
-            </div>
-            <div class="buff">
-                <div class="buff-title">生存祝福</div>
-                <div class="buff-name">物理防御</div>
-                <div class="buff-value">+0</div>
-            </div>
-            <div class="buff">
-                <div class="buff-title">抗魔祝福</div>
-                <div class="buff-name">魔法防御</div>
-                <div class="buff-value">+0</div>
-            </div>
         </div>
         <div class="blessing">
             <h4 class="top">女神祝福</h4>
+            <div class="attack"></div>
+            <div class="defence"></div>
+            <div class="element"></div>
         </div>
     </div>
     <div id="tabs-quality">

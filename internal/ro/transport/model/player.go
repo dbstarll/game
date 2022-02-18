@@ -14,6 +14,14 @@ import (
 type PlayerModel struct {
 	CharacterName string        `json:"character-name"`
 	Manual        *[]romel.Buff `json:"manual"`
+	Union         UnionModel    `json:"union"`
+}
+
+type UnionModel struct {
+	Pray    *[]romel.Buff `json:"pray"`
+	Attack  *[]romel.Buff `json:"attack"`
+	Defence *[]romel.Buff `json:"defence"`
+	Element *[]romel.Buff `json:"element"`
 }
 
 func (m *PlayerModel) character() *model.Character {
