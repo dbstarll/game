@@ -15,7 +15,10 @@ $.extend($.ro, {
                     }
                 case "number":
                     const config = $.ro.buff.getConfig(buff);
-                    if (isNaN(value)) {
+                    if (config && config.invalid) {
+                        errorCallback.call(this, '未知的属性: ' + $.ro.buff.getName(buff));
+                        return false;
+                    } else if (isNaN(value)) {
                         errorCallback.call(this, '不是有效数值: ' + value);
                         return false;
                     } else if (value < 0) {
@@ -78,6 +81,7 @@ $.fn.extend({
             if (item) {
                 $.extend(finalConfig, item);
             } else {
+                $.extend(finalConfig, {invalid: true});
                 console.warn("unknown effect", config);
             }
             this.each(function () {

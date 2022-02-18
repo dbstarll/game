@@ -382,7 +382,8 @@
                 }).done(function (data) {
                     if (data && data.ok && data.data) {
                         refresh(data.data);
-                        message("载入配置", "载入完成", saved);
+                        saved();
+                        message("载入配置", "载入完成");
                     }
                 }).fail(function (xhr, status, errorThrown) {
                     message("载入配置", "载入失败: [" + status + "]" + errorThrown);
