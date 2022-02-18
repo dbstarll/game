@@ -51,11 +51,20 @@ $.extend($.ro, {
                     return false;
             }
         },
+        getName: function (buff) {
+            return $.data(buff, 'buff-name');
+        },
         getValue: function (buff) {
             return $.data(buff, 'buff-value');
         },
         getDisplayValue: function (buff) {
             return $(buff).children('.buff-value').text();
+        },
+        getEffect: function (buff) {
+            const value = $.ro.buff.getValue(buff);
+            if ('number' === typeof value && value > 0) {
+                return $.ro.buff.getName(buff) + $.ro.buff.getDisplayValue(buff);
+            }
         }
     }
 });
@@ -64,7 +73,8 @@ $.fn.extend({
     buff: function (config) {
         if (typeof config === 'object') {
             let finalConfig = $.extend({}, config);
-            const item = manualEffects[config.alias || config.effect];
+            const buffName = config.alias || config.effect;
+            const item = manualEffects[buffName];
             if (item) {
                 $.extend(finalConfig, item);
             } else {
@@ -72,11 +82,19 @@ $.fn.extend({
             }
             this.each(function () {
                 $.data(this, 'config', finalConfig);
+                $.data(this, 'buff-name', buffName);
             })
         }
         const buff = {that: this};
         return $.extend(buff, {
             encode: function () {
+                const caller = this;
+                let result = undefined;
+                buff.that.each(function () {
+                    result = $.ro.buff.getEffect.call(caller, this);
+                    return 'undefined' === typeof result;
+                })
+                return result;
             },
             decode: function (newValue) {
                 return buff.value(newValue);
@@ -84,7 +102,7 @@ $.fn.extend({
             name: function () {
                 return buff.that.children('.buff-name').text();
             },
-            value: function (newValue, callback) {
+            value: function (newValue, errorCallback) {
                 const caller = this;
                 if ('undefined' === typeof newValue) {
                     let result = undefined;
@@ -95,7 +113,7 @@ $.fn.extend({
                     return result;
                 } else {
                     buff.that.each(function () {
-                        $.ro.buff.setValue.call(caller, this, newValue, callback || console.warn);
+                        $.ro.buff.setValue.call(caller, this, newValue, errorCallback || console.warn);
                     })
                     return buff;
                 }

@@ -226,7 +226,6 @@
 
             $("#edit-effect-value").spinner({
                 numberFormat: "n",
-                step: 0.1,
                 min: 0
             }).on('focus', function () {
                 $(this).select();
@@ -282,40 +281,12 @@
         function addEffect() {
             const name = $('#effect-name').val();
             const val = $('#effect-value').val();
-
-            const cfg = manualEffects[name];
-            if (!cfg) {
-                message("添加属性", "未知属性: " + name);
-                return false;
-            }
-
-            const num = parseFloat(val);
-            if (isNaN(num) || num <= 0) {
-                message("添加属性", "幅度错误: " + val);
-                return false;
-            }
-
-            appendToManual(name, num, cfg, $('#manual'));
-            saving();
-            return true;
-        }
-
-        function appendToManual(name, num, cfg, buffs) {
-            const value = '+' + num.toFixed(cfg.accuracy == 0.1 ? 1 : 0) + cfg.unit;
-            let exist = false;
-            $('.buff', buffs).each(function (idx, sub) {
-                if ($('.buff-name', sub).text() === name) {
-                    exist = true;
-                    $('.buff-value', sub).text(value);
-                }
+            let result = true;
+            $('#manual').buffs().addBuff({effect: name}, val, function (error) {
+                message("添加属性", error);
+                result = false;
             });
-            if (!exist) {
-                buffs.append(
-                    $.html.div().addClass('buff')
-                        .append($.html.div().addClass('buff-name').text(name))
-                        .append($.html.div().addClass('buff-value').text(value))
-                );
-            }
+            return result;
         }
 
         function refresh(data) {
@@ -340,14 +311,7 @@
                             const idx = key.indexOf('+');
                             const name = key.substr(0, idx);
                             const val = key.substring(idx);
-
-                            const cfg = manualEffects[name];
-                            if (cfg) {
-                                const num = parseFloat(val);
-                                if (!isNaN(num) && num > 0) {
-                                    appendToManual(name, num, cfg, $('#manual'));
-                                }
-                            }
+                            $('#manual').buffs().addBuff({effect: name}, val);
                         });
                     }
 
@@ -381,53 +345,16 @@
                 return false;
             }
 
-            let manualEffects = [];
-            $('.buff', '#manual').each(function (idx, sub) {
-                const name = $('.buff-name', sub).text();
-                const value = $('.buff-value', sub).text();
-                manualEffects.push(name + value);
-            });
-            let unionPrayEffects = [];
-            $('.buff', $('.pray', '#tabs-union')).each(function (idx, sub) {
-                const name = $('.buff-name', sub).text();
-                const value = $('.buff-value', sub).text();
-                if (parseFloat(value)) {
-                    unionPrayEffects.push(name + value);
-                }
-            });
-            let unionAttackEffects = [];
-            $('.buff', $('.attack', '#tabs-union')).each(function (idx, sub) {
-                const name = $('.buff-name', sub).text();
-                const value = $('.buff-value', sub).text();
-                if (parseFloat(value)) {
-                    unionAttackEffects.push(name + value);
-                }
-            });
-            let unionDefenceEffects = [];
-            $('.buff', $('.defence', '#tabs-union')).each(function (idx, sub) {
-                const name = $('.buff-name', sub).text();
-                const value = $('.buff-value', sub).text();
-                if (parseFloat(value)) {
-                    unionDefenceEffects.push(name + value);
-                }
-            });
-            let unionElementEffects = [];
-            $('.buff', $('.element', '#tabs-union')).each(function (idx, sub) {
-                const name = $('.buff-name', sub).text();
-                const value = $('.buff-value', sub).text();
-                if (parseFloat(value)) {
-                    unionElementEffects.push(name + value);
-                }
-            });
 
+            const union = $('#tabs-union');
             let data = {
                 'character-name': character.val(),
-                manual: manualEffects,
+                manual: $('#manual').buffs().encode(),
                 union: {
-                    pray: unionPrayEffects,
-                    attack: unionAttackEffects,
-                    defence: unionDefenceEffects,
-                    element: unionElementEffects
+                    pray: $('.pray', union).buffs().encode(),
+                    attack: $('.attack', union).buffs().encode(),
+                    defence: $('.defence', union).buffs().encode(),
+                    element: $('.element', union).buffs().encode()
                 }
             };
 
@@ -524,8 +451,9 @@
             const buff = $(this).buff();
             $('#edit-effect-name', dialog).text(buff.name() + '：');
             const spinner = $('#edit-effect-value', dialog).val(buff.value() || 0);
-            if (item && item.max) {
-                spinner.spinner("option", "max", item.max);
+            if (item) {
+                spinner.spinner("option", "max", item.max || null);
+                spinner.spinner("option", "step", item.accuracy || 1);
             }
 
             dialog.on("dialogclose", function () {
@@ -545,7 +473,6 @@
             $("#board").accordion({
                 heightStyle: "content"
             });
-            $('#manual').sortable().on("sortupdate", saving);
             $('.saved').on("change", saving);
 
             initMessageDialog();
@@ -554,6 +481,13 @@
             const editDialog = initEditEffectDialog();
             initUploadFile();
 
+            $('#manual').sortable().on("sortupdate", saving).buffs({
+                dynamic: true,
+                click: function () {
+                    editEffect.call(this, editDialog);
+                },
+                change: saving
+            });
             initUnion(editDialog);
 
             load();
