@@ -40,6 +40,11 @@
             margin-top: 0;
         }
 
+        form {
+            display: flex;
+            align-items: center;
+        }
+
         .buffs {
             display: flex;
             flex-wrap: wrap;
@@ -224,12 +229,23 @@
                 dialog.attr('confirm', 'true').dialog("close");
             });
 
-            $("#edit-effect-value").spinner({
+            const spinner = $("#edit-effect-value").spinner({
                 numberFormat: "n",
                 min: 0
             }).on('focus', function () {
                 $(this).select();
             });
+
+            form.children('.min').on('click', function () {
+                spinner.spinner("value", 0);
+            });
+            form.children('.max').on('click', function () {
+                const max = spinner.spinner("option", "max");
+                if ('number' === typeof max) {
+                    spinner.spinner("value", max);
+                }
+            });
+
             return dialog;
         }
 
@@ -283,7 +299,7 @@
             const val = $('#effect-value').val();
             let result = true;
             $('#manual').buffs().addBuff({effect: name}, val, function (error) {
-                message("添加属性", error);
+                message("添加属性: " + name, error);
                 result = false;
             });
             return result;
@@ -452,16 +468,26 @@
             $('#edit-effect-name', dialog).text(buff.name() + '：');
             const spinner = $('#edit-effect-value', dialog).val(buff.value() || 0);
             if (item) {
-                spinner.spinner("option", "max", item.max || null);
+                if (item.max) {
+                    spinner.spinner("option", "max", item.max);
+                    $('.max', dialog).show();
+                } else {
+                    spinner.spinner("option", "max", null);
+                    $('.max', dialog).hide();
+                }
                 spinner.spinner("option", "step", item.accuracy || 1);
             }
 
-            dialog.on("dialogclose", function () {
+            dialog.on("dialogbeforeclose", function () {
                 if (dialog.attr('confirm') === 'true') {
+                    dialog.removeAttr('confirm');
                     const val = $('#edit-effect-value', dialog).val();
+                    let close = true;
                     buff.value(val, function (error) {
-                        message("修改属性: " + buff.name(), "幅度错误: " + error);
+                        message("修改属性: " + buff.name(), error);
+                        close = false;
                     });
+                    return close;
                 }
             }).attr("confirm", "false").dialog("open");
         }
@@ -481,34 +507,35 @@
             const editDialog = initEditEffectDialog();
             initUploadFile();
 
-            $('#manual').sortable().on("sortupdate", saving).buffs({
-                dynamic: true,
-                click: function () {
-                    editEffect.call(this, editDialog);
-                },
-                change: saving
-            });
+            initManual(editDialog);
             initUnion(editDialog);
+            saved();
 
             load();
         });
 
-        function initUnion(dialog) {
-            const union = $('#tabs-union');
-            initFixedBuffs(dialog, $('.pray', union), STORE.union.pray);
-            initFixedBuffs(dialog, $('.attack', union), STORE.union.blessing.attack);
-            initFixedBuffs(dialog, $('.defence', union), STORE.union.blessing.defence);
-            initFixedBuffs(dialog, $('.element', union), STORE.union.blessing.element);
+        function initManual(dialog) {
+            const manual = $('#manual').sortable().on("sortupdate", saving);
+            initBuffs(manual, dialog, true);
         }
 
-        function initFixedBuffs(dialog, container, items) {
+        function initUnion(dialog) {
+            const union = $('#tabs-union');
+            initBuffs($('.pray', union), dialog, false, {zero: true}, STORE.union.pray);
+            initBuffs($('.attack', union), dialog, false, {zero: true}, STORE.union.blessing.attack);
+            initBuffs($('.defence', union), dialog, false, {zero: true}, STORE.union.blessing.defence);
+            initBuffs($('.element', union), dialog, false, {zero: true}, STORE.union.blessing.element);
+        }
+
+        function initBuffs(container, dialog, dynamic, buff, items) {
             container.buffs({
-                buff: {zero: true},
+                dynamic: dynamic,
+                buff: buff,
                 click: function () {
                     editEffect.call(this, dialog);
                 },
                 change: saving
-            }, items);
+            }, items).reset();
         }
     </script>
 </head>
@@ -527,6 +554,8 @@
     <form>
         <label id="edit-effect-name" for="edit-effect-value"></label>
         <input id="edit-effect-value" type="text" size="5">
+        <span class="material-icons min">delete_forever</span>
+        <span class="material-icons max">trending_up</span>
         <!-- Allow form submission with keyboard without duplicating the dialog button -->
         <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
     </form>
