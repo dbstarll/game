@@ -222,7 +222,7 @@
                 },
                 close: function () {
                     form[0].reset();
-                    dialog.off('dialogclose');
+                    dialog.off('dialogbeforeclose');
                 }
             });
             form = dialog.find("form").on("submit", function (event) {

@@ -70,9 +70,13 @@ $.fn.extend({
                 if (Array.isArray(newValue)) {
                     newValue.forEach(function (key) {
                         const idx = key.indexOf('+');
-                        const name = key.substr(0, idx);
-                        const val = key.substring(idx);
-                        buffs.addBuff({effect: name}, val);
+                        if (idx > 0) {
+                            const name = key.substr(0, idx);
+                            const val = key.substring(idx + 1);
+                            buffs.addBuff({effect: name}, val);
+                        } else {
+                            console.warn('invalid buff', key);
+                        }
                     });
                 }
                 return buffs;
