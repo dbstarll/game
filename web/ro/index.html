@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/material-icons.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script src="/static/jsonpath-0.8.0.js"></script>
     <script src="/static/common.js"></script>
     <script src="/static/ro.js"></script>
     <script src="/static/buff.js"></script>
@@ -306,48 +307,23 @@
         }
 
         function refresh(data) {
-            $('#manual').buffs().reset();
+            $('#manual').buffs().decode(jsonPath(data, '$.player.manual.*'));
             const union = $('#tabs-union');
-            $('.pray', union).buffs().reset();
-            $('.attack', union).buffs().reset();
-            $('.defence', union).buffs().reset();
-            $('.element', union).buffs().reset();
+            $('.pray', union).buffs().decode(jsonPath(data, '$.player.union.pray.*'));
+            $('.attack', union).buffs().decode(jsonPath(data, '$.player.union.attack.*'));
+            $('.defence', union).buffs().decode(jsonPath(data, '$.player.union.defence.*'));
+            $('.element', union).buffs().decode(jsonPath(data, '$.player.union.element.*'));
 
-            if (data) {
-                const player = data.player;
-                if (player) {
-                    if (player['character-name']) {
-                        $('#character-name').val(player['character-name']);
-                    }
-
-                    const manual = player.manual;
-                    if (manual) {
-                        manual.forEach(function (key) {
-                            const idx = key.indexOf('+');
-                            const name = key.substr(0, idx);
-                            const val = key.substring(idx);
-                            $('#manual').buffs().addBuff({effect: name}, val);
-                        });
-                    }
-
-                    const union = player.union;
-                    if (union) {
-                        const pray = union.pray;
-                        if (pray) {
-                            pray.forEach(function (key) {
-                                const idx = key.indexOf('+');
-                                const name = key.substr(0, idx);
-                                const val = key.substring(idx);
-                                console.log(name, val);
-                            });
-                        }
-                    }
+            const player = data.player;
+            if (player) {
+                if (player['character-name']) {
+                    $('#character-name').val(player['character-name']);
                 }
+            }
 
-                const character = data.character;
-                if (character) {
-                    console.log(character);
-                }
+            const character = data.character;
+            if (character) {
+                console.log(character);
             }
         }
 

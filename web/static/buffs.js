@@ -66,6 +66,15 @@ $.fn.extend({
                 return effects.length == 0 ? undefined : effects;
             },
             decode: function (newValue) {
+                buffs.reset();
+                if (Array.isArray(newValue)) {
+                    newValue.forEach(function (key) {
+                        const idx = key.indexOf('+');
+                        const name = key.substr(0, idx);
+                        const val = key.substring(idx);
+                        buffs.addBuff({effect: name}, val);
+                    });
+                }
                 return buffs;
             },
             reset: function () {
