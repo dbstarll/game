@@ -15,6 +15,7 @@ type PlayerModel struct {
 	CharacterName string        `json:"character-name"`
 	Manual        *[]romel.Buff `json:"manual"`
 	Union         UnionModel    `json:"union"`
+	Rune          *[]romel.Buff `json:"rune"`
 }
 
 type UnionModel struct {
@@ -28,8 +29,19 @@ func (m *PlayerModel) character() *model.Character {
 	character := model.NewCharacter(types.Player, race.Human, nature.Neutral, shape.Medium)
 
 	buff.Quality(9)(character) //B级冒险家属性
-	if m.Manual != nil {
-		for _, buff := range *m.Manual {
+	m.apply(character, m.Manual)
+	m.apply(character, m.Union.Pray)
+	m.apply(character, m.Union.Attack)
+	m.apply(character, m.Union.Defence)
+	m.apply(character, m.Union.Element)
+	m.apply(character, m.Rune)
+
+	return character
+}
+
+func (m *PlayerModel) apply(character *model.Character, buffs *[]romel.Buff) {
+	if buffs != nil {
+		for _, buff := range *buffs {
 			if modifiers := buff.Effect(); len(modifiers) == 0 {
 				zap.S().Infof("unknown buff: %s", buff)
 			} else {
@@ -39,8 +51,6 @@ func (m *PlayerModel) character() *model.Character {
 			}
 		}
 	}
-
-	return character
 }
 
 func (m *PlayerModel) Result() interface{} {

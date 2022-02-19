@@ -71,6 +71,14 @@
             margin: 2px;
         }
 
+        #tabs-rune .buff {
+            padding: 5px;
+            border: 1px dotted gray;
+            border-radius: 5px;
+            margin: 2px;
+            width: 30%;
+        }
+
         .buff .buff-title {
             background-color: orange;
             border-radius: 10px;
@@ -188,8 +196,13 @@
                 }
             });
 
-            $("#create-effect").on("click", function () {
-                dialog.dialog("open");
+            $("#create-effect-manual").on("click", function () {
+                $.data(form, 'add-target', '#manual');
+                dialog.dialog("option", "title", '添加新的手册属性').dialog("open");
+            });
+            $("#create-effect-rune").on("click", function () {
+                $.data(form, 'add-target', '#rune');
+                dialog.dialog("option", "title", '添加新的神碑属性').dialog("open");
             });
             const spinner = $("#effect-value").spinner({
                 numberFormat: "n",
@@ -296,10 +309,11 @@
         }
 
         function addEffect() {
+            const addTarget = $.data(this, 'add-target');
             const name = $('#effect-name').val();
             const val = $('#effect-value').val();
             let result = true;
-            $('#manual').buffs().addBuff({effect: name}, val, function (error) {
+            $(addTarget).buffs().addBuff({effect: name}, val, function (error) {
                 message("添加属性: " + name, error);
                 result = false;
             });
@@ -313,6 +327,7 @@
             $('.attack', union).buffs().decode(jsonPath(data, '$.player.union.attack.*'));
             $('.defence', union).buffs().decode(jsonPath(data, '$.player.union.defence.*'));
             $('.element', union).buffs().decode(jsonPath(data, '$.player.union.element.*'));
+            $('#rune').buffs().decode(jsonPath(data, '$.player.rune.*'));
 
             const player = data.player;
             if (player) {
@@ -346,7 +361,8 @@
                     attack: $('.attack', union).buffs().encode(),
                     defence: $('.defence', union).buffs().encode(),
                     element: $('.element', union).buffs().encode()
-                }
+                },
+                rune: $('#rune').buffs().encode()
             };
 
             $.post({
@@ -470,7 +486,7 @@
 
         $(function () {
             $("#tabs").tabs({
-                active: 1
+                active: 3
             });
             $("#board").accordion({
                 heightStyle: "content"
@@ -483,24 +499,23 @@
             const editDialog = initEditEffectDialog();
             initUploadFile();
 
-            initManual(editDialog);
-            initUnion(editDialog);
-            saved();
+            initAllBuffs(editDialog);
 
             load();
         });
 
-        function initManual(dialog) {
-            const manual = $('#manual').sortable().on("sortupdate", saving);
-            initBuffs(manual, dialog, true);
-        }
+        function initAllBuffs(dialog) {
+            initBuffs($('#manual').sortable().on("sortupdate", saving), dialog, true);
 
-        function initUnion(dialog) {
             const union = $('#tabs-union');
             initBuffs($('.pray', union), dialog, false, {zero: true}, STORE.union.pray);
             initBuffs($('.attack', union), dialog, false, {zero: true}, STORE.union.blessing.attack);
             initBuffs($('.defence', union), dialog, false, {zero: true}, STORE.union.blessing.defence);
             initBuffs($('.element', union), dialog, false, {zero: true}, STORE.union.blessing.element);
+
+            initBuffs($('#rune').sortable().on("sortupdate", saving), dialog, true);
+
+            saved();
         }
 
         function initBuffs(container, dialog, dynamic, buff, items) {
@@ -516,7 +531,7 @@
     </script>
 </head>
 <body>
-<div id="dialog-add-effect" title="添加新的手册属性">
+<div id="dialog-add-effect">
     <form>
         <label for="effect-name">属性: </label>
         <input type="text" id="effect-name">
@@ -588,7 +603,7 @@
                 <div class="buff-value">+9</div>
             </div>
         </div>
-        <h4>手册属性<span id="create-effect" class="material-icons md-18">post_add</span></h4>
+        <h4 id="create-effect-manual">手册属性<span class="material-icons md-18">post_add</span></h4>
         <div id="manual" class="buffs"></div>
     </div>
     <div id="tabs-union">
@@ -605,6 +620,8 @@
     <div id="tabs-quality">
     </div>
     <div id="tabs-rune">
+        <h4 id="create-effect-rune" class="top">神碑属性<span class="material-icons md-18">post_add</span></h4>
+        <div id="rune" class="buffs"></div>
     </div>
     <div id="tabs-gem">
     </div>
