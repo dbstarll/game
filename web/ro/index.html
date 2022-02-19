@@ -14,6 +14,7 @@
     <script src="/static/ro.js"></script>
     <script src="/static/buff.js"></script>
     <script src="/static/buffs.js"></script>
+    <script src="/static/moniqi_data_file_1637826700.js"></script>
     <style>
         #tabs {
             float: left;
@@ -133,6 +134,20 @@
 
         #tabs-union .blessing .element .buff {
             background-color: lightyellow;
+        }
+
+        #tabs-quality .job {
+            float: left;
+            width: 30%;
+        }
+
+        #job-level-handle, #base-level-handle {
+            width: 3em;
+            height: 1.6em;
+            top: 50%;
+            margin-top: -.8em;
+            text-align: center;
+            line-height: 1.6em;
         }
     </style>
     <script>
@@ -300,6 +315,56 @@
             });
         }
 
+        function initJobSelect() {
+            const baseSlider = $("#base-level").slider({
+                range: "min",
+                create: function () {
+                    $("#base-level-handle").text($(this).slider("value"));
+                },
+                slide: function (event, ui) {
+                    $("#base-level-handle").text(ui.value);
+                },
+                change: function (event, ui) {
+                    $("#base-level-handle").text(ui.value);
+                }
+            });
+
+            const jobSlider = $("#job-level").slider({
+                range: "min",
+                create: function () {
+                    $("#job-level-handle").text($(this).slider("value"));
+                },
+                slide: function (event, ui) {
+                    $("#job-level-handle").text(ui.value);
+                },
+                change: function (event, ui) {
+                    $("#job-level-handle").text(ui.value);
+                }
+            });
+
+            const jobs = $('#job').selectmenu({
+                change: function (event, ui) {
+                    const jobId = ui.item.value;
+                    const job = MONIQI_DATA.job_data[jobId];
+                    console.log(job);
+                    baseSlider.slider("option", "min", job.MinBaseLevel);
+                    baseSlider.slider("option", "max", job.MaxBaseLevel);
+                    baseSlider.slider("option", "value", job.MaxBaseLevel);
+                    jobSlider.slider("option", "min", job.MinJobLevel);
+                    jobSlider.slider("option", "max", job.MaxJobLevel);
+                    jobSlider.slider("option", "value", job.MaxJobLevel);
+                }
+            });
+            Object.keys(MONIQI_DATA.type_data).forEach(function (key) {
+                const type = MONIQI_DATA.type_data[key];
+                const group = $('<optgroup>').attr('label', type.Name + '系');
+                type.Jobs.forEach(function (jobId) {
+                    group.append($('<option>').val(jobId).text(MONIQI_DATA.job_data[jobId].NameZh));
+                });
+                jobs.append(group);
+            });
+        }
+
         function saving() {
             $('#save').show();
         }
@@ -457,7 +522,7 @@
         function editEffect(dialog) {
             const item = $.ro.buff.getConfig(this);
             const buff = $(this).buff();
-            $('#edit-effect-name', dialog).text(buff.name() + '：');
+            $('#edit-effect-name', dialog).text(buff.name());
             const spinner = $('#edit-effect-value', dialog).val(buff.value() || 0);
             if (item) {
                 if (item.max) {
@@ -486,7 +551,7 @@
 
         $(function () {
             $("#tabs").tabs({
-                active: 3
+                active: 2
             });
             $("#board").accordion({
                 heightStyle: "content"
@@ -498,6 +563,8 @@
             initAddEffectDialog();
             const editDialog = initEditEffectDialog();
             initUploadFile();
+            initJobSelect();
+
 
             initAllBuffs(editDialog);
 
@@ -505,6 +572,8 @@
         });
 
         function initAllBuffs(dialog) {
+            $('#adventurer').buffs().decode(["灵巧+9", "力量+9", "智力+9", "敏捷+9", "体质+9", "幸运+9"]);
+
             initBuffs($('#manual').sortable().on("sortupdate", saving), dialog, true);
 
             const union = $('#tabs-union');
@@ -544,7 +613,8 @@
 <div id="dialog-edit-effect" title="修改属性">
     <form>
         <label id="edit-effect-name" for="edit-effect-value"></label>
-        <input id="edit-effect-value" type="text" size="5">
+        <span class="material-icons">add</span>
+        <input id="edit-effect-value" type="text" size="8">
         <span class="material-icons min">delete_forever</span>
         <span class="material-icons max">trending_up</span>
         <!-- Allow form submission with keyboard without duplicating the dialog button -->
@@ -577,32 +647,7 @@
     </ul>
     <div id="tabs-manual">
         <h4 class="top">B级冒险家属性</h4>
-        <div id="adventurer" class="buffs">
-            <div class="buff">
-                <div class="buff-name">灵巧</div>
-                <div class="buff-value">+9</div>
-            </div>
-            <div class="buff">
-                <div class="buff-name">力量</div>
-                <div class="buff-value">+9</div>
-            </div>
-            <div class="buff">
-                <div class="buff-name">智力</div>
-                <div class="buff-value">+9</div>
-            </div>
-            <div class="buff">
-                <div class="buff-name">敏捷</div>
-                <div class="buff-value">+9</div>
-            </div>
-            <div class="buff">
-                <div class="buff-name">体质</div>
-                <div class="buff-value">+9</div>
-            </div>
-            <div class="buff">
-                <div class="buff-name">幸运</div>
-                <div class="buff-value">+9</div>
-            </div>
-        </div>
+        <div id="adventurer" class="buffs"></div>
         <h4 id="create-effect-manual">手册属性<span class="material-icons md-18">post_add</span></h4>
         <div id="manual" class="buffs"></div>
     </div>
@@ -618,6 +663,20 @@
         </div>
     </div>
     <div id="tabs-quality">
+        <div class="job">
+            <label for="job">职业</label>
+            <select id="job">
+                <option disabled selected>请选择职业</option>
+            </select>
+            <label for="base-level">Base</label>
+            <div id="base-level">
+                <div id="base-level-handle" class="ui-slider-handle"></div>
+            </div>
+            <label for="job-level">Job</label>
+            <div id="job-level">
+                <div id="job-level-handle" class="ui-slider-handle"></div>
+            </div>
+        </div>
     </div>
     <div id="tabs-rune">
         <h4 id="create-effect-rune" class="top">神碑属性<span class="material-icons md-18">post_add</span></h4>
