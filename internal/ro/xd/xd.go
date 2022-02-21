@@ -62,6 +62,12 @@ func loadAll(file *os.File) error {
 					} else {
 						Roles = roles
 					}
+				case "MONIQI_DATA.site_data":
+					if sites, err := loadSites(data); err != nil {
+						return err
+					} else {
+						Sites = sites
+					}
 				case "MONIQI_DATA.equip_data":
 					if equips, err := loadEquips(data); err != nil {
 						return err
