@@ -14,8 +14,6 @@ import (
 	"unicode/utf8"
 )
 
-var EmptyArray = []byte("[]")
-
 const dataFile = "/Users/dbstar/git/github.com/dbstarll/game/web/static/moniqi_data_file_1637826700.js"
 
 func init() {
@@ -51,6 +49,12 @@ func loadAll(file *os.File) error {
 						return err
 					} else {
 						Roles = roles
+					}
+				case "MONIQI_DATA.equip_data":
+					if equips, err := loadEquips(data); err != nil {
+						return err
+					} else {
+						Equips = equips
 					}
 				case "MONIQI_DATA.card_data":
 					if cards, err := loadCards(data); err != nil {

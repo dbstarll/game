@@ -21,11 +21,7 @@ type Card struct {
 	Name       string
 	Monster    string
 	Position   []int
-	BuffEffect CardBuffEffect
-}
-
-type CardBuffEffect struct {
-	Buff []int `json:"buff"`
+	BuffEffect *BuffEffects
 }
 
 func loadCards(data []byte) (*cards, error) {
@@ -54,6 +50,9 @@ func (r *cards) add(data []byte) error {
 	if err := unmarshalDisallowUnknownFields(data, card); err != nil {
 		return err
 	} else {
+		if len(card.BuffEffect.Buff) == 0 {
+			card.BuffEffect = nil
+		}
 		r.ids[card.Id] = card
 		r.names[card.Name] = card
 		return nil
@@ -69,7 +68,7 @@ func (r *cards) Id(id int) (*Card, bool) {
 	return card, exist
 }
 
-func (r *cards) PropName(name string) (*Card, bool) {
+func (r *cards) Name(name string) (*Card, bool) {
 	card, exist := r.names[name]
 	return card, exist
 }

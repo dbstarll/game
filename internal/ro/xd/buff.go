@@ -104,10 +104,6 @@ func (b *buffs) add(data []byte) error {
 	}
 }
 
-func (b *buffs) Size() int {
-	return len(b.ids)
-}
-
 func (c *Condition) UnmarshalJSON(data []byte) error {
 	if !bytes.Equal(data, EmptyArray) {
 		item := make(map[string]interface{})
@@ -159,4 +155,13 @@ func (b *BuffTarget) UnmarshalJSON(data []byte) error {
 		}
 	}
 	return nil
+}
+
+func (b *buffs) Size() int {
+	return len(b.ids)
+}
+
+func (b *buffs) Id(id int) (*Buff, bool) {
+	buff, exist := b.ids[id]
+	return buff, exist
 }
