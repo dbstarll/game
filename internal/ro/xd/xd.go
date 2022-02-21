@@ -52,6 +52,12 @@ func loadAll(file *os.File) error {
 					} else {
 						Roles = roles
 					}
+				case "MONIQI_DATA.card_data":
+					if cards, err := loadCards(data); err != nil {
+						return err
+					} else {
+						Cards = cards
+					}
 				case "MONIQI_DATA.buff_data":
 					if buffs, err := loadBuffs(data); err != nil {
 						return err
