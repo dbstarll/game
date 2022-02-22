@@ -44,6 +44,18 @@ func loadAll(file *os.File) error {
 				head := strings.TrimSpace(string(line[:idx]))
 				data := line[idxStart : idxEnd+1]
 				switch head {
+				//case "MONIQI_DATA.attrratio_data":
+				//	fmt.Printf("attrratio_data: %s\n", data)
+				//case "MONIQI_DATA.attrvalue_data":
+				//	fmt.Printf("attrvalue_data: %s\n", data)
+				//case "MONIQI_DATA.attr220value_data":
+				//	fmt.Printf("attr220value_data: %s\n", data)
+				case "MONIQI_DATA.baselevel_data":
+					if levels, err := loadBaseLevels(data); err != nil {
+						return err
+					} else {
+						BaseLevels = levels
+					}
 				case "MONIQI_DATA.job_data":
 					if jobs, err := loadJobs(data); err != nil {
 						return err
