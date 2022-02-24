@@ -6,28 +6,40 @@
     <title>RO计算器</title>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="/static/material-icons.css">
+    <link rel="stylesheet" href="/ro/css/normalize.css">
+    <link rel="stylesheet" href="/ro/css/material-icons.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-    <script src="/static/jsonpath-0.8.0.js"></script>
-    <script src="/static/common.js"></script>
-    <script src="/static/ro.js"></script>
-    <script src="/static/buff.js"></script>
-    <script src="/static/buffs.js"></script>
-    <script src="/static/moniqi_data_file_1637826700.js"></script>
+    <script src="/ro/js/jsonpath-0.8.0.js"></script>
+    <script src="/ro/js/common.js"></script>
+    <script src="/ro/js/ro.js"></script>
+    <script src="/ro/js/buff.js"></script>
+    <script src="/ro/js/buffs.js"></script>
+    <script src="/ro/js/moniqi/moniqi_data_file_1637826700.js"></script>
     <style>
-        #tabs {
-            float: left;
-            width: 65%;
+        html {
+            font-size: 14px;
         }
 
-        #board {
-            float: right;
-            width: 34%;
+        #main {
+            display: flex;
+            margin: 5px;
+            column-gap: 5px;
+        }
+
+        #main > div:first-child {
+            flex: 2;
+        }
+
+        #main > div:last-child {
+            flex: 1;
         }
 
         #tool-bar {
             display: flex;
+            float: right;
+            align-items: center;
+            margin: 9px 0 0 0;
         }
 
         h4 {
@@ -278,8 +290,17 @@
             return dialog;
         }
 
-        function initUploadFile() {
-            $('#file').on("change", function () {
+        function initToolBar() {
+            const bar = $('#tool-bar');
+            $('span[role=download]', bar).on('click', download).hide();
+            $('span[role=save]', bar).on('click', save).hide();
+            $('span[role=load]', bar).on('click', load);
+            $('span[role=upload]', bar).on('click', upload);
+            initUploadFile($('input[type=file]', bar).hide());
+        }
+
+        function initUploadFile(file) {
+            file.on("change", function () {
                 const files = $(this).prop('files');
                 if (!files || files.length !== 1) {
                     message("上传配置", "请选择文件");
@@ -306,7 +327,7 @@
                         if (data && data.ok && data.data) {
                             refresh(data.data);
                             saved();
-                            $('#download').hide();
+                            downloaded();
                         }
                     }).fail(function (xhr, status, errorThrown) {
                         message("上传配置", "上传失败: [" + status + "]" + errorThrown);
@@ -366,12 +387,29 @@
         }
 
         function saving() {
-            $('#save').show();
+            $('#tool-bar > span[role=save]').show();
         }
 
         function saved() {
-            $('#save').hide();
+            $('#tool-bar > span[role=save]').hide();
         }
+
+        function needSave() {
+            return $('#tool-bar > span[role=save]').css('display') !== 'none';
+        }
+
+        function downloading() {
+            $('#tool-bar > span[role=download]').show();
+        }
+
+        function downloaded() {
+            $('#tool-bar > span[role=download]').hide();
+        }
+
+        function needDownload() {
+            return $('#tool-bar > span[role=download]').css('display') !== 'none';
+        }
+
 
         function addEffect() {
             const addTarget = $.data(this, 'add-target');
@@ -397,7 +435,7 @@
             const player = data.player;
             if (player) {
                 if (player['character-name']) {
-                    $('#character-name').val(player['character-name']);
+                    $('#character-name').text(player['character-name']);
                 }
             }
 
@@ -409,17 +447,14 @@
 
         function save() {
             const character = $('#character-name');
-            if (!character.val()) {
-                message("保存配置", "请输入角色名称!", function () {
-                    character.focus();
-                });
+            if (!character.text()) {
+                message("保存配置", "请输入角色名称!");
                 return false;
             }
 
-
             const union = $('#tabs-union');
             let data = {
-                'character-name': character.val(),
+                'character-name': character.text(),
                 manual: $('#manual').buffs().encode(),
                 union: {
                     pray: $('.pray', union).buffs().encode(),
@@ -438,7 +473,7 @@
             }).done(function () {
                 message("保存配置", "保存成功", function () {
                     saved();
-                    $('#download').show();
+                    downloading();
                 });
             }).fail(function (xhr, status, errorThrown) {
                 message("保存配置", "保存失败: [" + status + "]" + errorThrown);
@@ -461,7 +496,7 @@
                     message("载入配置", "载入失败: [" + status + "]" + errorThrown);
                 });
             };
-            if ($('#save').css('display') === 'block') {
+            if (needSave()) {
                 confirm("载入配置", "有修改的内容未保存，继续载入会使新修改的内容丢失，请确认是否需要继续载入？", fn);
             } else {
                 return fn();
@@ -471,9 +506,9 @@
         function download() {
             const fn = function () {
                 window.open('/player/download', '_blank');
-                $('#download').hide();
+                downloaded();
             }
-            if ($('#save').css('display') === 'block') {
+            if (needSave()) {
                 confirm("下载配置", "有修改的内容未保存，继续下载会忽略新修改的内容，请确认是否需要继续下载？", fn);
             } else {
                 return fn();
@@ -482,16 +517,16 @@
 
         function upload() {
             const fn = function () {
-                $('#file').click();
+                $('#tool-bar > input[type=file]').click();
             }
             const fn2 = function () {
-                if ($('#download').css('display') === 'block') {
+                if (needDownload()) {
                     confirm("上传配置", "有修改的内容未下载，继续上传会忽略新修改的内容，请确认是否需要继续上传？", fn);
                 } else {
                     return fn();
                 }
             }
-            if ($('#save').css('display') === 'block') {
+            if (needSave()) {
                 confirm("上传配置", "有修改的内容未保存，继续上传会忽略新修改的内容，请确认是否需要继续上传？", fn2);
             } else {
                 return fn2();
@@ -562,7 +597,7 @@
             initConfirmDialog();
             initAddEffectDialog();
             const editDialog = initEditEffectDialog();
-            initUploadFile();
+            initToolBar();
             initJobSelect();
 
 
@@ -627,112 +662,114 @@
 <div id="dialog-confirm">
     <p id="confirm"></p>
 </div>
-<div id="tool-bar">
-    <label for="character-name">角色名称：</label>
-    <input type="text" id="character-name" class="saved">
-    <span class="material-icons" onclick="upload()">upload</span>
-    <span class="material-icons" onclick="load()">refresh</span>
-    <span id="save" class="material-icons" onclick="save()" style="display: none">save</span>
-    <span id="download" class="material-icons" onclick="download()" style="display: none">download</span>
-    <input type="file" id="file" accept="application/json" style="display: none"/>
-</div>
-<div id="tabs">
-    <ul>
-        <li><a href="#tabs-manual">冒险手册</a></li>
-        <li><a href="#tabs-union">工会女神</a></li>
-        <li><a href="#tabs-quality">职业素质</a></li>
-        <li><a href="#tabs-rune">阿萨神碑</a></li>
-        <li><a href="#tabs-gem">符文之匣</a></li>
-        <li><a href="#tabs-equip">随身装备</a></li>
-    </ul>
-    <div id="tabs-manual">
-        <h4 class="top">B级冒险家属性</h4>
-        <div id="adventurer" class="buffs"></div>
-        <h4 id="create-effect-manual">手册属性<span class="material-icons md-18">post_add</span></h4>
-        <div id="manual" class="buffs"></div>
-    </div>
-    <div id="tabs-union">
-        <div class="pray">
-            <h4 class="top">女神祈祷</h4>
-        </div>
-        <div class="blessing">
-            <h4 class="top">女神祝福</h4>
-            <div class="attack"></div>
-            <div class="defence"></div>
-            <div class="element"></div>
-        </div>
-    </div>
-    <div id="tabs-quality">
-        <div class="job">
-            <label for="job">职业</label>
-            <select id="job">
-                <option disabled selected>请选择职业</option>
-            </select>
-            <label for="base-level">Base</label>
-            <div id="base-level">
-                <div id="base-level-handle" class="ui-slider-handle"></div>
-            </div>
-            <label for="job-level">Job</label>
-            <div id="job-level">
-                <div id="job-level-handle" class="ui-slider-handle"></div>
-            </div>
-        </div>
-    </div>
-    <div id="tabs-rune">
-        <h4 id="create-effect-rune" class="top">神碑属性<span class="material-icons md-18">post_add</span></h4>
-        <div id="rune" class="buffs"></div>
-    </div>
-    <div id="tabs-gem">
-    </div>
-    <div id="tabs-equip">
-    </div>
-</div>
-<div id="board">
-    <h3>Section 1</h3>
-    <div>
-        <p>
-            Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
-            ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
-            amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
-            odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
-        </p>
-    </div>
-    <h3>Section 2</h3>
-    <div>
-        <p>
-            Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
-            purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
-            velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
-            suscipit faucibus urna.
-        </p>
-    </div>
-    <h3>Section 3</h3>
-    <div>
-        <p>
-            Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
-            Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
-            ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
-            lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
-        </p>
+
+<div id="main">
+    <div id="tabs">
         <ul>
-            <li>List item one</li>
-            <li>List item two</li>
-            <li>List item three</li>
+            <li><a href="#tabs-manual">冒险手册</a></li>
+            <li><a href="#tabs-union">工会女神</a></li>
+            <li><a href="#tabs-quality">职业素质</a></li>
+            <li><a href="#tabs-rune">阿萨神碑</a></li>
+            <li><a href="#tabs-gem">符文之匣</a></li>
+            <li><a href="#tabs-equip">随身装备</a></li>
+            <li id="tool-bar">
+                <input type="file" accept="application/json"/>
+                <span role="upload" class="material-icons">upload</span>
+                <span role="load" class="material-icons">refresh</span>
+                <span role="save" class="material-icons">save</span>
+                <span role="download" class="material-icons">download</span>
+                <label id="character-name">匿名用户</label>
+            </li>
         </ul>
+        <div id="tabs-manual">
+            <h4 class="top">B级冒险家属性</h4>
+            <div id="adventurer" class="buffs"></div>
+            <h4 id="create-effect-manual">手册属性<span class="material-icons md-18">post_add</span></h4>
+            <div id="manual" class="buffs"></div>
+        </div>
+        <div id="tabs-union">
+            <div class="pray">
+                <h4 class="top">女神祈祷</h4>
+            </div>
+            <div class="blessing">
+                <h4 class="top">女神祝福</h4>
+                <div class="attack"></div>
+                <div class="defence"></div>
+                <div class="element"></div>
+            </div>
+        </div>
+        <div id="tabs-quality">
+            <div class="job">
+                <label for="job">职业</label>
+                <select id="job">
+                    <option disabled selected>请选择职业</option>
+                </select>
+                <label for="base-level">Base</label>
+                <div id="base-level">
+                    <div id="base-level-handle" class="ui-slider-handle"></div>
+                </div>
+                <label for="job-level">Job</label>
+                <div id="job-level">
+                    <div id="job-level-handle" class="ui-slider-handle"></div>
+                </div>
+            </div>
+        </div>
+        <div id="tabs-rune">
+            <h4 id="create-effect-rune" class="top">神碑属性<span class="material-icons md-18">post_add</span></h4>
+            <div id="rune" class="buffs"></div>
+        </div>
+        <div id="tabs-gem">
+        </div>
+        <div id="tabs-equip">
+        </div>
     </div>
-    <h3>Section 4</h3>
-    <div>
-        <p>
-            Cras dictum. Pellentesque habitant morbi tristique senectus et netus
-            et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
-            faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
-            mauris vel est.
-        </p>
-        <p>
-            Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
-            Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-            inceptos himenaeos.
-        </p>
+    <div id="board">
+        <h3>Section 1</h3>
+        <div>
+            <p>
+                Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+                ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+                amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+                odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+            </p>
+        </div>
+        <h3>Section 2</h3>
+        <div>
+            <p>
+                Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+                purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+                velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+                suscipit faucibus urna.
+            </p>
+        </div>
+        <h3>Section 3</h3>
+        <div>
+            <p>
+                Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
+                Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
+                ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
+                lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
+            </p>
+            <ul>
+                <li>List item one</li>
+                <li>List item two</li>
+                <li>List item three</li>
+            </ul>
+        </div>
+        <h3>Section 4</h3>
+        <div>
+            <p>
+                Cras dictum. Pellentesque habitant morbi tristique senectus et netus
+                et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
+                faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
+                mauris vel est.
+            </p>
+            <p>
+                Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
+                Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
+                inceptos himenaeos.
+            </p>
+        </div>
     </div>
 </div>
 </body>
