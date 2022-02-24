@@ -78,7 +78,6 @@ func initGin(g *gin.Engine, store memstore.Store) {
 	g.GET(*ptrHealth, func(c *gin.Context) {
 		c.String(http.StatusOK, "ok")
 	})
-	g.Static("/static", "./web/static")
 	g.Static("/ro", "./web/ro")
 }
 
