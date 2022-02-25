@@ -15,36 +15,51 @@ $.extend($.ro, {
             }
         },
         events: {
-            beforeRefresh: 'loader-before-refresh',
-            beforeDownload: 'loader-before-download',
-            beforeSave: 'loader-before-save',
-            refreshFail: 'loader-refresh-fail',
-            saveFail: 'loader-save-fail',
-            refresh: 'loader-refresh',
-            save: 'loader-save',
+            refresh: {
+                before: 'loader-before-refresh',
+                fail: 'loader-refresh-fail',
+                done: 'loader-refresh-done'
+            },
+            save: {
+                before: 'loader-before-save',
+                fail: 'loader-save-fail',
+                done: 'loader-save-done'
+            },
+            upload: {
+                before: 'loader-before-upload',
+                fail: 'loader-upload-fail',
+                done: 'loader-upload-done'
+            },
+            download: {
+                before: 'loader-before-download',
+                fail: 'loader-download-fail',
+                done: 'loader-download-done'
+            },
             fail: 'loader-fail'
         },
         wrap: function (ui) {
             return {
                 done: function (data, textStatus, jqXHR) {
-                    let eventKey = $(ui.span).attr('role');
+                    const role = $(ui.span).attr('role');
                     const ext = {jqXHR: jqXHR, textStatus: textStatus};
+                    let eventKey;
                     if (data && data.ok) {
+                        eventKey = 'done';
                         ext.data = data.data;
                     } else {
-                        eventKey += 'Fail';
+                        eventKey = 'fail';
                         ext.data = data;
                     }
-                    const event = $.ro.loader.events[eventKey];
+                    const event = $.ro.loader.events[role][eventKey];
                     if ('string' === typeof event) {
                         $(ui.span).trigger(event, $.extend(ext, ui));
                     } else {
-                        console.warn('unknown eventKey: ', eventKey);
+                        console.warn('unknown eventKey: ', role, eventKey);
                     }
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {
-                    const eventKey = $(ui.span).attr('role') + 'Fail';
-                    const event = $.ro.loader.events[eventKey];
+                    const role = $(ui.span).attr('role');
+                    const event = $.ro.loader.events[role].fail;
                     if ('string' === typeof event) {
                         $(ui.span).trigger(event, $.extend({
                             jqXHR: jqXHR,
@@ -52,64 +67,85 @@ $.extend($.ro, {
                             errorThrown: errorThrown
                         }, ui));
                     } else {
-                        console.warn('unknown eventKey: ', eventKey);
+                        console.warn('unknown eventKey: ', role, 'fail');
                     }
                 }
             };
         },
-        before: function (loader, event) {
-            return function (_, force) {
-                $(this).trigger(event, {
-                    loader: loader,
-                    span: this,
-                    dirty: $.extend({force: force}, $.ro.loader.dirty(loader))
+        span: function (loader, config, role, events) {
+            const roleEvents = this.events[role];
+            const span = $.html.span({role: role}, config.icons[role]).addClass(config.classes.icons)
+                .on('click', function (event, force) {
+                    $(this).trigger(roleEvents.before, {
+                        loader: loader,
+                        span: this,
+                        dirty: $.extend({force: force}, $.ro.loader.dirty(loader))
+                    });
+                    return false;
                 });
-                return false;
+
+            const handlers = config.handlers;
+            if ('object' == typeof handlers) {
+                const roleHandlers = handlers[role];
+                if ('object' == typeof roleHandlers) {
+                    ['before', 'fail'].forEach(function (key) {
+                        const handler = roleHandlers[key];
+                        const event = roleEvents[key];
+                        if ('function' === typeof handler && 'string' === typeof event) {
+                            span.on(event, handler);
+                        }
+                    })
+                }
+            }
+
+            if ('object' === typeof events) {
+                Object.keys(events).forEach(function (key) {
+                    const handler = events[key];
+                    const event = roleEvents[key];
+                    if ('function' === typeof handler && 'string' === typeof event) {
+                        span.on(event, handler);
+                    }
+                })
+            }
+            return span;
+        },
+        done: function (loader, config) {
+            const handlers = config.handlers;
+            if ('object' == typeof handlers) {
+                ['upload', 'refresh', 'save', 'download'].forEach(function (role) {
+                    const roleHandlers = handlers[role];
+                    if ('object' == typeof roleHandlers) {
+                        const handler = roleHandlers.done;
+                        const event = $.ro.loader.events[role].done;
+                        if ('function' === typeof handler && 'string' === typeof event) {
+                            $(loader).on(event, handler);
+                        }
+                    }
+                });
+                const handler = handlers.fail;
+                if ('function' === typeof handler) {
+                    $(loader).on(this.events.fail, handler);
+                }
             }
         },
         init: function (loader, config) {
-            const that = this;
             const file = $.html.input({type: 'file', accept: config.accept}).hide();
             this.initUploadFile(file);
-            const upload = $.html.span({role: 'upload'}, config.icons.upload).addClass(config.classes.icons).on('click', this.upload);
-            const refresh = $.html.span({role: 'refresh'}, config.icons.refresh).addClass(config.classes.icons)
-                .on('click', $.ro.loader.before(loader, that.events.beforeRefresh))
-                .on(that.events.refresh, that.reload);
-            if ('function' === typeof config.beforeRefresh) {
-                refresh.on(that.events.beforeRefresh, config.beforeRefresh);
-            }
-            if ('function' === typeof config.refreshFail) {
-                refresh.on(that.events.refreshFail, config.refreshFail);
-            }
-            const save = $.html.span({role: 'save'}, config.icons.save).addClass(config.classes.icons)
-                .on('click', $.ro.loader.before(loader, that.events.beforeSave)).hide();
-            if ('function' === typeof config.beforeSave) {
-                save.on(that.events.beforeSave, config.beforeSave);
-            }
-            if ('function' === typeof config.saveFail) {
-                refresh.on(that.events.saveFail, config.saveFail);
-            }
-            const download = $.html.span({role: 'download'}, config.icons.download).addClass(config.classes.icons)
-                .on('click', $.ro.loader.before(loader, that.events.beforeDownload)).hide();
-            if ('function' === typeof config.beforeDownload) {
-                download.on(that.events.beforeDownload, config.beforeDownload);
-            }
+            const upload = this.span(loader, config, 'upload', {done: this.reload});
+            const refresh = this.span(loader, config, 'refresh', {done: this.reload});
+            const save = this.span(loader, config, 'save').hide();
+            const download = this.span(loader, config, 'download').hide();
             const character = $.html.span({role: 'character'}, config.name).addClass(config.classes.character);
             $(loader).append(file, save, download, refresh, upload, character)
-                .on(that.events.beforeRefresh, that.refresh)
-                .on(that.events.beforeDownload, that.download)
-                .on(that.events.beforeSave, that.save)
-                .on(that.events.refreshFail, that.fail)
-                .on(that.events.saveFail, that.fail);
-            if ('function' === typeof config.fail) {
-                $(loader).on(that.events.fail, config.fail);
-            }
-            if ('function' === typeof config.refresh) {
-                $(loader).on(that.events.refresh, config.refresh);
-            }
-            if ('function' === typeof config.save) {
-                $(loader).on(that.events.save, config.save);
-            }
+                .on(this.events.refresh.before, this.refresh)
+                .on(this.events.download.before, this.download)
+                .on(this.events.save.before, this.save)
+                .on(this.events.upload.before, this.upload)
+                .on(this.events.refresh.fail, this.fail)
+                .on(this.events.download.fail, this.fail)
+                .on(this.events.save.fail, this.fail)
+                .on(this.events.upload.fail, this.fail);
+            this.done(loader, config);
         },
         initUploadFile: function (file) {
             file.on("change", function () {
@@ -188,10 +224,12 @@ $.extend($.ro, {
             } else {
                 return fn2();
             }
+            return false;
         },
         download: function () {
             window.open('/player/download', '_blank');
             downloaded();
+            return false;
         },
         save: function (event, ui) {
             const wrap = $.ro.loader.wrap(ui);
@@ -220,6 +258,7 @@ $.extend($.ro, {
                 cache: false,
                 dataType: "json"
             }).done(wrap.done).fail(wrap.fail);
+            return false;
         },
         getConfig: function (buff) {
             return $.data(buff, 'config');
@@ -243,9 +282,6 @@ $.fn.extend({
             },
             download: function (force) {
                 this.that.children('span[role=download]').trigger('click', force);
-            },
-            save: function (force) {
-                this.that.children('span[role=save]').trigger('click', force);
             },
             change: function () {
                 this.that.children('span[role=save]').show();
