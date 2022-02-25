@@ -140,6 +140,9 @@ $.extend({
                 button: function (attrs, text) {
                     return set('<button>', attrs, text);
                 },
+                input: function (attrs, text) {
+                    return set('<input>', attrs, text);
+                },
                 embed: function (attrs, text) {
                     return set('<embed>', attrs, text);
                 },

@@ -15,6 +15,8 @@
     <script src="/ro/js/ro.js"></script>
     <script src="/ro/js/buff.js"></script>
     <script src="/ro/js/buffs.js"></script>
+    <script src="/ro/js/dialog.js"></script>
+    <script src="/ro/js/loader.js"></script>
     <script src="/ro/js/moniqi/moniqi_data_file_1637826700.js"></script>
     <style>
         html {
@@ -290,52 +292,6 @@
             return dialog;
         }
 
-        function initToolBar() {
-            const bar = $('#tool-bar');
-            $('span[role=download]', bar).on('click', download).hide();
-            $('span[role=save]', bar).on('click', save).hide();
-            $('span[role=load]', bar).on('click', load);
-            $('span[role=upload]', bar).on('click', upload);
-            initUploadFile($('input[type=file]', bar).hide());
-        }
-
-        function initUploadFile(file) {
-            file.on("change", function () {
-                const files = $(this).prop('files');
-                if (!files || files.length !== 1) {
-                    message("上传配置", "请选择文件");
-                    return false;
-                }
-                const file = files[0];
-                if (!file) {
-                    message("上传配置", "请选择文件");
-                    return false;
-                } else if (file.size > 10240) {
-                    message("上传配置", "文件太大(限制10K)，请重新选择文件");
-                    return false;
-                } else {
-                    const fd = new FormData();
-                    fd.append('player', file);
-                    $.post({
-                        url: '/player/upload',
-                        data: fd,
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        dataType: "json"
-                    }).done(function (data) {
-                        if (data && data.ok && data.data) {
-                            refresh(data.data);
-                            saved();
-                            downloaded();
-                        }
-                    }).fail(function (xhr, status, errorThrown) {
-                        message("上传配置", "上传失败: [" + status + "]" + errorThrown);
-                    })
-                }
-            });
-        }
-
         function initJobSelect() {
             const baseSlider = $("#base-level").slider({
                 range: "min",
@@ -432,104 +388,9 @@
             $('.element', union).buffs().decode(jsonPath(data, '$.player.union.element.*'));
             $('#rune').buffs().decode(jsonPath(data, '$.player.rune.*'));
 
-            const player = data.player;
-            if (player) {
-                if (player['character-name']) {
-                    $('#character-name').text(player['character-name']);
-                }
-            }
-
             const character = data.character;
             if (character) {
                 console.log(character);
-            }
-        }
-
-        function save() {
-            const character = $('#character-name');
-            if (!character.text()) {
-                message("保存配置", "请输入角色名称!");
-                return false;
-            }
-
-            const union = $('#tabs-union');
-            let data = {
-                'character-name': character.text(),
-                manual: $('#manual').buffs().encode(),
-                union: {
-                    pray: $('.pray', union).buffs().encode(),
-                    attack: $('.attack', union).buffs().encode(),
-                    defence: $('.defence', union).buffs().encode(),
-                    element: $('.element', union).buffs().encode()
-                },
-                rune: $('#rune').buffs().encode()
-            };
-
-            $.post({
-                url: '/player/save',
-                data: JSON.stringify(data),
-                cache: false,
-                dataType: "json"
-            }).done(function () {
-                message("保存配置", "保存成功", function () {
-                    saved();
-                    downloading();
-                });
-            }).fail(function (xhr, status, errorThrown) {
-                message("保存配置", "保存失败: [" + status + "]" + errorThrown);
-            });
-        }
-
-        function load() {
-            const fn = function () {
-                $.get({
-                    url: '/player/load',
-                    cache: false,
-                    dataType: "json"
-                }).done(function (data) {
-                    if (data && data.ok && data.data) {
-                        refresh(data.data);
-                        saved();
-                        message("载入配置", "载入完成");
-                    }
-                }).fail(function (xhr, status, errorThrown) {
-                    message("载入配置", "载入失败: [" + status + "]" + errorThrown);
-                });
-            };
-            if (needSave()) {
-                confirm("载入配置", "有修改的内容未保存，继续载入会使新修改的内容丢失，请确认是否需要继续载入？", fn);
-            } else {
-                return fn();
-            }
-        }
-
-        function download() {
-            const fn = function () {
-                window.open('/player/download', '_blank');
-                downloaded();
-            }
-            if (needSave()) {
-                confirm("下载配置", "有修改的内容未保存，继续下载会忽略新修改的内容，请确认是否需要继续下载？", fn);
-            } else {
-                return fn();
-            }
-        }
-
-        function upload() {
-            const fn = function () {
-                $('#tool-bar > input[type=file]').click();
-            }
-            const fn2 = function () {
-                if (needDownload()) {
-                    confirm("上传配置", "有修改的内容未下载，继续上传会忽略新修改的内容，请确认是否需要继续上传？", fn);
-                } else {
-                    return fn();
-                }
-            }
-            if (needSave()) {
-                confirm("上传配置", "有修改的内容未保存，继续上传会忽略新修改的内容，请确认是否需要继续上传？", fn2);
-            } else {
-                return fn2();
             }
         }
 
@@ -593,17 +454,54 @@
             });
             $('.saved').on("change", saving);
 
+
+            const loader = $('#tool-bar').loader({
+                beforeRefresh: function (event, ui) {
+                    if (true !== ui.dirty.saved && true !== ui.dirty.force) {
+                        confirm("载入配置", "有修改的内容未保存，继续载入会使新修改的内容丢失，请确认是否需要继续载入？", function () {
+                            loader.refresh(true);
+                        });
+                        return false;
+                    }
+                },
+                beforeDownload: function (event, ui) {
+                    if (true !== ui.dirty.saved && true !== ui.dirty.force) {
+                        confirm("下载配置", "有修改的内容未保存，继续下载会忽略新修改的内容，请确认是否需要继续下载？", function () {
+                            loader.download(true);
+                        });
+                        return false;
+                    }
+                },
+                beforeSave: function (event, ui) {
+                },
+                refreshFail: function (event, ui) {
+                    message("载入配置", "载入失败: [" + ui.textStatus + "]" + ui.errorThrown);
+                },
+                saveFail: function (event, ui) {
+                    message("保存配置", "保存失败: [" + ui.textStatus + "]" + ui.errorThrown);
+                },
+                refresh: function (event, ui) {
+                    refresh(ui.data);
+                    saved();
+                    message("载入配置", "载入完成");
+                },
+                save: function (event, ui) {
+                    message("保存配置", "保存成功", function () {
+                        saved();
+                        downloading();
+                    });
+                }
+            });
+
             initMessageDialog();
             initConfirmDialog();
             initAddEffectDialog();
             const editDialog = initEditEffectDialog();
-            initToolBar();
             initJobSelect();
-
 
             initAllBuffs(editDialog);
 
-            load();
+            loader.refresh();
         });
 
         function initAllBuffs(dialog) {
@@ -672,14 +570,7 @@
             <li><a href="#tabs-rune">阿萨神碑</a></li>
             <li><a href="#tabs-gem">符文之匣</a></li>
             <li><a href="#tabs-equip">随身装备</a></li>
-            <li id="tool-bar">
-                <input type="file" accept="application/json"/>
-                <span role="upload" class="material-icons">upload</span>
-                <span role="load" class="material-icons">refresh</span>
-                <span role="save" class="material-icons">save</span>
-                <span role="download" class="material-icons">download</span>
-                <label id="character-name">匿名用户</label>
-            </li>
+            <li id="tool-bar"></li>
         </ul>
         <div id="tabs-manual">
             <h4 class="top">B级冒险家属性</h4>
