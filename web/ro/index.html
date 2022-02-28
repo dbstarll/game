@@ -165,39 +165,6 @@
         }
     </style>
     <script>
-        function initMessageDialog() {
-            return $("#dialog-message").dialog({
-                autoOpen: false,
-                modal: true,
-                buttons: {
-                    "确定": function () {
-                        $(this).dialog("close");
-                    }
-                },
-                close: function () {
-                    $(this).off("dialogclose");
-                }
-            });
-        }
-
-        function initConfirmDialog() {
-            return $("#dialog-confirm").dialog({
-                autoOpen: false,
-                modal: true,
-                buttons: {
-                    "确定": function () {
-                        $(this).attr('confirm', 'true').dialog("close");
-                    },
-                    "取消": function () {
-                        $(this).dialog("close");
-                    }
-                },
-                close: function () {
-                    $(this).off("dialogclose");
-                }
-            });
-        }
-
         function initAddEffectDialog() {
             let form;
             const dialog = $("#dialog-add-effect").dialog({
@@ -350,10 +317,6 @@
             $('#tool-bar > span[role=save]').hide();
         }
 
-        function needSave() {
-            return $('#tool-bar > span[role=save]').css('display') !== 'none';
-        }
-
         function downloading() {
             $('#tool-bar > span[role=download]').show();
         }
@@ -361,11 +324,6 @@
         function downloaded() {
             $('#tool-bar > span[role=download]').hide();
         }
-
-        function needDownload() {
-            return $('#tool-bar > span[role=download]').css('display') !== 'none';
-        }
-
 
         function addEffect() {
             const addTarget = $.data(this, 'add-target');
@@ -395,24 +353,7 @@
         }
 
         function message(title, msg, callback) {
-            $('#message').text(msg);
-            if (callback) {
-                $("#dialog-message").on("dialogclose", callback);
-            }
-            $("#dialog-message").dialog("option", "title", title).dialog("open");
-        }
-
-        function confirm(title, msg, callback) {
-            $('#confirm').text(msg);
-            const dialog = $("#dialog-confirm").attr("confirm", "false");
-            if (callback) {
-                dialog.on("dialogclose", function () {
-                    if (dialog.attr('confirm') === 'true') {
-                        setTimeout(callback, 200);
-                    }
-                });
-            }
-            dialog.dialog("option", "title", title).dialog("open");
+            $('#dialog-message').message().message(title, msg, callback);
         }
 
         function editEffect(dialog) {
@@ -455,20 +396,16 @@
             $('.saved').on("change", saving);
 
 
+            const dialogConfirm = $('#dialog-confirm').confirm({});
+            const dialogMessage = $('#dialog-message').message({});
+
             const loader = $('#tool-bar').loader({
+                dialog: {
+                    message: dialogMessage,
+                    confirm: dialogConfirm
+                },
                 handlers: {
                     refresh: {
-                        before: function (event, ui) {
-                            if (true !== ui.dirty.saved && true !== ui.dirty.force) {
-                                confirm("载入配置", "有修改的内容未保存，继续载入会使新修改的内容丢失，请确认是否需要继续载入？", function () {
-                                    loader.refresh(true);
-                                });
-                                return false;
-                            }
-                        },
-                        fail: function (event, ui) {
-                            message("载入配置", "载入失败: [" + ui.textStatus + "]" + ui.errorThrown);
-                        },
                         done: function (event, ui) {
                             refresh(ui.data);
                             saved();
@@ -476,33 +413,16 @@
                         }
                     },
                     save: {
-                        before: function (event, ui) {
-                        },
-                        fail: function (event, ui) {
-                            message("保存配置", "保存失败: [" + ui.textStatus + "]" + ui.errorThrown);
-                        },
                         done: function (event, ui) {
                             message("保存配置", "保存成功", function () {
                                 saved();
                                 downloading();
                             });
                         },
-                    },
-                    download: {
-                        before: function (event, ui) {
-                            if (true !== ui.dirty.saved && true !== ui.dirty.force) {
-                                confirm("下载配置", "有修改的内容未保存，继续下载会忽略新修改的内容，请确认是否需要继续下载？", function () {
-                                    loader.download(true);
-                                });
-                                return false;
-                            }
-                        }
                     }
                 }
             });
 
-            initMessageDialog();
-            initConfirmDialog();
             initAddEffectDialog();
             const editDialog = initEditEffectDialog();
             initJobSelect();
@@ -562,12 +482,8 @@
         <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
     </form>
 </div>
-<div id="dialog-message">
-    <p id="message"></p>
-</div>
-<div id="dialog-confirm">
-    <p id="confirm"></p>
-</div>
+<div id="dialog-message"></div>
+<div id="dialog-confirm"></div>
 
 <div id="main">
     <div id="tabs">
