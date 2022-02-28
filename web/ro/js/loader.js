@@ -67,12 +67,12 @@ $.extend($.ro, {
             const span = $.html.span({role: role}, config.icons[role]).addClass(config.classes.icons);
 
             const roleEvents = this.events[role];
-            span.on('click', function (_, force) {
-                span.trigger(roleEvents.before, {
+            span.on('click', function (_, data) {
+                span.trigger(roleEvents.before, $.extend({}, data, {
                     loader: loader,
                     span: this,
-                    dirty: $.extend({force: force}, $.ro.loader.dirty(loader))
-                });
+                    dirty: $.ro.loader.dirty(loader)
+                }));
                 return false;
             });
 
@@ -201,14 +201,14 @@ $.extend($.ro, {
             const config = $.ro.loader.getConfig(ui.loader);
             const confirm = jsonPath(config, '$.dialog.confirm.confirm');
             const checkDownload = function () {
-                if (true !== ui.dirty.downloaded && true !== ui.dirty.force && 'function' === typeof confirm[0]) {
+                if (true !== ui.dirty.downloaded && true !== ui.force && 'function' === typeof confirm[0]) {
                     confirm[0]("上传配置", "有修改的内容未下载，继续上传会忽略新修改的内容，请确认是否需要继续上传？", function () {
-                        $(ui.span).trigger('click', true);
+                        $(ui.span).trigger('click', {force: true});
                     });
                     return false;
                 }
             }
-            if (true !== ui.dirty.saved && true !== ui.dirty.force && 'function' === typeof confirm[0]) {
+            if (true !== ui.dirty.saved && true !== ui.force && 'function' === typeof confirm[0]) {
                 confirm[0]("上传配置", "有修改的内容未保存，继续上传会忽略新修改的内容，请确认是否需要继续上传？", checkDownload);
                 return false;
             } else {
@@ -218,9 +218,9 @@ $.extend($.ro, {
         beforeRefresh: function (_, ui) {
             const config = $.ro.loader.getConfig(ui.loader);
             const confirm = jsonPath(config, '$.dialog.confirm.confirm');
-            if (true !== ui.dirty.saved && true !== ui.dirty.force && 'function' === typeof confirm[0]) {
+            if (true !== ui.dirty.saved && true !== ui.force && 'function' === typeof confirm[0]) {
                 confirm[0]("载入配置", "有修改的内容未保存，继续载入会使新修改的内容丢失，请确认是否需要继续载入？", function () {
-                    $(ui.span).trigger('click', true);
+                    $(ui.span).trigger('click', {force: true});
                 });
                 return false;
             }
@@ -228,9 +228,9 @@ $.extend($.ro, {
         beforeDownload: function (_, ui) {
             const config = $.ro.loader.getConfig(ui.loader);
             const confirm = jsonPath(config, '$.dialog.confirm.confirm');
-            if (true !== ui.dirty.saved && true !== ui.dirty.force && 'function' === typeof confirm[0]) {
+            if (true !== ui.dirty.saved && true !== ui.force && 'function' === typeof confirm[0]) {
                 confirm[0]("下载配置", "有修改的内容未保存，继续下载会忽略新修改的内容，请确认是否需要继续下载？", function () {
-                    $(ui.span).trigger('click', true);
+                    $(ui.span).trigger('click', {force: true});
                 });
                 return false;
             }
@@ -325,7 +325,11 @@ $.fn.extend({
         const loader = {that: this};
         return $.extend(loader, {
             refresh: function (force) {
-                this.that.children('span[role=refresh]').trigger('click', force);
+                if (true === force) {
+                    this.that.children('span[role=refresh]').trigger('click', {force: true});
+                } else {
+                    this.that.children('span[role=refresh]').trigger('click');
+                }
             },
             change: function () {
                 loader.that.children('span[role=save]').show();
