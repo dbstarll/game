@@ -103,7 +103,7 @@ $.extend($.ro, {
             if ('object' == typeof handlers) {
                 const roleHandlers = handlers[role];
                 if ('object' == typeof roleHandlers) {
-                    ['before', 'fail'].forEach(function (key) {
+                    Object.keys(roleHandlers).forEach(function (key) {
                         const handler = roleHandlers[key];
                         const event = roleEvents[key];
                         if ('function' === typeof handler && 'string' === typeof event) {
@@ -116,16 +116,6 @@ $.extend($.ro, {
         },
         done: function (loader, handlers) {
             if ('object' == typeof handlers) {
-                ['upload', 'refresh', 'save', 'download'].forEach(function (role) {
-                    const roleHandlers = handlers[role];
-                    if ('object' == typeof roleHandlers) {
-                        const handler = roleHandlers.done;
-                        const event = $.ro.loader.events[role].done;
-                        if ('function' === typeof handler && 'string' === typeof event) {
-                            loader.on(event, handler);
-                        }
-                    }
-                });
                 const handler = handlers.fail;
                 if ('function' === typeof handler) {
                     loader.on(this.events.fail, handler);
