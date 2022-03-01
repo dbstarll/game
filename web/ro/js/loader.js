@@ -35,11 +35,13 @@ $.extend($.ro, {
                 fail: 'loader-download-fail',
                 done: 'loader-download-done'
             },
+            file: {
+                before: 'loader-before-file'
+            },
             fail: 'loader-fail'
         },
         init: function (loader, config) {
-            const file = $.html.input({type: 'file', accept: config.accept}).hide();
-            this.initUploadFile(file);
+            const file = this.file(loader, config, 'file', {before: this.beforeFile}).hide();
             const upload = this.icon(loader, config, 'upload', {
                 before: this.beforeUpload,
                 fail: this.uploadFail,
@@ -57,26 +59,48 @@ $.extend($.ro, {
                 .on(this.events.refresh.before, this.refresh)
                 .on(this.events.download.before, this.download)
                 .on(this.events.save.before, this.save)
-                .on(this.events.upload.before, this.upload)
+                .on(this.events.upload.before, function () {
+                    file.trigger('click');
+                })
+                .on(this.events.file.before, this.upload)
                 .on(this.events.refresh.fail, this.fail)
                 .on(this.events.download.fail, this.fail)
                 .on(this.events.save.fail, this.fail)
                 .on(this.events.upload.fail, this.fail), config);
         },
+        file: function (loader, config, role, events) {
+            return this.bind($.html.input({role: role, type: 'file', accept: config.accept})
+                .on('change', function (_, data) {
+                    $(this).trigger($.ro.loader.events[role].before, $.extend({}, data, {
+                        loader: loader,
+                        span: this,
+                        files: $(this).prop('files')
+                    }));
+                    return false;
+                }), role, config.handlers, events);
+        },
         icon: function (loader, config, role, events) {
-            const span = $.html.span({role: role}, config.icons[role]).addClass(config.classes.icons);
-
+            return this.bind($.html.span({role: role}, config.icons[role]).addClass(config.classes.icons)
+                .on('click', function (_, data) {
+                    $(this).trigger($.ro.loader.events[role].before, $.extend({}, data, {
+                        loader: loader,
+                        span: this,
+                        dirty: $.ro.loader.dirty(loader)
+                    }));
+                    return false;
+                }), role, config.handlers, events);
+        },
+        bind: function (span, role, handlers, events) {
             const roleEvents = this.events[role];
-            span.on('click', function (_, data) {
-                span.trigger(roleEvents.before, $.extend({}, data, {
-                    loader: loader,
-                    span: this,
-                    dirty: $.ro.loader.dirty(loader)
-                }));
-                return false;
-            });
-
-            const handlers = config.handlers;
+            if ('object' === typeof events) {
+                Object.keys(events).forEach(function (key) {
+                    const handler = events[key];
+                    const event = roleEvents[key];
+                    if ('function' === typeof handler && 'string' === typeof event) {
+                        span.on(event, handler);
+                    }
+                })
+            }
             if ('object' == typeof handlers) {
                 const roleHandlers = handlers[role];
                 if ('object' == typeof roleHandlers) {
@@ -88,16 +112,6 @@ $.extend($.ro, {
                         }
                     })
                 }
-            }
-
-            if ('object' === typeof events) {
-                Object.keys(events).forEach(function (key) {
-                    const handler = events[key];
-                    const event = roleEvents[key];
-                    if ('function' === typeof handler && 'string' === typeof event) {
-                        span.on(event, handler);
-                    }
-                })
             }
             return span;
         },
@@ -120,10 +134,11 @@ $.extend($.ro, {
                 }
             }
         },
-        wrap: function (ui) {
+        wrap: function (ui, target) {
+            const span = target || $(ui.span);
             return {
                 done: function (data, textStatus, jqXHR) {
-                    const role = $(ui.span).attr('role');
+                    const role = span.attr('role');
                     const ext = {jqXHR: jqXHR, textStatus: textStatus};
                     let eventKey;
                     if (data && data.ok) {
@@ -135,16 +150,16 @@ $.extend($.ro, {
                     }
                     const event = $.ro.loader.events[role][eventKey];
                     if ('string' === typeof event) {
-                        $(ui.span).trigger(event, $.extend(ext, ui));
+                        span.trigger(event, $.extend(ext, ui));
                     } else {
                         console.warn('unknown eventKey: ', role, eventKey);
                     }
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {
-                    const role = $(ui.span).attr('role');
+                    const role = span.attr('role');
                     const event = $.ro.loader.events[role].fail;
                     if ('string' === typeof event) {
-                        $(ui.span).trigger(event, $.extend({
+                        span.trigger(event, $.extend({
                             jqXHR: jqXHR,
                             textStatus: textStatus,
                             errorThrown: errorThrown
@@ -155,46 +170,28 @@ $.extend($.ro, {
                 }
             };
         },
-        initUploadFile: function (file) {
-            file.on("change", function () {
-                const files = $(this).prop('files');
-                if (!files || files.length !== 1) {
-                    message("上传配置", "请选择文件");
-                    return false;
-                }
-                const file = files[0];
-                if (!file) {
-                    message("上传配置", "请选择文件");
-                    return false;
-                } else if (file.size > 10240) {
-                    message("上传配置", "文件太大(限制10K)，请重新选择文件");
-                    return false;
-                } else {
-                    const fd = new FormData();
-                    fd.append('player', file);
-                    $.post({
-                        url: '/player/upload',
-                        data: fd,
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        dataType: "json"
-                    }).done(function (data) {
-                        if (data && data.ok && data.data) {
-                            refresh(data.data);
-                            saved();
-                            downloaded();
-                        }
-                    }).fail(function (xhr, status, errorThrown) {
-                        message("上传配置", "上传失败: [" + status + "]" + errorThrown);
-                    })
-                }
-            });
-        },
         dirty: function (loader) {
             return {
                 saved: $('span[role=save]', loader).css('display') === 'none',
                 downloaded: $('span[role=download]', loader).css('display') === 'none'
+            }
+        },
+        beforeFile: function (_, ui) {
+            const file = jsonPath(ui, '$.files.*');
+            const config = $.ro.loader.getConfig(ui.loader);
+            const message = jsonPath(config, '$.dialog.message.message');
+            if (!file) {
+                if ('function' === typeof message[0]) {
+                    message[0]("上传配置", "请选择文件");
+                }
+                return false;
+            } else if (file[0].size > 10240) {
+                if ('function' === typeof message[0]) {
+                    message[0]("上传配置", "文件太大(限制10K)，请重新选择文件");
+                }
+                return false;
+            } else {
+                ui.file = file[0];
             }
         },
         beforeUpload: function (_, ui) {
@@ -235,7 +232,12 @@ $.extend($.ro, {
                 return false;
             }
         },
-        uploadFail: function () {
+        uploadFail: function (_, ui) {
+            const config = $.ro.loader.getConfig(ui.loader);
+            const message = jsonPath(config, '$.dialog.message.message');
+            if ('function' === typeof message[0]) {
+                message[0]("上传配置", "上传失败: [" + ui.textStatus + "]" + ui.errorThrown);
+            }
         },
         refreshFail: function (_, ui) {
             const config = $.ro.loader.getConfig(ui.loader);
@@ -271,7 +273,18 @@ $.extend($.ro, {
             return false;
         },
         upload: function (_, ui) {
-            $(ui.loader).children('input[type=file]').trigger('click');
+            const wrap = $.ro.loader.wrap(ui, $(ui.loader).children('span[role=upload]'));
+            const fd = new FormData();
+            fd.append('player', ui.file);
+            $.post({
+                url: '/player/upload',
+                data: fd,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: "json"
+            }).done(wrap.done).fail(wrap.fail);
+            return false;
         },
         download: function () {
             window.open('/player/download', '_blank');

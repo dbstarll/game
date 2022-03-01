@@ -419,6 +419,14 @@
                                 downloading();
                             });
                         },
+                    },
+                    upload: {
+                        done: function (event, ui) {
+                            refresh(ui.data);
+                            saved();
+                            downloaded();
+                            message("上传配置", "上传完成");
+                        }
                     }
                 }
             });
