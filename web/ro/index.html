@@ -393,6 +393,21 @@
                     confirm: dialogConfirm
                 },
                 handlers: {
+                    save: {
+                        before: function (_, ui) {
+                            const union = $('#tabs-union');
+                            $.extend(ui.player, {
+                                manual: $('#manual').buffs().encode(),
+                                union: {
+                                    pray: $('.pray', union).buffs().encode(),
+                                    attack: $('.attack', union).buffs().encode(),
+                                    defence: $('.defence', union).buffs().encode(),
+                                    element: $('.element', union).buffs().encode()
+                                },
+                                rune: $('#rune').buffs().encode()
+                            });
+                        }
+                    },
                     refresh: {
                         done: function (event, ui) {
                             refresh(ui.data);

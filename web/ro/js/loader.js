@@ -41,10 +41,10 @@ $.extend($.ro, {
             fail: 'loader-fail'
         },
         init: function (loader, config) {
-            const upload = this.icon(loader, config, 'upload', {before: this.checkUpload, done: this.reload});
+            const upload = this.icon(loader, config, 'upload', {before: this.checkUpload, done: this.decode});
             const file = this.file(loader, config, 'file', {before: this.checkFile}).hide();
-            const refresh = this.icon(loader, config, 'refresh', {before: this.checkRefresh, done: this.reload});
-            const save = this.icon(loader, config, 'save').hide();
+            const refresh = this.icon(loader, config, 'refresh', {before: this.checkRefresh, done: this.decode});
+            const save = this.icon(loader, config, 'save', {before: this.encode}).hide();
             const download = this.icon(loader, config, 'download', {before: this.checkDownload}).hide();
             const character = $.html.span({role: 'character'}, config.name).addClass(config.classes.character);
             this.done($(loader).append(file, save, download, refresh, upload, character)
@@ -240,28 +240,9 @@ $.extend($.ro, {
         },
         save: function (event, ui) {
             const wrap = $.ro.loader.wrap(ui);
-            const character = $('span[role=character]', ui.loader);
-            if (!character.text()) {
-                message("保存配置", "请输入角色名称!");
-                return false;
-            }
-
-            const union = $('#tabs-union');
-            let data = {
-                'character-name': character.text(),
-                manual: $('#manual').buffs().encode(),
-                union: {
-                    pray: $('.pray', union).buffs().encode(),
-                    attack: $('.attack', union).buffs().encode(),
-                    defence: $('.defence', union).buffs().encode(),
-                    element: $('.element', union).buffs().encode()
-                },
-                rune: $('#rune').buffs().encode()
-            };
-
             $.post({
                 url: '/player/save',
-                data: JSON.stringify(data),
+                data: JSON.stringify(ui.player),
                 cache: false,
                 dataType: "json"
             }).done(wrap.done).fail(wrap.fail);
@@ -298,7 +279,10 @@ $.extend($.ro, {
                 message(action + "配置", action + "失败: [" + ui.textStatus + "]" + ui.errorThrown);
             }
         },
-        reload: function (_, ui) {
+        encode: function (_, ui) {
+            ui.player = {'character-name': $('span[role=character]', ui.loader).text()};
+        },
+        decode: function (_, ui) {
             const name = jsonPath(ui.data, '$.player.character-name');
             name && $('span[role=character]', ui.loader).text(name);
         },
