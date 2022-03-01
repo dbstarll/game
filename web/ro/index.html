@@ -313,18 +313,6 @@
             $('#tool-bar > span[role=save]').show();
         }
 
-        function saved() {
-            $('#tool-bar > span[role=save]').hide();
-        }
-
-        function downloading() {
-            $('#tool-bar > span[role=download]').show();
-        }
-
-        function downloaded() {
-            $('#tool-bar > span[role=download]').hide();
-        }
-
         function addEffect() {
             const addTarget = $.data(this, 'add-target');
             const name = $('#effect-name').val();
@@ -408,24 +396,11 @@
                     refresh: {
                         done: function (event, ui) {
                             refresh(ui.data);
-                            saved();
-                            message("载入配置", "载入完成");
                         }
-                    },
-                    save: {
-                        done: function (event, ui) {
-                            message("保存配置", "保存成功", function () {
-                                saved();
-                                downloading();
-                            });
-                        },
                     },
                     upload: {
                         done: function (event, ui) {
                             refresh(ui.data);
-                            saved();
-                            downloaded();
-                            message("上传配置", "上传完成");
                         }
                     }
                 }
@@ -452,8 +427,6 @@
             initBuffs($('.element', union), dialog, false, {zero: true}, STORE.union.blessing.element);
 
             initBuffs($('#rune').sortable().on("sortupdate", saving), dialog, true);
-
-            saved();
         }
 
         function initBuffs(container, dialog, dynamic, buff, items) {

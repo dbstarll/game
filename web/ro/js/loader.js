@@ -41,32 +41,28 @@ $.extend($.ro, {
             fail: 'loader-fail'
         },
         init: function (loader, config) {
-            const file = this.file(loader, config, 'file', {before: this.beforeFile}).hide();
-            const upload = this.icon(loader, config, 'upload', {
-                before: this.beforeUpload,
-                fail: this.uploadFail,
-                done: this.reload
-            });
-            const refresh = this.icon(loader, config, 'refresh', {
-                before: this.beforeRefresh,
-                fail: this.refreshFail,
-                done: this.reload
-            });
-            const save = this.icon(loader, config, 'save', {fail: this.saveFail}).hide();
-            const download = this.icon(loader, config, 'download', {before: this.beforeDownload}).hide();
+            const upload = this.icon(loader, config, 'upload', {before: this.checkUpload, done: this.reload});
+            const file = this.file(loader, config, 'file', {before: this.checkFile}).hide();
+            const refresh = this.icon(loader, config, 'refresh', {before: this.checkRefresh, done: this.reload});
+            const save = this.icon(loader, config, 'save').hide();
+            const download = this.icon(loader, config, 'download', {before: this.checkDownload}).hide();
             const character = $.html.span({role: 'character'}, config.name).addClass(config.classes.character);
             this.done($(loader).append(file, save, download, refresh, upload, character)
-                .on(this.events.refresh.before, this.refresh)
-                .on(this.events.download.before, this.download)
-                .on(this.events.save.before, this.save)
                 .on(this.events.upload.before, function () {
                     file.trigger('click');
-                })
-                .on(this.events.file.before, this.upload)
-                .on(this.events.refresh.fail, this.fail)
-                .on(this.events.download.fail, this.fail)
-                .on(this.events.save.fail, this.fail)
-                .on(this.events.upload.fail, this.fail), config);
+                }).on(this.events.file.before, this.upload)
+                .on(this.events.refresh.before, this.refresh)
+                .on(this.events.save.before, this.save)
+                .on(this.events.download.before, this.download)
+                .on(this.events.refresh.fail, this.rise)
+                .on(this.events.download.fail, this.rise)
+                .on(this.events.save.fail, this.rise)
+                .on(this.events.upload.fail, this.rise)
+                .on(this.events.fail, this.fail)
+                .on(this.events.upload.done, this.uploaded)
+                .on(this.events.refresh.done, this.refreshed)
+                .on(this.events.save.done, this.saved)
+                .on(this.events.download.done, this.downloaded), config.handlers);
         },
         file: function (loader, config, role, events) {
             return this.bind($.html.input({role: role, type: 'file', accept: config.accept})
@@ -85,7 +81,10 @@ $.extend($.ro, {
                     $(this).trigger($.ro.loader.events[role].before, $.extend({}, data, {
                         loader: loader,
                         span: this,
-                        dirty: $.ro.loader.dirty(loader)
+                        dirty: {
+                            saved: $('span[role=save]', loader).css('display') === 'none',
+                            downloaded: $('span[role=download]', loader).css('display') === 'none'
+                        }
                     }));
                     return false;
                 }), role, config.handlers, events);
@@ -115,8 +114,7 @@ $.extend($.ro, {
             }
             return span;
         },
-        done: function (loader, config) {
-            const handlers = config.handlers;
+        done: function (loader, handlers) {
             if ('object' == typeof handlers) {
                 ['upload', 'refresh', 'save', 'download'].forEach(function (role) {
                     const roleHandlers = handlers[role];
@@ -136,9 +134,9 @@ $.extend($.ro, {
         },
         wrap: function (ui, target) {
             const span = target || $(ui.span);
+            const role = span.attr('role');
             return {
                 done: function (data, textStatus, jqXHR) {
-                    const role = span.attr('role');
                     const ext = {jqXHR: jqXHR, textStatus: textStatus};
                     let eventKey;
                     if (data && data.ok) {
@@ -156,7 +154,6 @@ $.extend($.ro, {
                     }
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {
-                    const role = span.attr('role');
                     const event = $.ro.loader.events[role].fail;
                     if ('string' === typeof event) {
                         span.trigger(event, $.extend({
@@ -170,107 +167,59 @@ $.extend($.ro, {
                 }
             };
         },
-        dirty: function (loader) {
-            return {
-                saved: $('span[role=save]', loader).css('display') === 'none',
-                downloaded: $('span[role=download]', loader).css('display') === 'none'
-            }
+        confirm: function (ui) {
+            const confirm = jsonPath($.ro.loader.getConfig(ui.loader), '$.dialog.confirm.confirm');
+            return Array.isArray(confirm) && 'function' === typeof confirm[0] ? confirm[0] : console.warn;
         },
-        beforeFile: function (_, ui) {
-            const file = jsonPath(ui, '$.files.*');
-            const config = $.ro.loader.getConfig(ui.loader);
-            const message = jsonPath(config, '$.dialog.message.message');
-            if (!file) {
-                if ('function' === typeof message[0]) {
-                    message[0]("上传配置", "请选择文件");
-                }
-                return false;
-            } else if (file[0].size > 10240) {
-                if ('function' === typeof message[0]) {
-                    message[0]("上传配置", "文件太大(限制10K)，请重新选择文件");
-                }
-                return false;
-            } else {
-                ui.file = file[0];
-            }
+        message: function (ui) {
+            const message = jsonPath($.ro.loader.getConfig(ui.loader), '$.dialog.message.message');
+            return Array.isArray(message) && 'function' === typeof message[0] ? message[0] : console.info;
         },
-        beforeUpload: function (_, ui) {
-            const config = $.ro.loader.getConfig(ui.loader);
-            const confirm = jsonPath(config, '$.dialog.confirm.confirm');
+        checkUpload: function (_, ui) {
+            const confirm = $.ro.loader.confirm(ui);
             const checkDownload = function () {
-                if (true !== ui.dirty.downloaded && true !== ui.force && 'function' === typeof confirm[0]) {
-                    confirm[0]("上传配置", "有修改的内容未下载，继续上传会忽略新修改的内容，请确认是否需要继续上传？", function () {
+                if (true !== ui.dirty.downloaded && true !== ui.force) {
+                    confirm("上传配置", "有修改的内容未下载，继续上传会忽略新修改的内容，请确认是否需要继续上传？", function () {
                         $(ui.span).trigger('click', {force: true});
                     });
                     return false;
                 }
-            }
-            if (true !== ui.dirty.saved && true !== ui.force && 'function' === typeof confirm[0]) {
-                confirm[0]("上传配置", "有修改的内容未保存，继续上传会忽略新修改的内容，请确认是否需要继续上传？", checkDownload);
+            };
+            if (true !== ui.dirty.saved && true !== ui.force) {
+                confirm("上传配置", "有修改的内容未保存，继续上传会忽略新修改的内容，请确认是否需要继续上传？", checkDownload);
                 return false;
             } else {
                 return checkDownload();
             }
         },
-        beforeRefresh: function (_, ui) {
-            const config = $.ro.loader.getConfig(ui.loader);
-            const confirm = jsonPath(config, '$.dialog.confirm.confirm');
-            if (true !== ui.dirty.saved && true !== ui.force && 'function' === typeof confirm[0]) {
-                confirm[0]("载入配置", "有修改的内容未保存，继续载入会使新修改的内容丢失，请确认是否需要继续载入？", function () {
+        checkFile: function (_, ui) {
+            const file = jsonPath(ui, '$.files.*');
+            const message = $.ro.loader.message(ui);
+            if (!Array.isArray(file) || file.length === 0) {
+                message("上传配置", "请选择文件");
+                return false;
+            } else if (file[0].size > 10240) {
+                message("上传配置", "文件太大(限制10K)，请重新选择文件");
+                return false;
+            } else {
+                ui.file = file[0];
+            }
+        },
+        checkRefresh: function (_, ui) {
+            if (true !== ui.dirty.saved && true !== ui.force) {
+                $.ro.loader.confirm(ui)("载入配置", "有修改的内容未保存，继续载入会使新修改的内容丢失，请确认是否需要继续载入？", function () {
                     $(ui.span).trigger('click', {force: true});
                 });
                 return false;
             }
         },
-        beforeDownload: function (_, ui) {
-            const config = $.ro.loader.getConfig(ui.loader);
-            const confirm = jsonPath(config, '$.dialog.confirm.confirm');
-            if (true !== ui.dirty.saved && true !== ui.force && 'function' === typeof confirm[0]) {
-                confirm[0]("下载配置", "有修改的内容未保存，继续下载会忽略新修改的内容，请确认是否需要继续下载？", function () {
+        checkDownload: function (_, ui) {
+            if (true !== ui.dirty.saved && true !== ui.force) {
+                $.ro.loader.confirm(ui)("下载配置", "有修改的内容未保存，继续下载会忽略新修改的内容，请确认是否需要继续下载？", function () {
                     $(ui.span).trigger('click', {force: true});
                 });
                 return false;
             }
-        },
-        uploadFail: function (_, ui) {
-            const config = $.ro.loader.getConfig(ui.loader);
-            const message = jsonPath(config, '$.dialog.message.message');
-            if ('function' === typeof message[0]) {
-                message[0]("上传配置", "上传失败: [" + ui.textStatus + "]" + ui.errorThrown);
-            }
-        },
-        refreshFail: function (_, ui) {
-            const config = $.ro.loader.getConfig(ui.loader);
-            const message = jsonPath(config, '$.dialog.message.message');
-            if ('function' === typeof message[0]) {
-                message[0]("载入配置", "载入失败: [" + ui.textStatus + "]" + ui.errorThrown);
-            }
-        },
-        saveFail: function (_, ui) {
-            const config = $.ro.loader.getConfig(ui.loader);
-            const message = jsonPath(config, '$.dialog.message.message');
-            if ('function' === typeof message[0]) {
-                message[0]("保存配置", "保存失败: [" + ui.textStatus + "]" + ui.errorThrown);
-            }
-        },
-        reload: function (_, ui) {
-            const name = jsonPath(ui.data, '$.player.character-name');
-            name && $('span[role=character]', ui.loader).text(name);
-        },
-        fail: function (_, ui) {
-            $(ui.loader).trigger($.ro.loader.events.fail, $.extend({
-                role: $(ui.span).attr('role')
-            }, ui));
-            return false;
-        },
-        refresh: function (_, ui) {
-            const wrap = $.ro.loader.wrap(ui);
-            $.get({
-                url: '/player/load',
-                cache: false,
-                dataType: "json"
-            }).done(wrap.done).fail(wrap.fail);
-            return false;
         },
         upload: function (_, ui) {
             const wrap = $.ro.loader.wrap(ui, $(ui.loader).children('span[role=upload]'));
@@ -286,9 +235,13 @@ $.extend($.ro, {
             }).done(wrap.done).fail(wrap.fail);
             return false;
         },
-        download: function () {
-            window.open('/player/download', '_blank');
-            downloaded();
+        refresh: function (_, ui) {
+            const wrap = $.ro.loader.wrap(ui);
+            $.get({
+                url: '/player/load',
+                cache: false,
+                dataType: "json"
+            }).done(wrap.done).fail(wrap.fail);
             return false;
         },
         save: function (event, ui) {
@@ -318,6 +271,62 @@ $.extend($.ro, {
                 cache: false,
                 dataType: "json"
             }).done(wrap.done).fail(wrap.fail);
+            return false;
+        },
+        download: function (_, ui) {
+            window.open('/player/download', '_blank');
+            $.ro.loader.wrap(ui).done({ok: true});
+            return false;
+        },
+        rise: function (_, ui) {
+            $(ui.loader).trigger($.ro.loader.events.fail, $.extend({
+                role: $(ui.span).attr('role')
+            }, ui));
+            return false;
+        },
+        fail: function (_, ui) {
+            const message = $.ro.loader.message(ui);
+            let action = ui.role;
+            switch (ui.role) {
+                case 'upload':
+                    action = '上传';
+                    break;
+                case 'refresh':
+                    action = '载入';
+                    break;
+                case 'save':
+                    action = '保存';
+                    break;
+            }
+            if (ui.data) {
+                message(action + "配置", action + "失败: [" + ui.data.code + "]" + ui.data.msg);
+            } else {
+                message(action + "配置", action + "失败: [" + ui.textStatus + "]" + ui.errorThrown);
+            }
+        },
+        reload: function (_, ui) {
+            const name = jsonPath(ui.data, '$.player.character-name');
+            name && $('span[role=character]', ui.loader).text(name);
+        },
+        uploaded: function (_, ui) {
+            $(ui.loader).children('span[role=save]').hide();
+            $(ui.loader).children('span[role=download]').hide();
+            $.ro.loader.message(ui)("上传配置", "上传完成");
+            return false;
+        },
+        refreshed: function (_, ui) {
+            $(ui.loader).children('span[role=save]').hide();
+            $.ro.loader.message(ui)("载入配置", "载入完成");
+            return false;
+        },
+        saved: function (_, ui) {
+            $(ui.loader).children('span[role=save]').hide();
+            $(ui.loader).children('span[role=download]').show();
+            $.ro.loader.message(ui)("保存配置", "保存成功");
+            return false;
+        },
+        downloaded: function (_, ui) {
+            $(ui.loader).children('span[role=download]').hide();
             return false;
         },
         getConfig: function (loader) {
