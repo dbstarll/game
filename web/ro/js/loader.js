@@ -176,7 +176,11 @@ $.extend($.ro, {
                 }
             };
             if (true !== ui.dirty.saved && true !== ui.force) {
-                confirm("上传配置", "有修改的内容未保存，继续上传会忽略新修改的内容，请确认是否需要继续上传？", checkDownload);
+                confirm("上传配置", "有修改的内容未保存，继续上传会忽略新修改的内容，请确认是否需要继续上传？", function () {
+                    if (false !== checkDownload()) {
+                        $(ui.span).trigger('click', {force: true});
+                    }
+                });
                 return false;
             } else {
                 return checkDownload();
