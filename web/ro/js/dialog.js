@@ -4,10 +4,7 @@ $.extend($.ro, {
             $(dialog).dialog($.extend({
                 modal: true,
                 autoOpen: false,
-                resizable: false,
-                close: function () {
-                    $(this).off("dialogclose");
-                }
+                resizable: false
             }, config)).append($.html.p({'role': 'message'}));
         },
         initMessage: function (dialog, config) {
@@ -44,14 +41,23 @@ $.fn.extend({
             });
         }
         const message = {that: this};
-        return $.extend(confirm, {
+        return $.extend(message, {
             message: function (title, msg, callback) {
-                const dialog = message.that;
-                dialog.children('p[role=message]').text(msg);
+                let myPromise = new Promise((resolve) => {
+                    const dialog = message.that
+                        .dialog("option", "title", title)
+                        .dialog("open")
+                        .on("dialogclose", () => {
+                            dialog.off("dialogclose");
+                            resolve(true);
+                            return false;
+                        });
+                    dialog.children('p[role=message]').text(msg);
+                });
                 if ('function' === typeof callback) {
-                    dialog.on("dialogclose", callback);
+                    myPromise.then(callback);
                 }
-                dialog.dialog("option", "title", title).dialog("open");
+                return myPromise;
             }
         });
     },
@@ -66,16 +72,23 @@ $.fn.extend({
         const confirm = {that: this};
         return $.extend(confirm, {
             confirm: function (title, msg, callback) {
-                const dialog = confirm.that.removeAttr('confirm');
-                dialog.children('p[role=message]').text(msg);
+                let myPromise = new Promise((resolve) => {
+                    const dialog = confirm.that.removeAttr('confirm')
+                        .dialog("option", "title", title)
+                        .dialog("open")
+                        .on("dialogclose", () => {
+                            dialog.off("dialogclose");
+                            resolve(dialog.attr('confirm') === 'true');
+                            return false;
+                        });
+                    dialog.children('p[role=message]').text(msg);
+                });
                 if ('function' === typeof callback) {
-                    dialog.on("dialogclose", function () {
-                        if (dialog.attr('confirm') === 'true') {
-                            setTimeout(callback, 200);
-                        }
+                    myPromise.then((confirm) => {
+                        confirm && callback();
                     });
                 }
-                dialog.dialog("option", "title", title).dialog("open");
+                return myPromise;
             }
         });
     }
