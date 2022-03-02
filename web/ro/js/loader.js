@@ -47,22 +47,17 @@ $.extend($.ro, {
             const save = this.icon(loader, config, 'save', {before: this.encode}).hide();
             const download = this.icon(loader, config, 'download', {before: this.checkDownload}).hide();
             const character = $.html.span({role: 'character'}, config.name).addClass(config.classes.character);
-            this.done($(loader).append(file, save, download, refresh, upload, character)
-                .on(this.events.upload.before, function () {
+            return this.loader($(loader).append(file, save, download, refresh, upload, character), config.handlers, {
+                [this.events.file.before]: this.upload, [this.events.refresh.before]: this.refresh,
+                [this.events.save.before]: this.save, [this.events.download.before]: this.download,
+                [this.events.upload.done]: this.uploaded, [this.events.refresh.done]: this.refreshed,
+                [this.events.save.done]: this.saved, [this.events.download.done]: this.downloaded,
+                [this.events.refresh.fail]: this.rise, [this.events.download.fail]: this.rise,
+                [this.events.save.fail]: this.rise, [this.events.upload.fail]: this.rise,
+                [this.events.fail]: this.fail, [this.events.upload.before]: () => {
                     file.trigger('click');
-                }).on(this.events.file.before, this.upload)
-                .on(this.events.refresh.before, this.refresh)
-                .on(this.events.save.before, this.save)
-                .on(this.events.download.before, this.download)
-                .on(this.events.refresh.fail, this.rise)
-                .on(this.events.download.fail, this.rise)
-                .on(this.events.save.fail, this.rise)
-                .on(this.events.upload.fail, this.rise)
-                .on(this.events.fail, this.fail)
-                .on(this.events.upload.done, this.uploaded)
-                .on(this.events.refresh.done, this.refreshed)
-                .on(this.events.save.done, this.saved)
-                .on(this.events.download.done, this.downloaded), config.handlers);
+                }
+            });
         },
         file: function (loader, config, role, events) {
             return this.bind($.html.input({role: role, type: 'file', accept: config.accept})
@@ -114,13 +109,26 @@ $.extend($.ro, {
             }
             return span;
         },
-        done: function (loader, handlers) {
-            if ('object' == typeof handlers) {
-                const handler = handlers.fail;
-                if ('function' === typeof handler) {
-                    loader.on(this.events.fail, handler);
-                }
+        loader: function (loader, handlers, events) {
+            const that = $.ro.loader;
+            if ('object' === typeof events) {
+                Object.keys(events).forEach(function (event) {
+                    const handler = events[event];
+                    if ('function' === typeof handler) {
+                        loader.on(event, handler);
+                    }
+                })
             }
+            if ('object' == typeof handlers) {
+                Object.keys(handlers).forEach(function (key) {
+                    const handler = handlers[key];
+                    const event = that.events[key];
+                    if ('function' === typeof handler && 'string' === typeof event) {
+                        loader.on(event, handler);
+                    }
+                })
+            }
+            return loader;
         },
         wrap: function (ui, target) {
             const span = target || $(ui.span);
