@@ -341,7 +341,7 @@
         }
 
         function message(title, msg, callback) {
-            $('#dialog-message').message().message(title, msg, callback);
+            $('#dialog-message').alert().alert(title, msg, callback);
         }
 
         function editEffect(dialog) {
@@ -385,11 +385,11 @@
 
 
             const dialogConfirm = $('#dialog-confirm').confirm({});
-            const dialogMessage = $('#dialog-message').message({});
+            const dialogAlert = $('#dialog-message').alert({});
 
             const loader = $('#tool-bar').loader({
                 dialog: {
-                    message: dialogMessage,
+                    alert: dialogAlert,
                     confirm: dialogConfirm
                 },
                 handlers: {

@@ -169,26 +169,26 @@ $.extend($.ro, {
             const confirm = jsonPath($.ro.loader.getConfig(ui.loader), '$.dialog.confirm.confirm');
             return Array.isArray(confirm) && 'function' === typeof confirm[0] ? confirm[0] : console.warn;
         },
-        message: function (ui) {
-            const message = jsonPath($.ro.loader.getConfig(ui.loader), '$.dialog.message.message');
-            return Array.isArray(message) && 'function' === typeof message[0] ? message[0] : console.info;
+        alert: function (ui) {
+            const alert = jsonPath($.ro.loader.getConfig(ui.loader), '$.dialog.alert.alert');
+            return Array.isArray(alert) && 'function' === typeof alert[0] ? alert[0] : console.info;
         },
         checkUpload: function (_, ui) {
             const confirm = $.ro.loader.confirm(ui);
             const checkDownload = function () {
                 if (true !== ui.dirty.downloaded && true !== ui.force) {
-                    confirm("上传配置", "有修改的内容未下载，继续上传会忽略新修改的内容，请确认是否需要继续上传？", function () {
-                        $(ui.span).trigger('click', {force: true});
-                    });
+                    confirm("上传配置", "有修改的内容未下载，继续上传会忽略新修改的内容，请确认是否需要继续上传？")
+                        .then((confirm) => {
+                            confirm && $(ui.span).trigger('click', {force: true});
+                        });
                     return false;
                 }
             };
             if (true !== ui.dirty.saved && true !== ui.force) {
-                confirm("上传配置", "有修改的内容未保存，继续上传会忽略新修改的内容，请确认是否需要继续上传？", function () {
-                    if (false !== checkDownload()) {
-                        $(ui.span).trigger('click', {force: true});
-                    }
-                });
+                confirm("上传配置", "有修改的内容未保存，继续上传会忽略新修改的内容，请确认是否需要继续上传？")
+                    .then((confirm) => {
+                        confirm && false !== checkDownload() && $(ui.span).trigger('click', {force: true});
+                    });
                 return false;
             } else {
                 return checkDownload();
@@ -196,12 +196,12 @@ $.extend($.ro, {
         },
         checkFile: function (_, ui) {
             const file = jsonPath(ui, '$.files.*');
-            const message = $.ro.loader.message(ui);
+            const alert = $.ro.loader.alert(ui);
             if (!Array.isArray(file) || file.length === 0) {
-                message("上传配置", "请选择文件");
+                alert("上传配置", "请选择文件");
                 return false;
             } else if (file[0].size > 10240) {
-                message("上传配置", "文件太大(限制10K)，请重新选择文件");
+                alert("上传配置", "文件太大(限制10K)，请重新选择文件");
                 return false;
             } else {
                 ui.file = file[0];
@@ -209,17 +209,19 @@ $.extend($.ro, {
         },
         checkRefresh: function (_, ui) {
             if (true !== ui.dirty.saved && true !== ui.force) {
-                $.ro.loader.confirm(ui)("载入配置", "有修改的内容未保存，继续载入会使新修改的内容丢失，请确认是否需要继续载入？", function () {
-                    $(ui.span).trigger('click', {force: true});
-                });
+                $.ro.loader.confirm(ui)("载入配置", "有修改的内容未保存，继续载入会使新修改的内容丢失，请确认是否需要继续载入？")
+                    .then((confirm) => {
+                        confirm && $(ui.span).trigger('click', {force: true});
+                    });
                 return false;
             }
         },
         checkDownload: function (_, ui) {
             if (true !== ui.dirty.saved && true !== ui.force) {
-                $.ro.loader.confirm(ui)("下载配置", "有修改的内容未保存，继续下载会忽略新修改的内容，请确认是否需要继续下载？", function () {
-                    $(ui.span).trigger('click', {force: true});
-                });
+                $.ro.loader.confirm(ui)("下载配置", "有修改的内容未保存，继续下载会忽略新修改的内容，请确认是否需要继续下载？")
+                    .then((confirm) => {
+                        confirm && $(ui.span).trigger('click', {force: true});
+                    });
                 return false;
             }
         },
@@ -268,7 +270,7 @@ $.extend($.ro, {
             return false;
         },
         fail: function (_, ui) {
-            const message = $.ro.loader.message(ui);
+            const alert = $.ro.loader.alert(ui);
             let action = ui.role;
             switch (ui.role) {
                 case 'upload':
@@ -282,9 +284,9 @@ $.extend($.ro, {
                     break;
             }
             if (ui.data) {
-                message(action + "配置", action + "失败: [" + ui.data.code + "]" + ui.data.msg);
+                alert(action + "配置", action + "失败: [" + ui.data.code + "]" + ui.data.msg);
             } else {
-                message(action + "配置", action + "失败: [" + ui.textStatus + "]" + ui.errorThrown);
+                alert(action + "配置", action + "失败: [" + ui.textStatus + "]" + ui.errorThrown);
             }
         },
         encode: function (_, ui) {
@@ -297,18 +299,18 @@ $.extend($.ro, {
         uploaded: function (_, ui) {
             $(ui.loader).children('span[role=save]').hide();
             $(ui.loader).children('span[role=download]').hide();
-            $.ro.loader.message(ui)("上传配置", "上传完成");
+            $.ro.loader.alert(ui)("上传配置", "上传完成");
             return false;
         },
         refreshed: function (_, ui) {
             $(ui.loader).children('span[role=save]').hide();
-            $.ro.loader.message(ui)("载入配置", "载入完成");
+            $.ro.loader.alert(ui)("载入配置", "载入完成");
             return false;
         },
         saved: function (_, ui) {
             $(ui.loader).children('span[role=save]').hide();
             $(ui.loader).children('span[role=download]').show();
-            $.ro.loader.message(ui)("保存配置", "保存成功");
+            $.ro.loader.alert(ui)("保存配置", "保存成功");
             return false;
         },
         downloaded: function (_, ui) {

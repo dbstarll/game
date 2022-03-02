@@ -7,7 +7,7 @@ $.extend($.ro, {
                 resizable: false
             }, config)).append($.html.p({'role': 'message'}));
         },
-        initMessage: function (dialog, config) {
+        initAlert: function (dialog, config) {
             this.init(dialog, $.extend({
                 buttons: {
                     "确定": function () {
@@ -32,23 +32,22 @@ $.extend($.ro, {
 });
 
 $.fn.extend({
-    message: function (config) {
+    alert: function (config) {
         if (typeof config === 'object') {
             const finalConfig = $.extend({}, config);
             this.each(function () {
                 $.data(this, 'config', finalConfig);
-                $.ro.dialog.initMessage(this, finalConfig);
+                $.ro.dialog.initAlert(this, finalConfig);
             });
         }
-        const message = {that: this};
-        return $.extend(message, {
-            message: function (title, msg, callback) {
+        const alert = {that: this};
+        return $.extend(alert, {
+            alert: function (title, msg, callback) {
                 let myPromise = new Promise((resolve) => {
-                    const dialog = message.that
+                    const dialog = alert.that
                         .dialog("option", "title", title)
                         .dialog("open")
-                        .on("dialogclose", () => {
-                            dialog.off("dialogclose");
+                        .one("dialogclose", () => {
                             resolve(true);
                             return false;
                         });
@@ -76,8 +75,7 @@ $.fn.extend({
                     const dialog = confirm.that.removeAttr('confirm')
                         .dialog("option", "title", title)
                         .dialog("open")
-                        .on("dialogclose", () => {
-                            dialog.off("dialogclose");
+                        .one("dialogclose", () => {
                             resolve(dialog.attr('confirm') === 'true');
                             return false;
                         });
