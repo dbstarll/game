@@ -310,10 +310,6 @@
             });
         }
 
-        function saving() {
-            $('#tool-bar > span[role=save]').show();
-        }
-
         function addEffect() {
             const addTarget = $.data(this, 'add-target');
             const name = $('#effect-name').val();
@@ -327,13 +323,13 @@
         }
 
         function refresh(data) {
-            $('#manual').buffs().decode(jsonPath(data, '$.player.manual.*'));
+            $('#manual').buffs().import(jsonPath(data, '$.player.manual.*'));
             const union = $('#tabs-union');
-            $('.pray', union).buffs().decode(jsonPath(data, '$.player.union.pray.*'));
-            $('.attack', union).buffs().decode(jsonPath(data, '$.player.union.attack.*'));
-            $('.defence', union).buffs().decode(jsonPath(data, '$.player.union.defence.*'));
-            $('.element', union).buffs().decode(jsonPath(data, '$.player.union.element.*'));
-            $('#rune').buffs().decode(jsonPath(data, '$.player.rune.*'));
+            $('.pray', union).buffs().import(jsonPath(data, '$.player.union.pray.*'));
+            $('.attack', union).buffs().import(jsonPath(data, '$.player.union.attack.*'));
+            $('.defence', union).buffs().import(jsonPath(data, '$.player.union.defence.*'));
+            $('.element', union).buffs().import(jsonPath(data, '$.player.union.element.*'));
+            $('#rune').buffs().import(jsonPath(data, '$.player.rune.*'));
 
             const character = data.character;
             if (character) {
@@ -398,14 +394,14 @@
                         before: function (_, ui) {
                             const union = $('#tabs-union');
                             $.extend(ui.player, {
-                                manual: $('#manual').buffs().encode(),
+                                manual: $('#manual').buffs().export(),
                                 union: {
-                                    pray: $('.pray', union).buffs().encode(),
-                                    attack: $('.attack', union).buffs().encode(),
-                                    defence: $('.defence', union).buffs().encode(),
-                                    element: $('.element', union).buffs().encode()
+                                    pray: $('.pray', union).buffs().export(),
+                                    attack: $('.attack', union).buffs().export(),
+                                    defence: $('.defence', union).buffs().export(),
+                                    element: $('.element', union).buffs().export()
                                 },
-                                rune: $('#rune').buffs().encode()
+                                rune: $('#rune').buffs().export()
                             });
                         }
                     },
@@ -432,28 +428,32 @@
         });
 
         function initAllBuffs(loader, dialog) {
-            $('#adventurer').buffs().decode(["灵巧+9", "力量+9", "智力+9", "敏捷+9", "体质+9", "幸运+9"]);
+            $('#adventurer').buffs().import(["灵巧+9", "力量+9", "智力+9", "敏捷+9", "体质+9", "幸运+9"]);
 
-            initBuffs(loader, $('#manual').sortable().on("sortupdate", saving), dialog, true);
+            initBuffs(loader, $('#manual').sortable().on("sortupdate", loader.change), dialog, true);
 
             const union = $('#tabs-union');
-            initBuffs(loader, $('.pray', union), dialog, false, {zero: true}, STORE.union.pray);
-            initBuffs(loader, $('.attack', union), dialog, false, {zero: true}, STORE.union.blessing.attack);
-            initBuffs(loader, $('.defence', union), dialog, false, {zero: true}, STORE.union.blessing.defence);
-            initBuffs(loader, $('.element', union), dialog, false, {zero: true}, STORE.union.blessing.element);
+            initBuffs(loader, $('.pray', union), dialog, false, STORE.union.pray);
+            initBuffs(loader, $('.attack', union), dialog, false, STORE.union.blessing.attack);
+            initBuffs(loader, $('.defence', union), dialog, false, STORE.union.blessing.defence);
+            initBuffs(loader, $('.element', union), dialog, false, STORE.union.blessing.element);
 
-            initBuffs(loader, $('#rune').sortable().on("sortupdate", saving), dialog, true);
+            initBuffs(loader, $('#rune').sortable().on("sortupdate", loader.change), dialog, true);
         }
 
-        function initBuffs(loader, container, dialog, dynamic, buff, items) {
-            container.buffs({
-                dynamic: dynamic,
-                buff: buff,
+        function initBuffs(loader, container, dialog, dynamic, items) {
+            const config = true === dynamic ? {dynamic: true} : {buff: {zero: true}};
+            const buffs = container.buffs($.extend(config, {
                 click: function () {
                     editEffect.call(this, dialog);
                 },
                 change: loader.change
-            }, items).reset();
+            }), items).reset();
+            loader.import(function (_, ui) {
+
+            }).export(function (_, ui) {
+
+            })
         }
     </script>
 </head>

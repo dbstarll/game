@@ -52,17 +52,17 @@ $.fn.extend({
         }
         const buffs = {that: this};
         return $.extend(buffs, {
-            encode: function () {
+            export: function () {
                 let effects = [];
                 buffs.that.children('.buff').each(function () {
-                    const effect = $(this).buff().encode();
+                    const effect = $(this).buff().export();
                     if ('string' === typeof effect) {
                         effects.push(effect);
                     }
                 });
                 return effects.length == 0 ? undefined : effects;
             },
-            decode: function (items) {
+            import: function (items) {
                 buffs.reset();
                 if (Array.isArray(items)) {
                     items.forEach(function (key) {

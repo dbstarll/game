@@ -41,10 +41,10 @@ $.extend($.ro, {
             fail: 'loader-fail'
         },
         init: function (loader, config) {
-            const upload = this.icon(loader, config, 'upload', {before: this.checkUpload, done: this.decode});
+            const upload = this.icon(loader, config, 'upload', {before: this.checkUpload, done: this.import});
             const file = this.file(loader, config, 'file', {before: this.checkFile}).hide();
-            const refresh = this.icon(loader, config, 'refresh', {before: this.checkRefresh, done: this.decode});
-            const save = this.icon(loader, config, 'save', {before: this.encode}).hide();
+            const refresh = this.icon(loader, config, 'refresh', {before: this.checkRefresh, done: this.import});
+            const save = this.icon(loader, config, 'save', {before: this.export}).hide();
             const download = this.icon(loader, config, 'download', {before: this.checkDownload}).hide();
             const character = $.html.span({role: 'character'}, config.name).addClass(config.classes.character)
                 .on('click', {loader: loader}, this.changeCharacterName);
@@ -307,10 +307,10 @@ $.extend($.ro, {
                 alert(action + "配置", action + "失败: [" + ui.textStatus + "]" + ui.errorThrown);
             }
         },
-        encode: function (_, ui) {
+        export: function (_, ui) {
             ui.player = {'character-name': $('span[role=character]', ui.loader).text()};
         },
-        decode: function (_, ui) {
+        import: function (_, ui) {
             const name = jsonPath(ui.data, '$.player.character-name');
             $('span[role=character]', ui.loader).text(name ? name[0] : $.ro.loader.defaultConfig.name);
         },
@@ -360,13 +360,13 @@ $.fn.extend({
                 }
                 return loader;
             },
-            encode: function (handler) {
+            export: function (handler) {
                 if ('function' === typeof handler) {
                     this.that.children('span[role=save]').on('loader-before-save', handler);
                 }
                 return loader;
             },
-            decode: function (handler) {
+            import: function (handler) {
                 if ('function' === typeof handler) {
                     this.that.children('span[role=refresh]').on('loader-refresh-done', handler);
                     this.that.children('span[role=upload]').on('loader-upload-done', handler);

@@ -110,7 +110,7 @@ $.fn.extend({
         }
         const buff = {that: this};
         return $.extend(buff, {
-            encode: function () {
+            export: function () {
                 const caller = this;
                 let result = undefined;
                 buff.that.each(function () {
@@ -119,7 +119,7 @@ $.fn.extend({
                 })
                 return result;
             },
-            decode: function (newValue) {
+            import: function (newValue) {
                 return buff.value(newValue);
             },
             reset: function () {
