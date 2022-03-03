@@ -46,7 +46,8 @@ $.extend($.ro, {
             const refresh = this.icon(loader, config, 'refresh', {before: this.checkRefresh, done: this.decode});
             const save = this.icon(loader, config, 'save', {before: this.encode}).hide();
             const download = this.icon(loader, config, 'download', {before: this.checkDownload}).hide();
-            const character = $.html.span({role: 'character'}, config.name).addClass(config.classes.character);
+            const character = $.html.span({role: 'character'}, config.name).addClass(config.classes.character)
+                .on('click', {loader: loader}, this.changeCharacterName);
             return this.loader($(loader).append(file, save, download, refresh, upload, character), config.handlers, {
                 [this.events.file.before]: this.upload, [this.events.refresh.before]: this.refresh,
                 [this.events.save.before]: this.save, [this.events.download.before]: this.download,
@@ -176,6 +177,19 @@ $.extend($.ro, {
         prompt: function (ui) {
             const prompt = jsonPath($.ro.loader.getConfig(ui.loader), '$.dialog.prompt.prompt');
             return Array.isArray(prompt) && 'function' === typeof prompt[0] ? prompt[0] : console.warn;
+        },
+        changeCharacterName: function (event) {
+            const character = $(event.target);
+            const oldName = character.text();
+            $.ro.loader.prompt(event.data)('修改角色名称', '请输入新的角色名称：', {input: oldName}).then((res) => {
+                if (res.confirm) {
+                    const newName = res.data.input.replace(/[ ]/g, "");
+                    if (newName.length > 0 && oldName != newName) {
+                        character.text(newName);
+                        $(event.data.loader).children('span[role=save]').show();
+                    }
+                }
+            });
         },
         checkUpload: function (_, ui) {
             const confirm = $.ro.loader.confirm(ui);
