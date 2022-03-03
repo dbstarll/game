@@ -358,9 +358,24 @@ $.fn.extend({
                 } else {
                     this.that.children('span[role=refresh]').trigger('click');
                 }
+                return loader;
+            },
+            encode: function (handler) {
+                if ('function' === typeof handler) {
+                    this.that.children('span[role=save]').on('loader-before-save', handler);
+                }
+                return loader;
+            },
+            decode: function (handler) {
+                if ('function' === typeof handler) {
+                    this.that.children('span[role=refresh]').on('loader-refresh-done', handler);
+                    this.that.children('span[role=upload]').on('loader-upload-done', handler);
+                }
+                return loader;
             },
             change: function () {
                 loader.that.children('span[role=save]').show();
+                return loader;
             }
         });
     }
