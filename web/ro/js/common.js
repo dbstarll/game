@@ -128,6 +128,9 @@ $.extend({
                 p: function (attrs, text) {
                     return set('<p>', attrs, text);
                 },
+                label: function (attrs, text) {
+                    return set('<label>', attrs, text);
+                },
                 span: function (attrs, text) {
                     return set('<span>', attrs, text);
                 },

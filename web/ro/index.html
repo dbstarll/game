@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/ro/css/material-icons.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script src="https://samejack.github.io/jform/js/jform.min.js"></script>
     <script src="/ro/js/jsonpath-0.8.0.js"></script>
     <script src="/ro/js/common.js"></script>
     <script src="/ro/js/ro.js"></script>
@@ -341,7 +342,7 @@
         }
 
         function message(title, msg, callback) {
-            $('#dialog-message').alert().alert(title, msg, callback);
+            $('#dialog-alert').alert().alert(title, msg, callback);
         }
 
         function editEffect(dialog) {
@@ -385,12 +386,14 @@
 
 
             const dialogConfirm = $('#dialog-confirm').confirm({});
-            const dialogAlert = $('#dialog-message').alert({});
+            const dialogAlert = $('#dialog-alert').alert({});
+            const dialogPrompt = $('#dialog-prompt').prompt({});
 
             const loader = $('#tool-bar').loader({
                 dialog: {
                     alert: dialogAlert,
-                    confirm: dialogConfirm
+                    confirm: dialogConfirm,
+                    prompt: dialogPrompt
                 },
                 handlers: {
                     save: {
@@ -428,6 +431,7 @@
             initAllBuffs(editDialog);
 
             loader.refresh();
+            dialogPrompt.prompt("title", "message", {input: 'def'}).then(console.log);
         });
 
         function initAllBuffs(dialog) {
@@ -478,9 +482,20 @@
         <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
     </form>
 </div>
-<div id="dialog-message"></div>
-<div id="dialog-confirm"></div>
-
+<div style="display: none">
+    <div id="dialog-alert">
+        <p role="message"></p>
+    </div>
+    <div id="dialog-confirm">
+        <p role="message"></p>
+    </div>
+    <div id="dialog-prompt">
+        <form>
+            <label role="message"></label>
+            <input name="input" type="text">
+        </form>
+    </div>
+</div>
 <div id="main">
     <div id="tabs">
         <ul>

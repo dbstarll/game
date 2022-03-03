@@ -173,6 +173,10 @@ $.extend($.ro, {
             const alert = jsonPath($.ro.loader.getConfig(ui.loader), '$.dialog.alert.alert');
             return Array.isArray(alert) && 'function' === typeof alert[0] ? alert[0] : console.info;
         },
+        prompt: function (ui) {
+            const prompt = jsonPath($.ro.loader.getConfig(ui.loader), '$.dialog.prompt.prompt');
+            return Array.isArray(prompt) && 'function' === typeof prompt[0] ? prompt[0] : console.warn;
+        },
         checkUpload: function (_, ui) {
             const confirm = $.ro.loader.confirm(ui);
             const checkDownload = function () {
