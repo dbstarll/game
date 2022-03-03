@@ -1,14 +1,14 @@
 $.extend($.ro, {
     dialog: {
         init: function (dialog, config) {
-            $(dialog).dialog($.extend({
+            return $(dialog).dialog($.extend({
                 modal: true,
                 autoOpen: false,
                 resizable: false
-            }, config)).append($.html.p({'role': 'message'}));
+            }, config));
         },
         initAlert: function (dialog, config) {
-            this.init(dialog, $.extend({
+            return this.init(dialog, $.extend({
                 buttons: {
                     "确定": function () {
                         $(this).dialog("close");
@@ -17,7 +17,7 @@ $.extend($.ro, {
             }, config));
         },
         initConfirm: function (dialog, config) {
-            this.init(dialog, $.extend({
+            return this.init(dialog, $.extend({
                 buttons: {
                     "确定": function () {
                         $(this).attr('confirm', 'true').dialog("close");
@@ -27,6 +27,19 @@ $.extend($.ro, {
                     }
                 }
             }, config));
+        },
+        initPrompt: function (dialog, config) {
+            let form;
+            const prompt = this.initConfirm(dialog, $.extend({
+                close: function () {
+                    form[0].reset();
+                }
+            }, config));
+            form = prompt.find("form").on("submit", function (event) {
+                event.preventDefault();
+                prompt.attr('confirm', 'true').dialog("close");
+            });
+            return prompt;
         }
     }
 });
@@ -51,7 +64,7 @@ $.fn.extend({
                             resolve(true);
                             return false;
                         });
-                    dialog.children('p[role=message]').text(msg);
+                    $('[role=message]', dialog).text(msg);
                 });
                 if ('function' === typeof callback) {
                     myPromise.then(callback);
@@ -79,7 +92,7 @@ $.fn.extend({
                             resolve(dialog.attr('confirm') === 'true');
                             return false;
                         });
-                    dialog.children('p[role=message]').text(msg);
+                    $('[role=message]', dialog).text(msg);
                 });
                 if ('function' === typeof callback) {
                     myPromise.then((confirm) => {
@@ -87,6 +100,37 @@ $.fn.extend({
                     });
                 }
                 return myPromise;
+            }
+        });
+    },
+    prompt: function (config) {
+        if (typeof config === 'object') {
+            const finalConfig = $.extend({}, config);
+            this.each(function () {
+                $.data(this, 'config', finalConfig);
+                $.ro.dialog.initPrompt(this, finalConfig);
+            });
+        }
+        const prompt = {that: this};
+        return $.extend(prompt, {
+            prompt: function (title, msg, initData) {
+                return new Promise((resolve) => {
+                    const form = prompt.that.find('form');
+                    const dialog = prompt.that.removeAttr('confirm')
+                        .dialog("option", "title", title)
+                        .dialog("open")
+                        .one("dialogclose", () => {
+                            resolve({
+                                confirm: dialog.attr('confirm') === 'true',
+                                data: JSON.parse(form.jform())
+                            });
+                            return false;
+                        });
+                    $('[role=message]', dialog).text(msg);
+                    if (initData) {
+                        form.jform(initData);
+                    }
+                });
             }
         });
     }
