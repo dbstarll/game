@@ -312,7 +312,7 @@ $.extend($.ro, {
         },
         decode: function (_, ui) {
             const name = jsonPath(ui.data, '$.player.character-name');
-            $('span[role=character]', ui.loader).text(name | $.ro.loader.defaultConfig.name);
+            $('span[role=character]', ui.loader).text(name ? name[0] : $.ro.loader.defaultConfig.name);
         },
         uploaded: function (_, ui) {
             $(ui.loader).children('span[role=save]').hide();
