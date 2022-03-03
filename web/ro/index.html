@@ -382,12 +382,10 @@
             $("#board").accordion({
                 heightStyle: "content"
             });
-            $('.saved').on("change", saving);
-
 
             const dialogConfirm = $('#dialog-confirm').confirm({});
             const dialogAlert = $('#dialog-alert').alert({});
-            const dialogPrompt = $('#dialog-prompt').prompt({});
+            const dialogPrompt = $('#dialog-prompt').prompt({width: 380});
 
             const loader = $('#tool-bar').loader({
                 dialog: {
@@ -428,34 +426,33 @@
             const editDialog = initEditEffectDialog();
             initJobSelect();
 
-            initAllBuffs(editDialog);
+            initAllBuffs(loader, editDialog);
 
-            loader.refresh();
-            dialogPrompt.prompt("title", "message", {input: 'def'}).then(console.log);
+            loader.refresh(true);
         });
 
-        function initAllBuffs(dialog) {
+        function initAllBuffs(loader, dialog) {
             $('#adventurer').buffs().decode(["灵巧+9", "力量+9", "智力+9", "敏捷+9", "体质+9", "幸运+9"]);
 
-            initBuffs($('#manual').sortable().on("sortupdate", saving), dialog, true);
+            initBuffs(loader, $('#manual').sortable().on("sortupdate", saving), dialog, true);
 
             const union = $('#tabs-union');
-            initBuffs($('.pray', union), dialog, false, {zero: true}, STORE.union.pray);
-            initBuffs($('.attack', union), dialog, false, {zero: true}, STORE.union.blessing.attack);
-            initBuffs($('.defence', union), dialog, false, {zero: true}, STORE.union.blessing.defence);
-            initBuffs($('.element', union), dialog, false, {zero: true}, STORE.union.blessing.element);
+            initBuffs(loader, $('.pray', union), dialog, false, {zero: true}, STORE.union.pray);
+            initBuffs(loader, $('.attack', union), dialog, false, {zero: true}, STORE.union.blessing.attack);
+            initBuffs(loader, $('.defence', union), dialog, false, {zero: true}, STORE.union.blessing.defence);
+            initBuffs(loader, $('.element', union), dialog, false, {zero: true}, STORE.union.blessing.element);
 
-            initBuffs($('#rune').sortable().on("sortupdate", saving), dialog, true);
+            initBuffs(loader, $('#rune').sortable().on("sortupdate", saving), dialog, true);
         }
 
-        function initBuffs(container, dialog, dynamic, buff, items) {
+        function initBuffs(loader, container, dialog, dynamic, buff, items) {
             container.buffs({
                 dynamic: dynamic,
                 buff: buff,
                 click: function () {
                     editEffect.call(this, dialog);
                 },
-                change: saving
+                change: loader.change
             }, items).reset();
         }
     </script>

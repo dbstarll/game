@@ -3,7 +3,7 @@ $.extend($.ro, {
         getConfig: function (buffs) {
             return $.data(buffs, 'config');
         },
-        initContainer: function (buffs, items) {
+        init: function (buffs, items) {
             $(buffs).children('.buff').remove();
             if (typeof items === 'object' && Array.isArray(items)) {
                 items.forEach(function (item) {
@@ -24,14 +24,11 @@ $.extend($.ro, {
         },
         addBuff: function (buffs, item) {
             const config = $.ro.buffs.getConfig(buffs);
-            const buffConfig = $.extend({}, config && config.buff, item);
+            const buffConfig = $.extend({}, config && {
+                click: config.click,
+                change: config.change
+            }, config && config.buff, item);
             const buff = $.html.div().addClass('buff').buff(buffConfig).that;
-            if (config && 'function' === typeof config.click) {
-                buff.on('click', config.click);
-            }
-            if (config && 'function' === typeof config.change) {
-                buff.on('buff-change', config.change);
-            }
             if (item.name) {
                 buff.append($.html.div().addClass('buff-title').text(item.name));
             }
@@ -50,7 +47,7 @@ $.fn.extend({
             let finalConfig = $.extend({}, config);
             this.each(function () {
                 $.data(this, 'config', finalConfig);
-                $.ro.buffs.initContainer(this, items);
+                $.ro.buffs.init(this, items);
             })
         }
         const buffs = {that: this};
@@ -65,10 +62,10 @@ $.fn.extend({
                 });
                 return effects.length == 0 ? undefined : effects;
             },
-            decode: function (newValue) {
+            decode: function (items) {
                 buffs.reset();
-                if (Array.isArray(newValue)) {
-                    newValue.forEach(function (key) {
+                if (Array.isArray(items)) {
+                    items.forEach(function (key) {
                         const idx = key.indexOf('+');
                         if (idx > 0) {
                             const name = key.substr(0, idx);

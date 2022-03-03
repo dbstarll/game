@@ -1,5 +1,18 @@
 $.extend($.ro, {
     buff: {
+        init: function (buff, config) {
+            const container = $(buff).on('click', function (event) {
+                event.preventDefault();
+                $(buff).trigger('buff-click', {buff: buff});
+                return false;
+            });
+            if ('function' === typeof config.click) {
+                container.on('buff-click', config.click);
+            }
+            if ('function' === typeof config.change) {
+                container.on('buff-change', config.change);
+            }
+        },
         getConfig: function (buff) {
             return $.data(buff, 'config');
         },
@@ -31,23 +44,28 @@ $.extend($.ro, {
                         errorCallback.call(this, '数值不能超过最大值[' + config.max + ']: ' + value);
                         return false;
                     } else {
-                        const v1 = value + '';
-                        const v2 = value.toFixed(config && config.accuracy === 0.1 ? 1 : 0);
-                        let displayValue = '+' + (v1.length > v2.length ? v1 : v2);
-                        if (config && config.unit) {
-                            displayValue += config.unit;
-                        }
-
                         const oldValue = $.ro.buff.getValue(buff);
-                        const oldDisplayValue = $.ro.buff.getDisplayValue(buff);
-                        $.data(buff, 'buff-value', value);
-                        $(buff).children('.buff-value').text(displayValue);
+                        if (oldValue !== value) {
+                            $.data(buff, 'buff-value', value);
 
-                        $(buff).trigger('buff-change', {
-                            oldValue: oldValue, value: value,
-                            oldDisplayValue: oldDisplayValue, displayValue: displayValue
-                        });
-                        return true;
+                            const v1 = value + '';
+                            const v2 = value.toFixed(config && config.accuracy === 0.1 ? 1 : 0);
+                            let displayValue = '+' + (v1.length > v2.length ? v1 : v2);
+                            if (config && config.unit) {
+                                displayValue += config.unit;
+                            }
+                            const oldDisplayValue = $.ro.buff.getDisplayValue(buff);
+                            $(buff).children('.buff-value').text(displayValue);
+
+                            $(buff).trigger('buff-change', {
+                                buff: buff,
+                                oldValue: oldValue, value: value,
+                                oldDisplayValue: oldDisplayValue, displayValue: displayValue
+                            });
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
                 default:
                     errorCallback.call(this, '不是有效数值[' + typeof value + ']: ' + value);
@@ -87,6 +105,7 @@ $.fn.extend({
             this.each(function () {
                 $.data(this, 'config', finalConfig);
                 $.data(this, 'buff-name', buffName);
+                $.ro.buff.init(this, finalConfig);
             })
         }
         const buff = {that: this};
