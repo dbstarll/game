@@ -32,6 +32,7 @@ $.extend($.ro, {
             let form;
             const prompt = this.initConfirm(dialog, $.extend({
                 close: function () {
+                    prompt.off('dialogbeforeclose');
                     form[0].reset();
                 }
             }, config));
@@ -120,12 +121,9 @@ $.fn.extend({
                     .dialog("open")
                     .on("dialogbeforeclose", () => {
                         if (dialog.attr('confirm') === 'true') {
-                            if (false === callback(JSON.parse(form.jform()))) {
-                                dialog.removeAttr('confirm');
-                                return false;
-                            }
+                            dialog.removeAttr('confirm');
+                            return callback(JSON.parse(form.jform()));
                         }
-                        dialog.off('dialogbeforeclose');
                     });
                 $('[role=message]', dialog).text(msg);
                 if (initData) {
