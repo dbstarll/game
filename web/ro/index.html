@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="/ro/css/normalize.css">
     <link rel="stylesheet" href="/ro/css/material-icons.css">
+    <link rel="stylesheet" href="/ro/css/buffs.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
     <script src="https://samejack.github.io/jform/js/jform.min.js"></script>
@@ -62,19 +63,6 @@
             align-items: center;
         }
 
-        .buffs {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
-
-        .buff {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: small;
-        }
-
         #tabs-manual .buff {
             width: 40%;
             border-bottom: 1px dotted black;
@@ -93,22 +81,6 @@
             border-radius: 5px;
             margin: 2px;
             width: 30%;
-        }
-
-        .buff .buff-title {
-            background-color: orange;
-            border-radius: 5px;
-            padding-left: 5px;
-            padding-right: 5px;
-            margin-right: 5px;
-        }
-
-        .buff .buff-name {
-            flex: 1;
-        }
-
-        .buff .buff-value {
-            flex-basis: 6ch;
         }
 
         #tabs-union .pray {
