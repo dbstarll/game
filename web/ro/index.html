@@ -53,7 +53,7 @@
             border-radius: 10px;
         }
 
-        h4.top {
+        h4:first-child {
             margin-top: 0;
         }
 
@@ -97,17 +97,18 @@
 
         .buff .buff-title {
             background-color: orange;
-            border-radius: 10px;
-            padding-left: 10px;
-            padding-right: 10px;
+            border-radius: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+            margin-right: 5px;
         }
 
         .buff .buff-name {
-            float: left;
+            flex: 1;
         }
 
         .buff .buff-value {
-            float: right;
+            flex-basis: 6ch;
         }
 
         #tabs-union .pray {
@@ -419,17 +420,17 @@
             <li id="tool-bar"></li>
         </ul>
         <div id="tabs-manual">
-            <h4 class="top">B级冒险家属性</h4>
+            <h4>B级冒险家属性</h4>
             <div id="adventurer" class="buffs"></div>
             <h4 id="create-effect-manual">手册属性<span class="material-icons md-18">post_add</span></h4>
             <div id="manual" class="buffs"></div>
         </div>
         <div id="tabs-union">
             <div class="pray">
-                <h4 class="top">女神祈祷</h4>
+                <h4>女神祈祷</h4>
             </div>
             <div class="blessing">
-                <h4 class="top">女神祝福</h4>
+                <h4>女神祝福</h4>
                 <div class="attack"></div>
                 <div class="defence"></div>
                 <div class="element"></div>
@@ -452,7 +453,7 @@
             </div>
         </div>
         <div id="tabs-rune">
-            <h4 id="create-effect-rune" class="top">神碑属性<span class="material-icons md-18">post_add</span></h4>
+            <h4 id="create-effect-rune">神碑属性<span class="material-icons md-18">post_add</span></h4>
             <div id="rune" class="buffs"></div>
         </div>
         <div id="tabs-gem">
