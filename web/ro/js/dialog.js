@@ -129,6 +129,7 @@ $.fn.extend({
                 if (initData) {
                     form.jform(initData);
                 }
+                return prompt;
             }
         });
     }

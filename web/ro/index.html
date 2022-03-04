@@ -166,57 +166,43 @@
         }
     </style>
     <script>
-        function initAddEffectDialog() {
-            let form;
-            const dialog = $("#dialog-add-effect").dialog({
-                autoOpen: false,
-                width: 380,
-                modal: true,
-                buttons: {
-                    "添加": function () {
-                        if (addEffect.call(form)) {
-                            dialog.dialog("close");
-                        }
-                    },
-                    "取消": function () {
-                        dialog.dialog("close");
-                    }
-                },
-                close: function () {
-                    form[0].reset();
-                }
-            });
-            form = dialog.find("form").on("submit", function (event) {
-                event.preventDefault();
-                if (addEffect.call(form)) {
-                    dialog.dialog("close");
-                }
-            });
-
-            $("#create-effect-manual").on("click", function () {
-                $.data(form, 'add-target', '#manual');
-                dialog.dialog("option", "title", '添加新的手册属性').dialog("open");
-            });
-            $("#create-effect-rune").on("click", function () {
-                $.data(form, 'add-target', '#rune');
-                dialog.dialog("option", "title", '添加新的神碑属性').dialog("open");
-            });
-            const spinner = $("#effect-value").spinner({
+        function initAddEffectDialog(dialogAlert) {
+            const dialog = $("#dialog-add-effect").prompt({width: 380});
+            const spinner = dialog.that.find('input[name=value]').spinner({
                 numberFormat: "n",
                 min: 0
             }).on('focus', function () {
-                $(this).select();
+                $(this).trigger('select');
             });
-            $("#effect-name").autocomplete({
+            dialog.that.find('input[name=name]').autocomplete({
                 source: Object.keys(manualEffects),
-                select: function (event, ui) {
+                select: (_, ui) => {
                     const cfg = manualEffects[ui.item.value];
                     spinner.spinner("option", "step", cfg.accuracy);
                 }
             });
+
+            return {
+                open: (event) => {
+                    dialog.prompt(event.data.title, false, function (data) {
+                        const name = data.name.replace(/[ ]/g, "");
+                        if (name.length === 0) {
+                            dialogAlert.alert('添加属性', '请选择属性。');
+                            return false;
+                        } else {
+                            let close = true;
+                            $(event.data.target).buffs().addBuff({effect: name}, data.value, (error) => {
+                                dialogAlert.alert("添加属性: " + name, error);
+                                close = false;
+                            });
+                            return close;
+                        }
+                    });
+                }
+            };
         }
 
-        function initEditEffectDialog() {
+        function initEditEffectDialog(dialogAlert) {
             const dialog = $('#dialog-edit-effect').prompt({width: 380});
             const spinner = dialog.that.find('input[name=input]').spinner({
                 numberFormat: "n",
@@ -252,7 +238,7 @@
                     dialog.prompt('修改属性', buff.name(), function (data) {
                         let close = true;
                         buff.value(data.input, (error) => {
-                            message("修改属性: " + buff.name(), error);
+                            dialogAlert.alert("修改属性: " + buff.name(), error);
                             close = false;
                         });
                         return close;
@@ -311,22 +297,6 @@
             });
         }
 
-        function addEffect() {
-            const addTarget = $.data(this, 'add-target');
-            const name = $('#effect-name').val();
-            const val = $('#effect-value').val();
-            let result = true;
-            $(addTarget).buffs().addBuff({effect: name}, val, function (error) {
-                message("添加属性: " + name, error);
-                result = false;
-            });
-            return result;
-        }
-
-        function message(title, msg, callback) {
-            $('#dialog-alert').alert().alert(title, msg, callback);
-        }
-
         $(function () {
             $("#tabs").tabs({
                 active: 2
@@ -347,10 +317,13 @@
                 }
             });
 
-            initAddEffectDialog();
+            const dialogAdd = initAddEffectDialog(dialogAlert);
+            $("#create-effect-manual").on("click", {title: '添加新的手册属性', target: '#manual'}, dialogAdd.open);
+            $("#create-effect-rune").on("click", {title: '添加新的神碑属性', target: '#rune'}, dialogAdd.open);
+
             initJobSelect();
 
-            initAllBuffs(loader, initEditEffectDialog());
+            initAllBuffs(loader, initEditEffectDialog(dialogAlert));
 
             loader.refresh(true);
         });
@@ -403,16 +376,6 @@
     </script>
 </head>
 <body>
-<div id="dialog-add-effect">
-    <form>
-        <label for="effect-name">属性: </label>
-        <input type="text" id="effect-name">
-        <label for="effect-value">幅度: </label>
-        <input type="text" id="effect-value" size="5" value="0">
-        <!-- Allow form submission with keyboard without duplicating the dialog button -->
-        <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-    </form>
-</div>
 <div style="display: none">
     <div id="dialog-alert">
         <p role="message"></p>
@@ -426,11 +389,19 @@
             <input name="input" type="text">
         </form>
     </div>
+    <div id="dialog-add-effect">
+        <form>
+            <label>属性: </label>
+            <input type="text" name="name">
+            <label>幅度: </label>
+            <input type="text" name="value" size="5" value="0">
+        </form>
+    </div>
     <div id="dialog-edit-effect">
         <form>
             <label role="message"></label>
             <span class="material-icons">add</span>
-            <input name="input" type="text" size="8">
+            <input type="text" name="input" size="8">
             <span class="material-icons min">delete_forever</span>
             <span class="material-icons max">trending_up</span>
         </form>
