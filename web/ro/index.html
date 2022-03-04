@@ -217,47 +217,48 @@
         }
 
         function initEditEffectDialog() {
-            let form;
-            const dialog = $("#dialog-edit-effect").dialog({
-                autoOpen: false,
-                width: 380,
-                modal: true,
-                buttons: {
-                    "修改": function () {
-                        dialog.attr('confirm', 'true').dialog("close");
-                    },
-                    "取消": function () {
-                        dialog.dialog("close");
-                    }
-                },
-                close: function () {
-                    form[0].reset();
-                    dialog.off('dialogbeforeclose');
-                }
-            });
-            form = dialog.find("form").on("submit", function (event) {
-                event.preventDefault();
-                dialog.attr('confirm', 'true').dialog("close");
-            });
-
-            const spinner = $("#edit-effect-value").spinner({
+            const dialog = $('#dialog-edit-effect').prompt({width: 380});
+            const spinner = dialog.that.find('input[name=input]').spinner({
                 numberFormat: "n",
                 min: 0
             }).on('focus', function () {
-                $(this).select();
+                $(this).trigger('select');
             });
-
-            form.children('.min').on('click', function () {
+            dialog.that.find('.min').on('click', () => {
                 spinner.spinner("value", 0);
             });
-            form.children('.max').on('click', function () {
+            const max = dialog.that.find('.max').on('click', () => {
                 const max = spinner.spinner("option", "max");
                 if ('number' === typeof max) {
                     spinner.spinner("value", max);
                 }
             });
 
-            return dialog;
+            return {
+                open: function (_, ui) {
+                    const item = $.ro.buff.getConfig(ui.buff);
+                    if (item) {
+                        if (item.max) {
+                            spinner.spinner("option", "max", item.max);
+                            max.show();
+                        } else {
+                            spinner.spinner("option", "max", null);
+                            max.hide();
+                        }
+                        spinner.spinner("option", "step", item.accuracy || 1);
+                    }
+
+                    const buff = $(ui.buff).buff();
+                    dialog.prompt('修改属性', buff.name(), function (data) {
+                        let close = true;
+                        buff.value(data.input, (error) => {
+                            message("修改属性: " + buff.name(), error);
+                            close = false;
+                        });
+                        return close;
+                    }, {input: buff.value() || 0});
+                }
+            };
         }
 
         function initJobSelect() {
@@ -326,36 +327,6 @@
             $('#dialog-alert').alert().alert(title, msg, callback);
         }
 
-        function editEffect(dialog) {
-            const item = $.ro.buff.getConfig(this);
-            const buff = $(this).buff();
-            $('#edit-effect-name', dialog).text(buff.name());
-            const spinner = $('#edit-effect-value', dialog).val(buff.value() || 0);
-            if (item) {
-                if (item.max) {
-                    spinner.spinner("option", "max", item.max);
-                    $('.max', dialog).show();
-                } else {
-                    spinner.spinner("option", "max", null);
-                    $('.max', dialog).hide();
-                }
-                spinner.spinner("option", "step", item.accuracy || 1);
-            }
-
-            dialog.on("dialogbeforeclose", function () {
-                if (dialog.attr('confirm') === 'true') {
-                    dialog.removeAttr('confirm');
-                    const val = $('#edit-effect-value', dialog).val();
-                    let close = true;
-                    buff.value(val, function (error) {
-                        message("修改属性: " + buff.name(), error);
-                        close = false;
-                    });
-                    return close;
-                }
-            }).attr("confirm", "false").dialog("open");
-        }
-
         $(function () {
             $("#tabs").tabs({
                 active: 2
@@ -377,10 +348,9 @@
             });
 
             initAddEffectDialog();
-            const editDialog = initEditEffectDialog();
             initJobSelect();
 
-            initAllBuffs(loader, editDialog);
+            initAllBuffs(loader, initEditEffectDialog());
 
             loader.refresh(true);
         });
@@ -403,9 +373,7 @@
             const config = true === dynamic ? {dynamic: true} : {buff: {zero: true}};
             const items = true === dynamic || !Array.isArray(paths) ? false : jsonPath(STORE, '$.' + paths.join('.') + '.*');
             const buffs = container.buffs($.extend(config, {
-                click: function () {
-                    editEffect.call(this, dialog);
-                },
+                click: dialog.open,
                 change: loader.change
             }), items).reset();
 
@@ -445,17 +413,6 @@
         <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
     </form>
 </div>
-<div id="dialog-edit-effect" title="修改属性">
-    <form>
-        <label id="edit-effect-name" for="edit-effect-value"></label>
-        <span class="material-icons">add</span>
-        <input id="edit-effect-value" type="text" size="8">
-        <span class="material-icons min">delete_forever</span>
-        <span class="material-icons max">trending_up</span>
-        <!-- Allow form submission with keyboard without duplicating the dialog button -->
-        <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
-    </form>
-</div>
 <div style="display: none">
     <div id="dialog-alert">
         <p role="message"></p>
@@ -467,6 +424,15 @@
         <form>
             <label role="message"></label>
             <input name="input" type="text">
+        </form>
+    </div>
+    <div id="dialog-edit-effect">
+        <form>
+            <label role="message"></label>
+            <span class="material-icons">add</span>
+            <input name="input" type="text" size="8">
+            <span class="material-icons min">delete_forever</span>
+            <span class="material-icons max">trending_up</span>
         </form>
     </div>
 </div>
