@@ -113,24 +113,24 @@ $.fn.extend({
         }
         const prompt = {that: this};
         return $.extend(prompt, {
-            prompt: function (title, msg, initData) {
-                return new Promise((resolve) => {
-                    const form = prompt.that.find('form');
-                    const dialog = prompt.that.removeAttr('confirm')
-                        .dialog("option", "title", title)
-                        .dialog("open")
-                        .one("dialogclose", () => {
-                            resolve({
-                                confirm: dialog.attr('confirm') === 'true',
-                                data: JSON.parse(form.jform())
-                            });
-                            return false;
-                        });
-                    $('[role=message]', dialog).text(msg);
-                    if (initData) {
-                        form.jform(initData);
-                    }
-                });
+            prompt: function (title, msg, callback, initData) {
+                const form = prompt.that.find('form');
+                const dialog = prompt.that.removeAttr('confirm')
+                    .dialog("option", "title", title)
+                    .dialog("open")
+                    .on("dialogbeforeclose", () => {
+                        if (dialog.attr('confirm') === 'true') {
+                            if (false === callback(JSON.parse(form.jform()))) {
+                                dialog.removeAttr('confirm');
+                                return false;
+                            }
+                        }
+                        dialog.off('dialogbeforeclose');
+                    });
+                $('[role=message]', dialog).text(msg);
+                if (initData) {
+                    form.jform(initData);
+                }
             }
         });
     }

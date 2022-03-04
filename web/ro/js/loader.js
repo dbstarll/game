@@ -181,15 +181,13 @@ $.extend($.ro, {
         changeCharacterName: function (event) {
             const character = $(event.target);
             const oldName = character.text();
-            $.ro.loader.prompt(event.data)('修改角色名称', '请输入新的角色名称：', {input: oldName}).then((res) => {
-                if (res.confirm) {
-                    const newName = res.data.input.replace(/[ ]/g, "");
-                    if (newName.length > 0 && oldName != newName) {
-                        character.text(newName);
-                        $(event.data.loader).children('span[role=save]').show();
-                    }
+            $.ro.loader.prompt(event.data)('修改角色名称', '请输入新的角色名称：', function (data) {
+                let newName = data.input.replace(/[ ]/g, "") || $.ro.loader.defaultConfig.name;
+                if (oldName != newName) {
+                    character.text(newName);
+                    $(event.data.loader).children('span[role=save]').show();
                 }
-            });
+            }, {input: oldName});
         },
         checkUpload: function (_, ui) {
             const confirm = $.ro.loader.confirm(ui);
