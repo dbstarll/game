@@ -39,7 +39,10 @@ $.extend($.ro, {
             form = prompt.find("form").on("submit", function (event) {
                 event.preventDefault();
                 prompt.attr('confirm', 'true').dialog("close");
-            });
+            }).append($.html.input({type: 'submit', tabindex: '-1'})
+                .css('position', 'absolute')
+                .css('top', '-1000px'));
+            //Allow form submission with keyboard without duplicating the dialog button
             return prompt;
         }
     }
