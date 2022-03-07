@@ -124,18 +124,34 @@
             background-color: lightyellow;
         }
 
-        #tabs-quality .job {
-            float: left;
-            width: 30%;
+        #tabs-quality {
+            display: flex;
+            column-gap: 5px;
         }
 
-        #job-level-handle, #base-level-handle {
-            width: 3em;
-            height: 1.6em;
-            top: 50%;
-            margin-top: -.8em;
-            text-align: center;
-            line-height: 1.6em;
+        #tabs-quality > .job {
+            flex: 1;
+        }
+
+        #tabs-quality > .job > .line {
+            display: flex;
+            column-gap: 1.5ch;
+            height: 2.5em;
+            align-items: center;
+        }
+
+        #tabs-quality > .job > .line > label:first-child {
+            flex-basis: 5ch;
+            text-align: right;
+        }
+
+        #tabs-quality > .job > .line > *:last-child {
+            flex: 1;
+        }
+
+        #tabs-quality > .quality {
+            flex: 2;
+            border: blue solid 1px;
         }
     </style>
     <script>
@@ -221,30 +237,15 @@
         }
 
         function initJobSelect() {
-            const baseSlider = $("#base-level").slider({
-                range: "min",
-                create: function () {
-                    $("#base-level-handle").text($(this).slider("value"));
-                },
-                slide: function (event, ui) {
-                    $("#base-level-handle").text(ui.value);
-                },
-                change: function (event, ui) {
-                    $("#base-level-handle").text(ui.value);
-                }
+            const baseSpinner = $("#base-level").spinner({
+                numberFormat: "n",
+                min: 1,
+                max: 170
             });
-
-            const jobSlider = $("#job-level").slider({
-                range: "min",
-                create: function () {
-                    $("#job-level-handle").text($(this).slider("value"));
-                },
-                slide: function (event, ui) {
-                    $("#job-level-handle").text(ui.value);
-                },
-                change: function (event, ui) {
-                    $("#job-level-handle").text(ui.value);
-                }
+            const jobSpinner = $("#job-level").spinner({
+                numberFormat: "n",
+                min: 1,
+                max: 80
             });
 
             const jobs = $('#job').selectmenu({
@@ -252,12 +253,12 @@
                     const jobId = ui.item.value;
                     const job = MONIQI_DATA.job_data[jobId];
                     console.log(job);
-                    baseSlider.slider("option", "min", job.MinBaseLevel);
-                    baseSlider.slider("option", "max", job.MaxBaseLevel);
-                    baseSlider.slider("option", "value", job.MaxBaseLevel);
-                    jobSlider.slider("option", "min", job.MinJobLevel);
-                    jobSlider.slider("option", "max", job.MaxJobLevel);
-                    jobSlider.slider("option", "value", job.MaxJobLevel);
+                    baseSpinner.spinner("option", "min", job.MinBaseLevel);
+                    baseSpinner.spinner("option", "max", job.MaxBaseLevel);
+                    baseSpinner.spinner("value", job.MaxBaseLevel);
+                    jobSpinner.spinner("option", "min", job.MinJobLevel);
+                    jobSpinner.spinner("option", "max", job.MaxJobLevel);
+                    jobSpinner.spinner("value", job.MaxJobLevel);
                 }
             });
             Object.keys(MONIQI_DATA.type_data).forEach(function (key) {
@@ -278,15 +279,13 @@
                 heightStyle: "content"
             });
 
-            const dialogConfirm = $('#dialog-confirm').confirm({});
             const dialogAlert = $('#dialog-alert').alert({});
-            const dialogPrompt = $('#dialog-prompt').prompt({width: 380});
 
             const loader = $('#tool-bar').loader({
                 dialog: {
                     alert: dialogAlert,
-                    confirm: dialogConfirm,
-                    prompt: dialogPrompt
+                    confirm: $('#dialog-confirm').confirm({}),
+                    prompt: $('#dialog-prompt').prompt({width: 380})
                 }
             });
 
@@ -294,9 +293,9 @@
             $("#create-effect-manual").on("click", {title: '添加新的手册属性', target: '#manual'}, dialogAdd.open);
             $("#create-effect-rune").on("click", {title: '添加新的神碑属性', target: '#rune'}, dialogAdd.open);
 
-            initJobSelect();
-
             initAllBuffs(loader, initEditEffectDialog(dialogAlert));
+
+            initJobSelect();
 
             loader.refresh(true);
         });
@@ -410,19 +409,22 @@
         </div>
         <div id="tabs-quality">
             <div class="job">
-                <label for="job">职业</label>
-                <select id="job">
-                    <option disabled selected>请选择职业</option>
-                </select>
-                <label for="base-level">Base</label>
-                <div id="base-level">
-                    <div id="base-level-handle" class="ui-slider-handle"></div>
+                <div class="line">
+                    <label for="job">职业</label>
+                    <select id="job">
+                        <option disabled selected>请选择职业</option>
+                    </select>
                 </div>
-                <label for="job-level">Job</label>
-                <div id="job-level">
-                    <div id="job-level-handle" class="ui-slider-handle"></div>
+                <div class="line">
+                    <label for="base-level">Base</label>
+                    <input id="base-level" name="baseLevel" value="1">
+                </div>
+                <div class="line">
+                    <label for="job-level">Job</label>
+                    <input id="job-level" name="jobLevel" value="1">
                 </div>
             </div>
+            <div class="quality"></div>
         </div>
         <div id="tabs-rune">
             <h4 id="create-effect-rune">神碑属性<span class="material-icons md-18">post_add</span></h4>
