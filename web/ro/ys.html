@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>原神计算器</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/ro/css/normalize.css">
+    <link rel="stylesheet" href="/ro/css/material-icons.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script src="/ro/js/jform.min.js"></script>
+    <script src="/ro/js/jsonpath-0.8.0.js"></script>
+    <script src="/ro/js/common.js"></script>
+    <script src="/ro/js/dialog.js"></script>
+    <style>
+    </style>
+    <script>
+        function getValue(name) {
+            const val = $('input[type=text][name=' + name + ']').val();
+            const num = parseFloat(val);
+            return isNaN(num) ? 0.0 : num;
+        };
+
+        function getValueWithAdd(name) {
+            return getValue(name) + getValue(name + 'Add');
+        };
+
+        function getValueRate(name, span) {
+            if (name === span.attr('id')) {
+                return getValue(name) + parseFloat(span.attr('rate'));
+            } else {
+                return getValue(name);
+            }
+        };
+
+        function calcAdd() {
+            const baseAttack = getValueWithAdd('playerAttack') + getValueWithAdd('weaponAttack');
+            const extraAttack = baseAttack * getValueWithAdd('attackPer') / 100 + getValueWithAdd('attack');
+            const damage = (getValueWithAdd('physicDamage') + getValueWithAdd('elementDamage')) / 100;
+            const critical = getValueWithAdd('criticalRate') * getValueWithAdd('criticalDamage') / 10000;
+            const element = 1.5 * (1 + 2.78 * getValueWithAdd('elementMaster') / (getValueWithAdd('elementMaster') + 1400));
+            const defence = (getValueWithAdd('playerLevel') + 100) / (getValueWithAdd('playerLevel') + 100 + getValueWithAdd('monsterLevel') + 100);
+            return (baseAttack + extraAttack) * (1 + damage) * (1 + critical) * element * defence;
+        };
+
+        function calcRate(span) {
+            const baseAttack = getValueRate('playerAttack', span) + getValueRate('weaponAttack', span);
+            const extraAttack = baseAttack * getValueRate('attackPer', span) / 100 + getValueRate('attack', span);
+            const damage = (getValueRate('physicDamage', span) + getValueRate('elementDamage', span)) / 100;
+            const critical = getValueRate('criticalRate', span) * getValueRate('criticalDamage', span) / 10000;
+            const element = 1.5 * (1 + 2.78 * getValueRate('elementMaster', span) / (getValueRate('elementMaster', span) + 1400));
+            const defence = (getValueRate('playerLevel', span) + 100) / (getValueRate('playerLevel', span) + 100 + getValueRate('monsterLevel', span) + 100);
+            return (baseAttack + extraAttack) * (1 + damage) * (1 + critical) * element * defence;
+        };
+
+        function calc() {
+            const baseAttack = getValue('playerAttack') + getValue('weaponAttack');
+            $('#baseAttack').text(baseAttack);
+            const extraAttack = baseAttack * getValue('attackPer') / 100 + getValue('attack');
+            $('#extraAttack').text(extraAttack);
+            const damage = (getValue('physicDamage') + getValue('elementDamage')) / 100;
+            $('#damage').text(damage);
+            const critical = getValue('criticalRate') * getValue('criticalDamage') / 10000;
+            $('#critical').text(critical);
+            const element = 1.5 * (1 + 2.78 * getValue('elementMaster') / (getValue('elementMaster') + 1400));
+            $('#element').text(element);
+            const defence = (getValue('playerLevel') + 100) / (getValue('playerLevel') + 100 + getValue('monsterLevel') + 100);
+            $('#defence').text(defence);
+            const finalAttack = (baseAttack + extraAttack) * (1 + damage) * (1 + critical) * element * defence;
+            $('#finalAttack').text(finalAttack);
+
+            const finalAttackAdd = calcAdd();
+            $('#finalAttackAdd').text(finalAttackAdd + '(增幅：' + (100 * finalAttackAdd / finalAttack - 100).toFixed(2) + '%)');
+
+            $('span[rate]').each(function (_, ui) {
+                const span = $(ui);
+                const attackRate = calcRate(span);
+                span.text('权重：' + (100 * attackRate / finalAttack - 100).toFixed(2) + '%');
+            });
+        };
+
+        $(function () {
+            $('input[type=text]').val('0').on('change', calc).on('focus', function () {
+                $(this).trigger('select');
+            });
+        });
+    </script>
+</head>
+<body>
+<form>
+    <div>
+        <label>人物等级</label>
+        <input type="text" name="playerLevel">
+        <input type="text" name="playerLevelAdd">
+    </div>
+    <div>
+        <label>怪物等级</label>
+        <input type="text" name="monsterLevel">
+        <input type="text" name="monsterLevelAdd">
+    </div>
+    <div>
+        <label>人物攻击力</label>
+        <input type="text" name="playerAttack">
+        <input type="text" name="playerAttackAdd">
+        <span id="playerAttack" rate="10"></span>
+    </div>
+    <div>
+        <label>武器攻击力</label>
+        <input type="text" name="weaponAttack">
+        <input type="text" name="weaponAttackAdd">
+        <span id="weaponAttack" rate="10"></span>
+    </div>
+    <div>
+        <label>攻击力</label>
+        <input type="text" name="attack">
+        <input type="text" name="attackAdd">
+        <span id="attack" rate="311"></span>
+    </div>
+    <div>
+        <label>攻击力%</label>
+        <input type="text" name="attackPer">
+        <input type="text" name="attackPerAdd">
+        <span id="attackPer" rate="46.6"></span>
+    </div>
+    <div>
+        <label>暴击率%</label>
+        <input type="text" name="criticalRate">
+        <input type="text" name="criticalRateAdd">
+        <span id="criticalRate" rate="31.1"></span>
+    </div>
+    <div>
+        <label>暴击伤害%</label>
+        <input type="text" name="criticalDamage">
+        <input type="text" name="criticalDamageAdd">
+        <span id="criticalDamage" rate="62.2"></span>
+    </div>
+    <div>
+        <label>元素精通</label>
+        <input type="text" name="elementMaster">
+        <input type="text" name="elementMasterAdd">
+        <span id="elementMaster" rate="187"></span>
+    </div>
+    <div>
+        <label>元素伤害%</label>
+        <input type="text" name="elementDamage">
+        <input type="text" name="elementDamageAdd">
+        <span id="elementDamage" rate="46.6"></span>
+    </div>
+    <div>
+        <label>物理伤害%</label>
+        <input type="text" name="physicDamage">
+        <input type="text" name="physicDamageAdd">
+        <span id="physicDamage" rate="58.3"></span>
+    </div>
+    <div>
+        <label>基础攻击力</label>
+        <span id="baseAttack"></span>
+    </div>
+    <div>
+        <label>额外攻击力</label>
+        <span id="extraAttack"></span>
+    </div>
+    <div>
+        <label>伤害加成系数</label>
+        <span id="damage"></span>
+    </div>
+    <div>
+        <label>暴击收益</label>
+        <span id="critical"></span>
+    </div>
+    <div>
+        <label>元素反应伤害</label>
+        <span id="element"></span>
+    </div>
+    <div>
+        <label>防御承伤</label>
+        <span id="defence"></span>
+    </div>
+    <div>
+        <label>最终伤害</label>
+        <span id="finalAttack"></span>
+    </div>
+    <div>
+        <label>最终伤害（增幅）</label>
+        <span id="finalAttackAdd"></span>
+    </div>
+</form>
+</body>
+</html>
