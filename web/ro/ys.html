@@ -1,31 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>原神计算器</title>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="/ro/css/normalize.css">
-    <link rel="stylesheet" href="/ro/css/material-icons.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-    <script src="/ro/js/jform/jform.min.js"></script>
-    <script src="/ro/js/jsonpath-0.8.0.js"></script>
-    <script src="/ro/js/common.js"></script>
-    <script src="/ro/js/dialog.js"></script>
+    <link rel='stylesheet' href='https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+    <link rel='stylesheet' href='/ro/css/normalize.css'>
+    <link rel='stylesheet' href='/ro/css/material-icons.css'>
+    <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
+    <script src='https://code.jquery.com/ui/1.13.1/jquery-ui.min.js'></script>
+    <script src='/ro/js/jform/jform.min.js'></script>
+    <script src='/ro/js/jsonpath-0.8.0.js'></script>
+    <script src='/ro/js/common.js'></script>
+    <script src='/ro/js/dialog.js'></script>
     <style>
+        #main {
+            display: flex;
+            margin: 5px;
+            column-gap: 5px;
+        }
+
+        #main > div:first-child {
+            flex: 1;
+        }
+
+        #main > div:last-child {
+            flex: 2;
+        }
+
+        div.row {
+            display: flex;
+            align-items: center;
+            column-gap: 5px;
+            margin: 5px;
+        }
+
+        div.column {
+            flex-basis: 8ch;
+        }
+
+        div.column > label {
+            display: block;
+            text-align: center;
+            font-size: 0.5em;
+        }
+
+        div.column > span {
+            display: block;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        div.input {
+            display: flex;
+            align-items: center;
+            column-gap: 5px;
+            margin: 5px;
+        }
+
+        div.input > label {
+            flex-basis: 12ch;
+            text-align: right;
+        }
     </style>
     <script>
         function getValue(name) {
             const val = $('input[type=text][name=' + name + ']').val();
             const num = parseFloat(val);
             return isNaN(num) ? 0.0 : num;
-        };
+        }
 
         function getValueWithAdd(name) {
             return getValue(name) + getValue(name + 'Add');
-        };
+        }
 
         function getValueRate(name, span) {
             if (name === span.attr('id')) {
@@ -33,7 +81,7 @@
             } else {
                 return getValue(name);
             }
-        };
+        }
 
         function calcAdd() {
             const baseAttack = getValueWithAdd('playerAttack') + getValueWithAdd('weaponAttack');
@@ -43,7 +91,7 @@
             const element = 1.5 * (1 + 2.78 * getValueWithAdd('elementMaster') / (getValueWithAdd('elementMaster') + 1400));
             const defence = (getValueWithAdd('playerLevel') + 100) / (getValueWithAdd('playerLevel') + 100 + getValueWithAdd('monsterLevel') + 100);
             return (baseAttack + extraAttack) * (1 + damage) * (1 + critical) * element * defence;
-        };
+        }
 
         function calcRate(span) {
             const baseAttack = getValueRate('playerAttack', span) + getValueRate('weaponAttack', span);
@@ -53,139 +101,254 @@
             const element = 1.5 * (1 + 2.78 * getValueRate('elementMaster', span) / (getValueRate('elementMaster', span) + 1400));
             const defence = (getValueRate('playerLevel', span) + 100) / (getValueRate('playerLevel', span) + 100 + getValueRate('monsterLevel', span) + 100);
             return (baseAttack + extraAttack) * (1 + damage) * (1 + critical) * element * defence;
-        };
+        }
+
+        function column(label, newValue) {
+            if ('number' === typeof newValue) {
+                $('span[column=\'' + label + '\']').each((_, span) => {
+                    const percentage = true === $.data(span, 'percentage');
+                    let value = newValue * (percentage ? 100 : 1);
+                    $.data(span, 'value', value);
+
+                    value = Math.round((value + Number.EPSILON) * 10000) / 10000;
+                    const v1 = value + '';
+                    const v2 = value.toFixed(percentage ? 2 : 0);
+                    let displayValue = v1.length > v2.length ? v2 : v1;
+                    $(span).text(displayValue + (percentage ? '%' : ''));
+                });
+            } else {
+                let value = false;
+                let percentage = false;
+                $('input[type=text][column=\'' + label + '\']').each((_, input) => {
+                    value = $(input).val();
+                    percentage = true === $.data(input, 'percentage');
+                    return false;
+                });
+                if (false === value) {
+                    $('span[column=\'' + label + '\']').each((_, span) => {
+                        value = $.data(span, 'value');
+                        if ('number' !== typeof value) {
+                            value = $(span).text();
+                        }
+                        percentage = true === $.data(span, 'percentage');
+                        return false;
+                    });
+                }
+                const num = parseFloat(value);
+                return isNaN(num) ? 0.0 : num / (percentage ? 100 : 1);
+            }
+        }
 
         function calc() {
-            const baseAttack = getValue('playerAttack') + getValue('weaponAttack');
-            $('#baseAttack').text(baseAttack);
-            const extraAttack = baseAttack * getValue('attackPer') / 100 + getValue('attack');
-            $('#extraAttack').text(extraAttack);
-            const damage = (getValue('physicDamage') + getValue('elementDamage')) / 100;
-            $('#damage').text(damage);
-            const critical = getValue('criticalRate') * getValue('criticalDamage') / 10000;
-            $('#critical').text(critical);
-            const element = 1.5 * (1 + 2.78 * getValue('elementMaster') / (getValue('elementMaster') + 1400));
-            $('#element').text(element);
-            const defence = (getValue('playerLevel') + 100) / (getValue('playerLevel') + 100 + getValue('monsterLevel') + 100);
-            $('#defence').text(defence);
-            const finalAttack = (baseAttack + extraAttack) * (1 + damage) * (1 + critical) * element * defence;
-            $('#finalAttack').text(finalAttack);
+            column('人物攻击力', column('人物攻击力'));
+            column('武器攻击力', column('武器攻击力'));
+            column('基础攻击力', column('人物攻击力') + column('武器攻击力'));
+            column('百分比攻击力', column('百分比攻击力'));
+            column('固定攻击力', column('固定攻击力'));
+            column('额外攻击力', column('基础攻击力') * column('百分比攻击力') + column('固定攻击力'));
+            column('总攻击力', column('基础攻击力') + column('额外攻击力'));
 
-            const finalAttackAdd = calcAdd();
-            $('#finalAttackAdd').text(finalAttackAdd + '(增幅：' + (100 * finalAttackAdd / finalAttack - 100).toFixed(2) + '%)');
+            column('物理伤害加成', column('物理伤害加成'));
+            column('元素伤害加成', column('元素伤害加成'));
+            column('元素影响增伤', column('元素影响增伤'));
+            column('造成伤害提高', column('造成伤害提高'));
+            column('伤害加成系数', 1 + column('物理伤害加成') + column('元素伤害加成') + column('元素影响增伤') + column('造成伤害提高'));
 
-            $('span[rate]').each(function (_, ui) {
-                const span = $(ui);
-                const attackRate = calcRate(span);
-                span.text('权重：' + (100 * attackRate / finalAttack - 100).toFixed(2) + '%');
+            column('暴击率', column('暴击率'));
+            column('暴击伤害', column('暴击伤害'));
+            column('暴击收益', 1 + column('暴击率') * column('暴击伤害'));
+
+            column('最终伤害', column('总攻击力') * column('伤害加成系数') * column('暴击收益'));
+        }
+
+        function newRow() {
+            return $.html.div().addClass('row');
+        }
+
+        function newColumn(label, percentage = false) {
+            const column = $.html.div().addClass('column')
+                .append($.html.span({column: label}).text(true === percentage ? '0%' : '0'))
+                .append($.html.label().text(label));
+            if (true === percentage) {
+                column.children('span[column]').each((_, span) => {
+                    $.data(span, 'percentage', percentage);
+                });
+            }
+            return column;
+        }
+
+        function newInput(label, step = 1, percentage = false) {
+            const input = $.html.div().addClass('input')
+                .append($.html.label().text(label))
+                .append($.html.input({type: 'text', column: label}));
+            input.children('input[type=text]').each((_, input) => {
+                if (step !== 1) {
+                    $.data(input, 'step', step);
+                }
+                if (true === percentage) {
+                    $.data(input, 'percentage', percentage);
+                }
             });
-        };
+            return input;
+        }
 
-        $(function () {
-            $('input[type=text]').val('0').on('change', calc).on('focus', function () {
+        function symbol(symbol) {
+            return $.html.div().addClass('symbol').text(symbol);
+        }
+
+        function initQuality(quality) {
+            initQualityBase(quality.children('fieldset.Basis'));
+            initQualityAdvanced(quality.children('fieldset.Advanced'));
+            initQualityElemental(quality.children('fieldset.Elemental'));
+            quality.find('input[type=text]').each((_, input) => {
+                $(input).spinner({
+                    numberFormat: 'n',
+                    step: $.data(input, 'step') || 1,
+                    min: 0,
+                    spin: calc
+                }).spinner('value', 0).on("spinchange", calc);
+            }).on('focus', function () {
                 $(this).trigger('select');
             });
+        }
+
+        function initQualityBase(container) {
+            container.append(newInput('人物攻击力'))
+                .append(newInput('武器攻击力'))
+                .append(newInput('百分比攻击力', 0.1, true))
+                .append(newInput('固定攻击力'));
+        }
+
+        function initQualityAdvanced(container) {
+            container.append(newInput('暴击率', 0.1, true))
+                .append(newInput('暴击伤害', 0.1, true));
+        }
+
+        function initQualityElemental(container) {
+            container.append(newInput('物理伤害加成', 0.1, true))
+                .append(newInput('元素伤害加成', 0.1, true))
+                .append(newInput('元素影响增伤', 0.1, true))
+                .append(newInput('造成伤害提高', 0.1, true));
+        }
+
+        function initCalculator(calculator) {
+            initCalculatorAttack(calculator.children('fieldset.Attack'));
+            initCalculatorDamageBonus(calculator.children('fieldset.DamageBonus'));
+            initCalculatorCriticalBracket(calculator.children('fieldset.CriticalBracket'));
+            initCalculatorFinalDamage(calculator.children('fieldset.FinalDamage'));
+        }
+
+        function initCalculatorAttack(container) {
+            container.append(newRow()
+                .append(newColumn('基础攻击力'))
+                .append(symbol('='))
+                .append(newColumn('人物攻击力'))
+                .append(symbol('+'))
+                .append(newColumn('武器攻击力'))
+            ).append(newRow()
+                .append(newColumn('额外攻击力'))
+                .append(symbol('='))
+                .append(newColumn('基础攻击力'))
+                .append(symbol('×'))
+                .append(newColumn('百分比攻击力', true))
+                .append(symbol('+'))
+                .append(newColumn('固定攻击力'))
+            ).append(newRow()
+                .append(newColumn('总攻击力'))
+                .append(symbol('='))
+                .append(newColumn('基础攻击力'))
+                .append(symbol('+'))
+                .append(newColumn('额外攻击力'))
+            );
+        }
+
+        function initCalculatorDamageBonus(container) {
+            container.append(newRow()
+                .append(newColumn('伤害加成系数', true))
+                .append(symbol('='))
+                .append(symbol('1'))
+                .append(symbol('+'))
+                .append(symbol('('))
+                .append(newColumn('物理伤害加成', true))
+                .append(symbol('+'))
+                .append(newColumn('元素伤害加成', true))
+                .append(symbol('+'))
+                .append(newColumn('元素影响增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('造成伤害提高', true))
+                .append(symbol(')'))
+            );
+        }
+
+        function initCalculatorCriticalBracket(container) {
+            container.append(newRow()
+                .append(newColumn('暴击收益', true))
+                .append(symbol('='))
+                .append(symbol('1'))
+                .append(symbol('+'))
+                .append(newColumn('暴击率', true))
+                .append(symbol('×'))
+                .append(newColumn('暴击伤害', true))
+            );
+        }
+
+        function initCalculatorFinalDamage(container) {
+            container.append(newRow()
+                .append(newColumn('最终伤害'))
+                .append(symbol('='))
+                .append(newColumn('总攻击力'))
+                .append(symbol('×'))
+                .append(newColumn('伤害加成系数', true))
+                .append(symbol('×'))
+                .append(newColumn('暴击收益', true))
+            )
+        }
+
+        $(function () {
+            initQuality($('#quality'));
+            initCalculator($('#calculator'));
         });
     </script>
 </head>
 <body>
-<form>
-    <div>
-        <label>人物等级</label>
-        <input type="text" name="playerLevel">
-        <input type="text" name="playerLevelAdd">
+<div id='main'>
+    <div id='quality'>
+        <fieldset class='Basis'>
+            <legend>基础属性</legend>
+        </fieldset>
+        <fieldset class='Advanced'>
+            <legend>进阶属性</legend>
+        </fieldset>
+        <fieldset class='Elemental'>
+            <legend>元素属性</legend>
+        </fieldset>
     </div>
-    <div>
-        <label>怪物等级</label>
-        <input type="text" name="monsterLevel">
-        <input type="text" name="monsterLevelAdd">
+    <div id='calculator'>
+        <fieldset class='Attack'>
+            <legend>基础区</legend>
+        </fieldset>
+        <fieldset class='DamageMultipiler'>
+            <legend>倍率区</legend>
+        </fieldset>
+        <fieldset class='DamageBonus'>
+            <legend>增伤区</legend>
+        </fieldset>
+        <fieldset class='CriticalBracket'>
+            <legend>暴击区</legend>
+        </fieldset>
+        <fieldset class='ElementalReaction'>
+            <legend>反应区</legend>
+        </fieldset>
+        <fieldset class='Defense'>
+            <legend>防御区</legend>
+        </fieldset>
+        <fieldset class='Resistance'>
+            <legend>抗性区</legend>
+        </fieldset>
+        <fieldset class='FinalDamage'>
+            <legend>最终伤害</legend>
+        </fieldset>
     </div>
-    <div>
-        <label>人物攻击力</label>
-        <input type="text" name="playerAttack">
-        <input type="text" name="playerAttackAdd">
-        <span id="playerAttack" rate="10"></span>
-    </div>
-    <div>
-        <label>武器攻击力</label>
-        <input type="text" name="weaponAttack">
-        <input type="text" name="weaponAttackAdd">
-        <span id="weaponAttack" rate="10"></span>
-    </div>
-    <div>
-        <label>攻击力</label>
-        <input type="text" name="attack">
-        <input type="text" name="attackAdd">
-        <span id="attack" rate="311"></span>
-    </div>
-    <div>
-        <label>攻击力%</label>
-        <input type="text" name="attackPer">
-        <input type="text" name="attackPerAdd">
-        <span id="attackPer" rate="46.6"></span>
-    </div>
-    <div>
-        <label>暴击率%</label>
-        <input type="text" name="criticalRate">
-        <input type="text" name="criticalRateAdd">
-        <span id="criticalRate" rate="31.1"></span>
-    </div>
-    <div>
-        <label>暴击伤害%</label>
-        <input type="text" name="criticalDamage">
-        <input type="text" name="criticalDamageAdd">
-        <span id="criticalDamage" rate="62.2"></span>
-    </div>
-    <div>
-        <label>元素精通</label>
-        <input type="text" name="elementMaster">
-        <input type="text" name="elementMasterAdd">
-        <span id="elementMaster" rate="187"></span>
-    </div>
-    <div>
-        <label>元素伤害%</label>
-        <input type="text" name="elementDamage">
-        <input type="text" name="elementDamageAdd">
-        <span id="elementDamage" rate="46.6"></span>
-    </div>
-    <div>
-        <label>物理伤害%</label>
-        <input type="text" name="physicDamage">
-        <input type="text" name="physicDamageAdd">
-        <span id="physicDamage" rate="58.3"></span>
-    </div>
-    <div>
-        <label>基础攻击力</label>
-        <span id="baseAttack"></span>
-    </div>
-    <div>
-        <label>额外攻击力</label>
-        <span id="extraAttack"></span>
-    </div>
-    <div>
-        <label>伤害加成系数</label>
-        <span id="damage"></span>
-    </div>
-    <div>
-        <label>暴击收益</label>
-        <span id="critical"></span>
-    </div>
-    <div>
-        <label>元素反应伤害</label>
-        <span id="element"></span>
-    </div>
-    <div>
-        <label>防御承伤</label>
-        <span id="defence"></span>
-    </div>
-    <div>
-        <label>最终伤害</label>
-        <span id="finalAttack"></span>
-    </div>
-    <div>
-        <label>最终伤害（增幅）</label>
-        <span id="finalAttackAdd"></span>
-    </div>
-</form>
+</div>
 </body>
 </html>
