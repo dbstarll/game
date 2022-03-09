@@ -143,27 +143,26 @@
         }
 
         function calc() {
-            column('人物攻击力', column('人物攻击力'));
-            column('武器攻击力', column('武器攻击力'));
+            $('input[type=text][column]').each((_, input) => {
+                const label = $(input).attr('column');
+                column(label, column(label));
+            });
+
             column('基础攻击力', column('人物攻击力') + column('武器攻击力'));
-            column('百分比攻击力', column('百分比攻击力'));
-            column('固定攻击力', column('固定攻击力'));
             column('额外攻击力', column('基础攻击力') * column('百分比攻击力') + column('固定攻击力'));
             column('总攻击力', column('基础攻击力') + column('额外攻击力'));
 
-            column('物理伤害加成', column('物理伤害加成'));
-            column('元素伤害加成', column('元素伤害加成'));
-            column('元素影响增伤', column('元素影响增伤'));
-            column('造成伤害提高', column('造成伤害提高'));
             column('伤害加成系数', 1 + column('物理伤害加成') + column('元素伤害加成') + column('元素影响增伤') + column('造成伤害提高'));
 
-            column('暴击率', column('暴击率'));
-            column('暴击伤害', column('暴击伤害'));
             column('暴击收益', 1 + column('暴击率') * column('暴击伤害'));
 
-            column('最终伤害', column('总攻击力') * column('伤害加成系数') * column('暴击收益'));
-        }
+            column('穿防系数', 1 - column('无视防御'));
+            column('减防系数', 1 - column('防御减免') + column('防御增加'));
+            column('防御系数', column('穿防系数') * column('减防系数') * (column('怪物等级') + 100));
+            column('对象承伤', (column('人物等级') + 100) / (column('人物等级') + 100 + column('防御系数')));
 
+            column('最终伤害', column('总攻击力') * column('伤害加成系数') * column('暴击收益') * column('对象承伤'));
+        }
 
         function setupCheckpoint() {
             $('span[column]').each((_, span) => {
@@ -210,43 +209,60 @@
                     .append($.html.span({raise: label})))
                 .append($.html.label().text(label));
             if (true === percentage) {
-                column.find('span[column]').each((_, span) => {
+                $('span[column]', column).each((_, span) => {
                     $.data(span, 'percentage', percentage);
                 });
             }
             return column;
         }
 
-        function newInput(label, step = 1, percentage = false) {
+        function newInput(label, step = 1, percentage = false, min = 0, max = 0) {
             const input = $.html.div().addClass('input')
                 .append($.html.label().text(label))
                 .append($.html.input({type: 'text', column: label}));
             input.children('input[type=text]').each((_, input) => {
-                if (step !== 1) {
+                if (step != 1) {
                     $.data(input, 'step', step);
                 }
                 if (true === percentage) {
                     $.data(input, 'percentage', percentage);
                 }
+                if ('number' === typeof min && min > 0) {
+                    $.data(input, 'min', min);
+                }
+                if ('number' === typeof max && max > 0) {
+                    $.data(input, 'max', max);
+                }
             });
             return input;
         }
 
-        function symbol(symbol) {
-            return $.html.div().addClass('symbol').text(symbol);
+        function symbol() {
+            if (arguments.length === 1) {
+                return $.html.div().addClass('symbol').text(arguments[0]);
+            } else {
+                const symbols = [];
+                Array.from(arguments).forEach((symbol) => {
+                    symbols.push($.html.div().addClass('symbol').text(symbol));
+                });
+                return symbols;
+            }
         }
 
         function initQuality(quality) {
             initQualityBase(quality.children('fieldset.Basis'));
             initQualityAdvanced(quality.children('fieldset.Advanced'));
             initQualityElemental(quality.children('fieldset.Elemental'));
+            initQualityOther(quality.children('fieldset.Other'));
             quality.find('input[type=text]').each((_, input) => {
+                const min = $.data(input, 'min') || 0;
                 $(input).spinner({
                     numberFormat: 'n',
                     step: $.data(input, 'step') || 1,
-                    min: 0,
+                    min: min,
+                    max: $.data(input, 'max') || null,
                     spin: calc
-                }).spinner('value', 0).on("spinchange", calc);
+                }).spinner('value', min).on("spinchange", calc);
             }).on('focus', function () {
                 $(this).trigger('select');
             });
@@ -261,7 +277,9 @@
 
         function initQualityAdvanced(container) {
             container.append(newInput('暴击率', 0.1, true))
-                .append(newInput('暴击伤害', 0.1, true));
+                .append(newInput('暴击伤害', 0.1, true))
+                .append(newInput('无视防御', 0.1, true))
+                .append(newInput('防御减免', 0.1, true));
         }
 
         function initQualityElemental(container) {
@@ -271,10 +289,17 @@
                 .append(newInput('造成伤害提高', 0.1, true));
         }
 
+        function initQualityOther(container) {
+            container.append(newInput('人物等级', 1, false, 1, 90))
+                .append(newInput('怪物等级', 1, false, 1, 90))
+                .append(newInput('防御增加', 0.1, true));
+        }
+
         function initCalculator(calculator) {
             initCalculatorAttack(calculator.children('fieldset.Attack'));
             initCalculatorDamageBonus(calculator.children('fieldset.DamageBonus'));
             initCalculatorCriticalBracket(calculator.children('fieldset.CriticalBracket'));
+            initCalculatorDefense(calculator.children('fieldset.Defense'));
             initCalculatorFinalDamage(calculator.children('fieldset.FinalDamage'));
         }
 
@@ -305,10 +330,7 @@
         function initCalculatorDamageBonus(container) {
             container.append(newRow()
                 .append(newColumn('伤害加成系数', true))
-                .append(symbol('='))
-                .append(symbol('1'))
-                .append(symbol('+'))
-                .append(symbol('('))
+                .append(symbol('=', '1', '+', '('))
                 .append(newColumn('物理伤害加成', true))
                 .append(symbol('+'))
                 .append(newColumn('元素伤害加成', true))
@@ -323,12 +345,42 @@
         function initCalculatorCriticalBracket(container) {
             container.append(newRow()
                 .append(newColumn('暴击收益', true))
-                .append(symbol('='))
-                .append(symbol('1'))
-                .append(symbol('+'))
+                .append(symbol('=', '1', '+'))
                 .append(newColumn('暴击率', true))
                 .append(symbol('×'))
                 .append(newColumn('暴击伤害', true))
+            );
+        }
+
+        function initCalculatorDefense(container) {
+            container.append(newRow()
+                .append(newColumn('穿防系数', true))
+                .append(symbol('=', '1', '-'))
+                .append(newColumn('无视防御', true))
+            ).append(newRow()
+                .append(newColumn('减防系数', true))
+                .append(symbol('=', '1', '-'))
+                .append(newColumn('防御减免', true))
+                .append(symbol('+'))
+                .append(newColumn('防御增加', true))
+            ).append(newRow()
+                .append(newColumn('防御系数'))
+                .append(symbol('='))
+                .append(newColumn('穿防系数', true))
+                .append(symbol('×'))
+                .append(newColumn('减防系数', true))
+                .append(symbol('×'), '(')
+                .append(newColumn('怪物等级'))
+                .append(symbol('+', '100', ')'))
+            ).append(newRow()
+                .append(newColumn('对象承伤', true))
+                .append(symbol('='), '(')
+                .append(newColumn('人物等级'))
+                .append(symbol('+', '100', ')', '/', '('))
+                .append(newColumn('人物等级'))
+                .append(symbol('+', '100', '+'))
+                .append(newColumn('防御系数'))
+                .append(symbol(')'))
             );
         }
 
@@ -341,6 +393,8 @@
                 .append(newColumn('伤害加成系数', true))
                 .append(symbol('×'))
                 .append(newColumn('暴击收益', true))
+                .append(symbol('×'))
+                .append(newColumn('对象承伤', true))
             )
         }
 
@@ -365,6 +419,9 @@
         <fieldset class='Elemental'>
             <legend>元素属性</legend>
         </fieldset>
+        <fieldset class='Other'>
+            <legend>其他</legend>
+        </fieldset>
         <fieldset>
             <legend>比较基准</legend>
             <button name="setup">设置</button>
@@ -385,14 +442,14 @@
         <fieldset class='CriticalBracket'>
             <legend>暴击区</legend>
         </fieldset>
-        <fieldset class='ElementalReaction'>
-            <legend>反应区</legend>
-        </fieldset>
         <fieldset class='Defense'>
             <legend>防御区</legend>
         </fieldset>
         <fieldset class='Resistance'>
             <legend>抗性区</legend>
+        </fieldset>
+        <fieldset class='ElementalReaction'>
+            <legend>反应区</legend>
         </fieldset>
         <fieldset class='FinalDamage'>
             <legend>最终伤害</legend>
