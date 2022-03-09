@@ -119,6 +119,7 @@
                         $(raise).removeClass('up down').text(displayRaise).addClass(classRaise);
                     });
                 });
+                return newValue;
             } else {
                 let value = false;
                 let percentage = false;
@@ -159,9 +160,22 @@
             column('穿防系数', 1 - column('无视防御'));
             column('减防系数', 1 - column('防御减免') + column('防御增加'));
             column('防御系数', column('穿防系数') * column('减防系数') * (column('怪物等级') + 100));
-            column('对象承伤', (column('人物等级') + 100) / (column('人物等级') + 100 + column('防御系数')));
+            column('防御对象承伤', (column('人物等级') + 100) / (column('人物等级') + 100 + column('防御系数')));
 
-            column('最终伤害', column('总攻击力') * column('伤害加成系数') * column('暴击收益') * column('对象承伤'));
+            const R = column('元素抗性', column('怪物抗性') - column('元素抗性减免'));
+            const resistanceRows = $('#calculator').children('fieldset.Resistance').children('div[optional].row').hide();
+            if (R > 0.75) {
+                column('抗性对象承伤', 1 / (1 + 4 * R));
+                resistanceRows.eq(0).show();
+            } else if (R >= 0) {
+                column('抗性对象承伤', 1 - R);
+                resistanceRows.eq(1).show();
+            } else {
+                column('抗性对象承伤', 1 - R / 2);
+                resistanceRows.eq(2).show();
+            }
+
+            column('最终伤害', column('总攻击力') * column('伤害加成系数') * column('暴击收益') * column('防御对象承伤') * column('抗性对象承伤'));
         }
 
         function setupCheckpoint() {
@@ -216,7 +230,7 @@
             return column;
         }
 
-        function newInput(label, step = 1, percentage = false, min = 0, max = 0) {
+        function newInput(label, step = 1, percentage = false, min = 0, max = 0, current = 0) {
             const input = $.html.div().addClass('input')
                 .append($.html.label().text(label))
                 .append($.html.input({type: 'text', column: label}));
@@ -227,11 +241,14 @@
                 if (true === percentage) {
                     $.data(input, 'percentage', percentage);
                 }
-                if ('number' === typeof min && min > 0) {
+                if ('number' === typeof min && min !== 0) {
                     $.data(input, 'min', min);
                 }
                 if ('number' === typeof max && max > 0) {
                     $.data(input, 'max', max);
+                }
+                if ('number' === typeof current && current > 0) {
+                    $.data(input, 'current', current);
                 }
             });
             return input;
@@ -256,13 +273,14 @@
             initQualityOther(quality.children('fieldset.Other'));
             quality.find('input[type=text]').each((_, input) => {
                 const min = $.data(input, 'min') || 0;
+                const current = $.data(input, 'current');
                 $(input).spinner({
                     numberFormat: 'n',
                     step: $.data(input, 'step') || 1,
                     min: min,
                     max: $.data(input, 'max') || null,
                     spin: calc
-                }).spinner('value', min).on("spinchange", calc);
+                }).spinner('value', 'number' === typeof current ? current : min).on("spinchange", calc);
             }).on('focus', function () {
                 $(this).trigger('select');
             });
@@ -286,13 +304,15 @@
             container.append(newInput('物理伤害加成', 0.1, true))
                 .append(newInput('元素伤害加成', 0.1, true))
                 .append(newInput('元素影响增伤', 0.1, true))
-                .append(newInput('造成伤害提高', 0.1, true));
+                .append(newInput('造成伤害提高', 0.1, true))
+                .append(newInput('元素抗性减免', 1, true));
         }
 
         function initQualityOther(container) {
-            container.append(newInput('人物等级', 1, false, 1, 90))
-                .append(newInput('怪物等级', 1, false, 1, 90))
-                .append(newInput('防御增加', 0.1, true));
+            container.append(newInput('人物等级', 1, false, 1, 90, 90))
+                .append(newInput('怪物等级', 1, false, 1, 90, 90))
+                .append(newInput('防御增加', 0.1, true))
+                .append(newInput('怪物抗性', 1, true, -100, 0, 10));
         }
 
         function initCalculator(calculator) {
@@ -300,6 +320,7 @@
             initCalculatorDamageBonus(calculator.children('fieldset.DamageBonus'));
             initCalculatorCriticalBracket(calculator.children('fieldset.CriticalBracket'));
             initCalculatorDefense(calculator.children('fieldset.Defense'));
+            initCalculatorResistance(calculator.children('fieldset.Resistance'));
             initCalculatorFinalDamage(calculator.children('fieldset.FinalDamage'));
         }
 
@@ -373,7 +394,7 @@
                 .append(newColumn('怪物等级'))
                 .append(symbol('+', '100', ')'))
             ).append(newRow()
-                .append(newColumn('对象承伤', true))
+                .append(newColumn('防御对象承伤', true))
                 .append(symbol('='), '(')
                 .append(newColumn('人物等级'))
                 .append(symbol('+', '100', ')', '/', '('))
@@ -381,6 +402,30 @@
                 .append(symbol('+', '100', '+'))
                 .append(newColumn('防御系数'))
                 .append(symbol(')'))
+            );
+        }
+
+        function initCalculatorResistance(container) {
+            container.append(newRow()
+                .append(newColumn('元素抗性', true))
+                .append(symbol('='))
+                .append(newColumn('怪物抗性', true))
+                .append(symbol('-'))
+                .append(newColumn('元素抗性减免', true))
+            ).append(newRow().attr('optional', true)
+                .append(newColumn('抗性对象承伤', true))
+                .append(symbol('=', '1', '/', '(1', '+', '4', '×'))
+                .append(newColumn('元素抗性', true))
+                .append(symbol(')'))
+            ).append(newRow().attr('optional', true)
+                .append(newColumn('抗性对象承伤', true))
+                .append(symbol('=', '1', '-'))
+                .append(newColumn('元素抗性', true))
+            ).append(newRow().attr('optional', true)
+                .append(newColumn('抗性对象承伤', true))
+                .append(symbol('=', '1', '-'))
+                .append(newColumn('元素抗性', true))
+                .append(symbol('/', '2'))
             );
         }
 
@@ -394,7 +439,9 @@
                 .append(symbol('×'))
                 .append(newColumn('暴击收益', true))
                 .append(symbol('×'))
-                .append(newColumn('对象承伤', true))
+                .append(newColumn('防御对象承伤', true))
+                .append(symbol('×'))
+                .append(newColumn('抗性对象承伤', true))
             )
         }
 
@@ -404,6 +451,7 @@
             $('button[name=setup]').on('click', setupCheckpoint);
             $('button[name=delete]').on('click', deleteCheckpoint);
             $('button[name=reset]').on('click', resetCheckpoint);
+            calc();
         });
     </script>
 </head>
