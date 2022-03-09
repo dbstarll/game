@@ -15,6 +15,10 @@
     <script src='/ro/js/common.js'></script>
     <script src='/ro/js/dialog.js'></script>
     <style>
+        html {
+            font-size: 14px;
+        }
+
         #main {
             display: flex;
             margin: 5px;
@@ -36,7 +40,7 @@
             margin: 5px;
         }
 
-        div.column {
+        div.column:first-child {
             flex-basis: 8ch;
         }
 
@@ -46,10 +50,28 @@
             font-size: 0.5em;
         }
 
-        div.column > span {
+        div.column > div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        div.column > div > span:first-child {
             display: block;
-            text-align: center;
             font-size: 1.2em;
+        }
+
+        div.column > div > span:last-child {
+            display: block;
+            font-size: 0.5em;
+        }
+
+        span[raise].up {
+            color: red;
+        }
+
+        span[raise].down {
+            color: green;
         }
 
         div.input {
@@ -65,44 +87,6 @@
         }
     </style>
     <script>
-        function getValue(name) {
-            const val = $('input[type=text][name=' + name + ']').val();
-            const num = parseFloat(val);
-            return isNaN(num) ? 0.0 : num;
-        }
-
-        function getValueWithAdd(name) {
-            return getValue(name) + getValue(name + 'Add');
-        }
-
-        function getValueRate(name, span) {
-            if (name === span.attr('id')) {
-                return getValue(name) + parseFloat(span.attr('rate'));
-            } else {
-                return getValue(name);
-            }
-        }
-
-        function calcAdd() {
-            const baseAttack = getValueWithAdd('playerAttack') + getValueWithAdd('weaponAttack');
-            const extraAttack = baseAttack * getValueWithAdd('attackPer') / 100 + getValueWithAdd('attack');
-            const damage = (getValueWithAdd('physicDamage') + getValueWithAdd('elementDamage')) / 100;
-            const critical = getValueWithAdd('criticalRate') * getValueWithAdd('criticalDamage') / 10000;
-            const element = 1.5 * (1 + 2.78 * getValueWithAdd('elementMaster') / (getValueWithAdd('elementMaster') + 1400));
-            const defence = (getValueWithAdd('playerLevel') + 100) / (getValueWithAdd('playerLevel') + 100 + getValueWithAdd('monsterLevel') + 100);
-            return (baseAttack + extraAttack) * (1 + damage) * (1 + critical) * element * defence;
-        }
-
-        function calcRate(span) {
-            const baseAttack = getValueRate('playerAttack', span) + getValueRate('weaponAttack', span);
-            const extraAttack = baseAttack * getValueRate('attackPer', span) / 100 + getValueRate('attack', span);
-            const damage = (getValueRate('physicDamage', span) + getValueRate('elementDamage', span)) / 100;
-            const critical = getValueRate('criticalRate', span) * getValueRate('criticalDamage', span) / 10000;
-            const element = 1.5 * (1 + 2.78 * getValueRate('elementMaster', span) / (getValueRate('elementMaster', span) + 1400));
-            const defence = (getValueRate('playerLevel', span) + 100) / (getValueRate('playerLevel', span) + 100 + getValueRate('monsterLevel', span) + 100);
-            return (baseAttack + extraAttack) * (1 + damage) * (1 + critical) * element * defence;
-        }
-
         function column(label, newValue) {
             if ('number' === typeof newValue) {
                 $('span[column=\'' + label + '\']').each((_, span) => {
@@ -115,6 +99,25 @@
                     const v2 = value.toFixed(percentage ? 2 : 0);
                     let displayValue = v1.length > v2.length ? v2 : v1;
                     $(span).text(displayValue + (percentage ? '%' : ''));
+
+                    const checkpoint = $.data(span, 'checkpoint');
+                    $(span).next('span[raise]').each((_, raise) => {
+                        let displayRaise = '', classRaise = '';
+                        if ('number' === typeof checkpoint) {
+                            const raiseValue = Math.round((value - checkpoint + Number.EPSILON) * 10000) / 10000;
+                            if (raiseValue != 0) {
+                                classRaise = raiseValue > 0 ? 'up' : "down";
+                                if (checkpoint == 0) {
+                                    displayRaise = raiseValue;
+                                } else {
+                                    const percentageValue = Math.round(((100 * raiseValue / checkpoint) + Number.EPSILON) * 10000) / 10000;
+                                    displayRaise = percentageValue.toFixed(1) + '%';
+                                }
+                                displayRaise = (raiseValue > 0 ? '+' : '') + displayRaise;
+                            }
+                        }
+                        $(raise).removeClass('up down').text(displayRaise).addClass(classRaise);
+                    });
                 });
             } else {
                 let value = false;
@@ -161,16 +164,53 @@
             column('最终伤害', column('总攻击力') * column('伤害加成系数') * column('暴击收益'));
         }
 
+
+        function setupCheckpoint() {
+            $('span[column]').each((_, span) => {
+                const value = $.data(span, 'value');
+                if ('number' === typeof value) {
+                    $.data(span, 'checkpoint', value);
+                }
+            });
+            $('input[type=text][column]').each((_, input) => {
+                const value = $(input).val();
+                $.data(input, 'checkpoint', value);
+            });
+            calc();
+        }
+
+        function deleteCheckpoint() {
+            $('span[column]').each((_, span) => {
+                $.removeData(span, 'checkpoint');
+            });
+            $('input[type=text][column]').each((_, input) => {
+                $.removeData(input, 'checkpoint');
+            });
+            calc();
+        }
+
+        function resetCheckpoint() {
+            $('input[type=text][column]').each((_, input) => {
+                const value = $.data(input, 'checkpoint');
+                if ('string' === typeof value) {
+                    $(input).val(value);
+                }
+            });
+            calc();
+        }
+
         function newRow() {
             return $.html.div().addClass('row');
         }
 
         function newColumn(label, percentage = false) {
             const column = $.html.div().addClass('column')
-                .append($.html.span({column: label}).text(true === percentage ? '0%' : '0'))
+                .append($.html.div()
+                    .append($.html.span({column: label}).text(true === percentage ? '0%' : '0'))
+                    .append($.html.span({raise: label})))
                 .append($.html.label().text(label));
             if (true === percentage) {
-                column.children('span[column]').each((_, span) => {
+                column.find('span[column]').each((_, span) => {
                     $.data(span, 'percentage', percentage);
                 });
             }
@@ -307,6 +347,9 @@
         $(function () {
             initQuality($('#quality'));
             initCalculator($('#calculator'));
+            $('button[name=setup]').on('click', setupCheckpoint);
+            $('button[name=delete]').on('click', deleteCheckpoint);
+            $('button[name=reset]').on('click', resetCheckpoint);
         });
     </script>
 </head>
@@ -321,6 +364,12 @@
         </fieldset>
         <fieldset class='Elemental'>
             <legend>元素属性</legend>
+        </fieldset>
+        <fieldset>
+            <legend>比较基准</legend>
+            <button name="setup">设置</button>
+            <button name="delete">删除</button>
+            <button name="reset">重置</button>
         </fieldset>
     </div>
     <div id='calculator'>
