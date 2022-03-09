@@ -25,11 +25,7 @@
             column-gap: 5px;
         }
 
-        #main > #quality1 {
-            flex: 1;
-        }
-
-        #main > #quality2 {
+        #main > div.quality {
             flex: 1;
         }
 
@@ -114,7 +110,7 @@
                         if ('number' === typeof checkpoint) {
                             const raiseValue = Math.round((value - checkpoint + Number.EPSILON) * 10000) / 10000;
                             if (raiseValue != 0) {
-                                classRaise = raiseValue > 0 ? 'up' : "down";
+                                classRaise = raiseValue > 0 ? 'up' : 'down';
                                 if (checkpoint == 0) {
                                     displayRaise = raiseValue;
                                 } else {
@@ -183,7 +179,11 @@
                 resistanceRows.eq(2).show();
             }
 
-            column('最终伤害', column('总攻击力') * column('伤害加成系数') * column('暴击收益') * column('防御对象承伤') * column('抗性对象承伤'));
+            column('精通提升', (2.78 * column('元素精通')) / (column('元素精通') + 1400));
+            column('反应倍率', 1 + column('精通提升') + column('反应系数提高'));
+            column('增幅反应倍率', column('反应基础倍率') * column('反应倍率'));
+
+            column('最终伤害', column('总攻击力') * column('伤害加成系数') * column('暴击收益') * column('防御对象承伤') * column('抗性对象承伤') * column('增幅反应倍率'));
         }
 
         function setupCheckpoint() {
@@ -274,8 +274,12 @@
             }
         }
 
-        function initQualityInput(quality) {
-            quality.find('input[type=text]').each((_, input) => {
+        function initQuality() {
+            initQualityBase($('fieldset.Basis'));
+            initQualityAdvanced($('fieldset.Advanced'));
+            initQualityElemental($('fieldset.Elemental'));
+            initQualityOther($('fieldset.Other'));
+            $('input[type=text][column]').each((_, input) => {
                 const min = $.data(input, 'min') || 0;
                 const current = $.data(input, 'current');
                 $(input).spinner({
@@ -284,19 +288,10 @@
                     min: min,
                     max: $.data(input, 'max') || null,
                     spin: calc
-                }).spinner('value', 'number' === typeof current ? current : min).on("spinchange", calc);
+                }).spinner('value', 'number' === typeof current ? current : min).on('spinchange', calc);
             }).on('focus', function () {
                 $(this).trigger('select');
             });
-        }
-
-        function initQuality(quality1, quality2) {
-            initQualityBase(quality1.children('fieldset.Basis'));
-            initQualityAdvanced(quality2.children('fieldset.Advanced'));
-            initQualityElemental(quality1.children('fieldset.Elemental'));
-            initQualityOther(quality2.children('fieldset.Other'));
-            initQualityInput(quality1);
-            initQualityInput(quality2);
         }
 
         function initQualityBase(container) {
@@ -307,18 +302,21 @@
         }
 
         function initQualityAdvanced(container) {
-            container.append(newInput('暴击率', 0.1, true))
+            container.append(newInput('物理伤害加成', 0.1, true))
+                .append(newInput('暴击率', 0.1, true))
                 .append(newInput('暴击伤害', 0.1, true))
                 .append(newInput('无视防御', 0.1, true))
                 .append(newInput('防御减免', 0.1, true));
         }
 
         function initQualityElemental(container) {
-            container.append(newInput('物理伤害加成', 0.1, true))
+            container.append(newInput('元素精通'))
                 .append(newInput('元素伤害加成', 0.1, true))
                 .append(newInput('元素影响增伤', 0.1, true))
                 .append(newInput('造成伤害提高', 0.1, true))
-                .append(newInput('元素抗性减免', 1, true));
+                .append(newInput('元素抗性减免', 1, true))
+                .append(newInput('反应系数提高', 0.1, true))
+                .append(newInput('反应基础倍率', 1, true, 0, false, 200));
         }
 
         function initQualityOther(container) {
@@ -328,13 +326,14 @@
                 .append(newInput('怪物抗性', 1, true, -100, 0, 10));
         }
 
-        function initCalculator(calculator1, calculator2) {
-            initCalculatorAttack(calculator1.children('fieldset.Attack'));
-            initCalculatorDamageBonus(calculator2.children('fieldset.DamageBonus'));
-            initCalculatorCriticalBracket(calculator1.children('fieldset.CriticalBracket'));
-            initCalculatorDefense(calculator2.children('fieldset.Defense'));
-            initCalculatorResistance(calculator1.children('fieldset.Resistance'));
-            initCalculatorFinalDamage(calculator2.children('fieldset.FinalDamage'));
+        function initCalculator() {
+            initCalculatorAttack($('fieldset.Attack'));
+            initCalculatorDamageBonus($('fieldset.DamageBonus'));
+            initCalculatorCriticalBracket($('fieldset.CriticalBracket'));
+            initCalculatorDefense($('fieldset.Defense'));
+            initCalculatorResistance($('fieldset.Resistance'));
+            initCalculatorElementalReaction($('fieldset.ElementalReaction'));
+            initCalculatorFinalDamage($('fieldset.FinalDamage'));
         }
 
         function initCalculatorAttack(container) {
@@ -442,6 +441,29 @@
             );
         }
 
+        function initCalculatorElementalReaction(container) {
+            container.append(newRow()
+                .append(newColumn('精通提升', true))
+                .append(symbol('=', '(', '2.78', '×'))
+                .append(newColumn('元素精通'))
+                .append(symbol(')', '/', '('))
+                .append(newColumn('元素精通'))
+                .append(symbol('+', '1400', ')'))
+            ).append(newRow()
+                .append(newColumn('反应倍率', true))
+                .append(symbol('=', '1', '+'))
+                .append(newColumn('精通提升', true))
+                .append(symbol('+'))
+                .append(newColumn('反应系数提高', true))
+            ).append(newRow()
+                .append(newColumn('增幅反应倍率', true))
+                .append(symbol('='))
+                .append(newColumn('反应基础倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('反应倍率', true))
+            );
+        }
+
         function initCalculatorFinalDamage(container) {
             container.append(newRow()
                 .append(newColumn('最终伤害'))
@@ -455,12 +477,14 @@
                 .append(newColumn('防御对象承伤', true))
                 .append(symbol('×'))
                 .append(newColumn('抗性对象承伤', true))
+                .append(symbol('×'))
+                .append(newColumn('增幅反应倍率', true))
             )
         }
 
         $(function () {
-            initQuality($('#quality1'), $('#quality2'));
-            initCalculator($('#calculator1'), $('#calculator2'));
+            initQuality();
+            initCalculator();
             $('button[name=setup]').on('click', setupCheckpoint);
             $('button[name=delete]').on('click', deleteCheckpoint);
             $('button[name=reset]').on('click', resetCheckpoint);
@@ -470,7 +494,7 @@
 </head>
 <body>
 <div id='main'>
-    <div id='quality1'>
+    <div class='quality'>
         <fieldset class='Basis'>
             <legend>基础属性</legend>
         </fieldset>
@@ -479,12 +503,12 @@
         </fieldset>
         <fieldset>
             <legend>比较基准</legend>
-            <button name="setup">设置</button>
-            <button name="delete">删除</button>
-            <button name="reset">重置</button>
+            <button name='setup'>设置</button>
+            <button name='delete'>删除</button>
+            <button name='reset'>重置</button>
         </fieldset>
     </div>
-    <div id='quality2'>
+    <div class='quality'>
         <fieldset class='Advanced'>
             <legend>进阶属性</legend>
         </fieldset>
@@ -505,9 +529,6 @@
         <fieldset class='Resistance'>
             <legend>抗性区</legend>
         </fieldset>
-        <fieldset class='ElementalReaction'>
-            <legend>反应区</legend>
-        </fieldset>
     </div>
     <div id='calculator2'>
         <fieldset class='DamageBonus'>
@@ -516,10 +537,13 @@
         <fieldset class='Defense'>
             <legend>防御区</legend>
         </fieldset>
-        <fieldset class='FinalDamage'>
-            <legend>最终伤害</legend>
+        <fieldset class='ElementalReaction'>
+            <legend>反应区</legend>
         </fieldset>
     </div>
 </div>
+<fieldset class='FinalDamage'>
+    <legend>最终伤害</legend>
+</fieldset>
 </body>
 </html>
