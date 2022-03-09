@@ -167,6 +167,9 @@ $.extend({
                 td: function (attrs, text) {
                     return set('<td>', attrs, text);
                 },
+                select: function (attrs, text) {
+                    return set('<select>', attrs, text);
+                },
                 option: function (attrs, text) {
                     return set('<option>', attrs, text);
                 }

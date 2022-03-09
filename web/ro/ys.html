@@ -133,6 +133,13 @@
                     return false;
                 });
                 if (false === value) {
+                    $('select[column=\'' + label + '\']').each((_, input) => {
+                        value = $(input).val();
+                        percentage = true === $.data(input, 'percentage');
+                        return false;
+                    });
+                }
+                if (false === value) {
                     $('span[column=\'' + label + '\']').each((_, span) => {
                         value = $.data(span, 'value');
                         if ('number' !== typeof value) {
@@ -149,6 +156,10 @@
 
         function calc() {
             $('input[type=text][column]').each((_, input) => {
+                const label = $(input).attr('column');
+                column(label, column(label));
+            });
+            $('select[column]').each((_, input) => {
                 const label = $(input).attr('column');
                 column(label, column(label));
             });
@@ -262,6 +273,23 @@
             return input;
         }
 
+        function newSelect(label, options, percentage = false, current = 0) {
+            const select = $.html.select({column: label}).each((_, select) => {
+                if (true === percentage) {
+                    $.data(select, 'percentage', percentage);
+                }
+                if ('number' === typeof current && current > 0) {
+                    $.data(select, 'current', current);
+                }
+            });
+            Object.keys(options).forEach((key) => {
+                select.append($.html.option({value: options[key]}, key));
+            });
+            return $.html.div().addClass('input')
+                .append($.html.label().text(label))
+                .append(select);
+        }
+
         function symbol() {
             if (arguments.length === 1) {
                 return $.html.div().addClass('symbol').text(arguments[0]);
@@ -292,6 +320,10 @@
             }).on('focus', function () {
                 $(this).trigger('select');
             });
+            $('select[column]').selectmenu({
+                width: null,
+                change: calc
+            });
         }
 
         function initQualityBase(container) {
@@ -315,8 +347,8 @@
                 .append(newInput('元素影响增伤', 0.1, true))
                 .append(newInput('造成伤害提高', 0.1, true))
                 .append(newInput('元素抗性减免', 1, true))
-                .append(newInput('反应系数提高', 0.1, true))
-                .append(newInput('反应基础倍率', 1, true, 0, false, 200));
+                .append(newSelect('反应基础倍率', {'水火蒸发': 200, '火水蒸发': 150, '火冰融化': 200, '冰火融化': 150}, true))
+                .append(newInput('反应系数提高', 0.1, true));
         }
 
         function initQualityOther(container) {
