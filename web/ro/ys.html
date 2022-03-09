@@ -25,12 +25,20 @@
             column-gap: 5px;
         }
 
-        #main > div:first-child {
+        #main > #quality1 {
             flex: 1;
         }
 
-        #main > div:last-child {
+        #main > #quality2 {
+            flex: 1;
+        }
+
+        #main > #calculator1 {
             flex: 2;
+        }
+
+        #main > #calculator2 {
+            flex: 2.5;
         }
 
         div.row {
@@ -78,7 +86,7 @@
             display: flex;
             align-items: center;
             column-gap: 5px;
-            margin: 5px;
+            margin: 2px;
         }
 
         div.input > label {
@@ -158,12 +166,12 @@
             column('暴击收益', 1 + column('暴击率') * column('暴击伤害'));
 
             column('穿防系数', 1 - column('无视防御'));
-            column('减防系数', 1 - column('防御减免') + column('防御增加'));
+            column('减防系数', 1 - column('防御减免') + column('怪物防御增加'));
             column('防御系数', column('穿防系数') * column('减防系数') * (column('怪物等级') + 100));
             column('防御对象承伤', (column('人物等级') + 100) / (column('人物等级') + 100 + column('防御系数')));
 
             const R = column('元素抗性', column('怪物抗性') - column('元素抗性减免'));
-            const resistanceRows = $('#calculator').children('fieldset.Resistance').children('div[optional].row').hide();
+            const resistanceRows = $('#calculator1').children('fieldset.Resistance').children('div[optional].row').hide();
             if (R > 0.75) {
                 column('抗性对象承伤', 1 / (1 + 4 * R));
                 resistanceRows.eq(0).show();
@@ -233,7 +241,7 @@
         function newInput(label, step = 1, percentage = false, min = 0, max = 0, current = 0) {
             const input = $.html.div().addClass('input')
                 .append($.html.label().text(label))
-                .append($.html.input({type: 'text', column: label}));
+                .append($.html.input({type: 'text', column: label, size: 5}));
             input.children('input[type=text]').each((_, input) => {
                 if (step != 1) {
                     $.data(input, 'step', step);
@@ -266,11 +274,7 @@
             }
         }
 
-        function initQuality(quality) {
-            initQualityBase(quality.children('fieldset.Basis'));
-            initQualityAdvanced(quality.children('fieldset.Advanced'));
-            initQualityElemental(quality.children('fieldset.Elemental'));
-            initQualityOther(quality.children('fieldset.Other'));
+        function initQualityInput(quality) {
             quality.find('input[type=text]').each((_, input) => {
                 const min = $.data(input, 'min') || 0;
                 const current = $.data(input, 'current');
@@ -284,6 +288,15 @@
             }).on('focus', function () {
                 $(this).trigger('select');
             });
+        }
+
+        function initQuality(quality1, quality2) {
+            initQualityBase(quality1.children('fieldset.Basis'));
+            initQualityAdvanced(quality2.children('fieldset.Advanced'));
+            initQualityElemental(quality1.children('fieldset.Elemental'));
+            initQualityOther(quality2.children('fieldset.Other'));
+            initQualityInput(quality1);
+            initQualityInput(quality2);
         }
 
         function initQualityBase(container) {
@@ -311,17 +324,17 @@
         function initQualityOther(container) {
             container.append(newInput('人物等级', 1, false, 1, 90, 90))
                 .append(newInput('怪物等级', 1, false, 1, 90, 90))
-                .append(newInput('防御增加', 0.1, true))
+                .append(newInput('怪物防御增加', 0.1, true))
                 .append(newInput('怪物抗性', 1, true, -100, 0, 10));
         }
 
-        function initCalculator(calculator) {
-            initCalculatorAttack(calculator.children('fieldset.Attack'));
-            initCalculatorDamageBonus(calculator.children('fieldset.DamageBonus'));
-            initCalculatorCriticalBracket(calculator.children('fieldset.CriticalBracket'));
-            initCalculatorDefense(calculator.children('fieldset.Defense'));
-            initCalculatorResistance(calculator.children('fieldset.Resistance'));
-            initCalculatorFinalDamage(calculator.children('fieldset.FinalDamage'));
+        function initCalculator(calculator1, calculator2) {
+            initCalculatorAttack(calculator1.children('fieldset.Attack'));
+            initCalculatorDamageBonus(calculator2.children('fieldset.DamageBonus'));
+            initCalculatorCriticalBracket(calculator1.children('fieldset.CriticalBracket'));
+            initCalculatorDefense(calculator2.children('fieldset.Defense'));
+            initCalculatorResistance(calculator1.children('fieldset.Resistance'));
+            initCalculatorFinalDamage(calculator2.children('fieldset.FinalDamage'));
         }
 
         function initCalculatorAttack(container) {
@@ -383,7 +396,7 @@
                 .append(symbol('=', '1', '-'))
                 .append(newColumn('防御减免', true))
                 .append(symbol('+'))
-                .append(newColumn('防御增加', true))
+                .append(newColumn('怪物防御增加', true))
             ).append(newRow()
                 .append(newColumn('防御系数'))
                 .append(symbol('='))
@@ -446,8 +459,8 @@
         }
 
         $(function () {
-            initQuality($('#quality'));
-            initCalculator($('#calculator'));
+            initQuality($('#quality1'), $('#quality2'));
+            initCalculator($('#calculator1'), $('#calculator2'));
             $('button[name=setup]').on('click', setupCheckpoint);
             $('button[name=delete]').on('click', deleteCheckpoint);
             $('button[name=reset]').on('click', resetCheckpoint);
@@ -457,18 +470,12 @@
 </head>
 <body>
 <div id='main'>
-    <div id='quality'>
+    <div id='quality1'>
         <fieldset class='Basis'>
             <legend>基础属性</legend>
         </fieldset>
-        <fieldset class='Advanced'>
-            <legend>进阶属性</legend>
-        </fieldset>
         <fieldset class='Elemental'>
             <legend>元素属性</legend>
-        </fieldset>
-        <fieldset class='Other'>
-            <legend>其他</legend>
         </fieldset>
         <fieldset>
             <legend>比较基准</legend>
@@ -477,27 +484,37 @@
             <button name="reset">重置</button>
         </fieldset>
     </div>
-    <div id='calculator'>
+    <div id='quality2'>
+        <fieldset class='Advanced'>
+            <legend>进阶属性</legend>
+        </fieldset>
+        <fieldset class='Other'>
+            <legend>其他</legend>
+        </fieldset>
+    </div>
+    <div id='calculator1'>
         <fieldset class='Attack'>
             <legend>基础区</legend>
         </fieldset>
         <fieldset class='DamageMultipiler'>
             <legend>倍率区</legend>
         </fieldset>
-        <fieldset class='DamageBonus'>
-            <legend>增伤区</legend>
-        </fieldset>
         <fieldset class='CriticalBracket'>
             <legend>暴击区</legend>
-        </fieldset>
-        <fieldset class='Defense'>
-            <legend>防御区</legend>
         </fieldset>
         <fieldset class='Resistance'>
             <legend>抗性区</legend>
         </fieldset>
         <fieldset class='ElementalReaction'>
             <legend>反应区</legend>
+        </fieldset>
+    </div>
+    <div id='calculator2'>
+        <fieldset class='DamageBonus'>
+            <legend>增伤区</legend>
+        </fieldset>
+        <fieldset class='Defense'>
+            <legend>防御区</legend>
         </fieldset>
         <fieldset class='FinalDamage'>
             <legend>最终伤害</legend>
