@@ -26,15 +26,15 @@
         }
 
         #main > div.quality {
-            flex: 1;
-        }
-
-        #main > #calculator1 {
             flex: 2;
         }
 
+        #main > #calculator1 {
+            flex: 3;
+        }
+
         #main > #calculator2 {
-            flex: 2.5;
+            flex: 4;
         }
 
         div.row {
@@ -154,47 +154,57 @@
             }
         }
 
-        function calc() {
+        function calculate() {
+            const values = {};
+
             $('input[type=text][column]').each((_, input) => {
                 const label = $(input).attr('column');
-                column(label, column(label));
+                values[label] = column(label);
             });
             $('select[column]').each((_, input) => {
                 const label = $(input).attr('column');
-                column(label, column(label));
+                values[label] = column(label);
             });
 
-            column('基础攻击力', column('人物攻击力') + column('武器攻击力'));
-            column('额外攻击力', column('基础攻击力') * column('百分比攻击力') + column('固定攻击力'));
-            column('总攻击力', column('基础攻击力') + column('额外攻击力'));
+            values['基础攻击力'] = values['人物攻击力'] + values['武器攻击力'];
+            values['额外攻击力'] = values['基础攻击力'] * values['百分比攻击力'] + values['固定攻击力'];
+            values['总攻击力'] = values['基础攻击力'] + values['额外攻击力'];
 
-            column('伤害加成系数', 1 + column('物理伤害加成') + column('元素伤害加成') + column('元素影响增伤') + column('造成伤害提高'));
+            values['伤害加成系数'] = 1 + values['物理伤害加成'] + values['元素伤害加成'] + values['元素影响增伤'] + values['造成伤害提高'];
 
-            column('暴击收益', 1 + column('暴击率') * column('暴击伤害'));
+            values['暴击收益'] = 1 + values['暴击率'] * values['暴击伤害'];
 
-            column('穿防系数', 1 - column('无视防御'));
-            column('减防系数', 1 - column('防御减免') + column('怪物防御增加'));
-            column('防御系数', column('穿防系数') * column('减防系数') * (column('怪物等级') + 100));
-            column('防御对象承伤', (column('人物等级') + 100) / (column('人物等级') + 100 + column('防御系数')));
+            values['穿防系数'] = 1 - values['无视防御'];
+            values['减防系数'] = 1 - values['防御减免'] + values['怪物防御增加'];
+            values['防御系数'] = values['穿防系数'] * values['减防系数'] * (values['怪物等级'] + 100);
+            values['防御对象承伤'] = (values['人物等级'] + 100) / (values['人物等级'] + 100 + values['防御系数']);
 
-            const R = column('元素抗性', column('怪物抗性') - column('元素抗性减免'));
-            const resistanceRows = $('#calculator1').children('fieldset.Resistance').children('div[optional].row').hide();
+            const R = values['元素抗性'] = values['怪物抗性'] - values['元素抗性减免'];
             if (R > 0.75) {
-                column('抗性对象承伤', 1 / (1 + 4 * R));
-                resistanceRows.eq(0).show();
+                values['抗性对象承伤'] = 1 / (1 + 4 * R);
             } else if (R >= 0) {
-                column('抗性对象承伤', 1 - R);
-                resistanceRows.eq(1).show();
+                values['抗性对象承伤'] = 1 - R;
             } else {
-                column('抗性对象承伤', 1 - R / 2);
-                resistanceRows.eq(2).show();
+                values['抗性对象承伤'] = 1 - R / 2;
             }
 
-            column('精通提升', (2.78 * column('元素精通')) / (column('元素精通') + 1400));
-            column('反应倍率', 1 + column('精通提升') + column('反应系数提高'));
-            column('增幅反应倍率', column('反应基础倍率') * column('反应倍率'));
+            values['精通提升'] = (2.78 * values['元素精通']) / (values['元素精通'] + 1400);
+            values['反应倍率'] = 1 + values['精通提升'] + values['反应系数提高'];
+            values['增幅反应倍率'] = values['反应基础倍率'] * values['反应倍率'];
 
-            column('最终伤害', column('总攻击力') * column('伤害加成系数') * column('暴击收益') * column('防御对象承伤') * column('抗性对象承伤') * column('增幅反应倍率'));
+            values['最终伤害'] = values['总攻击力'] * values['伤害加成系数'] * values['暴击收益'] * values['防御对象承伤'] * values['抗性对象承伤'] * values['增幅反应倍率'];
+
+            return values;
+        }
+
+        function calc() {
+            const values = calculate();
+            $('span[column]').each((_, span) => {
+                const label = $(span).attr('column');
+                column(label, values[label]);
+            });
+            const R = values['元素抗性'];
+            $('#calculator1').children('fieldset.Resistance').children('div[optional].row').hide().eq(R > 0.75 ? 0 : (R >= 0 ? 1 : 2)).show();
         }
 
         function setupCheckpoint() {
@@ -335,20 +345,21 @@
 
         function initQualityAdvanced(container) {
             container.append(newInput('物理伤害加成', 0.1, true))
+                .append(newInput('元素伤害加成', 0.1, true))
                 .append(newInput('暴击率', 0.1, true))
                 .append(newInput('暴击伤害', 0.1, true))
-                .append(newInput('无视防御', 0.1, true))
-                .append(newInput('防御减免', 0.1, true));
+                .append(newInput('元素精通'))
+                .append(newSelect('反应基础倍率', {'水火蒸发': 200, '火水蒸发': 150, '火冰融化': 200, '冰火融化': 150}, true));
         }
 
         function initQualityElemental(container) {
-            container.append(newInput('元素精通'))
-                .append(newInput('元素伤害加成', 0.1, true))
-                .append(newInput('元素影响增伤', 0.1, true))
+            container.append(newInput('元素影响增伤', 0.1, true))
                 .append(newInput('造成伤害提高', 0.1, true))
                 .append(newInput('元素抗性减免', 1, true))
-                .append(newSelect('反应基础倍率', {'水火蒸发': 200, '火水蒸发': 150, '火冰融化': 200, '冰火融化': 150}, true))
-                .append(newInput('反应系数提高', 0.1, true));
+                .append(newInput('反应系数提高', 0.1, true))
+                .append(newInput('无视防御', 0.1, true))
+                .append(newInput('防御减免', 0.1, true));
+            ;
         }
 
         function initQualityOther(container) {
@@ -530,8 +541,8 @@
         <fieldset class='Basis'>
             <legend>基础属性</legend>
         </fieldset>
-        <fieldset class='Elemental'>
-            <legend>元素属性</legend>
+        <fieldset class='Advanced'>
+            <legend>进阶属性</legend>
         </fieldset>
         <fieldset>
             <legend>比较基准</legend>
@@ -541,8 +552,8 @@
         </fieldset>
     </div>
     <div class='quality'>
-        <fieldset class='Advanced'>
-            <legend>进阶属性</legend>
+        <fieldset class='Elemental'>
+            <legend>高级属性</legend>
         </fieldset>
         <fieldset class='Other'>
             <legend>其他</legend>
