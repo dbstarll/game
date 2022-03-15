@@ -34,7 +34,7 @@
         }
 
         #main > #calculator2 {
-            flex: 4;
+            flex: 4.5;
         }
 
         div.row {
@@ -86,7 +86,7 @@
         }
 
         div.input > label {
-            flex-basis: 12ch;
+            flex-basis: 10ch;
             text-align: right;
         }
     </style>
@@ -181,15 +181,15 @@
             }
 
             values['基础攻击力'] = values['人物攻击力'] + values['武器攻击力'];
-            values['额外攻击力'] = values['基础攻击力'] * values['百分比攻击力'] + values['固定攻击力'];
+            values['额外攻击力'] = values['基础攻击力'] * values['攻击力%'] + values['固定攻击力'];
             values['总攻击力'] = values['基础攻击力'] + values['额外攻击力'];
 
-            values['伤害加成系数'] = 1 + values['物理伤害加成'] + values['元素伤害加成'] + values['元素影响增伤'] + values['造成伤害提高'];
+            values['伤害加成%'] = 1 + values['物理伤害%'] + values['元素伤害%'] + values['元素影响增伤'] + values['造成伤害提高'];
 
             values['暴击收益'] = 1 + values['暴击率'] * values['暴击伤害'];
 
             values['穿防系数'] = 1 - values['无视防御'];
-            values['减防系数'] = 1 - values['防御减免'] + values['怪物防御增加'];
+            values['减防系数'] = 1 - values['防御减免'] + values['怪物防御%'];
             values['防御系数'] = values['穿防系数'] * values['减防系数'] * (values['怪物等级'] + 100);
             values['防御对象承伤'] = (values['人物等级'] + 100) / (values['人物等级'] + 100 + values['防御系数']);
 
@@ -204,9 +204,9 @@
 
             values['精通提升'] = (2.78 * values['元素精通']) / (values['元素精通'] + 1400);
             values['反应倍率'] = 1 + values['精通提升'] + values['反应系数提高'];
-            values['增幅反应倍率'] = values['反应基础倍率'] * values['反应倍率'];
+            values['增幅反应倍率'] = values['基础倍率'] * values['反应倍率'];
 
-            values['最终伤害'] = values['总攻击力'] * values['伤害加成系数'] * values['暴击收益'] * values['防御对象承伤'] * values['抗性对象承伤'] * values['增幅反应倍率'];
+            values['最终伤害'] = values['总攻击力'] * values['伤害加成%'] * values['暴击收益'] * values['防御对象承伤'] * values['抗性对象承伤'] * values['增幅反应倍率'];
 
             return values;
         }
@@ -345,7 +345,7 @@
                 $(this).trigger('select');
             });
             $('select[column]').selectmenu({
-                width: null,
+                width: 110,
                 change: calc
             });
         }
@@ -353,17 +353,17 @@
         function initQualityBase(container) {
             container.append(newInput('人物攻击力'))
                 .append(newInput('武器攻击力'))
-                .append(newInput('百分比攻击力', 0.1, true))
+                .append(newInput('攻击力%', 0.1, true))
                 .append(newInput('固定攻击力'));
         }
 
         function initQualityAdvanced(container) {
-            container.append(newInput('物理伤害加成', 0.1, true))
-                .append(newInput('元素伤害加成', 0.1, true))
+            container.append(newInput('物理伤害%', 0.1, true))
+                .append(newInput('元素伤害%', 0.1, true))
                 .append(newInput('暴击率', 0.1, true))
                 .append(newInput('暴击伤害', 0.1, true))
                 .append(newInput('元素精通'))
-                .append(newSelect('反应基础倍率', {'水火蒸发': 200, '火水蒸发': 150, '火冰融化': 200, '冰火融化': 150}, true));
+                .append(newSelect('基础倍率', {'水火蒸发': 200, '火水蒸发': 150, '火冰融化': 200, '冰火融化': 150}, true));
         }
 
         function initQualityElemental(container) {
@@ -379,7 +379,7 @@
         function initQualityOther(container) {
             container.append(newInput('人物等级', 1, false, 1, 90, 90))
                 .append(newInput('怪物等级', 1, false, 1, 90, 90))
-                .append(newInput('怪物防御增加', 0.1, true))
+                .append(newInput('怪物防御%', 0.1, true))
                 .append(newInput('怪物抗性', 1, true, -100, 0, 10));
         }
 
@@ -405,7 +405,7 @@
                 .append(symbol('='))
                 .append(newColumn('基础攻击力'))
                 .append(symbol('×'))
-                .append(newColumn('百分比攻击力', true))
+                .append(newColumn('攻击力%', true))
                 .append(symbol('+'))
                 .append(newColumn('固定攻击力'))
             ).append(newRow()
@@ -419,11 +419,11 @@
 
         function initCalculatorDamageBonus(container) {
             container.append(newRow()
-                .append(newColumn('伤害加成系数', true))
+                .append(newColumn('伤害加成%', true))
                 .append(symbol('=', '1', '+', '('))
-                .append(newColumn('物理伤害加成', true))
+                .append(newColumn('物理伤害%', true))
                 .append(symbol('+'))
-                .append(newColumn('元素伤害加成', true))
+                .append(newColumn('元素伤害%', true))
                 .append(symbol('+'))
                 .append(newColumn('元素影响增伤', true))
                 .append(symbol('+'))
@@ -452,7 +452,7 @@
                 .append(symbol('=', '1', '-'))
                 .append(newColumn('防御减免', true))
                 .append(symbol('+'))
-                .append(newColumn('怪物防御增加', true))
+                .append(newColumn('怪物防御%', true))
             ).append(newRow()
                 .append(newColumn('防御系数'))
                 .append(symbol('='))
@@ -515,7 +515,7 @@
             ).append(newRow()
                 .append(newColumn('增幅反应倍率', true))
                 .append(symbol('='))
-                .append(newColumn('反应基础倍率', true))
+                .append(newColumn('基础倍率', true))
                 .append(symbol('×'))
                 .append(newColumn('反应倍率', true))
             );
@@ -527,7 +527,7 @@
                 .append(symbol('='))
                 .append(newColumn('总攻击力'))
                 .append(symbol('×'))
-                .append(newColumn('伤害加成系数', true))
+                .append(newColumn('伤害加成%', true))
                 .append(symbol('×'))
                 .append(newColumn('暴击收益', true))
                 .append(symbol('×'))
@@ -544,17 +544,17 @@
                 .append($.html.button({}, '设置').on('click', setupCheckpoint))
                 .append($.html.button({}, '删除').on('click', deleteCheckpoint))
                 .append($.html.button({}, '重置').on('click', resetCheckpoint))
-                .append($.html.button({}, '百分比攻击力').on('click', () => {
-                    calc({'百分比攻击力': 0.466});
+                .append($.html.button({}, '攻击力%').on('click', () => {
+                    calc({'攻击力%': 0.466});
                 }))
                 .append($.html.button({}, '固定攻击力').on('click', () => {
                     calc({'固定攻击力': 311});
                 }))
-                .append($.html.button({}, '物理伤害加成').on('click', () => {
-                    calc({'物理伤害加成': 0.583});
+                .append($.html.button({}, '物理伤害%').on('click', () => {
+                    calc({'物理伤害%': 0.583});
                 }))
-                .append($.html.button({}, '元素伤害加成').on('click', () => {
-                    calc({'元素伤害加成': 0.466});
+                .append($.html.button({}, '元素伤害%').on('click', () => {
+                    calc({'元素伤害%': 0.466});
                 }))
                 .append($.html.button({}, '暴击率').on('click', () => {
                     calc({'暴击率': 0.311});
