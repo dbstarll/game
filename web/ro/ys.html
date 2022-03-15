@@ -154,7 +154,7 @@
             }
         }
 
-        function calculate() {
+        function calculate(attach) {
             const values = {};
 
             $('input[type=text][column]').each((_, input) => {
@@ -165,6 +165,20 @@
                 const label = $(input).attr('column');
                 values[label] = column(label);
             });
+
+            if ('object' === typeof attach) {
+                Object.keys(attach).forEach((key) => {
+                    const attachValue = attach[key];
+                    if ('number' === typeof attachValue) {
+                        const oldValue = values[key];
+                        if ('number' === typeof oldValue) {
+                            values[key] = oldValue + attachValue;
+                        } else {
+                            values[key] = attachValue;
+                        }
+                    }
+                });
+            }
 
             values['基础攻击力'] = values['人物攻击力'] + values['武器攻击力'];
             values['额外攻击力'] = values['基础攻击力'] * values['百分比攻击力'] + values['固定攻击力'];
@@ -197,8 +211,8 @@
             return values;
         }
 
-        function calc() {
-            const values = calculate();
+        function calc(attach) {
+            const values = calculate(attach);
             $('span[column]').each((_, span) => {
                 const label = $(span).attr('column');
                 column(label, values[label]);
@@ -525,12 +539,39 @@
             )
         }
 
+        function initWeight() {
+            $('fieldset.Weight')
+                .append($.html.button({}, '设置').on('click', setupCheckpoint))
+                .append($.html.button({}, '删除').on('click', deleteCheckpoint))
+                .append($.html.button({}, '重置').on('click', resetCheckpoint))
+                .append($.html.button({}, '百分比攻击力').on('click', () => {
+                    calc({'百分比攻击力': 0.466});
+                }))
+                .append($.html.button({}, '固定攻击力').on('click', () => {
+                    calc({'固定攻击力': 311});
+                }))
+                .append($.html.button({}, '物理伤害加成').on('click', () => {
+                    calc({'物理伤害加成': 0.583});
+                }))
+                .append($.html.button({}, '元素伤害加成').on('click', () => {
+                    calc({'元素伤害加成': 0.466});
+                }))
+                .append($.html.button({}, '暴击率').on('click', () => {
+                    calc({'暴击率': 0.311});
+                }))
+                .append($.html.button({}, '暴击伤害').on('click', () => {
+                    calc({'暴击伤害': 0.622});
+                }))
+                .append($.html.button({}, '元素精通').on('click', () => {
+                    calc({'元素精通': 187});
+                }))
+            ;
+        }
+
         $(function () {
             initQuality();
             initCalculator();
-            $('button[name=setup]').on('click', setupCheckpoint);
-            $('button[name=delete]').on('click', deleteCheckpoint);
-            $('button[name=reset]').on('click', resetCheckpoint);
+            initWeight();
             calc();
         });
     </script>
@@ -543,12 +584,6 @@
         </fieldset>
         <fieldset class='Advanced'>
             <legend>进阶属性</legend>
-        </fieldset>
-        <fieldset>
-            <legend>比较基准</legend>
-            <button name='setup'>设置</button>
-            <button name='delete'>删除</button>
-            <button name='reset'>重置</button>
         </fieldset>
     </div>
     <div class='quality'>
@@ -585,6 +620,9 @@
         </fieldset>
     </div>
 </div>
+<fieldset class="Weight">
+    <legend>比较基准</legend>
+</fieldset>
 <fieldset class='FinalDamage'>
     <legend>最终伤害</legend>
 </fieldset>
