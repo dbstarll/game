@@ -10,10 +10,7 @@
     <link rel='stylesheet' href='/ro/css/material-icons.css'>
     <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
     <script src='https://code.jquery.com/ui/1.13.1/jquery-ui.min.js'></script>
-    <script src='/ro/js/jform/jform.min.js'></script>
-    <script src='/ro/js/jsonpath-0.8.0.js'></script>
     <script src='/ro/js/common.js'></script>
-    <script src='/ro/js/dialog.js'></script>
     <style>
         html {
             font-size: 14px;
@@ -25,27 +22,31 @@
             column-gap: 5px;
         }
 
-        #main > div.quality {
-            flex: 2;
+        #calculators {
+            flex: 1;
         }
 
-        #main > #calculator1 {
-            flex: 3;
+        div.input {
+            display: flex;
+            align-items: center;
+            column-gap: 5px;
+            margin: 1px;
         }
 
-        #main > #calculator2 {
-            flex: 4.5;
+        div.input > label {
+            flex-basis: 12ch;
+            text-align: right;
         }
 
         div.row {
             display: flex;
             align-items: center;
             column-gap: 5px;
-            margin: 5px;
+            margin: 2px;
         }
 
-        div.column:first-child {
-            flex-basis: 8ch;
+        div.column {
+            flex-basis: 10ch;
         }
 
         div.column > label {
@@ -78,19 +79,21 @@
             color: green;
         }
 
-        div.input {
-            display: flex;
-            align-items: center;
-            column-gap: 5px;
-            margin: 2px;
-        }
-
-        div.input > label {
-            flex-basis: 10ch;
-            text-align: right;
-        }
     </style>
     <script>
+        //剧变等级系数
+        const upheavals = [
+            9, 9, 10, 11, 11, 12, 13, 14, 16, 17,
+            19, 20, 22, 24, 27, 30, 32, 35, 38, 40,
+            43, 46, 49, 51, 54, 57, 59, 61, 65, 68,
+            71, 75, 78, 81, 85, 88, 92, 96, 100, 104,
+            108, 112, 117, 122, 128, 134, 141, 148, 155, 162,
+            168, 175, 182, 189, 199, 208, 217, 226, 236, 246,
+            257, 270, 283, 296, 312, 326, 340, 354, 368, 383,
+            397, 412, 426, 439, 457, 473, 490, 506, 522, 539,
+            555, 571, 588, 605, 627, 644, 663, 682, 703, 723
+        ];
+
         function column(label, newValue) {
             if ('number' === typeof newValue) {
                 $('span[column=\'' + label + '\']').each((_, span) => {
@@ -180,11 +183,10 @@
                 });
             }
 
+            // 基础伤害
             values['基础攻击力'] = values['人物攻击力'] + values['武器攻击力'];
             values['额外攻击力'] = values['基础攻击力'] * values['攻击力%'] + values['固定攻击力'];
             values['总攻击力'] = values['基础攻击力'] + values['额外攻击力'];
-
-            values['伤害加成%'] = 1 + values['物理伤害%'] + values['元素伤害%'] + values['元素影响增伤'] + values['造成伤害提高'];
 
             values['暴击收益'] = 1 + values['暴击率'] * values['暴击伤害'];
 
@@ -202,11 +204,40 @@
                 values['抗性对象承伤'] = 1 - R / 2;
             }
 
-            values['精通提升'] = (2.78 * values['元素精通']) / (values['元素精通'] + 1400);
-            values['反应倍率'] = 1 + values['精通提升'] + values['反应系数提高'];
-            values['增幅反应倍率'] = values['基础倍率'] * values['反应倍率'];
+            values['基础伤害'] = values['总攻击力'] * values['暴击收益'] * values['防御对象承伤'] * values['抗性对象承伤'];
 
-            values['最终伤害'] = values['总攻击力'] * values['伤害加成%'] * values['暴击收益'] * values['防御对象承伤'] * values['抗性对象承伤'] * values['增幅反应倍率'];
+            //技能伤害
+            values['普攻伤害加成'] = 1 + values['物理伤害%'] + values['普攻增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
+            values['重击伤害加成'] = 1 + values['物理伤害%'] + values['重击增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
+            values['附魔普攻伤害加成'] = 1 + values['元素伤害%'] + values['普攻增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
+            values['附魔重击伤害加成'] = 1 + values['元素伤害%'] + values['重击增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
+            values['战技伤害加成'] = 1 + values['元素伤害%'] + values['战技增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
+            values['爆发伤害加成'] = 1 + values['元素伤害%'] + values['爆发增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
+
+            values['普攻伤害'] = values['基础伤害'] * values['普攻倍率'] * values['普攻伤害加成'];
+            values['重击伤害'] = values['基础伤害'] * values['重击倍率'] * values['重击伤害加成'];
+            values['附魔普攻伤害'] = values['基础伤害'] * values['普攻倍率'] * values['附魔普攻伤害加成'];
+            values['附魔重击伤害'] = values['基础伤害'] * values['重击倍率'] * values['附魔重击伤害加成'];
+            values['战技伤害'] = values['基础伤害'] * values['战技倍率'] * values['战技伤害加成'];
+            values['爆发伤害'] = values['基础伤害'] * values['爆发倍率'] * values['爆发伤害加成'];
+
+            //元素反应
+            values['增幅精通提升'] = (2.78 * values['元素精通']) / (values['元素精通'] + 1400);
+            values['增幅反应倍率'] = 1 + values['增幅精通提升'] + values['反应系数提高'];
+            values['增幅反应总倍率'] = values['增幅基础倍率'] * values['增幅反应倍率'];
+
+            values['剧变精通提升'] = 16 * values['元素精通'] / (values['元素精通'] + 2000);
+            values['剧变反应倍率'] = 1 + values['剧变精通提升'] + values['反应伤害提升'];
+            values['等级系数'] = upheavals[values['人物等级'] - 1];
+            values['剧变伤害'] = values['等级系数'] * values['抗性对象承伤'] * values['剧变基础倍率'] * values['剧变反应倍率'];
+
+            //final
+            values['普攻最终伤害'] = values['基础伤害'] * values['普攻倍率'] * values['普攻伤害加成'];
+            values['重击最终伤害'] = values['基础伤害'] * values['重击倍率'] * values['重击伤害加成'];
+            values['附魔普攻最终伤害'] = values['基础伤害'] * values['普攻倍率'] * values['附魔普攻伤害加成'] * values['增幅反应总倍率'];
+            values['附魔重击最终伤害'] = values['基础伤害'] * values['重击倍率'] * values['附魔重击伤害加成'] * values['增幅反应总倍率'];
+            values['战技最终伤害'] = values['基础伤害'] * values['战技倍率'] * values['战技伤害加成'] * values['增幅反应总倍率'];
+            values['爆发最终伤害'] = values['基础伤害'] * values['爆发倍率'] * values['爆发伤害加成'] * values['增幅反应总倍率'];
 
             return values;
         }
@@ -218,7 +249,7 @@
                 column(label, values[label]);
             });
             const R = values['元素抗性'];
-            $('#calculator1').children('fieldset.Resistance').children('div[optional].row').hide().eq(R > 0.75 ? 0 : (R >= 0 ? 1 : 2)).show();
+            $('#calculator1').children('fieldset.calculator-resistance').children('div[optional].row').hide().eq(R > 0.75 ? 0 : (R >= 0 ? 1 : 2)).show();
         }
 
         function setupCheckpoint() {
@@ -327,10 +358,14 @@
         }
 
         function initQuality() {
-            initQualityBase($('fieldset.Basis'));
-            initQualityAdvanced($('fieldset.Advanced'));
-            initQualityElemental($('fieldset.Elemental'));
-            initQualityOther($('fieldset.Other'));
+            initQualityBasis($('fieldset.quality-basis'));
+            initQualityCritical($('fieldset.quality-critical'));
+            initQualitySpike($('fieldset.quality-spike'));
+            initQualityMonster($('fieldset.quality-monster'));
+            initQualitySkillMultipler($('fieldset.quality-skill-multipler'));
+            initQualitySkillDamage($('fieldset.quality-skill-damage'));
+            initQualityDamage($('fieldset.quality-damage'));
+            initQualityReaction($('fieldset.quality-reaction'));
             $('input[type=text][column]').each((_, input) => {
                 const min = $.data(input, 'min') || 0;
                 const current = $.data(input, 'current');
@@ -350,46 +385,70 @@
             });
         }
 
-        function initQualityBase(container) {
-            container.append(newInput('人物攻击力'))
+        function initQualityBasis(container) {
+            container.append(newInput('人物等级', 1, false, 1, 90, 90))
+                .append(newInput('人物攻击力', 1, false, 0, false, 100))
                 .append(newInput('武器攻击力'))
                 .append(newInput('攻击力%', 0.1, true))
                 .append(newInput('固定攻击力'));
         }
 
-        function initQualityAdvanced(container) {
-            container.append(newInput('物理伤害%', 0.1, true))
-                .append(newInput('元素伤害%', 0.1, true))
-                .append(newInput('暴击率', 0.1, true))
-                .append(newInput('暴击伤害', 0.1, true))
-                .append(newInput('元素精通'))
-                .append(newSelect('基础倍率', {'水火蒸发': 200, '火水蒸发': 150, '火冰融化': 200, '冰火融化': 150}, true));
+        function initQualityCritical(container) {
+            container.append(newInput('暴击率', 0.1, true, 0, false, 5))
+                .append(newInput('暴击伤害', 0.1, true, 0, false, 50));
         }
 
-        function initQualityElemental(container) {
-            container.append(newInput('元素影响增伤', 0.1, true))
-                .append(newInput('造成伤害提高', 0.1, true))
-                .append(newInput('元素抗性减免', 1, true))
-                .append(newInput('反应系数提高', 0.1, true))
-                .append(newInput('无视防御', 0.1, true))
-                .append(newInput('防御减免', 0.1, true));
-            ;
+        function initQualitySpike(container) {
+            container.append(newInput('无视防御', 0.1, true))
+                .append(newInput('防御减免', 0.1, true))
+                .append(newInput('元素抗性减免', 1, true));
         }
 
-        function initQualityOther(container) {
-            container.append(newInput('人物等级', 1, false, 1, 90, 90))
-                .append(newInput('怪物等级', 1, false, 1, 90, 90))
+        function initQualityMonster(container) {
+            container.append(newInput('怪物等级', 1, false, 1, 90, 90))
                 .append(newInput('怪物防御%', 0.1, true))
                 .append(newInput('怪物抗性', 1, true, -100, 0, 10));
         }
 
+        function initQualitySkillMultipler(container) {
+            container.append(newInput('普攻倍率', 0.1, true, 0, false, 50))
+                .append(newInput('重击倍率', 0.1, true, 0, false, 100))
+                .append(newInput('战技倍率', 0.1, true, 0, false, 150))
+                .append(newInput('爆发倍率', 0.1, true, 0, false, 250));
+        }
+
+        function initQualitySkillDamage(container) {
+            container.append(newInput('普攻增伤', 0.1, true))
+                .append(newInput('重击增伤', 0.1, true))
+                .append(newInput('战技增伤', 0.1, true))
+                .append(newInput('爆发增伤', 0.1, true));
+        }
+
+        function initQualityDamage(container) {
+            container.append(newInput('物理伤害%', 0.1, true))
+                .append(newInput('元素伤害%', 0.1, true))
+                .append(newInput('元素影响增伤', 0.1, true))
+                .append(newInput('造成伤害提高', 0.1, true));
+        }
+
+        function initQualityReaction(container) {
+            container.append(newInput('元素精通'))
+                .append(newInput('反应系数提高', 1, true))
+                .append(newInput('反应伤害提升', 1, true))
+                .append(newSelect('增幅基础倍率', {'水火蒸发2': 200, '火水蒸发1.5': 150, '火冰融化2': 200, '冰火融化1.5': 150}, true))
+                .append(newSelect('剧变基础倍率', {'超导1': 100, '扩散1.2': 120, '碎冰3': 300, '超载4': 400, '感电2.4': 240}, true));
+        }
+
         function initCalculator() {
-            initCalculatorAttack($('fieldset.Attack'));
-            initCalculatorDamageBonus($('fieldset.DamageBonus'));
-            initCalculatorCriticalBracket($('fieldset.CriticalBracket'));
-            initCalculatorDefense($('fieldset.Defense'));
-            initCalculatorResistance($('fieldset.Resistance'));
-            initCalculatorElementalReaction($('fieldset.ElementalReaction'));
+            initCalculatorAttack($('fieldset.calculator-attack'));
+            initCalculatorCritical($('fieldset.calculator-critical'));
+            initCalculatorDefense($('fieldset.calculator-defense'));
+            initCalculatorResistance($('fieldset.calculator-resistance'));
+            initCalculatorDamageBasic($('fieldset.calculator-damage-basic'));
+            initCalculatorDamageBonus($('fieldset.calculator-damage-bonus'));
+            initCalculatorDamageSkill($('fieldset.calculator-damage-skill'));
+            initCalculatorReactionBonus($('fieldset.calculator-reaction-bonus'));
+            initCalculatorReactionUpheaval($('fieldset.calculator-reaction-upheaval'));
             initCalculatorFinalDamage($('fieldset.FinalDamage'));
         }
 
@@ -417,22 +476,7 @@
             );
         }
 
-        function initCalculatorDamageBonus(container) {
-            container.append(newRow()
-                .append(newColumn('伤害加成%', true))
-                .append(symbol('=', '1', '+', '('))
-                .append(newColumn('物理伤害%', true))
-                .append(symbol('+'))
-                .append(newColumn('元素伤害%', true))
-                .append(symbol('+'))
-                .append(newColumn('元素影响增伤', true))
-                .append(symbol('+'))
-                .append(newColumn('造成伤害提高', true))
-                .append(symbol(')'))
-            );
-        }
-
-        function initCalculatorCriticalBracket(container) {
+        function initCalculatorCritical(container) {
             container.append(newRow()
                 .append(newColumn('暴击收益', true))
                 .append(symbol('=', '1', '+'))
@@ -498,49 +542,248 @@
             );
         }
 
-        function initCalculatorElementalReaction(container) {
+        function initCalculatorDamageBasic(container) {
             container.append(newRow()
-                .append(newColumn('精通提升', true))
-                .append(symbol('=', '(', '2.78', '×'))
-                .append(newColumn('元素精通'))
-                .append(symbol(')', '/', '('))
-                .append(newColumn('元素精通'))
-                .append(symbol('+', '1400', ')'))
-            ).append(newRow()
-                .append(newColumn('反应倍率', true))
-                .append(symbol('=', '1', '+'))
-                .append(newColumn('精通提升', true))
-                .append(symbol('+'))
-                .append(newColumn('反应系数提高', true))
-            ).append(newRow()
-                .append(newColumn('增幅反应倍率', true))
-                .append(symbol('='))
-                .append(newColumn('基础倍率', true))
-                .append(symbol('×'))
-                .append(newColumn('反应倍率', true))
-            );
-        }
-
-        function initCalculatorFinalDamage(container) {
-            container.append(newRow()
-                .append(newColumn('最终伤害'))
+                .append(newColumn('基础伤害'))
                 .append(symbol('='))
                 .append(newColumn('总攻击力'))
-                .append(symbol('×'))
-                .append(newColumn('伤害加成%', true))
                 .append(symbol('×'))
                 .append(newColumn('暴击收益', true))
                 .append(symbol('×'))
                 .append(newColumn('防御对象承伤', true))
                 .append(symbol('×'))
                 .append(newColumn('抗性对象承伤', true))
+            );
+        }
+
+        function initCalculatorDamageBonus(container) {
+            container.append(newRow()
+                .append(newColumn('普攻伤害加成', true))
+                .append(symbol('=', '1', '+'))
+                .append(newColumn('物理伤害%', true))
+                .append(symbol('+'))
+                .append(newColumn('普攻增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('元素影响增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('造成伤害提高', true))
+            ).append(newRow()
+                .append(newColumn('重击伤害加成', true))
+                .append(symbol('=', '1', '+'))
+                .append(newColumn('物理伤害%', true))
+                .append(symbol('+'))
+                .append(newColumn('重击增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('元素影响增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('造成伤害提高', true))
+            ).append(newRow()
+                .append(newColumn('附魔普攻伤害加成', true))
+                .append(symbol('=', '1', '+'))
+                .append(newColumn('元素伤害%', true))
+                .append(symbol('+'))
+                .append(newColumn('普攻增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('元素影响增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('造成伤害提高', true))
+            ).append(newRow()
+                .append(newColumn('附魔重击伤害加成', true))
+                .append(symbol('=', '1', '+'))
+                .append(newColumn('元素伤害%', true))
+                .append(symbol('+'))
+                .append(newColumn('重击增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('元素影响增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('造成伤害提高', true))
+            ).append(newRow()
+                .append(newColumn('战技伤害加成', true))
+                .append(symbol('=', '1', '+'))
+                .append(newColumn('元素伤害%', true))
+                .append(symbol('+'))
+                .append(newColumn('战技增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('元素影响增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('造成伤害提高', true))
+            ).append(newRow()
+                .append(newColumn('爆发伤害加成', true))
+                .append(symbol('=', '1', '+'))
+                .append(newColumn('元素伤害%', true))
+                .append(symbol('+'))
+                .append(newColumn('爆发增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('元素影响增伤', true))
+                .append(symbol('+'))
+                .append(newColumn('造成伤害提高', true))
+            );
+        }
+
+        function initCalculatorDamageSkill(container) {
+            container.append(newRow()
+                .append(newColumn('普攻伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('普攻倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('普攻伤害加成', true))
+            ).append(newRow()
+                .append(newColumn('重击伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('重击倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('重击伤害加成', true))
+            ).append(newRow()
+                .append(newColumn('附魔普攻伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('普攻倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('附魔普攻伤害加成', true))
+            ).append(newRow()
+                .append(newColumn('附魔重击伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('重击倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('附魔重击伤害加成', true))
+            ).append(newRow()
+                .append(newColumn('战技伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('战技倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('战技伤害加成', true))
+            ).append(newRow()
+                .append(newColumn('爆发伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('爆发倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('爆发伤害加成', true))
+            );
+        }
+
+        function initCalculatorReactionBonus(container) {
+            container.append(newRow()
+                .append(newColumn('增幅精通提升', true))
+                .append(symbol('=', '(', '2.78', '×'))
+                .append(newColumn('元素精通'))
+                .append(symbol(')', '/', '('))
+                .append(newColumn('元素精通'))
+                .append(symbol('+', '1400', ')'))
+            ).append(newRow()
+                .append(newColumn('增幅反应倍率', true))
+                .append(symbol('=', '1', '+'))
+                .append(newColumn('增幅精通提升', true))
+                .append(symbol('+'))
+                .append(newColumn('反应系数提高', true))
+            ).append(newRow()
+                .append(newColumn('增幅反应总倍率', true))
+                .append(symbol('='))
+                .append(newColumn('增幅基础倍率', true))
                 .append(symbol('×'))
                 .append(newColumn('增幅反应倍率', true))
-            )
+            );
+        }
+
+        function initCalculatorReactionUpheaval(container) {
+            container.append(newRow()
+                .append(newColumn('剧变精通提升', true))
+                .append(symbol('=', '16', '×'))
+                .append(newColumn('元素精通'))
+                .append(symbol('/', '('))
+                .append(newColumn('元素精通'))
+                .append(symbol('+', '2000', ')'))
+            ).append(newRow()
+                .append(newColumn('剧变反应倍率', true))
+                .append(symbol('=', '1', '+'))
+                .append(newColumn('剧变精通提升', true))
+                .append(symbol('+'))
+                .append(newColumn('反应伤害提升', true))
+            ).append(newRow()
+                .append(newColumn('剧变伤害'))
+                .append(symbol('='))
+                .append(newColumn('等级系数'))
+                .append(symbol('×'))
+                .append(newColumn('抗性对象承伤', true))
+                .append(symbol('×'))
+                .append(newColumn('剧变基础倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('剧变反应倍率', true))
+            );
+        }
+
+        function initCalculatorFinalDamage(container) {
+            container.append(newRow()
+                .append(newColumn('普攻最终伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('普攻倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('普攻伤害加成', true))
+            ).append(newRow()
+                .append(newColumn('重击最终伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('重击倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('重击伤害加成', true))
+            ).append(newRow()
+                .append(newColumn('附魔普攻最终伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('普攻倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('附魔普攻伤害加成', true))
+                .append(symbol('×'))
+                .append(newColumn('增幅反应总倍率', true))
+            ).append(newRow()
+                .append(newColumn('附魔重击最终伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('重击倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('附魔重击伤害加成', true))
+                .append(symbol('×'))
+                .append(newColumn('增幅反应总倍率', true))
+            ).append(newRow()
+                .append(newColumn('战技最终伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('战技倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('战技伤害加成', true))
+                .append(symbol('×'))
+                .append(newColumn('增幅反应总倍率', true))
+            ).append(newRow()
+                .append(newColumn('爆发最终伤害'))
+                .append(symbol('='))
+                .append(newColumn('基础伤害'))
+                .append(symbol('×'))
+                .append(newColumn('爆发倍率', true))
+                .append(symbol('×'))
+                .append(newColumn('爆发伤害加成', true))
+                .append(symbol('×'))
+                .append(newColumn('增幅反应总倍率', true))
+            );
         }
 
         function initWeight() {
-            $('fieldset.Weight')
+            $('.Weight')
                 .append($.html.button({}, '设置').on('click', setupCheckpoint))
                 .append($.html.button({}, '删除').on('click', deleteCheckpoint))
                 .append($.html.button({}, '重置').on('click', resetCheckpoint))
@@ -569,6 +812,12 @@
         }
 
         $(function () {
+            const calculators = $('#calculators').tabs();
+            const qualities = $('#qualities').tabs({
+                activate: function () {
+                    calculators.tabs("option", "active", qualities.tabs("option", "active"));
+                }
+            });
             initQuality();
             initCalculator();
             initWeight();
@@ -577,54 +826,93 @@
     </script>
 </head>
 <body>
-<div id='main'>
-    <div class='quality'>
-        <fieldset class='Basis'>
-            <legend>基础属性</legend>
-        </fieldset>
-        <fieldset class='Advanced'>
-            <legend>进阶属性</legend>
-        </fieldset>
-    </div>
-    <div class='quality'>
-        <fieldset class='Elemental'>
-            <legend>高级属性</legend>
-        </fieldset>
-        <fieldset class='Other'>
-            <legend>其他</legend>
-        </fieldset>
-    </div>
-    <div id='calculator1'>
-        <fieldset class='Attack'>
-            <legend>基础区</legend>
-        </fieldset>
-        <fieldset class='DamageMultipiler'>
-            <legend>倍率区</legend>
-        </fieldset>
-        <fieldset class='CriticalBracket'>
-            <legend>暴击区</legend>
-        </fieldset>
-        <fieldset class='Resistance'>
-            <legend>抗性区</legend>
-        </fieldset>
-    </div>
-    <div id='calculator2'>
-        <fieldset class='DamageBonus'>
-            <legend>增伤区</legend>
-        </fieldset>
-        <fieldset class='Defense'>
-            <legend>防御区</legend>
-        </fieldset>
-        <fieldset class='ElementalReaction'>
-            <legend>反应区</legend>
-        </fieldset>
-    </div>
-</div>
 <fieldset class="Weight">
     <legend>比较基准</legend>
 </fieldset>
-<fieldset class='FinalDamage'>
-    <legend>最终伤害</legend>
-</fieldset>
+<div id='main'>
+    <div id="qualities">
+        <ul>
+            <li><a href="#quality1">基础</a></li>
+            <li><a href="#quality2">技能</a></li>
+            <li><a href="#quality3">反应</a></li>
+        </ul>
+        <div id="quality1">
+            <fieldset class='quality-basis'>
+                <legend>基础属性</legend>
+            </fieldset>
+            <fieldset class='quality-critical'>
+                <legend>暴击属性</legend>
+            </fieldset>
+            <fieldset class='quality-spike'>
+                <legend>穿刺属性</legend>
+            </fieldset>
+            <fieldset class='quality-monster'>
+                <legend>怪物属性</legend>
+            </fieldset>
+        </div>
+        <div id="quality2">
+            <fieldset class='quality-skill-multipler'>
+                <legend>技能倍率</legend>
+            </fieldset>
+            <fieldset class='quality-skill-damage'>
+                <legend>技能增伤</legend>
+            </fieldset>
+            <fieldset class='quality-damage'>
+                <legend>增伤属性</legend>
+            </fieldset>
+        </div>
+        <div id="quality3">
+            <fieldset class='quality-reaction'>
+                <legend>元素反应属性</legend>
+            </fieldset>
+        </div>
+    </div>
+    <div id="calculators">
+        <ul>
+            <li><a href="#calculator1">基础伤害</a></li>
+            <li><a href="#calculator2">技能伤害</a></li>
+            <li><a href="#calculator3">元素反应</a></li>
+            <li><a href="#calculator4">最终伤害</a></li>
+        </ul>
+        <div id='calculator1'>
+            <fieldset class='calculator-attack'>
+                <legend>基础区</legend>
+            </fieldset>
+            <fieldset class='calculator-critical'>
+                <legend>暴击区</legend>
+            </fieldset>
+            <fieldset class='calculator-defense'>
+                <legend>防御区</legend>
+            </fieldset>
+            <fieldset class='calculator-resistance'>
+                <legend>抗性区</legend>
+            </fieldset>
+            <fieldset class='calculator-damage-basic'>
+                <legend>基础伤害</legend>
+            </fieldset>
+        </div>
+        <div id='calculator2'>
+            <fieldset class='calculator-damage-bonus'>
+                <legend>增伤区</legend>
+            </fieldset>
+            <fieldset class='calculator-damage-skill'>
+                <legend>技能伤害</legend>
+            </fieldset>
+        </div>
+        <div id='calculator3'>
+            <fieldset class='calculator-reaction-bonus'>
+                <legend>增幅反应区</legend>
+            </fieldset>
+            <fieldset class='calculator-reaction-upheaval'>
+                <legend>剧变反应区</legend>
+            </fieldset>
+        </div>
+        <div id='calculator4'>
+            <fieldset class='FinalDamage'>
+                <legend>最终伤害</legend>
+            </fieldset>
+        </div>
+    </div>
+</div>
 </body>
 </html>
