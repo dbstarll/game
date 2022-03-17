@@ -94,6 +94,23 @@
             555, 571, 588, 605, 627, 644, 663, 682, 703, 723
         ];
 
+        const reactions = {
+            bonus: {
+                '火': {'蒸发': {target: '水', rate: 1.5}, '融化': {target: '冰', rate: 2}},
+                '水': {'蒸发': {target: '火', rate: 2}},
+                '冰': {'融化': {target: '火', rate: 1.5}}
+            },
+            upheaval: {
+                rate: {'超导': 1, '扩散': 1.2, '碎冰': 3, '超载': 4, '感电': 2.4},
+                '风': {'碎冰': ['冻'], '扩散': ['火', '水', '冰', '雷']},
+                '雷': {'碎冰': ['冻'], '扩散': ['风'], '超导': ['冰'], '超载': ['火'], '感电': ['水']},
+                '火': {'碎冰': ['冻'], '扩散': ['风'], '超载': ['雷']},
+                '水': {'碎冰': ['冻'], '扩散': ['风'], '感电': ['雷']},
+                '冰': {'碎冰': ['冻'], '扩散': ['风'], '超导': ['雷']},
+                '岩': {'碎冰': ['冻']}
+            }
+        };
+
         function column(label, newValue) {
             if ('number' === typeof newValue) {
                 $('span[column=\'' + label + '\']').each((_, span) => {
@@ -224,25 +241,28 @@
             //元素反应
             values['增幅精通提升'] = (2.78 * values['元素精通']) / (values['元素精通'] + 1400);
             values['增幅反应倍率'] = 1 + values['增幅精通提升'] + values['反应系数提高'];
-            values['增幅反应总倍率'] = values['增幅基础倍率'] * values['增幅反应倍率'];
 
             values['剧变精通提升'] = 16 * values['元素精通'] / (values['元素精通'] + 2000);
             values['剧变反应倍率'] = 1 + values['剧变精通提升'] + values['反应伤害提升'];
             values['等级系数'] = upheavals[values['人物等级'] - 1];
+            values['剧变基础伤害'] = values['等级系数'] * values['抗性对象承伤'] * values['剧变反应倍率'];
 
-            values['附魔普攻增幅伤害'] = values['附魔普攻伤害'] * values['增幅反应总倍率'];
-            values['附魔重击增幅伤害'] = values['附魔重击伤害'] * values['增幅反应总倍率'];
-            values['元素战技增幅伤害'] = values['元素战技伤害'] * values['增幅反应总倍率'];
-            values['元素爆发增幅伤害'] = values['元素爆发伤害'] * values['增幅反应总倍率'];
-            values['剧变伤害'] = values['等级系数'] * values['抗性对象承伤'] * values['剧变基础倍率'] * values['剧变反应倍率'];
-
-            //final
-            values['普攻最终伤害'] = values['基础伤害'] * values['普攻倍率'] * values['普攻伤害加成'];
-            values['重击最终伤害'] = values['基础伤害'] * values['重击倍率'] * values['重击伤害加成'];
-            values['附魔普攻最终伤害'] = values['基础伤害'] * values['普攻倍率'] * values['附魔普攻伤害加成'] * values['增幅反应总倍率'];
-            values['附魔重击最终伤害'] = values['基础伤害'] * values['重击倍率'] * values['附魔重击伤害加成'] * values['增幅反应总倍率'];
-            values['战技最终伤害'] = values['基础伤害'] * values['元素战技倍率'] * values['元素战技伤害加成'] * values['增幅反应总倍率'];
-            values['爆发最终伤害'] = values['基础伤害'] * values['元素爆发倍率'] * values['元素爆发伤害加成'] * values['增幅反应总倍率'];
+            const element = $('select[column=元素类型]').val();
+            const bonus = reactions.bonus[element];
+            if ('object' === typeof bonus) {
+                Object.keys(bonus).forEach((key) => {
+                    values['附魔普攻伤害(' + key + ')'] = values['附魔普攻伤害'] * values['增幅反应倍率'] * bonus[key].rate;
+                    values['附魔重击伤害(' + key + ')'] = values['附魔重击伤害'] * values['增幅反应倍率'] * bonus[key].rate;
+                    values['元素战技伤害(' + key + ')'] = values['元素战技伤害'] * values['增幅反应倍率'] * bonus[key].rate;
+                    values['元素爆发伤害(' + key + ')'] = values['元素爆发伤害'] * values['增幅反应倍率'] * bonus[key].rate;
+                });
+            }
+            const upheaval = reactions.upheaval[element];
+            if ('object' === typeof upheaval) {
+                Object.keys(upheaval).forEach((key) => {
+                    values['剧变伤害(' + key + ')'] = values['剧变基础伤害'] * reactions.upheaval.rate[key];
+                });
+            }
 
             return values;
         }
@@ -385,7 +405,7 @@
                 $(this).trigger('select');
             });
             $('select[column]').selectmenu({
-                width: 110,
+                width: 75,
                 change: calc
             });
         }
@@ -440,8 +460,11 @@
             container.append(newInput('元素精通'))
                 .append(newInput('反应系数提高', 1, true))
                 .append(newInput('反应伤害提升', 1, true))
-                .append(newSelect('增幅基础倍率', {'水火蒸发': 200, '火水蒸发': 150, '火冰融化': 200, '冰火融化': 150}, true))
-                .append(newSelect('剧变基础倍率', {'超导': 100, '扩散': 120, '碎冰': 300, '超载': 400, '感电': 240}, true));
+                .append(newSelect('元素类型', {'火': '火', '水': '水', '冰': '冰', '岩': '岩', '风': '风', '雷': '雷'}));
+            const initDamageReaction = function () {
+                initCalculatorDamageReaction($('fieldset.calculator-damage-reaction'), $(this).val());
+            };
+            $('select[column=元素类型]', container).on("selectmenucreate", initDamageReaction).on("selectmenuchange", initDamageReaction);
         }
 
         function initCalculator() {
@@ -454,9 +477,6 @@
             initCalculatorDamageSkill($('fieldset.calculator-damage-skill'));
             initCalculatorReactionBonus($('fieldset.calculator-reaction-bonus'));
             initCalculatorReactionUpheaval($('fieldset.calculator-reaction-upheaval'));
-            initCalculatorDamageReaction($('fieldset.calculator-damage-reaction'));
-
-            initCalculatorFinalDamage($('fieldset.FinalDamage'));
         }
 
         function initCalculatorAttack(container) {
@@ -693,12 +713,6 @@
                 .append(newColumn('增幅精通提升', true))
                 .append(symbol('+'))
                 .append(newColumn('反应系数提高', true))
-            ).append(newRow()
-                .append(newColumn('增幅反应总倍率', true))
-                .append(symbol('='))
-                .append(newColumn('增幅基础倍率', true))
-                .append(symbol('×'))
-                .append(newColumn('增幅反应倍率', true))
             );
         }
 
@@ -716,105 +730,50 @@
                 .append(newColumn('剧变精通提升', true))
                 .append(symbol('+'))
                 .append(newColumn('反应伤害提升', true))
-            );
-        }
-
-        function initCalculatorDamageReaction(container) {
-            container.append(newRow()
-                .append(newColumn('附魔普攻增幅伤害'))
-                .append(symbol('='))
-                .append(newColumn('附魔普攻伤害'))
-                .append(symbol('×'))
-                .append(newColumn('增幅反应总倍率', true))
             ).append(newRow()
-                .append(newColumn('附魔重击增幅伤害'))
-                .append(symbol('='))
-                .append(newColumn('附魔重击伤害'))
-                .append(symbol('×'))
-                .append(newColumn('增幅反应总倍率', true))
-            ).append(newRow()
-                .append(newColumn('元素战技增幅伤害'))
-                .append(symbol('='))
-                .append(newColumn('元素战技伤害'))
-                .append(symbol('×'))
-                .append(newColumn('增幅反应总倍率', true))
-            ).append(newRow()
-                .append(newColumn('元素爆发增幅伤害'))
-                .append(symbol('='))
-                .append(newColumn('元素爆发伤害'))
-                .append(symbol('×'))
-                .append(newColumn('增幅反应总倍率', true))
-            ).append(newRow()
-                .append(newColumn('剧变伤害'))
+                .append(newColumn('剧变基础伤害'))
                 .append(symbol('='))
                 .append(newColumn('等级系数'))
                 .append(symbol('×'))
                 .append(newColumn('抗性对象承伤', true))
                 .append(symbol('×'))
-                .append(newColumn('剧变基础倍率', true))
-                .append(symbol('×'))
                 .append(newColumn('剧变反应倍率', true))
             );
         }
 
-        function initCalculatorFinalDamage(container) {
-            container.append(newRow()
-                .append(newColumn('普攻最终伤害'))
-                .append(symbol('='))
-                .append(newColumn('基础伤害'))
-                .append(symbol('×'))
-                .append(newColumn('普攻倍率', true))
-                .append(symbol('×'))
-                .append(newColumn('普攻伤害加成', true))
-            ).append(newRow()
-                .append(newColumn('重击最终伤害'))
-                .append(symbol('='))
-                .append(newColumn('基础伤害'))
-                .append(symbol('×'))
-                .append(newColumn('重击倍率', true))
-                .append(symbol('×'))
-                .append(newColumn('重击伤害加成', true))
-            ).append(newRow()
-                .append(newColumn('附魔普攻最终伤害'))
-                .append(symbol('='))
-                .append(newColumn('基础伤害'))
-                .append(symbol('×'))
-                .append(newColumn('普攻倍率', true))
-                .append(symbol('×'))
-                .append(newColumn('附魔普攻伤害加成', true))
-                .append(symbol('×'))
-                .append(newColumn('增幅反应总倍率', true))
-            ).append(newRow()
-                .append(newColumn('附魔重击最终伤害'))
-                .append(symbol('='))
-                .append(newColumn('基础伤害'))
-                .append(symbol('×'))
-                .append(newColumn('重击倍率', true))
-                .append(symbol('×'))
-                .append(newColumn('附魔重击伤害加成', true))
-                .append(symbol('×'))
-                .append(newColumn('增幅反应总倍率', true))
-            ).append(newRow()
-                .append(newColumn('战技最终伤害'))
-                .append(symbol('='))
-                .append(newColumn('基础伤害'))
-                .append(symbol('×'))
-                .append(newColumn('元素战技倍率', true))
-                .append(symbol('×'))
-                .append(newColumn('元素战技伤害加成', true))
-                .append(symbol('×'))
-                .append(newColumn('增幅反应总倍率', true))
-            ).append(newRow()
-                .append(newColumn('爆发最终伤害'))
-                .append(symbol('='))
-                .append(newColumn('基础伤害'))
-                .append(symbol('×'))
-                .append(newColumn('元素爆发倍率', true))
-                .append(symbol('×'))
-                .append(newColumn('元素爆发伤害加成', true))
-                .append(symbol('×'))
-                .append(newColumn('增幅反应总倍率', true))
-            );
+        function initCalculatorDamageReactionRow(container, element, label) {
+            const bonus = reactions.bonus[element];
+            if ('object' === typeof bonus) {
+                const row = newRow();
+                if (label.startsWith('附魔')) {
+                    row.append(newColumn(label.substr(2))).append(symbol(' '));
+                }
+                row.append(newColumn(label));
+                Object.keys(bonus).forEach((key) => {
+                    row.append(symbol(' ')).append(newColumn(label + '(' + key + ')'))
+                });
+                container.append(row);
+            }
+        }
+
+        function initCalculatorDamageReaction(container, element) {
+            container.children('div.row').remove();
+            initCalculatorDamageReactionRow(container, element, '附魔普攻伤害');
+            initCalculatorDamageReactionRow(container, element, '附魔重击伤害');
+            initCalculatorDamageReactionRow(container, element, '元素战技伤害');
+            initCalculatorDamageReactionRow(container, element, '元素爆发伤害');
+
+            const upheaval = reactions.upheaval[element];
+            if ('object' === typeof upheaval) {
+                const row = newRow();
+                Object.keys(upheaval).forEach((key, index) => {
+                    if (index > 0) {
+                        row.append(symbol(' '));
+                    }
+                    row.append(newColumn('剧变伤害(' + key + ')'));
+                });
+                container.append(row);
+            }
         }
 
         function initWeight() {
@@ -907,7 +866,6 @@
             <li><a href="#calculator1">基础伤害</a></li>
             <li><a href="#calculator2">技能伤害</a></li>
             <li><a href="#calculator3">反应伤害</a></li>
-            <li><a href="#calculator4">最终伤害</a></li>
         </ul>
         <div id='calculator1'>
             <fieldset class='calculator-attack'>
@@ -943,11 +901,6 @@
             </fieldset>
             <fieldset class='calculator-damage-reaction'>
                 <legend>反应伤害</legend>
-            </fieldset>
-        </div>
-        <div id='calculator4'>
-            <fieldset class='FinalDamage'>
-                <legend>最终伤害</legend>
             </fieldset>
         </div>
     </div>
