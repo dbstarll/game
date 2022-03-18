@@ -206,6 +206,9 @@
             values['总攻击力'] = values['基础攻击力'] + values['额外攻击力'];
 
             // 暴击区
+            if (values['暴击率'] > 1) {
+                values['暴击率'] = 1;
+            }
             values['暴击收益'] = 1 + values['暴击率'] * values['暴击伤害'];
 
             // 防御区
@@ -851,6 +854,9 @@
                 }))
                 .append($.html.button({}, '元素精通').on('click', () => {
                     calc({'元素精通': 187});
+                }))
+                .append($.html.button({}, '超导').on('click', () => {
+                    calc({'物理抗性减免': 0.4});
                 }))
             ;
         }
