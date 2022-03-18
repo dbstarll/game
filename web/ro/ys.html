@@ -200,30 +200,24 @@
                 });
             }
 
-            // 基础伤害
+            // 基础区
             values['基础攻击力'] = values['人物攻击力'] + values['武器攻击力'];
             values['额外攻击力'] = values['基础攻击力'] * values['攻击力%'] + values['固定攻击力'];
             values['总攻击力'] = values['基础攻击力'] + values['额外攻击力'];
 
+            // 暴击区
             values['暴击收益'] = 1 + values['暴击率'] * values['暴击伤害'];
 
+            // 防御区
             values['穿防系数'] = 1 - values['无视防御'];
             values['减防系数'] = 1 - values['防御减免'] + values['怪物防御%'];
             values['防御系数'] = values['穿防系数'] * values['减防系数'] * (values['怪物等级'] + 100);
-            values['防御对象承伤'] = (values['人物等级'] + 100) / (values['人物等级'] + 100 + values['防御系数']);
+            values['防御承伤'] = (values['人物等级'] + 100) / (values['人物等级'] + 100 + values['防御系数']);
 
-            const R = values['元素抗性'] = values['怪物抗性'] - values['元素抗性减免'];
-            if (R > 0.75) {
-                values['抗性对象承伤'] = 1 / (1 + 4 * R);
-            } else if (R >= 0) {
-                values['抗性对象承伤'] = 1 - R;
-            } else {
-                values['抗性对象承伤'] = 1 - R / 2;
-            }
+            // 基础伤害
+            values['基础伤害'] = values['总攻击力'] * values['暴击收益'] * values['防御承伤'];
 
-            values['基础伤害'] = values['总攻击力'] * values['暴击收益'] * values['防御对象承伤'] * values['抗性对象承伤'];
-
-            //技能伤害
+            // 增伤区
             values['普攻伤害加成'] = 1 + values['物理伤害%'] + values['普攻增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
             values['重击伤害加成'] = 1 + values['物理伤害%'] + values['重击增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
             values['附魔普攻伤害加成'] = 1 + values['元素伤害%'] + values['普攻增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
@@ -231,22 +225,43 @@
             values['元素战技伤害加成'] = 1 + values['元素伤害%'] + values['元素战技增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
             values['元素爆发伤害加成'] = 1 + values['元素伤害%'] + values['元素爆发增伤'] + values['元素影响增伤'] + values['造成伤害提高'];
 
-            values['普攻伤害'] = values['基础伤害'] * values['普攻倍率'] * values['普攻伤害加成'];
-            values['重击伤害'] = values['基础伤害'] * values['重击倍率'] * values['重击伤害加成'];
-            values['附魔普攻伤害'] = values['基础伤害'] * values['普攻倍率'] * values['附魔普攻伤害加成'];
-            values['附魔重击伤害'] = values['基础伤害'] * values['重击倍率'] * values['附魔重击伤害加成'];
-            values['元素战技伤害'] = values['基础伤害'] * values['元素战技倍率'] * values['元素战技伤害加成'];
-            values['元素爆发伤害'] = values['基础伤害'] * values['元素爆发倍率'] * values['元素爆发伤害加成'];
+            // 抗性区
+            const phyR = values['元素抗性'] = values['怪物元素抗性'] - values['元素抗性减免'];
+            if (phyR > 0.75) {
+                values['元素抗性承伤'] = 1 / (1 + 4 * phyR);
+            } else if (phyR >= 0) {
+                values['元素抗性承伤'] = 1 - phyR;
+            } else {
+                values['元素抗性承伤'] = 1 - phyR / 2;
+            }
+            const eleR = values['物理抗性'] = values['怪物物理抗性'] - values['物理抗性减免'];
+            if (eleR > 0.75) {
+                values['物理抗性承伤'] = 1 / (1 + 4 * eleR);
+            } else if (eleR >= 0) {
+                values['物理抗性承伤'] = 1 - eleR;
+            } else {
+                values['物理抗性承伤'] = 1 - eleR / 2;
+            }
 
-            //元素反应
+            // 技能伤害
+            values['普攻伤害'] = values['基础伤害'] * values['普攻倍率'] * values['普攻伤害加成'] * values['物理抗性承伤'];
+            values['重击伤害'] = values['基础伤害'] * values['重击倍率'] * values['重击伤害加成'] * values['物理抗性承伤'];
+            values['附魔普攻伤害'] = values['基础伤害'] * values['普攻倍率'] * values['附魔普攻伤害加成'] * values['元素抗性承伤'];
+            values['附魔重击伤害'] = values['基础伤害'] * values['重击倍率'] * values['附魔重击伤害加成'] * values['元素抗性承伤'];
+            values['元素战技伤害'] = values['基础伤害'] * values['元素战技倍率'] * values['元素战技伤害加成'] * values['元素抗性承伤'];
+            values['元素爆发伤害'] = values['基础伤害'] * values['元素爆发倍率'] * values['元素爆发伤害加成'] * values['元素抗性承伤'];
+
+            // 增幅反应区
             values['增幅精通提升'] = (2.78 * values['元素精通']) / (values['元素精通'] + 1400);
             values['增幅反应倍率'] = 1 + values['增幅精通提升'] + values['反应系数提高'];
 
+            // 剧变反应区
             values['剧变精通提升'] = 16 * values['元素精通'] / (values['元素精通'] + 2000);
             values['剧变反应倍率'] = 1 + values['剧变精通提升'] + values['反应伤害提升'];
             values['等级系数'] = upheavals[values['人物等级'] - 1];
-            values['剧变基础伤害'] = values['等级系数'] * values['抗性对象承伤'] * values['剧变反应倍率'];
+            values['剧变基础伤害'] = values['等级系数'] * values['元素抗性承伤'] * values['剧变反应倍率'];
 
+            // 反应伤害
             const element = $('select[column=元素类型]').val();
             const bonus = reactions.bonus[element];
             if ('object' === typeof bonus) {
@@ -273,8 +288,10 @@
                 const label = $(span).attr('column');
                 column(label, values[label]);
             });
-            const R = values['元素抗性'];
-            $('#calculator1').children('fieldset.calculator-resistance').children('div[optional].row').hide().eq(R > 0.75 ? 0 : (R >= 0 ? 1 : 2)).show();
+            const phyR = values['物理抗性'], eleR = values['元素抗性'];
+            const rows = $('fieldset.calculator-resistance').children('div[optional].row').hide();
+            rows.eq(phyR > 0.75 ? 0 : (phyR >= 0 ? 1 : 2)).show();
+            rows.eq(eleR > 0.75 ? 3 : (eleR >= 0 ? 4 : 5)).show();
         }
 
         function setupCheckpoint() {
@@ -385,12 +402,14 @@
         function initQuality() {
             initQualityBasis($('fieldset.quality-basis'));
             initQualityCritical($('fieldset.quality-critical'));
-            initQualitySpike($('fieldset.quality-spike'));
-            initQualityMonster($('fieldset.quality-monster'));
-            initQualitySkillMultipler($('fieldset.quality-skill-multipler'));
-            initQualitySkillDamage($('fieldset.quality-skill-damage'));
+            initQualityDefence($('fieldset.quality-defence'));
+
             initQualityDamage($('fieldset.quality-damage'));
+            initQualitySkillDamage($('fieldset.quality-skill-damage'));
+            initQualityResistance($('fieldset.quality-resistance'));
+
             initQualityReaction($('fieldset.quality-reaction'));
+
             $('input[type=text][column]').each((_, input) => {
                 const min = $.data(input, 'min') || 0;
                 const current = $.data(input, 'current');
@@ -423,30 +442,11 @@
                 .append(newInput('暴击伤害', 0.1, true, 0, false, 50));
         }
 
-        function initQualitySpike(container) {
+        function initQualityDefence(container) {
             container.append(newInput('无视防御', 0.1, true))
                 .append(newInput('防御减免', 0.1, true))
-                .append(newInput('元素抗性减免', 1, true));
-        }
-
-        function initQualityMonster(container) {
-            container.append(newInput('怪物等级', 1, false, 1, 90, 90))
                 .append(newInput('怪物防御%', 0.1, true))
-                .append(newInput('怪物抗性', 1, true, -100, 0, 10));
-        }
-
-        function initQualitySkillMultipler(container) {
-            container.append(newInput('普攻倍率', 0.1, true, 0, false, 50))
-                .append(newInput('重击倍率', 0.1, true, 0, false, 100))
-                .append(newInput('元素战技倍率', 0.1, true, 0, false, 150))
-                .append(newInput('元素爆发倍率', 0.1, true, 0, false, 250));
-        }
-
-        function initQualitySkillDamage(container) {
-            container.append(newInput('普攻增伤', 0.1, true))
-                .append(newInput('重击增伤', 0.1, true))
-                .append(newInput('元素战技增伤', 0.1, true))
-                .append(newInput('元素爆发增伤', 0.1, true));
+                .append(newInput('怪物等级', 1, false, 1, 90, 90));
         }
 
         function initQualityDamage(container) {
@@ -454,6 +454,24 @@
                 .append(newInput('元素伤害%', 0.1, true))
                 .append(newInput('元素影响增伤', 0.1, true))
                 .append(newInput('造成伤害提高', 0.1, true));
+        }
+
+        function initQualitySkillDamage(container) {
+            container.append(newInput('普攻增伤', 0.1, true))
+                .append(newInput('重击增伤', 0.1, true))
+                .append(newInput('元素战技增伤', 0.1, true))
+                .append(newInput('元素爆发增伤', 0.1, true))
+                .append(newInput('普攻倍率', 0.1, true, 0, false, 50))
+                .append(newInput('重击倍率', 0.1, true, 0, false, 100))
+                .append(newInput('元素战技倍率', 0.1, true, 0, false, 150))
+                .append(newInput('元素爆发倍率', 0.1, true, 0, false, 250));
+        }
+
+        function initQualityResistance(container) {
+            container.append(newInput('物理抗性减免', 1, true))
+                .append(newInput('元素抗性减免', 1, true))
+                .append(newInput('怪物物理抗性', 1, true, -100, 0, 10))
+                .append(newInput('怪物元素抗性', 1, true, -100, 0, 10));
         }
 
         function initQualityReaction(container) {
@@ -471,10 +489,12 @@
             initCalculatorAttack($('fieldset.calculator-attack'));
             initCalculatorCritical($('fieldset.calculator-critical'));
             initCalculatorDefense($('fieldset.calculator-defense'));
-            initCalculatorResistance($('fieldset.calculator-resistance'));
             initCalculatorDamageBasic($('fieldset.calculator-damage-basic'));
+
             initCalculatorDamageBonus($('fieldset.calculator-damage-bonus'));
+            initCalculatorResistance($('fieldset.calculator-resistance'));
             initCalculatorDamageSkill($('fieldset.calculator-damage-skill'));
+
             initCalculatorReactionBonus($('fieldset.calculator-reaction-bonus'));
             initCalculatorReactionUpheaval($('fieldset.calculator-reaction-upheaval'));
         }
@@ -534,7 +554,7 @@
                 .append(newColumn('怪物等级'))
                 .append(symbol('+', '100', ')'))
             ).append(newRow()
-                .append(newColumn('防御对象承伤', true))
+                .append(newColumn('防御承伤', true))
                 .append(symbol('='), '(')
                 .append(newColumn('人物等级'))
                 .append(symbol('+', '100', ')', '/', '('))
@@ -542,30 +562,6 @@
                 .append(symbol('+', '100', '+'))
                 .append(newColumn('防御系数'))
                 .append(symbol(')'))
-            );
-        }
-
-        function initCalculatorResistance(container) {
-            container.append(newRow()
-                .append(newColumn('元素抗性', true))
-                .append(symbol('='))
-                .append(newColumn('怪物抗性', true))
-                .append(symbol('-'))
-                .append(newColumn('元素抗性减免', true))
-            ).append(newRow().attr('optional', true)
-                .append(newColumn('抗性对象承伤', true))
-                .append(symbol('=', '1', '/', '(1', '+', '4', '×'))
-                .append(newColumn('元素抗性', true))
-                .append(symbol(')'))
-            ).append(newRow().attr('optional', true)
-                .append(newColumn('抗性对象承伤', true))
-                .append(symbol('=', '1', '-'))
-                .append(newColumn('元素抗性', true))
-            ).append(newRow().attr('optional', true)
-                .append(newColumn('抗性对象承伤', true))
-                .append(symbol('=', '1', '-'))
-                .append(newColumn('元素抗性', true))
-                .append(symbol('/', '2'))
             );
         }
 
@@ -577,9 +573,7 @@
                 .append(symbol('×'))
                 .append(newColumn('暴击收益', true))
                 .append(symbol('×'))
-                .append(newColumn('防御对象承伤', true))
-                .append(symbol('×'))
-                .append(newColumn('抗性对象承伤', true))
+                .append(newColumn('防御承伤', true))
             );
         }
 
@@ -647,6 +641,50 @@
             );
         }
 
+        function initCalculatorResistance(container) {
+            container.append(newRow()
+                .append(newColumn('物理抗性', true))
+                .append(symbol('='))
+                .append(newColumn('怪物物理抗性', true))
+                .append(symbol('-'))
+                .append(newColumn('物理抗性减免', true))
+                .append(symbol(' '))
+                .append(newColumn('元素抗性', true))
+                .append(symbol('='))
+                .append(newColumn('怪物元素抗性', true))
+                .append(symbol('-'))
+                .append(newColumn('元素抗性减免', true))
+            ).append(newRow().attr('optional', true)
+                .append(newColumn('物理抗性承伤', true))
+                .append(symbol('=', '1', '/', '(1', '+', '4', '×'))
+                .append(newColumn('物理抗性', true))
+                .append(symbol(')'))
+            ).append(newRow().attr('optional', true)
+                .append(newColumn('物理抗性承伤', true))
+                .append(symbol('=', '1', '-'))
+                .append(newColumn('物理抗性', true))
+            ).append(newRow().attr('optional', true)
+                .append(newColumn('物理抗性承伤', true))
+                .append(symbol('=', '1', '-'))
+                .append(newColumn('物理抗性', true))
+                .append(symbol('/', '2'))
+            ).append(newRow().attr('optional', true)
+                .append(newColumn('元素抗性承伤', true))
+                .append(symbol('=', '1', '/', '(1', '+', '4', '×'))
+                .append(newColumn('元素抗性', true))
+                .append(symbol(')'))
+            ).append(newRow().attr('optional', true)
+                .append(newColumn('元素抗性承伤', true))
+                .append(symbol('=', '1', '-'))
+                .append(newColumn('元素抗性', true))
+            ).append(newRow().attr('optional', true)
+                .append(newColumn('元素抗性承伤', true))
+                .append(symbol('=', '1', '-'))
+                .append(newColumn('元素抗性', true))
+                .append(symbol('/', '2'))
+            );
+        }
+
         function initCalculatorDamageSkill(container) {
             container.append(newRow()
                 .append(newColumn('普攻伤害'))
@@ -656,6 +694,8 @@
                 .append(newColumn('普攻倍率', true))
                 .append(symbol('×'))
                 .append(newColumn('普攻伤害加成', true))
+                .append(symbol('×'))
+                .append(newColumn('物理抗性承伤', true))
             ).append(newRow()
                 .append(newColumn('重击伤害'))
                 .append(symbol('='))
@@ -664,6 +704,8 @@
                 .append(newColumn('重击倍率', true))
                 .append(symbol('×'))
                 .append(newColumn('重击伤害加成', true))
+                .append(symbol('×'))
+                .append(newColumn('物理抗性承伤', true))
             ).append(newRow()
                 .append(newColumn('附魔普攻伤害'))
                 .append(symbol('='))
@@ -672,6 +714,8 @@
                 .append(newColumn('普攻倍率', true))
                 .append(symbol('×'))
                 .append(newColumn('附魔普攻伤害加成', true))
+                .append(symbol('×'))
+                .append(newColumn('元素抗性承伤', true))
             ).append(newRow()
                 .append(newColumn('附魔重击伤害'))
                 .append(symbol('='))
@@ -680,6 +724,8 @@
                 .append(newColumn('重击倍率', true))
                 .append(symbol('×'))
                 .append(newColumn('附魔重击伤害加成', true))
+                .append(symbol('×'))
+                .append(newColumn('元素抗性承伤', true))
             ).append(newRow()
                 .append(newColumn('元素战技伤害'))
                 .append(symbol('='))
@@ -688,6 +734,8 @@
                 .append(newColumn('元素战技倍率', true))
                 .append(symbol('×'))
                 .append(newColumn('元素战技伤害加成', true))
+                .append(symbol('×'))
+                .append(newColumn('元素抗性承伤', true))
             ).append(newRow()
                 .append(newColumn('元素爆发伤害'))
                 .append(symbol('='))
@@ -696,6 +744,8 @@
                 .append(newColumn('元素爆发倍率', true))
                 .append(symbol('×'))
                 .append(newColumn('元素爆发伤害加成', true))
+                .append(symbol('×'))
+                .append(newColumn('元素抗性承伤', true))
             );
         }
 
@@ -735,7 +785,7 @@
                 .append(symbol('='))
                 .append(newColumn('等级系数'))
                 .append(symbol('×'))
-                .append(newColumn('抗性对象承伤', true))
+                .append(newColumn('元素抗性承伤', true))
                 .append(symbol('×'))
                 .append(newColumn('剧变反应倍率', true))
             );
@@ -820,9 +870,7 @@
     </script>
 </head>
 <body>
-<fieldset class="Weight">
-    <legend>比较基准</legend>
-</fieldset>
+<div class="Weight"></div>
 <div id='main'>
     <div id="qualities">
         <ul>
@@ -837,22 +885,19 @@
             <fieldset class='quality-critical'>
                 <legend>暴击属性</legend>
             </fieldset>
-            <fieldset class='quality-spike'>
-                <legend>穿刺属性</legend>
-            </fieldset>
-            <fieldset class='quality-monster'>
-                <legend>怪物属性</legend>
+            <fieldset class='quality-defence'>
+                <legend>防御属性</legend>
             </fieldset>
         </div>
         <div id="quality2">
-            <fieldset class='quality-skill-multipler'>
-                <legend>技能倍率</legend>
-            </fieldset>
-            <fieldset class='quality-skill-damage'>
-                <legend>技能增伤</legend>
-            </fieldset>
             <fieldset class='quality-damage'>
                 <legend>增伤属性</legend>
+            </fieldset>
+            <fieldset class='quality-skill-damage'>
+                <legend>技能增伤&倍率</legend>
+            </fieldset>
+            <fieldset class='quality-resistance'>
+                <legend>抗性属性</legend>
             </fieldset>
         </div>
         <div id="quality3">
@@ -877,9 +922,6 @@
             <fieldset class='calculator-defense'>
                 <legend>防御区</legend>
             </fieldset>
-            <fieldset class='calculator-resistance'>
-                <legend>抗性区</legend>
-            </fieldset>
             <fieldset class='calculator-damage-basic'>
                 <legend>基础伤害</legend>
             </fieldset>
@@ -887,6 +929,9 @@
         <div id='calculator2'>
             <fieldset class='calculator-damage-bonus'>
                 <legend>增伤区</legend>
+            </fieldset>
+            <fieldset class='calculator-resistance'>
+                <legend>抗性区</legend>
             </fieldset>
             <fieldset class='calculator-damage-skill'>
                 <legend>技能伤害</legend>
