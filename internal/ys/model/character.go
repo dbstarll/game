@@ -3,13 +3,23 @@ package model
 import (
 	"github.com/dbstarll/game/internal/ys/dimension/element"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
+	"github.com/pkg/errors"
+)
+
+var (
+	CharacterFactory迪卢克 = func() *Character {
+		return NewCharacter(5, element.Fire, weaponType.BigSword,
+			BaseCharacter(90, 12981, 335, 784, AddCritical(24.2)))
+	}
 )
 
 type Character struct {
-	level      int
+	star       int
 	element    element.Element
 	weaponType weaponType.WeaponType
+	level      int
 	base       Attributes
+	weapon     *Weapon
 }
 
 type CharacterModifier func(character *Character) func()
@@ -26,11 +36,12 @@ func BaseCharacter(level, baseHp, baseAttack, baseDefence int, baseModifier Attr
 	}
 }
 
-func NewCharacter(element element.Element, weaponType weaponType.WeaponType, modifiers ...CharacterModifier) *Character {
+func NewCharacter(star int, element element.Element, weaponType weaponType.WeaponType, modifiers ...CharacterModifier) *Character {
 	c := &Character{
-		level:      1,
+		star:       star,
 		element:    element,
 		weaponType: weaponType,
+		level:      1,
 		base: Attributes{
 			Critical:       5,
 			CriticalDamage: 50,
@@ -41,6 +52,20 @@ func NewCharacter(element element.Element, weaponType weaponType.WeaponType, mod
 		modifier(c)
 	}
 	return c
+}
+
+func (c *Character) Weapon(newWeapon *Weapon) (*Weapon, error) {
+	if oldWeapon := c.weapon; newWeapon == nil {
+		// 卸下武器
+		c.weapon = nil
+		return oldWeapon, nil
+	} else if c.weaponType != newWeapon.weaponType {
+		return nil, errors.Errorf("不能装备此类型的武器: %s, 需要: %s", newWeapon.weaponType, c.weaponType)
+	} else {
+		// 替换武器
+		c.weapon = newWeapon
+		return oldWeapon, nil
+	}
 }
 
 // 基础区

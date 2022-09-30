@@ -4,9 +4,15 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
 )
 
+var (
+	Weapon无工之剑 = NewWeapon(5, weaponType.BigSword, BaseWeapon(90, 608, AddAttackPer(49.6)))
+	Weapon原木刀  = NewWeapon(4, weaponType.Sword, BaseWeapon(90, 565, AddElementCharge(30.6)))
+)
+
 type Weapon struct {
-	level      int
+	star       int
 	weaponType weaponType.WeaponType
+	level      int
 	base       Attributes
 }
 
@@ -24,10 +30,11 @@ func BaseWeapon(level, baseAttack int, baseModifier AttributeModifier) WeaponMod
 	}
 }
 
-func NewWeapon(weaponType weaponType.WeaponType, modifiers ...WeaponModifier) *Weapon {
+func NewWeapon(star int, weaponType weaponType.WeaponType, modifiers ...WeaponModifier) *Weapon {
 	w := &Weapon{
-		level:      1,
+		star:       star,
 		weaponType: weaponType,
+		level:      1,
 	}
 	for _, modifier := range modifiers {
 		modifier(w)

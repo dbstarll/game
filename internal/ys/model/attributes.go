@@ -57,29 +57,38 @@ func BaseAttributes(baseHp, baseAttack, baseDefence int) AttributeModifier {
 	}
 }
 
-func AddAttack(attack int) AttributeModifier {
+func AddAttack(add int) AttributeModifier {
 	return func(attributes *Attributes) func() {
-		attributes.Attack += attack
+		attributes.Attack += add
 		return func() {
-			attributes.Attack -= attack
+			attributes.Attack -= add
 		}
 	}
 }
 
-func AddAttackPer(attackPer float64) AttributeModifier {
+func AddAttackPer(add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
-		attributes.AttackPer += attackPer
+		attributes.AttackPer += add
 		return func() {
-			attributes.AttackPer -= attackPer
+			attributes.AttackPer -= add
 		}
 	}
 }
 
-func AddCritical(critical float64) AttributeModifier {
+func AddCritical(add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
-		attributes.Critical += critical
+		attributes.Critical += add
 		return func() {
-			attributes.Critical -= critical
+			attributes.Critical -= add
+		}
+	}
+}
+
+func AddElementCharge(add float64) AttributeModifier {
+	return func(attributes *Attributes) func() {
+		attributes.ElementCharge += add
+		return func() {
+			attributes.ElementCharge -= add
 		}
 	}
 }
