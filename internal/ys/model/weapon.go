@@ -22,11 +22,11 @@ type Weapon struct {
 
 type WeaponModifier func(weapon *Weapon) func()
 
-func BaseWeapon(level, baseAttack int, baseModifier AttributeModifier) WeaponModifier {
+func BaseWeapon(level, baseAtk int, baseModifier AttributeModifier) WeaponModifier {
 	return func(weapon *Weapon) func() {
 		oldLevel := weapon.level
 		weapon.level = level
-		callback := MergeAttributes(AddAtk(baseAttack), baseModifier)(&weapon.base)
+		callback := MergeAttributes(AddAtk(baseAtk), baseModifier)(&weapon.base)
 		return func() {
 			callback()
 			weapon.level = oldLevel

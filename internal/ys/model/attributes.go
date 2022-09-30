@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/dbstarll/game/internal/ys/dimension/element"
+	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 )
 
 type Attributes struct {
@@ -24,10 +24,10 @@ type Attributes struct {
 	CDReduction    float64 // 冷却缩减%
 	ShieldStrength float64 // 护盾强效%
 
-	ElementDamageBonus  map[element.Element]float64 // 元素伤害加成%
-	ElementResist       map[element.Element]float64 // 元素抗性%
-	PhysicalDamageBonus float64                     // 物理伤害加成%
-	PhysicalResist      float64                     // 物理抗性%
+	ElementalDamageBonus map[elemental.Elemental]float64 // 元素伤害加成%
+	ElementalResist      map[elemental.Elemental]float64 // 元素抗性%
+	PhysicalDamageBonus  float64                         // 物理伤害加成%
+	PhysicalResist       float64                         // 物理抗性%
 }
 
 type AttributeModifier func(attributes *Attributes) func()

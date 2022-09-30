@@ -1,21 +1,21 @@
 package model
 
 import (
-	"github.com/dbstarll/game/internal/ys/dimension/element"
+	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
 	"github.com/pkg/errors"
 )
 
 var (
 	CharacterFactory迪卢克 = func(constellation int) *Character {
-		return NewCharacter(5, element.Pyro, weaponType.Claymore,
+		return NewCharacter(5, elemental.Pyro, weaponType.Claymore,
 			BaseCharacter(90, 12981, 335, 784, AddCriticalRate(24.2)))
 	}
 )
 
 type Character struct {
 	star       int
-	element    element.Element
+	elemental  elemental.Elemental
 	weaponType weaponType.WeaponType
 	level      int
 	base       Attributes
@@ -24,11 +24,11 @@ type Character struct {
 
 type CharacterModifier func(character *Character) func()
 
-func BaseCharacter(level, baseHp, baseAttack, baseDefence int, baseModifier AttributeModifier) CharacterModifier {
+func BaseCharacter(level, baseHp, baseAtk, baseDef int, baseModifier AttributeModifier) CharacterModifier {
 	return func(character *Character) func() {
 		oldLevel := character.level
 		character.level = level
-		callback := MergeAttributes(BaseAttributes(baseHp, baseAttack, baseDefence), baseModifier)(&character.base)
+		callback := MergeAttributes(BaseAttributes(baseHp, baseAtk, baseDef), baseModifier)(&character.base)
 		return func() {
 			callback()
 			character.level = oldLevel
@@ -36,10 +36,10 @@ func BaseCharacter(level, baseHp, baseAttack, baseDefence int, baseModifier Attr
 	}
 }
 
-func NewCharacter(star int, element element.Element, weaponType weaponType.WeaponType, modifiers ...CharacterModifier) *Character {
+func NewCharacter(star int, elemental elemental.Elemental, weaponType weaponType.WeaponType, modifiers ...CharacterModifier) *Character {
 	c := &Character{
 		star:       star,
-		element:    element,
+		elemental:  elemental,
 		weaponType: weaponType,
 		level:      1,
 		base: Attributes{

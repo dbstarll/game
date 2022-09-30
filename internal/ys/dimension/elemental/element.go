@@ -1,19 +1,19 @@
-package element
+package elemental
 
 // 元素类型
-type Element int
+type Elemental int
 
 const (
-	Anemo   Element = iota // 风
-	Pyro                   // 火
-	Hydro                  // 水
-	Cryo                   // 冰
-	Electro                // 雷
-	Geo                    // 岩
-	Dendro                 // 草
+	Anemo   Elemental = iota // 风
+	Pyro                     // 火
+	Hydro                    // 水
+	Cryo                     // 冰
+	Electro                  // 雷
+	Geo                      // 岩
+	Dendro                   // 草
 )
 
-var Elements = []Element{
+var Elements = []Elemental{
 	Anemo,
 	Pyro,
 	Hydro,
@@ -23,7 +23,7 @@ var Elements = []Element{
 	Dendro,
 }
 
-func (e Element) String() string {
+func (e Elemental) String() string {
 	switch e {
 	case Anemo:
 		return "风"
