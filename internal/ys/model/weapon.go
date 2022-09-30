@@ -5,8 +5,12 @@ import (
 )
 
 var (
-	Weapon无工之剑 = NewWeapon(5, weaponType.BigSword, BaseWeapon(90, 608, AddAttackPer(49.6)))
-	Weapon原木刀  = NewWeapon(4, weaponType.Sword, BaseWeapon(90, 565, AddElementCharge(30.6)))
+	WeaponFactory无工之剑 = func(refine int) *Weapon {
+		return NewWeapon(5, weaponType.Claymore, BaseWeapon(90, 608, AddAttackPer(49.6)))
+	}
+	WeaponFactory原木刀 = func(refine int) *Weapon {
+		return NewWeapon(4, weaponType.Sword, BaseWeapon(90, 565, AddElementCharge(30.6)))
+	}
 )
 
 type Weapon struct {

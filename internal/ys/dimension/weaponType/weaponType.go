@@ -4,32 +4,32 @@ package weaponType
 type WeaponType int
 
 const (
-	Sword    WeaponType = iota //单手剑
-	BigSword                   //双手剑
-	Bow                        //弓
-	Spear                      //长柄武器
-	Magic                      //法器
+	Sword    WeaponType = iota // 单手剑
+	Claymore                   // 双手剑
+	Bow                        // 弓
+	Polearm                    // 长柄武器
+	Catalyst                   // 法器
 )
 
 var WeaponTypes = []WeaponType{
 	Sword,
-	BigSword,
+	Claymore,
 	Bow,
-	Spear,
-	Magic,
+	Polearm,
+	Catalyst,
 }
 
 func (w WeaponType) String() string {
 	switch w {
 	case Sword:
 		return "单手剑"
-	case BigSword:
+	case Claymore:
 		return "双手剑"
 	case Bow:
 		return "弓"
-	case Spear:
+	case Polearm:
 		return "长柄武器"
-	case Magic:
+	case Catalyst:
 		return "法器"
 	default:
 		if w < 0 {

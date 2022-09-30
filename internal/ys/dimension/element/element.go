@@ -4,40 +4,40 @@ package element
 type Element int
 
 const (
-	Wind    Element = iota // 风
-	Fire                   // 火
-	Water                  // 水
-	Ice                    // 冰
-	Thunder                // 雷
-	Earth                  // 岩
-	Grass                  // 草
+	Anemo   Element = iota // 风
+	Pyro                   // 火
+	Hydro                  // 水
+	Cryo                   // 冰
+	Electro                // 雷
+	Geo                    // 岩
+	Dendro                 // 草
 )
 
 var Elements = []Element{
-	Wind,
-	Fire,
-	Water,
-	Ice,
-	Thunder,
-	Earth,
-	Grass,
+	Anemo,
+	Pyro,
+	Hydro,
+	Cryo,
+	Electro,
+	Geo,
+	Dendro,
 }
 
 func (e Element) String() string {
 	switch e {
-	case Wind:
+	case Anemo:
 		return "风"
-	case Fire:
+	case Pyro:
 		return "火"
-	case Water:
+	case Hydro:
 		return "水"
-	case Ice:
+	case Cryo:
 		return "冰"
-	case Thunder:
+	case Electro:
 		return "雷"
-	case Earth:
+	case Geo:
 		return "岩"
-	case Grass:
+	case Dendro:
 		return "草"
 	default:
 		if e < 0 {

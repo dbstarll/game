@@ -8,7 +8,7 @@ import (
 
 var (
 	CharacterFactory迪卢克 = func() *Character {
-		return NewCharacter(5, element.Fire, weaponType.BigSword,
+		return NewCharacter(5, element.Pyro, weaponType.Claymore,
 			BaseCharacter(90, 12981, 335, 784, AddCritical(24.2)))
 	}
 )
