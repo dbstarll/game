@@ -8,7 +8,7 @@ type Attributes struct {
 	Hp         int     // 生命值
 	HpPer      float64 // 生命值%
 	Attack     int     // 攻击力
-	AttackPer  int     // 攻击力%
+	AttackPer  float64 // 攻击力%
 	Defence    int     // 防御力
 	DefencePer float64 // 防御力%
 
@@ -53,6 +53,24 @@ func BaseAttributes(baseHp, baseAttack, baseDefence int) AttributeModifier {
 		attributes.Hp, attributes.Attack, attributes.Defence = baseHp, baseAttack, baseDefence
 		return func() {
 			attributes.Hp, attributes.Attack, attributes.Defence = oldHp, oldAttack, oldDefence
+		}
+	}
+}
+
+func AddAttack(attack int) AttributeModifier {
+	return func(attributes *Attributes) func() {
+		attributes.Attack += attack
+		return func() {
+			attributes.Attack -= attack
+		}
+	}
+}
+
+func AddAttackPer(attackPer float64) AttributeModifier {
+	return func(attributes *Attributes) func() {
+		attributes.AttackPer += attackPer
+		return func() {
+			attributes.AttackPer -= attackPer
 		}
 	}
 }
