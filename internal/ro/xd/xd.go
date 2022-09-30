@@ -44,6 +44,12 @@ func loadAll(file *os.File) error {
 				head := strings.TrimSpace(string(line[:idx]))
 				data := line[idxStart : idxEnd+1]
 				switch head {
+				case "MONIQI_DATA.CommonFun.BaseLvRate":
+					fmt.Printf("BaseLvRate: %s\n", data)
+				case "MONIQI_DATA.CommonFun.HpRate":
+					fmt.Printf("HpRate: %s\n", data)
+				case "MONIQI_DATA.CommonFun.BaseHp":
+					fmt.Printf("BaseHp: %s\n", data)
 				//case "MONIQI_DATA.attrratio_data":
 				//	fmt.Printf("attrratio_data: %s\n", data)
 				//case "MONIQI_DATA.attrvalue_data":

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	_ "github.com/dbstarll/game/internal/logger"
+	"github.com/dbstarll/game/internal/ro/dimension/abnormal"
 	"github.com/dbstarll/game/internal/ro/dimension/job"
 	"github.com/dbstarll/game/internal/ro/dimension/nature"
 	"github.com/dbstarll/game/internal/ro/dimension/position"
@@ -24,6 +25,9 @@ func main() {
 	//Shooter()
 	//Hunter()
 	EarthBash()
+	for _, n := range abnormal.Abnormals {
+		fmt.Printf("'%s抵抗',", n)
+	}
 }
 
 func ff(b, d float64) float64 {
@@ -204,7 +208,7 @@ func profitDetect(player *model.Player, attack *attack.Attack, fn buff.FinalDama
 	fmt.Printf("base: %f\n", fn(player))
 	for _, pos := range []position.Position{position.Weapon, position.Armor, position.Shield, position.Cloak, position.Shoes, position.Ring} {
 		fmt.Printf("装备: %s\n", pos)
-		for idx, p := range buff.ProfitDetect(player, false, fn, Equips(pos, player.Job(), attack.GetWeapon())) {
+		for idx, p := range buff.ProfitDetect(player, false, fn, Equips(pos, player.Job, attack.GetWeapon())) {
 			if idx < 10 {
 				fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
 			}
