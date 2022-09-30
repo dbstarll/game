@@ -68,6 +68,18 @@ func (c *Character) Weapon(newWeapon *Weapon) (*Weapon, error) {
 	}
 }
 
+func (c *Character) FinalAttributes() *Attributes {
+	final := &Attributes{}
+	final.Add(&c.base)
+	if c.weapon != nil {
+		final.Add(&c.weapon.base)
+		for _, modifier := range c.weapon.refineModifiers {
+			modifier(final)
+		}
+	}
+	return final
+}
+
 // 基础区
 func (c *Character) calculatorAttack() float64 {
 	return 0

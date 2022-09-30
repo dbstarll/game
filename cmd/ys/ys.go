@@ -12,5 +12,26 @@ func main() {
 	if _, err := 迪卢克.Weapon(无工之剑); err != nil {
 		log.Fatalf("%+v\n", err)
 	}
-	log.Printf("%+v\n", 迪卢克)
+	log.Printf("%+v\n", 迪卢克.FinalAttributes())
+
+	// Talents
+	// Normal Attack
+	// - 1-Hit DMG
+	// - 2-Hit DMG
+	// - 3-Hit DMG
+	// - 4-Hit DMG
+	// - 5-Hit DMG
+	// Charged Attack
+	//   Charged Attack DMG
+	// Plunging Attack
+	//   Plunge DMG
+	//   Low/High Plunge DMG
+	// Elemental Skill
+	//   Skill DMG
+	//   CD
+	// Elemental Burst
+	//   Duration
+	//   CD
+	//   Energy Cost
+
 }

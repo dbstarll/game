@@ -2,11 +2,15 @@ package model
 
 import (
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
+	"time"
 )
 
 var (
 	WeaponFactory无工之剑 = func(refine int) *Weapon {
-		return NewWeapon(5, weaponType.Claymore, BaseWeapon(90, 608, AddAtkPercentage(49.6)))
+		return NewWeapon(5, weaponType.Claymore, BaseWeapon(90, 608, AddAtkPercentage(49.6)),
+			AddShieldStrength(float64(15+refine*5)),
+			Superposition(5, time.Second*8, time.Millisecond*300, AddAtkPercentage(float64(3+refine))),
+		)
 	}
 	WeaponFactory原木刀 = func(refine int) *Weapon {
 		return NewWeapon(4, weaponType.Sword, BaseWeapon(90, 565, AddEnergyRecharge(30.6)))
@@ -14,10 +18,11 @@ var (
 )
 
 type Weapon struct {
-	star       int
-	weaponType weaponType.WeaponType
-	level      int
-	base       Attributes
+	star            int
+	weaponType      weaponType.WeaponType
+	level           int
+	base            Attributes
+	refineModifiers []AttributeModifier
 }
 
 type WeaponModifier func(weapon *Weapon) func()
@@ -34,14 +39,13 @@ func BaseWeapon(level, baseAtk int, baseModifier AttributeModifier) WeaponModifi
 	}
 }
 
-func NewWeapon(star int, weaponType weaponType.WeaponType, modifiers ...WeaponModifier) *Weapon {
+func NewWeapon(star int, weaponType weaponType.WeaponType, baseModifier WeaponModifier, refineModifiers ...AttributeModifier) *Weapon {
 	w := &Weapon{
-		star:       star,
-		weaponType: weaponType,
-		level:      1,
+		star:            star,
+		weaponType:      weaponType,
+		level:           1,
+		refineModifiers: refineModifiers,
 	}
-	for _, modifier := range modifiers {
-		modifier(w)
-	}
+	baseModifier(w)
 	return w
 }
