@@ -7,9 +7,9 @@ import (
 )
 
 var (
-	CharacterFactory迪卢克 = func() *Character {
+	CharacterFactory迪卢克 = func(constellation int) *Character {
 		return NewCharacter(5, element.Pyro, weaponType.Claymore,
-			BaseCharacter(90, 12981, 335, 784, AddCritical(24.2)))
+			BaseCharacter(90, 12981, 335, 784, AddCriticalRate(24.2)))
 	}
 )
 
@@ -43,9 +43,9 @@ func NewCharacter(star int, element element.Element, weaponType weaponType.Weapo
 		weaponType: weaponType,
 		level:      1,
 		base: Attributes{
-			Critical:       5,
+			CriticalRate:   5,
 			CriticalDamage: 50,
-			ElementCharge:  100,
+			EnergyRecharge: 100,
 		},
 	}
 	for _, modifier := range modifiers {

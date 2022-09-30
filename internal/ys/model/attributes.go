@@ -5,29 +5,29 @@ import (
 )
 
 type Attributes struct {
-	Hp         int     // 生命值
-	HpPer      float64 // 生命值%
-	Attack     int     // 攻击力
-	AttackPer  float64 // 攻击力%
-	Defence    int     // 防御力
-	DefencePer float64 // 防御力%
+	Hp            int     // 生命值
+	HpPercentage  float64 // 生命值%
+	Atk           int     // 攻击力
+	AtkPercentage float64 // 攻击力%
+	Def           int     // 防御力
+	DefPercentage float64 // 防御力%
 
-	Critical       float64 // 暴击率%
+	CriticalRate   float64 // 暴击率%
 	CriticalDamage float64 // 暴击伤害%
 
-	ElementCharge float64 // 元素充能效率%
-	ElementMaster int     // 元素精通
+	EnergyRecharge   float64 // 元素充能效率%
+	ElementalMastery int     // 元素精通
 
-	Cure  float64 // 治疗加成%
-	Cured float64 // 受治疗加成%
+	HealingBonus         float64 // 治疗加成%
+	IncomingHealingBonus float64 // 受治疗加成%
 
-	Cooling float64 // 冷却缩减%
-	Shield  float64 // 护盾强效%
+	CDReduction    float64 // 冷却缩减%
+	ShieldStrength float64 // 护盾强效%
 
-	ElementDamage  map[element.Element]float64 // 元素伤害加成%
-	ElementResist  map[element.Element]float64 // 元素抗性%
-	PhysicalDamage float64                     // 物理伤害加成%
-	PhysicalResist float64                     // 物理抗性%
+	ElementDamageBonus  map[element.Element]float64 // 元素伤害加成%
+	ElementResist       map[element.Element]float64 // 元素抗性%
+	PhysicalDamageBonus float64                     // 物理伤害加成%
+	PhysicalResist      float64                     // 物理抗性%
 }
 
 type AttributeModifier func(attributes *Attributes) func()
@@ -47,48 +47,48 @@ func MergeAttributes(modifiers ...AttributeModifier) AttributeModifier {
 	}
 }
 
-func BaseAttributes(baseHp, baseAttack, baseDefence int) AttributeModifier {
+func BaseAttributes(baseHp, baseAtk, baseDef int) AttributeModifier {
 	return func(attributes *Attributes) func() {
-		oldHp, oldAttack, oldDefence := attributes.Hp, attributes.Attack, attributes.Defence
-		attributes.Hp, attributes.Attack, attributes.Defence = baseHp, baseAttack, baseDefence
+		oldHp, oldAtk, oldDef := attributes.Hp, attributes.Atk, attributes.Def
+		attributes.Hp, attributes.Atk, attributes.Def = baseHp, baseAtk, baseDef
 		return func() {
-			attributes.Hp, attributes.Attack, attributes.Defence = oldHp, oldAttack, oldDefence
+			attributes.Hp, attributes.Atk, attributes.Def = oldHp, oldAtk, oldDef
 		}
 	}
 }
 
-func AddAttack(add int) AttributeModifier {
+func AddAtk(add int) AttributeModifier {
 	return func(attributes *Attributes) func() {
-		attributes.Attack += add
+		attributes.Atk += add
 		return func() {
-			attributes.Attack -= add
+			attributes.Atk -= add
 		}
 	}
 }
 
-func AddAttackPer(add float64) AttributeModifier {
+func AddAtkPercentage(add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
-		attributes.AttackPer += add
+		attributes.AtkPercentage += add
 		return func() {
-			attributes.AttackPer -= add
+			attributes.AtkPercentage -= add
 		}
 	}
 }
 
-func AddCritical(add float64) AttributeModifier {
+func AddCriticalRate(add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
-		attributes.Critical += add
+		attributes.CriticalRate += add
 		return func() {
-			attributes.Critical -= add
+			attributes.CriticalRate -= add
 		}
 	}
 }
 
-func AddElementCharge(add float64) AttributeModifier {
+func AddEnergyRecharge(add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
-		attributes.ElementCharge += add
+		attributes.EnergyRecharge += add
 		return func() {
-			attributes.ElementCharge -= add
+			attributes.EnergyRecharge -= add
 		}
 	}
 }
