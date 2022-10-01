@@ -12,7 +12,7 @@ func main() {
 	if _, err := 迪卢克.Weapon(无工之剑); err != nil {
 		log.Fatalf("%+v\n", err)
 	}
-	log.Printf("%+v\n", 迪卢克.FinalAttributes())
+	log.Printf("%+v\n", 迪卢克.Calculate())
 
 	// Talents
 	// Normal Attack

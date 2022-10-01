@@ -5,6 +5,13 @@ import (
 	"time"
 )
 
+var (
+	NopAttributeModifier = func(attributes *Attributes) func() {
+		return func() {
+		}
+	}
+)
+
 type Attributes struct {
 	Hp            int     // 生命值
 	HpPercentage  float64 // 生命值%
@@ -115,24 +122,45 @@ func (a *Attributes) Apply(modifiers ...AttributeModifier) func() {
 	return MergeAttributes(modifiers...)(a)
 }
 
-func (a *Attributes) Add(other *Attributes) *Attributes {
-	a.Hp += other.Hp
-	a.HpPercentage += other.HpPercentage
-	a.Atk += other.Atk
-	a.AtkPercentage += other.AtkPercentage
-	a.Def += other.Def
-	a.DefPercentage += other.DefPercentage
-	a.CriticalRate += other.CriticalRate
-	a.CriticalDamage += other.CriticalDamage
-	a.EnergyRecharge += other.EnergyRecharge
-	a.ElementalMastery += other.ElementalMastery
-	a.HealingBonus += other.HealingBonus
-	a.IncomingHealingBonus += other.IncomingHealingBonus
-	a.CDReduction += other.CDReduction
-	a.ShieldStrength += other.ShieldStrength
-	//a.ElementalDamageBonus map[elemental.Elemental]float64 // 元素伤害加成%
-	//a.ElementalResist      map[elemental.Elemental]float64 // 元素抗性%
-	a.PhysicalDamageBonus += other.PhysicalDamageBonus
-	a.PhysicalResist += other.PhysicalResist
-	return a
+func (a *Attributes) Accumulation() AttributeModifier {
+	return func(attributes *Attributes) func() {
+		attributes.Hp += a.Hp
+		attributes.HpPercentage += a.HpPercentage
+		attributes.Atk += a.Atk
+		attributes.AtkPercentage += a.AtkPercentage
+		attributes.Def += a.Def
+		attributes.DefPercentage += a.DefPercentage
+		attributes.CriticalRate += a.CriticalRate
+		attributes.CriticalDamage += a.CriticalDamage
+		attributes.EnergyRecharge += a.EnergyRecharge
+		attributes.ElementalMastery += a.ElementalMastery
+		attributes.HealingBonus += a.HealingBonus
+		attributes.IncomingHealingBonus += a.IncomingHealingBonus
+		attributes.CDReduction += a.CDReduction
+		attributes.ShieldStrength += a.ShieldStrength
+		//attributes.ElementalDamageBonus map[elemental.Elemental]float64 // 元素伤害加成%
+		//attributes.ElementalResist      map[elemental.Elemental]float64 // 元素抗性%
+		attributes.PhysicalDamageBonus += a.PhysicalDamageBonus
+		attributes.PhysicalResist += a.PhysicalResist
+		return func() {
+			attributes.Hp -= a.Hp
+			attributes.HpPercentage -= a.HpPercentage
+			attributes.Atk -= a.Atk
+			attributes.AtkPercentage -= a.AtkPercentage
+			attributes.Def -= a.Def
+			attributes.DefPercentage -= a.DefPercentage
+			attributes.CriticalRate -= a.CriticalRate
+			attributes.CriticalDamage -= a.CriticalDamage
+			attributes.EnergyRecharge -= a.EnergyRecharge
+			attributes.ElementalMastery -= a.ElementalMastery
+			attributes.HealingBonus -= a.HealingBonus
+			attributes.IncomingHealingBonus -= a.IncomingHealingBonus
+			attributes.CDReduction -= a.CDReduction
+			attributes.ShieldStrength -= a.ShieldStrength
+			//attributes.ElementalDamageBonus map[elemental.Elemental]float64 // 元素伤害加成%
+			//attributes.ElementalResist      map[elemental.Elemental]float64 // 元素抗性%
+			attributes.PhysicalDamageBonus -= a.PhysicalDamageBonus
+			attributes.PhysicalResist -= a.PhysicalResist
+		}
+	}
 }

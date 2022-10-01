@@ -49,3 +49,19 @@ func NewWeapon(star int, weaponType weaponType.WeaponType, baseModifier WeaponMo
 	baseModifier(w)
 	return w
 }
+
+func (w *Weapon) AccumulationBase() AttributeModifier {
+	if w == nil {
+		return NopAttributeModifier
+	} else {
+		return w.base.Accumulation()
+	}
+}
+
+func (w *Weapon) AccumulationRefine() AttributeModifier {
+	if w == nil {
+		return NopAttributeModifier
+	} else {
+		return MergeAttributes(w.refineModifiers...)
+	}
+}
