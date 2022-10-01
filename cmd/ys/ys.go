@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "github.com/dbstarll/game/internal/logger"
+	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/model"
 	"log"
 )
@@ -13,6 +14,8 @@ func main() {
 		log.Fatalf("%+v\n", err)
 	}
 	log.Printf("%+v\n", 迪卢克.Calculate())
+
+	log.Printf("%s\n", model.NewAttribute(point.GeoDamageBonus, 20.1))
 
 	// Talents
 	// Normal Attack
