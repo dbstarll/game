@@ -26,12 +26,28 @@ func MergeAttributes(modifiers ...AttributeModifier) AttributeModifier {
 	}
 }
 
+func AddHp(add int) AttributeModifier {
+	return NewAttribute(point.Hp, float64(add)).Accumulation()
+}
+
+func AddHpPercentage(add float64) AttributeModifier {
+	return NewAttribute(point.HpPercentage, add).Accumulation()
+}
+
 func AddAtk(add int) AttributeModifier {
 	return NewAttribute(point.Atk, float64(add)).Accumulation()
 }
 
 func AddAtkPercentage(add float64) AttributeModifier {
 	return NewAttribute(point.AtkPercentage, add).Accumulation()
+}
+
+func AddDef(add int) AttributeModifier {
+	return NewAttribute(point.Def, float64(add)).Accumulation()
+}
+
+func AddDefPercentage(add float64) AttributeModifier {
+	return NewAttribute(point.DefPercentage, add).Accumulation()
 }
 
 func AddCriticalRate(add float64) AttributeModifier {

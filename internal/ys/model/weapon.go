@@ -21,7 +21,7 @@ type Weapon struct {
 	star            int
 	weaponType      weaponType.WeaponType
 	level           int
-	base            Attributes
+	base            *Attributes
 	refineModifiers []AttributeModifier
 }
 
@@ -31,7 +31,7 @@ func BaseWeapon(level, baseAtk int, baseModifier AttributeModifier) WeaponModifi
 	return func(weapon *Weapon) func() {
 		oldLevel := weapon.level
 		weapon.level = level
-		callback := MergeAttributes(AddAtk(baseAtk), baseModifier)(&weapon.base)
+		callback := MergeAttributes(AddAtk(baseAtk), baseModifier)(weapon.base)
 		return func() {
 			callback()
 			weapon.level = oldLevel
@@ -52,6 +52,7 @@ func NewWeapon(star int, weaponType weaponType.WeaponType, baseModifier WeaponMo
 		star:            star,
 		weaponType:      weaponType,
 		level:           1,
+		base:            NewAttributes(),
 		refineModifiers: refineModifiers,
 	}
 	baseModifier(w)

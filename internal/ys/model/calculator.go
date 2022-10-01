@@ -1,6 +1,9 @@
 package model
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
+)
 
 type Calculator struct {
 	value float64
@@ -21,18 +24,20 @@ func (c *Calculator) String() string {
 
 // 基础攻击力 = 人物攻击力 + 武器攻击力
 func (c *Character) baseAtk() *Calculator {
-	baseAtk := c.base.Atk + c.weapon.base.Atk
-	desc := fmt.Sprintf("基础攻击力[%d] = 人物攻击力[%d] + 武器攻击力[%d]", baseAtk, c.base.Atk, c.weapon.base.Atk)
-	return &Calculator{value: float64(baseAtk), desc: desc}
+	characterBaseAtk, _ := c.base.Get(point.Atk)
+	weaponBaseAtk, _ := c.weapon.base.Get(point.Atk)
+	baseAtk := characterBaseAtk + weaponBaseAtk
+	desc := fmt.Sprintf("基础攻击力[%v] = 人物攻击力[%v] + 武器攻击力[%v]", baseAtk, characterBaseAtk, weaponBaseAtk)
+	return &Calculator{value: baseAtk, desc: desc}
 }
 
 // 额外攻击力 = 基础攻击力 * 攻击力% + 固定攻击力;
-func (c *Character) extraAtk() *Calculator {
-	baseAtk := c.baseAtk()
-	extraAtk := baseAtk.value //  + c.weapon.base.Atk
-	desc := fmt.Sprintf("基础攻击力[%d] = 人物攻击力[%d] + 武器攻击力[%d]", extraAtk, c.base.Atk, c.weapon.base.Atk)
-	return &Calculator{value: extraAtk, desc: desc}
-}
+//func (c *Character) extraAtk() *Calculator {
+//	baseAtk := c.baseAtk()
+//	extraAtk := baseAtk.value //  + c.weapon.base.Atk
+//	desc := fmt.Sprintf("基础攻击力[%d] = 人物攻击力[%d] + 武器攻击力[%d]", extraAtk, c.base.Atk, c.weapon.base.Atk)
+//	return &Calculator{value: extraAtk, desc: desc}
+//}
 
 // 总攻击力 = 基础攻击力 + 额外攻击力;
 

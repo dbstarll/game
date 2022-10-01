@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
 	"github.com/pkg/errors"
@@ -19,9 +20,9 @@ type Character struct {
 	elemental  elemental.Elemental
 	weaponType weaponType.WeaponType
 	level      int
-	base       Attributes
+	base       *Attributes
 	weapon     *Weapon
-	attached   Attributes
+	attached   *Attributes
 }
 
 type CharacterModifier func(character *Character) func()
@@ -30,7 +31,7 @@ func BaseCharacter(level, baseHp, baseAtk, baseDef int, baseModifier AttributeMo
 	return func(character *Character) func() {
 		oldLevel := character.level
 		character.level = level
-		callback := MergeAttributes(BaseAttributes(baseHp, baseAtk, baseDef), baseModifier)(&character.base)
+		callback := MergeAttributes(AddHp(baseHp), AddAtk(baseAtk), AddDef(baseDef), baseModifier)(character.base)
 		return func() {
 			callback()
 			character.level = oldLevel
@@ -44,11 +45,11 @@ func NewCharacter(star int, elemental elemental.Elemental, weaponType weaponType
 		elemental:  elemental,
 		weaponType: weaponType,
 		level:      1,
-		base: Attributes{
-			CriticalRate:   5,
-			CriticalDamage: 50,
-			EnergyRecharge: 100,
-		},
+		base:       NewAttributes(),
+		//CriticalRate:   5,
+		//CriticalDamage: 50,
+		//EnergyRecharge: 100,
+		attached: NewAttributes(),
 	}
 	for _, modifier := range modifiers {
 		modifier(c)
@@ -71,20 +72,20 @@ func (c *Character) Weapon(newWeapon *Weapon) (*Weapon, error) {
 }
 
 func (c *Character) Apply(modifiers ...AttributeModifier) func() {
-	return MergeAttributes(modifiers...)(&c.attached)
+	return MergeAttributes(modifiers...)(c.attached)
 }
 
 func (c *Character) basicAttributes() *Attributes {
-	basic := &Attributes{}
+	basic := NewAttributes()
 	c.base.Accumulation()(basic)
 	c.weapon.AccumulationBase()(basic)
 	return basic
 }
 
 func (c *Character) finalAttributes() *Attributes {
-	final := &Attributes{}
+	final := NewAttributes()
 	c.basicAttributes().Accumulation()(final)
-	final.Hp, final.Atk, final.Def = 0, 0, 0
+	final.Clear(point.Hp, point.Atk, point.Def)
 	c.weapon.AccumulationRefine()(final)
 	c.attached.Accumulation()(final)
 	return final
@@ -111,5 +112,5 @@ func (c *Character) calculatorDamageBasic() float64 {
 }
 
 func (c *Character) String() string {
-	return fmt.Sprintf("%s\n", c.baseAtk())
+	return fmt.Sprintf("%s\n", c.base)
 }
