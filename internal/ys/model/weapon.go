@@ -39,6 +39,14 @@ func BaseWeapon(level, baseAtk int, baseModifier AttributeModifier) WeaponModifi
 	}
 }
 
+func Superposition(times int, duration, interval time.Duration, modifier AttributeModifier) AttributeModifier {
+	modifiers := make([]AttributeModifier, times)
+	for i := 0; i < times; i++ {
+		modifiers[i] = modifier
+	}
+	return MergeAttributes(modifiers...)
+}
+
 func NewWeapon(star int, weaponType weaponType.WeaponType, baseModifier WeaponModifier, refineModifiers ...AttributeModifier) *Weapon {
 	w := &Weapon{
 		star:            star,
