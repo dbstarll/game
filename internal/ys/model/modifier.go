@@ -54,6 +54,14 @@ func AddCriticalRate(add float64) AttributeModifier {
 	return NewAttribute(point.CriticalRate, add).Accumulation()
 }
 
+func AddCriticalDamage(add float64) AttributeModifier {
+	return NewAttribute(point.CriticalDamage, add).Accumulation()
+}
+
+func AddElementalMastery(add float64) AttributeModifier {
+	return NewAttribute(point.ElementalMastery, add).Accumulation()
+}
+
 func AddEnergyRecharge(add float64) AttributeModifier {
 	return NewAttribute(point.EnergyRecharge, add).Accumulation()
 }

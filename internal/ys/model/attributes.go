@@ -9,8 +9,10 @@ type Attributes struct {
 	values map[point.Point]*Attribute
 }
 
-func NewAttributes() *Attributes {
-	return &Attributes{values: make(map[point.Point]*Attribute)}
+func NewAttributes(modifiers ...AttributeModifier) *Attributes {
+	a := &Attributes{values: make(map[point.Point]*Attribute)}
+	MergeAttributes(modifiers...)(a)
+	return a
 }
 
 func (a *Attributes) Modify(attribute *Attribute) func() {

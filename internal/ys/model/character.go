@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
@@ -22,6 +23,7 @@ type Character struct {
 	level      int
 	base       *Attributes
 	weapon     *Weapon
+	artifacts  map[position.Position]*Artifacts
 	attached   *Attributes
 }
 
@@ -45,11 +47,9 @@ func NewCharacter(star int, elemental elemental.Elemental, weaponType weaponType
 		elemental:  elemental,
 		weaponType: weaponType,
 		level:      1,
-		base:       NewAttributes(),
-		//CriticalRate:   5,
-		//CriticalDamage: 50,
-		//EnergyRecharge: 100,
-		attached: NewAttributes(),
+		base:       NewAttributes(AddCriticalRate(5), AddCriticalDamage(50), AddEnergyRecharge(100)),
+		artifacts:  make(map[position.Position]*Artifacts),
+		attached:   NewAttributes(),
 	}
 	for _, modifier := range modifiers {
 		modifier(c)
@@ -71,6 +71,16 @@ func (c *Character) Weapon(newWeapon *Weapon) (*Weapon, error) {
 	}
 }
 
+func (c *Character) Artifacts(newArtifacts *Artifacts) *Artifacts {
+	if newArtifacts == nil {
+		return nil
+	}
+	position := newArtifacts.position
+	oldArtifacts, _ := c.artifacts[position]
+	c.artifacts[position] = newArtifacts
+	return oldArtifacts
+}
+
 func (c *Character) Apply(modifiers ...AttributeModifier) func() {
 	return MergeAttributes(modifiers...)(c.attached)
 }
@@ -87,6 +97,9 @@ func (c *Character) finalAttributes() *Attributes {
 	c.basicAttributes().Accumulation()(final)
 	final.Clear(point.Hp, point.Atk, point.Def)
 	c.weapon.AccumulationRefine()(final)
+	for _, artifacts := range c.artifacts {
+		artifacts.Accumulation()(final)
+	}
 	c.attached.Accumulation()(final)
 	return final
 }
