@@ -33,6 +33,8 @@ const (
 	GeoResist                         // 岩元素抗性
 	PhysicalDamageBonus               // 物理伤害加成
 	PhysicalResist                    // 物理抗性
+	DamageBonus                       // 伤害加成
+	IncomingDamageBonus               // 收到的伤害加成
 )
 
 var Points = []Point{
@@ -66,6 +68,8 @@ var Points = []Point{
 	GeoResist,
 	PhysicalDamageBonus,
 	PhysicalResist,
+	DamageBonus,
+	IncomingDamageBonus,
 }
 
 func (e Point) String() string {
@@ -130,6 +134,10 @@ func (e Point) String() string {
 		return "物理伤害加成"
 	case PhysicalResist:
 		return "物理抗性"
+	case DamageBonus:
+		return "伤害加成"
+	case IncomingDamageBonus:
+		return "收到的伤害加成"
 	default:
 		if e < 0 {
 			return "不限"

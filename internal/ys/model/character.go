@@ -12,7 +12,7 @@ import (
 var (
 	CharacterFactory迪卢克 = func(constellation int) *Character {
 		return NewCharacter(5, elemental.Pyro, weaponType.Claymore,
-			BaseCharacter(90, 12981, 335, 784, AddCriticalRate(24.2)))
+			BaseCharacter(90, 12981, 335, 784, AddCriticalRate(19.2)))
 	}
 )
 

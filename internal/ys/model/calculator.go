@@ -48,6 +48,16 @@ func (c *Character) Calculate() *Calculator {
 	// 总攻击力 = 基础攻击力 + 额外攻击力
 
 	basicAttributes, finalAttributes := c.basicAttributes(), c.finalAttributes()
+	基础攻击力, _ := basicAttributes.Get(point.Atk)
+	固定攻击力, _ := finalAttributes.Get(point.Atk)
+	攻击力百分比, _ := finalAttributes.Get(point.AtkPercentage)
+	额外攻击力 := 基础攻击力*攻击力百分比/100 + 固定攻击力
+	总攻击力 := 基础攻击力 + 额外攻击力
+	fmt.Printf("基础攻击力: %+v\n", 基础攻击力)
+	fmt.Printf("固定攻击力: %+v\n", 固定攻击力)
+	fmt.Printf("攻击力百分比: %+v\n", 攻击力百分比)
+	fmt.Printf("额外攻击力: %+v\n", 额外攻击力)
+	fmt.Printf("总攻击力: %+v\n", 总攻击力)
 	fmt.Printf("basicAttributes: %+v\n", basicAttributes)
 	fmt.Printf("finalAttributes: %+v\n", finalAttributes)
 

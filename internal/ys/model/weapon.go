@@ -12,6 +12,12 @@ var (
 			Superposition(5, time.Second*8, time.Millisecond*300, AddAtkPercentage(float64(3+refine))),
 		)
 	}
+	WeaponFactory螭骨剑 = func(refine int) *Weapon {
+		return NewWeapon(5, weaponType.Claymore, BaseWeapon(90, 509, AddCriticalRate(27.6)),
+			Superposition(5, 0, time.Second*4, AddDamageBonus(5.0+float64(refine))),
+			Superposition(5, 0, time.Second*4, AddIncomingDamageBonus([]float64{3.0, 2.7, 2.4, 2.2, 2.0}[refine])),
+		)
+	}
 	WeaponFactory原木刀 = func(refine int) *Weapon {
 		return NewWeapon(4, weaponType.Sword, BaseWeapon(90, 565, AddEnergyRecharge(30.6)))
 	}
