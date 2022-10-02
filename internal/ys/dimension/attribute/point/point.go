@@ -35,7 +35,7 @@ const (
 	PhysicalResist                    // 物理抗性
 )
 
-var EntryPoints = []Point{
+var Points = []Point{
 	Hp,
 	HpPercentage,
 	Atk,

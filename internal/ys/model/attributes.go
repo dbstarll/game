@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 )
 
@@ -53,4 +54,14 @@ func (a *Attributes) Get(point point.Point) (float64, bool) {
 	} else {
 		return 0, false
 	}
+}
+
+func (a *Attributes) String() string {
+	var values []*Attribute
+	for _, point := range point.Points {
+		if value, exist := a.values[point]; exist {
+			values = append(values, value)
+		}
+	}
+	return fmt.Sprintf("%s", values)
 }

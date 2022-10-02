@@ -47,6 +47,6 @@ func (a *Attribute) Add(value float64) *Attribute {
 	return NewAttribute(a.point, a.value+value)
 }
 
-func (a *Attribute) String() string {
+func (a Attribute) String() string {
 	return fmt.Sprintf("%s[%v]", a.point, a.value)
 }
