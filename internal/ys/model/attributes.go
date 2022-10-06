@@ -50,11 +50,11 @@ func (a *Attributes) Clear(points ...point.Point) {
 	}
 }
 
-func (a *Attributes) Get(point point.Point) (float64, bool) {
+func (a *Attributes) Get(point point.Point) *Attribute {
 	if value, exist := a.values[point]; exist {
-		return value.value, true
+		return value
 	} else {
-		return 0, false
+		return NewAttribute(point, 0)
 	}
 }
 

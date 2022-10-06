@@ -72,6 +72,15 @@ var Points = []Point{
 	IncomingDamageBonus,
 }
 
+func (e Point) IsPercentage() bool {
+	switch e {
+	case Hp, Atk, Def, ElementalMastery:
+		return false
+	default:
+		return true
+	}
+}
+
 func (e Point) String() string {
 	switch e {
 	case Hp:

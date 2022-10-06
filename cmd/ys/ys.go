@@ -11,8 +11,6 @@ import (
 
 func main() {
 	迪卢克 := model.CharacterFactory迪卢克(0)
-	无工之剑 := model.WeaponFactory无工之剑(1)
-	螭骨剑 := model.WeaponFactory螭骨剑(3)
 	魔女的炎之花 := model.ArtifactsFactory生之花(5, model.AddAtk(51), model.AddAtkPercentage(12.8),
 		model.AddCriticalRate(3.1), model.AddDefPercentage(6.6))
 	魔女常燃之羽 := model.ArtifactsFactory死之羽(5, model.AddCriticalRate(7.8), model.AddHp(239),
@@ -24,12 +22,7 @@ func main() {
 	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, model.BaseArtifacts(20, point.CriticalDamage, 62.2),
 		model.AddAtkPercentage(15.2), model.AddCriticalRate(6.6), model.AddEnergyRecharge(11.7), model.AddHp(269))
 
-	if _, err := 迪卢克.Weapon(无工之剑); err != nil {
-		log.Fatalf("%+v\n", err)
-	}
-	if _, err := 迪卢克.Weapon(螭骨剑); err != nil {
-		log.Fatalf("%+v\n", err)
-	}
+	迪卢克.Weapon(model.WeaponFactory螭骨剑(3))
 	迪卢克.Artifacts(魔女的炎之花)
 	迪卢克.Artifacts(魔女常燃之羽)
 	迪卢克.Artifacts(魔女破灭之时)
@@ -37,8 +30,7 @@ func main() {
 	迪卢克.Artifacts(渡火者的智慧)
 
 	迪卢克.Apply(model.AddElementalDamageBonus(elemental.Pyro, 15))
-	log.Printf("%s\n", 迪卢克)
-	log.Printf("%+v\n", 迪卢克.Calculate())
+	log.Printf("%+v\n", 迪卢克.Calculate(model.NewEnemy(model.BaseEnemy(90))))
 
 	// Talents
 	// Normal Attack
