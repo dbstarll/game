@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"log"
 )
@@ -42,12 +43,10 @@ func (c *Character) Calculate(enemy *Enemy, action *Action) *Calculator {
 	values.Set("人物攻击力", c.base.Get(point.Atk).value)
 	values.Set("武器攻击力", c.weapon.base.Get(point.Atk).value)
 	for _, p := range point.Points {
-		if v := finalAttributes.Get(p); !v.IsZero() {
-			if p.IsPercentage() {
-				values.Set(p.String(), v.value/100)
-			} else {
-				values.Set(p.String(), v.value)
-			}
+		if v := finalAttributes.Get(p); p.IsPercentage() {
+			values.Set(p.String(), v.value/100)
+		} else {
+			values.Set(p.String(), v.value)
 		}
 	}
 	values.Set("人物等级", float64(c.level))
@@ -77,14 +76,20 @@ func (c *Character) Calculate(enemy *Enemy, action *Action) *Calculator {
 	values.Set("基础伤害(平均)", values.Get("基础伤害")*values.Get("暴击收益"))
 	values.Set("基础伤害(暴击)", values.Get("基础伤害")*values.Get("暴伤倍率"))
 
-	//            // 增伤区
-	//            values.Set("普攻伤害加成",1 + values.Get("物理伤害%") + values.Get("普攻增伤") + values.Get("元素影响增伤") + values.Get("造成伤害提高"));
-	//            values.Set("重击伤害加成",1 + values.Get("物理伤害%") + values.Get("重击增伤") + values.Get("元素影响增伤") + values.Get("造成伤害提高"));
-	//            values.Set("附魔普攻伤害加成",1 + values.Get("元素伤害%") + values.Get("普攻增伤") + values.Get("元素影响增伤") + values.Get("造成伤害提高"));
-	//            values.Set("附魔重击伤害加成",1 + values.Get("元素伤害%") + values.Get("重击增伤") + values.Get("元素影响增伤") + values.Get("造成伤害提高"));
-	//            values.Set("元素战技伤害加成",1 + values.Get("元素伤害%") + values.Get("元素战技增伤") + values.Get("元素影响增伤") + values.Get("造成伤害提高"));
-	//            values.Set("元素爆发伤害加成",1 + values.Get("元素伤害%") + values.Get("元素爆发增伤") + values.Get("元素影响增伤") + values.Get("造成伤害提高"));
-	//
+	// 增伤区
+	switch action.mode {
+	case attackMode.NormalAttack:
+		values.Set("普通攻击增伤", 1+values.Get("物理伤害加成")+values.Get("普通攻击伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+		values.Set("附魔普通攻击增伤", 1+values.Get("元素伤害%")+values.Get("普通攻击伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+	case attackMode.ChargedAttack:
+		values.Set("重击增伤", 1+values.Get("物理伤害加成")+values.Get("重击伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+		values.Set("附魔重击增伤", 1+values.Get("元素伤害%")+values.Get("重击伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+	case attackMode.ElementalSkill:
+		values.Set("元素战技增伤", 1+values.Get("元素伤害%")+values.Get("元素战技伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+	case attackMode.ElementalBurst:
+		values.Set("元素爆发增伤", 1+values.Get("元素伤害%")+values.Get("元素爆发伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+	}
+
 	//            // 抗性区
 	//            const phyR = values.Set("元素抗性",values.Get("怪物元素抗性") - values.Get("元素抗性减免"));
 	//            if (phyR > 0.75) {
@@ -104,22 +109,22 @@ func (c *Character) Calculate(enemy *Enemy, action *Action) *Calculator {
 	//            }
 	//
 	//            // 技能伤害
-	//            values.Set("普攻伤害",values.Get("基础伤害") * values.Get("普攻倍率") * values.Get("普攻伤害加成") * values.Get("物理抗性承伤"));
+	//            values.Set("普攻伤害",values.Get("基础伤害") * values.Get("普攻倍率") * values.Get("普通攻击增伤") * values.Get("物理抗性承伤"));
 	//            values.Set("普攻伤害(平均)",values.Get("普攻伤害") * values.Get("暴击收益"));
 	//            values.Set("普攻伤害(暴击)",values.Get("普攻伤害") * values.Get("暴伤倍率"));
-	//            values.Set("重击伤害",values.Get("基础伤害") * values.Get("重击倍率") * values.Get("重击伤害加成") * values.Get("物理抗性承伤"));
+	//            values.Set("重击伤害",values.Get("基础伤害") * values.Get("重击倍率") * values.Get("重击增伤") * values.Get("物理抗性承伤"));
 	//            values.Set("重击伤害(平均)",values.Get("重击伤害") * values.Get("暴击收益"));
 	//            values.Set("重击伤害(暴击)",values.Get("重击伤害") * values.Get("暴伤倍率"));
-	//            values.Set("附魔普攻伤害",values.Get("基础伤害") * values.Get("普攻倍率") * values.Get("附魔普攻伤害加成") * values.Get("元素抗性承伤"));
+	//            values.Set("附魔普攻伤害",values.Get("基础伤害") * values.Get("普攻倍率") * values.Get("附魔普通攻击增伤") * values.Get("元素抗性承伤"));
 	//            values.Set("附魔普攻伤害(平均)",values.Get("附魔普攻伤害") * values.Get("暴击收益"));
 	//            values.Set("附魔普攻伤害(暴击)",values.Get("附魔普攻伤害") * values.Get("暴伤倍率"));
-	//            values.Set("附魔重击伤害",values.Get("基础伤害") * values.Get("重击倍率") * values.Get("附魔重击伤害加成") * values.Get("元素抗性承伤"));
+	//            values.Set("附魔重击伤害",values.Get("基础伤害") * values.Get("重击倍率") * values.Get("附魔重击增伤") * values.Get("元素抗性承伤"));
 	//            values.Set("附魔重击伤害(平均)",values.Get("附魔重击伤害") * values.Get("暴击收益"));
 	//            values.Set("附魔重击伤害(暴击)",values.Get("附魔重击伤害") * values.Get("暴伤倍率"));
-	//            values.Set("元素战技伤害",values.Get("基础伤害") * values.Get("元素战技倍率") * values.Get("元素战技伤害加成") * values.Get("元素抗性承伤"));
+	//            values.Set("元素战技伤害",values.Get("基础伤害") * values.Get("元素战技倍率") * values.Get("元素战技增伤") * values.Get("元素抗性承伤"));
 	//            values.Set("元素战技伤害(平均)",values.Get("元素战技伤害") * values.Get("暴击收益"));
 	//            values.Set("元素战技伤害(暴击)",values.Get("元素战技伤害") * values.Get("暴伤倍率"));
-	//            values.Set("元素爆发伤害",values.Get("基础伤害") * values.Get("元素爆发倍率") * values.Get("元素爆发伤害加成") * values.Get("元素抗性承伤"));
+	//            values.Set("元素爆发伤害",values.Get("基础伤害") * values.Get("元素爆发倍率") * values.Get("元素爆发增伤") * values.Get("元素抗性承伤"));
 	//            values.Set("元素爆发伤害(平均)",values.Get("元素爆发伤害") * values.Get("暴击收益"));
 	//            values.Set("元素爆发伤害(暴击)",values.Get("元素爆发伤害") * values.Get("暴伤倍率"));
 	//

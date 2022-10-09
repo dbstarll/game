@@ -3,40 +3,45 @@ package point
 type Point int
 
 const (
-	Hp                   Point = iota // 生命值
-	HpPercentage                      // 生命值%
-	Atk                               // 攻击力
-	AtkPercentage                     // 攻击力%
-	Def                               // 防御力
-	DefPercentage                     // 防御力%
-	ElementalMastery                  // 元素精通
-	CriticalRate                      // 暴击率
-	CriticalDamage                    // 暴击伤害
-	HealingBonus                      // 治疗加成
-	IncomingHealingBonus              // 受治疗加成
-	EnergyRecharge                    // 元素充能效率
-	CDReduction                       // 冷却缩减
-	ShieldStrength                    // 护盾强效
-	PyroDamageBonus                   // 火元素伤害加成
-	PyroResist                        // 火元素抗性
-	HydroDamageBonus                  // 水元素伤害加成
-	HydroResist                       // 水元素抗性
-	DendroDamageBonus                 // 草元素伤害加成
-	DendroResist                      // 草元素抗性
-	ElectroDamageBonus                // 雷元素伤害加成
-	ElectroResist                     // 雷元素抗性
-	AnemoDamageBonus                  // 风元素伤害加成
-	AnemoResist                       // 风元素抗性
-	CryoDamageBonus                   // 冰元素伤害加成
-	CryoResist                        // 冰元素抗性
-	GeoDamageBonus                    // 岩元素伤害加成
-	GeoResist                         // 岩元素抗性
-	PhysicalDamageBonus               // 物理伤害加成
-	PhysicalResist                    // 物理抗性
-	DamageBonus                       // 伤害加成
-	IncomingDamageBonus               // 收到的伤害加成
-	IgnoreDefence                     // 无视防御
-	DefenceReduction                  // 防御减免
+	Hp                        Point = iota // 生命值
+	HpPercentage                           // 生命值%
+	Atk                                    // 攻击力
+	AtkPercentage                          // 攻击力%
+	Def                                    // 防御力
+	DefPercentage                          // 防御力%
+	ElementalMastery                       // 元素精通
+	CriticalRate                           // 暴击率
+	CriticalDamage                         // 暴击伤害
+	HealingBonus                           // 治疗加成
+	IncomingHealingBonus                   // 受治疗加成
+	EnergyRecharge                         // 元素充能效率
+	CDReduction                            // 冷却缩减
+	ShieldStrength                         // 护盾强效
+	PyroDamageBonus                        // 火元素伤害加成
+	PyroResist                             // 火元素抗性
+	HydroDamageBonus                       // 水元素伤害加成
+	HydroResist                            // 水元素抗性
+	DendroDamageBonus                      // 草元素伤害加成
+	DendroResist                           // 草元素抗性
+	ElectroDamageBonus                     // 雷元素伤害加成
+	ElectroResist                          // 雷元素抗性
+	AnemoDamageBonus                       // 风元素伤害加成
+	AnemoResist                            // 风元素抗性
+	CryoDamageBonus                        // 冰元素伤害加成
+	CryoResist                             // 冰元素抗性
+	GeoDamageBonus                         // 岩元素伤害加成
+	GeoResist                              // 岩元素抗性
+	PhysicalDamageBonus                    // 物理伤害加成
+	PhysicalResist                         // 物理抗性
+	DamageBonus                            // 伤害加成
+	IncomingDamageBonus                    // 收到的伤害加成
+	IgnoreDefence                          // 无视防御
+	DefenceReduction                       // 防御减免
+	NormalAttackDamageBonus                // 普通攻击伤害加成
+	ChargedAttackDamageBonus               // 重击伤害加成
+	PlungeAttackDamageBonus                // 下坠攻击伤害加成
+	ElementalSkillDamageBonus              // 元素战技伤害加成
+	ElementalBurstDamageBonus              // 元素爆发伤害加成
 )
 
 var Points = []Point{
@@ -74,6 +79,11 @@ var Points = []Point{
 	IncomingDamageBonus,
 	IgnoreDefence,
 	DefenceReduction,
+	NormalAttackDamageBonus,
+	ChargedAttackDamageBonus,
+	PlungeAttackDamageBonus,
+	ElementalSkillDamageBonus,
+	ElementalBurstDamageBonus,
 }
 
 func (e Point) IsPercentage() bool {
@@ -150,11 +160,21 @@ func (e Point) String() string {
 	case DamageBonus:
 		return "伤害加成"
 	case IncomingDamageBonus:
-		return "收到的伤害加成"
+		return "受到的伤害加成"
 	case IgnoreDefence:
 		return "无视防御"
 	case DefenceReduction:
 		return "防御减免"
+	case NormalAttackDamageBonus:
+		return "普通攻击伤害加成"
+	case ChargedAttackDamageBonus:
+		return "重击伤害加成"
+	case PlungeAttackDamageBonus:
+		return "下坠攻击伤害加成"
+	case ElementalSkillDamageBonus:
+		return "元素战技伤害加成"
+	case ElementalBurstDamageBonus:
+		return "元素爆发伤害加成"
 	default:
 		if e < 0 {
 			return "不限"
