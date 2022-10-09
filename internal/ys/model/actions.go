@@ -29,6 +29,7 @@ func (a *Actions) add(action *Action) {
 			oldMap[action.name] = action
 		} else {
 			oldAction.dmg = action.dmg
+			oldAction.elemental = action.elemental
 		}
 	}
 }

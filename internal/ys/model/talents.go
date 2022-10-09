@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
+	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"time"
 )
 
@@ -13,11 +14,12 @@ type Talents struct {
 }
 
 type NormalAttack struct {
-	name    string
-	lv      int
-	hits    []float64
-	charged ChargedAttack
-	plunge  PlungeAttack
+	name      string
+	lv        int
+	hits      []float64
+	charged   ChargedAttack
+	plunge    PlungeAttack
+	elemental elemental.Elemental
 }
 
 type ChargedAttack struct {
@@ -34,10 +36,11 @@ type PlungeAttack struct {
 }
 
 type ElementalSkill struct {
-	name string
-	lv   int
-	dmgs map[string]float64
-	cd   time.Duration // 冷却时间
+	name      string
+	lv        int
+	dmgs      map[string]float64
+	cd        time.Duration // 冷却时间
+	elemental elemental.Elemental
 }
 
 type ElementalBurst struct {
@@ -47,6 +50,7 @@ type ElementalBurst struct {
 	cd               time.Duration // 冷却时间
 	infusionDuration time.Duration // 附魔持续时间
 	energyCost       int           // 元素能量
+	elemental        elemental.Elemental
 }
 
 type TalentsTemplate struct {
@@ -136,50 +140,50 @@ func (t *Talents) DMGs() *Actions {
 func (a *NormalAttack) DMGs() *Actions {
 	actions := NewActions()
 	for idx, dmg := range a.hits {
-		actions.add(NewAction(attackMode.NormalAttack, dmg, fmt.Sprintf("%s•%d段", a.name, idx+1)))
+		actions.add(NewAction(attackMode.NormalAttack, dmg, a.elemental, fmt.Sprintf("%s•%d段", a.name, idx+1)))
 	}
-	actions.addAll(a.charged.DMGs(a.name))
-	actions.addAll(a.plunge.DMGs(a.name))
+	actions.addAll(a.charged.DMGs(a.name, a.elemental))
+	actions.addAll(a.plunge.DMGs(a.name, a.elemental))
 	return actions
 }
 
-func (a *ChargedAttack) DMGs(name string) *Actions {
+func (a *ChargedAttack) DMGs(name string, elemental elemental.Elemental) *Actions {
 	actions := NewActions()
 	if a.cyclic > 0 {
-		actions.add(NewAction(attackMode.ChargedAttack, a.cyclic, fmt.Sprintf("%s•重击持续", name)))
+		actions.add(NewAction(attackMode.ChargedAttack, a.cyclic, elemental, fmt.Sprintf("%s•重击持续", name)))
 	}
 	if a.final > 0 {
-		actions.add(NewAction(attackMode.ChargedAttack, a.final, fmt.Sprintf("%s•重击终结", name)))
+		actions.add(NewAction(attackMode.ChargedAttack, a.final, elemental, fmt.Sprintf("%s•重击终结", name)))
 	}
 	return actions
 }
 
-func (a *PlungeAttack) DMGs(name string) *Actions {
+func (a *PlungeAttack) DMGs(name string, elemental elemental.Elemental) *Actions {
 	actions := NewActions()
 	if a.dmg > 0 {
-		actions.add(NewAction(attackMode.PlungeAttack, a.dmg, fmt.Sprintf("%s•下坠期间", name)))
+		actions.add(NewAction(attackMode.PlungeAttack, a.dmg, elemental, fmt.Sprintf("%s•下坠期间", name)))
 	}
 	if a.low > 0 {
-		actions.add(NewAction(attackMode.PlungeAttack, a.low, fmt.Sprintf("%s•低空坠地冲击", name)))
+		actions.add(NewAction(attackMode.PlungeAttack, a.low, elemental, fmt.Sprintf("%s•低空坠地冲击", name)))
 	}
 	if a.high > 0 {
-		actions.add(NewAction(attackMode.PlungeAttack, a.high, fmt.Sprintf("%s•高空坠地冲击", name)))
+		actions.add(NewAction(attackMode.PlungeAttack, a.high, elemental, fmt.Sprintf("%s•高空坠地冲击", name)))
 	}
 	return actions
 }
 
-func (s *ElementalSkill) DMGs() *Actions {
+func (a *ElementalSkill) DMGs() *Actions {
 	actions := NewActions()
-	for name, dmg := range s.dmgs {
-		actions.add(NewAction(attackMode.ElementalSkill, dmg, fmt.Sprintf("%s•%s", s.name, name)))
+	for name, dmg := range a.dmgs {
+		actions.add(NewAction(attackMode.ElementalSkill, dmg, a.elemental, fmt.Sprintf("%s•%s", a.name, name)))
 	}
 	return actions
 }
 
-func (b *ElementalBurst) DMGs() *Actions {
+func (a *ElementalBurst) DMGs() *Actions {
 	actions := NewActions()
-	for name, dmg := range b.dmgs {
-		actions.add(NewAction(attackMode.ElementalBurst, dmg, fmt.Sprintf("%s•%s", b.name, name)))
+	for name, dmg := range a.dmgs {
+		actions.add(NewAction(attackMode.ElementalBurst, dmg, a.elemental, fmt.Sprintf("%s•%s", a.name, name)))
 	}
 	return actions
 }

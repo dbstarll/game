@@ -15,9 +15,9 @@ var (
 		return NewCharacter(5, elemental.Pyro, weaponType.Claymore,
 			BaseCharacter(90, 12981, 335, 784, AddCriticalRate(19.2)),
 			TalentsTemplateModifier(NewTalentsTemplate(
-				&NormalAttack{name: "淬炼之剑", lv: 11, charged: ChargedAttack{stamina: 40, duration: time.Second * 5}},
-				&ElementalSkill{name: "逆焰之刃", lv: 13, cd: time.Second * 10},
-				&ElementalBurst{name: "黎明", lv: 14, cd: time.Second * 12, infusionDuration: time.Second * 8, energyCost: 40}).
+				&NormalAttack{name: "淬炼之剑", lv: 11, charged: ChargedAttack{stamina: 40, duration: time.Second * 5}, elemental: -1},
+				&ElementalSkill{name: "逆焰之刃", lv: 13, cd: time.Second * 10, elemental: elemental.Pyro},
+				&ElementalBurst{name: "黎明", lv: 14, cd: time.Second * 12, infusionDuration: time.Second * 8, energyCost: 40, elemental: elemental.Pyro}).
 				addNormalAttacks(
 					&NormalAttack{lv: 1, hits: []float64{89.7, 87.6, 98.8, 134}, charged: ChargedAttack{cyclic: 68.8, final: 125}, plunge: PlungeAttack{89.5, 179, 224}},
 					&NormalAttack{lv: 2, hits: []float64{97.0, 94.8, 107, 145}, charged: ChargedAttack{cyclic: 74.4, final: 135}, plunge: PlungeAttack{96.8, 194, 242}},
