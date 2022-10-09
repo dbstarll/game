@@ -155,6 +155,9 @@ func (c *Character) Calculate(enemy *Enemy) *Calculator {
 	fmt.Printf("basicAttributes: %+v\n", basicAttributes)
 	fmt.Printf("finalAttributes: %+v\n", finalAttributes)
 	fmt.Printf("values: %+v\n", values)
+	fmt.Printf("%+v\n", c.talents.normalAttack)
+	fmt.Printf("%+v\n", c.talents.elementalSkill)
+	fmt.Printf("%+v\n", c.talents.elementalBurst)
 	return nil
 }
 

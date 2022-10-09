@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	迪卢克 := model.CharacterFactory迪卢克(0)
+	迪卢克 := model.CharacterFactory迪卢克(10, 9, 9, 0)
 	魔女的炎之花 := model.ArtifactsFactory生之花(5, model.AddAtk(51), model.AddAtkPercentage(12.8),
 		model.AddCriticalRate(3.1), model.AddDefPercentage(6.6))
 	魔女常燃之羽 := model.ArtifactsFactory死之羽(5, model.AddCriticalRate(7.8), model.AddHp(239),
