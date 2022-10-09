@@ -125,60 +125,61 @@ func (t *TalentsTemplate) check() *TalentsTemplate {
 	return t
 }
 
-func (t *Talents) DMGs() []*Action {
-	actions := t.normalAttack.DMGs()
-	actions = append(actions, t.elementalSkill.DMGs()...)
-	actions = append(actions, t.elementalBurst.DMGs()...)
+func (t *Talents) DMGs() *Actions {
+	actions := NewActions()
+	actions.addAll(t.normalAttack.DMGs())
+	actions.addAll(t.elementalSkill.DMGs())
+	actions.addAll(t.elementalBurst.DMGs())
 	return actions
 }
 
-func (a *NormalAttack) DMGs() []*Action {
-	var actions []*Action
+func (a *NormalAttack) DMGs() *Actions {
+	actions := NewActions()
 	for idx, dmg := range a.hits {
-		actions = append(actions, NewAction(attackMode.NormalAttack, dmg, fmt.Sprintf("%s•%d段伤害", a.name, idx+1)))
+		actions.add(NewAction(attackMode.NormalAttack, dmg, fmt.Sprintf("%s•%d段伤害", a.name, idx+1)))
 	}
-	actions = append(actions, a.charged.DMGs(a.name)...)
-	actions = append(actions, a.plunge.DMGs(a.name)...)
+	actions.addAll(a.charged.DMGs(a.name))
+	actions.addAll(a.plunge.DMGs(a.name))
 	return actions
 }
 
-func (a *ChargedAttack) DMGs(name string) []*Action {
-	var actions []*Action
+func (a *ChargedAttack) DMGs(name string) *Actions {
+	actions := NewActions()
 	if a.cyclic > 0 {
-		actions = append(actions, NewAction(attackMode.ChargedAttack, a.cyclic, fmt.Sprintf("%s•重击持续伤害", name)))
+		actions.add(NewAction(attackMode.ChargedAttack, a.cyclic, fmt.Sprintf("%s•重击持续伤害", name)))
 	}
 	if a.final > 0 {
-		actions = append(actions, NewAction(attackMode.ChargedAttack, a.final, fmt.Sprintf("%s•重击终结伤害", name)))
+		actions.add(NewAction(attackMode.ChargedAttack, a.final, fmt.Sprintf("%s•重击终结伤害", name)))
 	}
 	return actions
 }
 
-func (a *PlungeAttack) DMGs(name string) []*Action {
-	var actions []*Action
+func (a *PlungeAttack) DMGs(name string) *Actions {
+	actions := NewActions()
 	if a.dmg > 0 {
-		actions = append(actions, NewAction(attackMode.PlungeAttack, a.dmg, fmt.Sprintf("%s•下坠期间伤害", name)))
+		actions.add(NewAction(attackMode.PlungeAttack, a.dmg, fmt.Sprintf("%s•下坠期间伤害", name)))
 	}
 	if a.low > 0 {
-		actions = append(actions, NewAction(attackMode.PlungeAttack, a.low, fmt.Sprintf("%s•低空坠地冲击伤害", name)))
+		actions.add(NewAction(attackMode.PlungeAttack, a.low, fmt.Sprintf("%s•低空坠地冲击伤害", name)))
 	}
 	if a.high > 0 {
-		actions = append(actions, NewAction(attackMode.PlungeAttack, a.high, fmt.Sprintf("%s•高空坠地冲击伤害", name)))
+		actions.add(NewAction(attackMode.PlungeAttack, a.high, fmt.Sprintf("%s•高空坠地冲击伤害", name)))
 	}
 	return actions
 }
 
-func (s *ElementalSkill) DMGs() []*Action {
-	var actions []*Action
+func (s *ElementalSkill) DMGs() *Actions {
+	actions := NewActions()
 	for name, dmg := range s.dmgs {
-		actions = append(actions, NewAction(attackMode.ElementalSkill, dmg, fmt.Sprintf("%s•%s", s.name, name)))
+		actions.add(NewAction(attackMode.ElementalSkill, dmg, fmt.Sprintf("%s•%s", s.name, name)))
 	}
 	return actions
 }
 
-func (b *ElementalBurst) DMGs() []*Action {
-	var actions []*Action
+func (b *ElementalBurst) DMGs() *Actions {
+	actions := NewActions()
 	for name, dmg := range b.dmgs {
-		actions = append(actions, NewAction(attackMode.ElementalBurst, dmg, fmt.Sprintf("%s•%s", b.name, name)))
+		actions.add(NewAction(attackMode.ElementalBurst, dmg, fmt.Sprintf("%s•%s", b.name, name)))
 	}
 	return actions
 }
