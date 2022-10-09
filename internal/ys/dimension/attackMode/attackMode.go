@@ -1,5 +1,10 @@
 package attackMode
 
+import (
+	"github.com/dbstarll/game/internal/ys/dimension/elemental"
+	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
+)
+
 type AttackMode int
 
 const (
@@ -36,5 +41,24 @@ func (m AttackMode) String() string {
 		} else {
 			return "未知"
 		}
+	}
+}
+
+func (m AttackMode) Elemental(weapon weaponType.WeaponType, elemental elemental.Elemental) elemental.Elemental {
+	switch m {
+	case NormalAttack, PlungeAttack:
+		if weapon == weaponType.Catalyst {
+			return elemental
+		} else {
+			return -1
+		}
+	case ChargedAttack:
+		if weapon == weaponType.Bow || weapon == weaponType.Catalyst {
+			return elemental
+		} else {
+			return -1
+		}
+	default:
+		return elemental
 	}
 }
