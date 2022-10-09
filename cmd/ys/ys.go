@@ -30,26 +30,11 @@ func main() {
 	迪卢克.Artifacts(渡火者的智慧)
 
 	迪卢克.Apply(model.AddElementalDamageBonus(elemental.Pyro, 15))
-	log.Printf("%+v\n", 迪卢克.Calculate(model.NewEnemy(model.BaseEnemy(90))))
 
-	// Talents
-	// Normal Attack
-	// - 1-Hit DMG
-	// - 2-Hit DMG
-	// - 3-Hit DMG
-	// - 4-Hit DMG
-	// - 5-Hit DMG
-	// Charged Attack
-	//   Charged Attack DMG
-	// Plunging Attack
-	//   Plunge DMG
-	//   Low/High Plunge DMG
-	// Elemental Skill
-	//   Skill DMG
-	//   CD
-	// Elemental Burst
-	//   Duration
-	//   CD
-	//   Energy Cost
+	enemy := model.NewEnemy(model.BaseEnemy(90))
 
+	迪卢克.GetActions().Loop(func(index int, action *model.Action) bool {
+		log.Printf("%+v\n", 迪卢克.Calculate(enemy, action))
+		return true
+	})
 }

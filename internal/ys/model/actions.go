@@ -10,6 +10,8 @@ type Actions struct {
 	actionMap  map[attackMode.AttackMode]map[string]*Action
 }
 
+type ActionIterator func(index int, action *Action) bool
+
 func NewActions() *Actions {
 	return &Actions{
 		actionList: make([]*Action, 0),
@@ -35,6 +37,23 @@ func (a *Actions) addAll(other *Actions) {
 	if other != nil {
 		for _, action := range other.actionList {
 			a.add(action)
+		}
+	}
+}
+
+func (a *Actions) GetAction(mode attackMode.AttackMode, name string) *Action {
+	if nameMaps, exist := a.actionMap[mode]; exist {
+		if action, exist := nameMaps[name]; exist {
+			return action
+		}
+	}
+	return nil
+}
+
+func (a *Actions) Loop(iterator ActionIterator) {
+	for idx, action := range a.actionList {
+		if iterator(idx, action) {
+			break
 		}
 	}
 }

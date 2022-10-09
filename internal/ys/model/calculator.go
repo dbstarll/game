@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
+	"log"
 )
 
 type Calculator struct {
@@ -32,7 +33,8 @@ func (c *Calculator) String() string {
 
 // 总攻击力 = 基础攻击力 + 额外攻击力;
 
-func (c *Character) Calculate(enemy *Enemy) *Calculator {
+func (c *Character) Calculate(enemy *Enemy, action *Action) *Calculator {
+	log.Printf("action: %s\n", action)
 	values := NewValues()
 	basicAttributes, finalAttributes := c.basicAttributes(), c.finalAttributes()
 
@@ -158,29 +160,5 @@ func (c *Character) Calculate(enemy *Enemy) *Calculator {
 	fmt.Printf("%+v\n", c.talents.normalAttack)
 	fmt.Printf("%+v\n", c.talents.elementalSkill)
 	fmt.Printf("%+v\n", c.talents.elementalBurst)
-	fmt.Printf("%+v\n", c.talents.DMGs())
 	return nil
 }
-
-//<div id="calculator2">
-//<fieldset class="calculator-damage-bonus">
-//<legend>增伤区</legend>
-//</fieldset>
-//<fieldset class="calculator-resistance">
-//<legend>抗性区</legend>
-//</fieldset>
-//<fieldset class="calculator-damage-skill">
-//<legend>技能伤害</legend>
-//</fieldset>
-//</div>
-//<div id="calculator3">
-//<fieldset class="calculator-reaction-bonus">
-//<legend>增幅反应区</legend>
-//</fieldset>
-//<fieldset class="calculator-reaction-upheaval">
-//<legend>剧变反应区</legend>
-//</fieldset>
-//<fieldset class="calculator-damage-reaction">
-//<legend>反应伤害</legend>
-//</fieldset>
-//</div>
