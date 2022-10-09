@@ -158,6 +158,7 @@ func (c *Character) Calculate(enemy *Enemy) *Calculator {
 	fmt.Printf("%+v\n", c.talents.normalAttack)
 	fmt.Printf("%+v\n", c.talents.elementalSkill)
 	fmt.Printf("%+v\n", c.talents.elementalBurst)
+	fmt.Printf("%+v\n", c.talents.DMGs())
 	return nil
 }
 

@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"time"
 )
 
@@ -11,6 +13,7 @@ type Talents struct {
 }
 
 type NormalAttack struct {
+	name    string
 	lv      int
 	hits    []float64
 	charged ChargedAttack
@@ -25,20 +28,22 @@ type ChargedAttack struct {
 }
 
 type PlungeAttack struct {
-	DMG  float64
+	dmg  float64
 	low  float64
 	high float64
 }
 
 type ElementalSkill struct {
+	name string
 	lv   int
-	DMGs map[string]float64
+	dmgs map[string]float64
 	cd   time.Duration // 冷却时间
 }
 
 type ElementalBurst struct {
+	name             string
 	lv               int
-	DMGs             map[string]float64
+	dmgs             map[string]float64
 	cd               time.Duration // 冷却时间
 	infusionDuration time.Duration // 附魔持续时间
 	energyCost       int           // 元素能量
@@ -79,7 +84,7 @@ func (t *TalentsTemplate) addElementalSkill(value *ElementalSkill) *TalentsTempl
 	if value != nil && value.lv > 0 {
 		copy := *t.elementalSkills[0]
 		copy.lv = value.lv
-		copy.DMGs = value.DMGs
+		copy.dmgs = value.dmgs
 		t.elementalSkills[copy.lv] = &copy
 	}
 	return t
@@ -89,7 +94,7 @@ func (t *TalentsTemplate) addElementalBurst(value *ElementalBurst) *TalentsTempl
 	if value != nil && value.lv > 0 {
 		copy := *t.elementalBursts[0]
 		copy.lv = value.lv
-		copy.DMGs = value.DMGs
+		copy.dmgs = value.dmgs
 		t.elementalBursts[copy.lv] = &copy
 	}
 	return t
@@ -118,4 +123,62 @@ func (t *TalentsTemplate) addElementalBursts(values ...*ElementalBurst) *Talents
 
 func (t *TalentsTemplate) check() *TalentsTemplate {
 	return t
+}
+
+func (t *Talents) DMGs() []*Action {
+	actions := t.normalAttack.DMGs()
+	actions = append(actions, t.elementalSkill.DMGs()...)
+	actions = append(actions, t.elementalBurst.DMGs()...)
+	return actions
+}
+
+func (a *NormalAttack) DMGs() []*Action {
+	var actions []*Action
+	for idx, dmg := range a.hits {
+		actions = append(actions, NewAction(attackMode.NormalAttack, dmg, fmt.Sprintf("%s•%d段伤害", a.name, idx+1)))
+	}
+	actions = append(actions, a.charged.DMGs(a.name)...)
+	actions = append(actions, a.plunge.DMGs(a.name)...)
+	return actions
+}
+
+func (a *ChargedAttack) DMGs(name string) []*Action {
+	var actions []*Action
+	if a.cyclic > 0 {
+		actions = append(actions, NewAction(attackMode.ChargedAttack, a.cyclic, fmt.Sprintf("%s•重击持续伤害", name)))
+	}
+	if a.final > 0 {
+		actions = append(actions, NewAction(attackMode.ChargedAttack, a.final, fmt.Sprintf("%s•重击终结伤害", name)))
+	}
+	return actions
+}
+
+func (a *PlungeAttack) DMGs(name string) []*Action {
+	var actions []*Action
+	if a.dmg > 0 {
+		actions = append(actions, NewAction(attackMode.PlungeAttack, a.dmg, fmt.Sprintf("%s•下坠期间伤害", name)))
+	}
+	if a.low > 0 {
+		actions = append(actions, NewAction(attackMode.PlungeAttack, a.low, fmt.Sprintf("%s•低空坠地冲击伤害", name)))
+	}
+	if a.high > 0 {
+		actions = append(actions, NewAction(attackMode.PlungeAttack, a.high, fmt.Sprintf("%s•高空坠地冲击伤害", name)))
+	}
+	return actions
+}
+
+func (s *ElementalSkill) DMGs() []*Action {
+	var actions []*Action
+	for name, dmg := range s.dmgs {
+		actions = append(actions, NewAction(attackMode.ElementalSkill, dmg, fmt.Sprintf("%s•%s", s.name, name)))
+	}
+	return actions
+}
+
+func (b *ElementalBurst) DMGs() []*Action {
+	var actions []*Action
+	for name, dmg := range b.dmgs {
+		actions = append(actions, NewAction(attackMode.ElementalBurst, dmg, fmt.Sprintf("%s•%s", b.name, name)))
+	}
+	return actions
 }
