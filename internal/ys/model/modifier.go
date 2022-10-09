@@ -74,24 +74,7 @@ func AddShieldStrength(add float64) AttributeModifier {
 }
 
 func AddElementalDamageBonus(e elemental.Elemental, add float64) AttributeModifier {
-	switch e {
-	case elemental.Pyro:
-		return NewAttribute(point.PyroDamageBonus, add).Accumulation()
-	case elemental.Hydro:
-		return NewAttribute(point.HydroDamageBonus, add).Accumulation()
-	case elemental.Dendro:
-		return NewAttribute(point.DendroDamageBonus, add).Accumulation()
-	case elemental.Electro:
-		return NewAttribute(point.ElectroDamageBonus, add).Accumulation()
-	case elemental.Anemo:
-		return NewAttribute(point.AnemoDamageBonus, add).Accumulation()
-	case elemental.Cryo:
-		return NewAttribute(point.CryoDamageBonus, add).Accumulation()
-	case elemental.Geo:
-		return NewAttribute(point.GeoDamageBonus, add).Accumulation()
-	default:
-		return NopAttributeModifier
-	}
+	return NewAttribute(e.DamageBonusPoint(), add).Accumulation()
 }
 
 func AddDamageBonus(add float64) AttributeModifier {

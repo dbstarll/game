@@ -31,11 +31,11 @@ func main() {
 
 	迪卢克.Apply(model.AddElementalDamageBonus(elemental.Pyro, 15))
 
-	//enemy := model.NewEnemy(model.BaseEnemy(90))
+	enemy := model.NewEnemy(model.BaseEnemy(90))
 
 	迪卢克.GetActions().Loop(func(index int, action *model.Action) bool {
-		//log.Printf("%+v\n", 迪卢克.Calculate(enemy, action))
-		log.Printf("%s\n", action)
-		return false
+		log.Printf("%+v\n", 迪卢克.Calculate(enemy, action, elemental.Pyro))
+		//log.Printf("%s\n", action)
+		return true
 	})
 }

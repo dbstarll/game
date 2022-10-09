@@ -1,5 +1,7 @@
 package elemental
 
+import "github.com/dbstarll/game/internal/ys/dimension/attribute/point"
+
 // 元素类型
 type Elemental int
 
@@ -44,6 +46,31 @@ func (e Elemental) String() string {
 			return "不限"
 		} else {
 			return "未知"
+		}
+	}
+}
+
+func (e Elemental) DamageBonusPoint() point.Point {
+	switch e {
+	case Pyro:
+		return point.PyroDamageBonus
+	case Hydro:
+		return point.HydroDamageBonus
+	case Dendro:
+		return point.DendroDamageBonus
+	case Electro:
+		return point.ElectroDamageBonus
+	case Anemo:
+		return point.AnemoDamageBonus
+	case Cryo:
+		return point.CryoDamageBonus
+	case Geo:
+		return point.GeoDamageBonus
+	default:
+		if e < 0 {
+			return point.PhysicalDamageBonus
+		} else {
+			return -1
 		}
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
+	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"log"
 )
 
@@ -34,8 +35,10 @@ func (c *Calculator) String() string {
 
 // 总攻击力 = 基础攻击力 + 额外攻击力;
 
-func (c *Character) Calculate(enemy *Enemy, action *Action) *Calculator {
+func (c *Character) Calculate(enemy *Enemy, action *Action, infusionElemental elemental.Elemental) *Calculator {
 	log.Printf("action: %s\n", action)
+	log.Printf("infusionElemental: %s\n", infusionElemental.DamageBonusPoint())
+
 	values := NewValues()
 	basicAttributes, finalAttributes := c.basicAttributes(), c.finalAttributes()
 
@@ -79,15 +82,17 @@ func (c *Character) Calculate(enemy *Enemy, action *Action) *Calculator {
 	// 增伤区
 	switch action.mode {
 	case attackMode.NormalAttack:
-		values.Set("普通攻击增伤", 1+values.Get("物理伤害加成")+values.Get("普通攻击伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
-		values.Set("附魔普通攻击增伤", 1+values.Get("元素伤害%")+values.Get("普通攻击伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+		values.Set("普通攻击增伤", 1+values.Get(infusionElemental.DamageBonusPoint().String())+values.Get("普通攻击伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+		break
 	case attackMode.ChargedAttack:
-		values.Set("重击增伤", 1+values.Get("物理伤害加成")+values.Get("重击伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
-		values.Set("附魔重击增伤", 1+values.Get("元素伤害%")+values.Get("重击伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+		values.Set("重击增伤", 1+values.Get(infusionElemental.DamageBonusPoint().String())+values.Get("重击伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+		break
 	case attackMode.ElementalSkill:
 		values.Set("元素战技增伤", 1+values.Get("元素伤害%")+values.Get("元素战技伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+		break
 	case attackMode.ElementalBurst:
 		values.Set("元素爆发增伤", 1+values.Get("元素伤害%")+values.Get("元素爆发伤害加成")+values.Get("元素影响增伤")+values.Get("伤害加成"))
+		break
 	}
 
 	//            // 抗性区
