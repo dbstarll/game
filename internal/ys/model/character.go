@@ -32,43 +32,43 @@ var (
 					&NormalAttack{lv: 11, hits: []float64{192, 187, 211, 286}, charged: ChargedAttack{cyclic: 147, final: 266}, plunge: PlungeAttack{189, 379, 473}},
 				).
 				addElementalSkills(
-					&ElementalSkill{lv: 1, dmgs: map[string]float64{"一段伤害": 94.4, "二段伤害": 97.6, "三段伤害": 129}},
-					&ElementalSkill{lv: 2, dmgs: map[string]float64{"一段伤害": 101, "二段伤害": 105, "三段伤害": 138}},
-					&ElementalSkill{lv: 3, dmgs: map[string]float64{"一段伤害": 109, "二段伤害": 112, "三段伤害": 148}},
-					&ElementalSkill{lv: 4, dmgs: map[string]float64{"一段伤害": 118, "二段伤害": 122, "三段伤害": 161}},
-					&ElementalSkill{lv: 5, dmgs: map[string]float64{"一段伤害": 125, "二段伤害": 129, "三段伤害": 171}},
-					&ElementalSkill{lv: 6, dmgs: map[string]float64{"一段伤害": 132, "二段伤害": 137, "三段伤害": 180}},
-					&ElementalSkill{lv: 7, dmgs: map[string]float64{"一段伤害": 142, "二段伤害": 146, "三段伤害": 193}},
-					&ElementalSkill{lv: 8, dmgs: map[string]float64{"一段伤害": 151, "二段伤害": 156, "三段伤害": 206}},
-					&ElementalSkill{lv: 9, dmgs: map[string]float64{"一段伤害": 160, "二段伤害": 166, "三段伤害": 219}},
-					&ElementalSkill{lv: 10, dmgs: map[string]float64{"一段伤害": 170, "二段伤害": 176, "三段伤害": 232}},
-					&ElementalSkill{lv: 11, dmgs: map[string]float64{"一段伤害": 179, "二段伤害": 185, "三段伤害": 245}},
-					&ElementalSkill{lv: 12, dmgs: map[string]float64{"一段伤害": 189, "二段伤害": 195, "三段伤害": 258}},
-					&ElementalSkill{lv: 13, dmgs: map[string]float64{"一段伤害": 201, "二段伤害": 207, "三段伤害": 274}},
+					&ElementalSkill{lv: 1, dmgs: map[string]float64{"1段": 94.4, "2段": 97.6, "3段": 129}},
+					&ElementalSkill{lv: 2, dmgs: map[string]float64{"1段": 101, "2段": 105, "3段": 138}},
+					&ElementalSkill{lv: 3, dmgs: map[string]float64{"1段": 109, "2段": 112, "3段": 148}},
+					&ElementalSkill{lv: 4, dmgs: map[string]float64{"1段": 118, "2段": 122, "3段": 161}},
+					&ElementalSkill{lv: 5, dmgs: map[string]float64{"1段": 125, "2段": 129, "3段": 171}},
+					&ElementalSkill{lv: 6, dmgs: map[string]float64{"1段": 132, "2段": 137, "3段": 180}},
+					&ElementalSkill{lv: 7, dmgs: map[string]float64{"1段": 142, "2段": 146, "3段": 193}},
+					&ElementalSkill{lv: 8, dmgs: map[string]float64{"1段": 151, "2段": 156, "3段": 206}},
+					&ElementalSkill{lv: 9, dmgs: map[string]float64{"1段": 160, "2段": 166, "3段": 219}},
+					&ElementalSkill{lv: 10, dmgs: map[string]float64{"1段": 170, "2段": 176, "3段": 232}},
+					&ElementalSkill{lv: 11, dmgs: map[string]float64{"1段": 179, "2段": 185, "3段": 245}},
+					&ElementalSkill{lv: 12, dmgs: map[string]float64{"1段": 189, "2段": 195, "3段": 258}},
+					&ElementalSkill{lv: 13, dmgs: map[string]float64{"1段": 201, "2段": 207, "3段": 274}},
 				).
 				addElementalBursts(
-					&ElementalBurst{lv: 1, dmgs: map[string]float64{"斩击伤害": 204, "持续伤害": 60.0, "爆裂伤害": 204}},
-					&ElementalBurst{lv: 2, dmgs: map[string]float64{"斩击伤害": 219, "持续伤害": 64.5, "爆裂伤害": 219}},
-					&ElementalBurst{lv: 3, dmgs: map[string]float64{"斩击伤害": 235, "持续伤害": 69.0, "爆裂伤害": 235}},
-					&ElementalBurst{lv: 4, dmgs: map[string]float64{"斩击伤害": 255, "持续伤害": 75.0, "爆裂伤害": 255}},
-					&ElementalBurst{lv: 5, dmgs: map[string]float64{"斩击伤害": 270, "持续伤害": 79.5, "爆裂伤害": 270}},
-					&ElementalBurst{lv: 6, dmgs: map[string]float64{"斩击伤害": 286, "持续伤害": 84.0, "爆裂伤害": 286}},
-					&ElementalBurst{lv: 7, dmgs: map[string]float64{"斩击伤害": 306, "持续伤害": 90.0, "爆裂伤害": 306}},
-					&ElementalBurst{lv: 8, dmgs: map[string]float64{"斩击伤害": 326, "持续伤害": 96.0, "爆裂伤害": 326}},
-					&ElementalBurst{lv: 9, dmgs: map[string]float64{"斩击伤害": 347, "持续伤害": 102.0, "爆裂伤害": 347}},
-					&ElementalBurst{lv: 10, dmgs: map[string]float64{"斩击伤害": 367, "持续伤害": 108.0, "爆裂伤害": 367}},
-					&ElementalBurst{lv: 11, dmgs: map[string]float64{"斩击伤害": 388, "持续伤害": 114.0, "爆裂伤害": 388}},
-					&ElementalBurst{lv: 12, dmgs: map[string]float64{"斩击伤害": 408, "持续伤害": 120.0, "爆裂伤害": 408}},
-					&ElementalBurst{lv: 13, dmgs: map[string]float64{"斩击伤害": 434, "持续伤害": 128.0, "爆裂伤害": 434}},
-					&ElementalBurst{lv: 14, dmgs: map[string]float64{"斩击伤害": 459, "持续伤害": 135.0, "爆裂伤害": 459}},
+					&ElementalBurst{lv: 1, dmgs: map[string]float64{"斩击": 204, "持续": 60.0, "爆裂": 204}},
+					&ElementalBurst{lv: 2, dmgs: map[string]float64{"斩击": 219, "持续": 64.5, "爆裂": 219}},
+					&ElementalBurst{lv: 3, dmgs: map[string]float64{"斩击": 235, "持续": 69.0, "爆裂": 235}},
+					&ElementalBurst{lv: 4, dmgs: map[string]float64{"斩击": 255, "持续": 75.0, "爆裂": 255}},
+					&ElementalBurst{lv: 5, dmgs: map[string]float64{"斩击": 270, "持续": 79.5, "爆裂": 270}},
+					&ElementalBurst{lv: 6, dmgs: map[string]float64{"斩击": 286, "持续": 84.0, "爆裂": 286}},
+					&ElementalBurst{lv: 7, dmgs: map[string]float64{"斩击": 306, "持续": 90.0, "爆裂": 306}},
+					&ElementalBurst{lv: 8, dmgs: map[string]float64{"斩击": 326, "持续": 96.0, "爆裂": 326}},
+					&ElementalBurst{lv: 9, dmgs: map[string]float64{"斩击": 347, "持续": 102.0, "爆裂": 347}},
+					&ElementalBurst{lv: 10, dmgs: map[string]float64{"斩击": 367, "持续": 108.0, "爆裂": 367}},
+					&ElementalBurst{lv: 11, dmgs: map[string]float64{"斩击": 388, "持续": 114.0, "爆裂": 388}},
+					&ElementalBurst{lv: 12, dmgs: map[string]float64{"斩击": 408, "持续": 120.0, "爆裂": 408}},
+					&ElementalBurst{lv: 13, dmgs: map[string]float64{"斩击": 434, "持续": 128.0, "爆裂": 434}},
+					&ElementalBurst{lv: 14, dmgs: map[string]float64{"斩击": 459, "持续": 135.0, "爆裂": 459}},
 				).check()),
 		).Talents(normal, skill, burst)
 	}
 )
 
-//slashingDMG      float64       // 斩击伤害
-//dot              float64       // 持续伤害
-//explosionDMG     float64       // 爆裂伤害
+//slashingDMG      float64       // 斩击
+//dot              float64       // 持续
+//explosionDMG     float64       // 爆裂
 
 type Character struct {
 	star            int
@@ -156,6 +156,10 @@ func (c *Character) Talents(normal, skill, burst int) *Character {
 
 func (c *Character) Apply(modifiers ...AttributeModifier) func() {
 	return MergeAttributes(modifiers...)(c.attached)
+}
+
+func (c *Character) GetActions() *Actions {
+	return c.talents.DMGs()
 }
 
 func (c *Character) basicAttributes() *Attributes {

@@ -136,7 +136,7 @@ func (t *Talents) DMGs() *Actions {
 func (a *NormalAttack) DMGs() *Actions {
 	actions := NewActions()
 	for idx, dmg := range a.hits {
-		actions.add(NewAction(attackMode.NormalAttack, dmg, fmt.Sprintf("%s•%d段伤害", a.name, idx+1)))
+		actions.add(NewAction(attackMode.NormalAttack, dmg, fmt.Sprintf("%s•%d段", a.name, idx+1)))
 	}
 	actions.addAll(a.charged.DMGs(a.name))
 	actions.addAll(a.plunge.DMGs(a.name))
@@ -146,10 +146,10 @@ func (a *NormalAttack) DMGs() *Actions {
 func (a *ChargedAttack) DMGs(name string) *Actions {
 	actions := NewActions()
 	if a.cyclic > 0 {
-		actions.add(NewAction(attackMode.ChargedAttack, a.cyclic, fmt.Sprintf("%s•重击持续伤害", name)))
+		actions.add(NewAction(attackMode.ChargedAttack, a.cyclic, fmt.Sprintf("%s•重击持续", name)))
 	}
 	if a.final > 0 {
-		actions.add(NewAction(attackMode.ChargedAttack, a.final, fmt.Sprintf("%s•重击终结伤害", name)))
+		actions.add(NewAction(attackMode.ChargedAttack, a.final, fmt.Sprintf("%s•重击终结", name)))
 	}
 	return actions
 }
@@ -157,13 +157,13 @@ func (a *ChargedAttack) DMGs(name string) *Actions {
 func (a *PlungeAttack) DMGs(name string) *Actions {
 	actions := NewActions()
 	if a.dmg > 0 {
-		actions.add(NewAction(attackMode.PlungeAttack, a.dmg, fmt.Sprintf("%s•下坠期间伤害", name)))
+		actions.add(NewAction(attackMode.PlungeAttack, a.dmg, fmt.Sprintf("%s•下坠期间", name)))
 	}
 	if a.low > 0 {
-		actions.add(NewAction(attackMode.PlungeAttack, a.low, fmt.Sprintf("%s•低空坠地冲击伤害", name)))
+		actions.add(NewAction(attackMode.PlungeAttack, a.low, fmt.Sprintf("%s•低空坠地冲击", name)))
 	}
 	if a.high > 0 {
-		actions.add(NewAction(attackMode.PlungeAttack, a.high, fmt.Sprintf("%s•高空坠地冲击伤害", name)))
+		actions.add(NewAction(attackMode.PlungeAttack, a.high, fmt.Sprintf("%s•高空坠地冲击", name)))
 	}
 	return actions
 }
