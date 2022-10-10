@@ -19,18 +19,34 @@ type Formula struct {
 	value     float64
 	algorithm string
 	refs      *[]*Formula
+	values    *Values
+}
+
+func (f *Formula) add(totalKey string, keys ...string) *Formula {
+	values := []*Formula{f}
+	return f.values.add(totalKey, append(values, f.values.GetAll(keys...)...)...)
+}
+
+func (f *Formula) multiply(totalKey string, keys ...string) *Formula {
+	values := []*Formula{f}
+	return f.values.multiply(totalKey, append(values, f.values.GetAll(keys...)...)...)
+}
+
+func (f *Formula) Algorithm() string {
+	if len(f.algorithm) == 0 {
+		return f.String()
+	} else {
+		return fmt.Sprintf("%s = %s", f, f.algorithm)
+	}
 }
 
 func (f *Formula) String() string {
-	if len(f.algorithm) == 0 {
-		return fmt.Sprintf("%s[%v]", f.key, f.value)
-	} else {
-		return fmt.Sprintf("%s[%v] = %s", f.key, f.value, f.algorithm)
-	}
+	return fmt.Sprintf("%s[%v]", f.key, f.value)
 }
 
 func (v *Values) set(formula *Formula) *Formula {
 	v.values[formula.key] = formula
+	formula.values = v
 	return formula
 }
 
@@ -50,23 +66,51 @@ func (v *Values) Get(key string) (*Formula, bool) {
 		return nil, false
 	}
 }
-
-func (v *Values) Add(totalKey string, keys ...string) *Formula {
-	totalValue, values, algorithms := 0.0, make([]*Formula, len(keys)), make([]string, len(keys))
+func (v *Values) GetAll(keys ...string) []*Formula {
+	values := make([]*Formula, len(keys))
 	for idx, key := range keys {
 		if value, exist := v.Get(key); exist && value != nil {
 			values[idx] = value
-			totalValue += value.value
 		} else {
 			values[idx] = v.Set(key, 0)
 		}
-		algorithms[idx] = fmt.Sprintf("%s[%v]", values[idx].key, values[idx].value)
+	}
+	return values
+}
+
+func (v *Values) Add(totalKey string, keys ...string) *Formula {
+	return v.add(totalKey, v.GetAll(keys...)...)
+}
+
+func (v *Values) Multiply(totalKey string, keys ...string) *Formula {
+	return v.multiply(totalKey, v.GetAll(keys...)...)
+}
+
+func (v *Values) add(totalKey string, items ...*Formula) *Formula {
+	totalValue, algorithms := 0.0, make([]string, len(items))
+	for idx, item := range items {
+		totalValue += item.value
+		algorithms[idx] = item.String()
 	}
 	return v.set(&Formula{
 		key:       totalKey,
 		value:     totalValue,
 		algorithm: strings.Join(algorithms, " + "),
-		refs:      &values,
+		refs:      &items,
+	})
+}
+
+func (v *Values) multiply(totalKey string, items ...*Formula) *Formula {
+	totalValue, algorithms := 1.0, make([]string, len(items))
+	for idx, item := range items {
+		totalValue *= item.value
+		algorithms[idx] = item.String()
+	}
+	return v.set(&Formula{
+		key:       totalKey,
+		value:     totalValue,
+		algorithm: strings.Join(algorithms, " * "),
+		refs:      &items,
 	})
 }
 

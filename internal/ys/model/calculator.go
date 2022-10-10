@@ -45,6 +45,14 @@ func (c *Calculator) set(key string, value float64) *Formula {
 	return c.values.Set(key, value)
 }
 
+func (c *Calculator) add(totalKey string, keys ...string) *Formula {
+	return c.values.Add(totalKey, keys...)
+}
+
+func (c *Calculator) multiply(totalKey string, keys ...string) *Formula {
+	return c.values.Multiply(totalKey, keys...)
+}
+
 func (c *Calculator) prepare(putZero bool) {
 	c.values = NewValues()
 	for _, p := range point.Points {
@@ -69,7 +77,7 @@ func (c *Calculator) calculate() {
 	zap.S().Debugf("Action: %s", c.action)
 	zap.S().Debugf("Elemental: %s + %s = %s", c.action.elemental, c.infusionElemental, c.action.elemental.Infusion(c.infusionElemental))
 	zap.S().Debugf("DamageBonusPoint: %s", c.action.elemental.Infusion(c.infusionElemental).DamageBonusPoint())
-	zap.S().Debugf("%s", c.攻击区())
+	zap.S().Debugf("攻击区: %s", c.攻击区().Algorithm())
 
 	// 基础伤害区 = 攻击区 * 倍率区
 	//伤害 = (基础伤害区 + 激化区) * 增伤区 * 暴击区 * 增幅区 * 防御区 * 抗性区
@@ -188,14 +196,10 @@ func (c *Calculator) calculate() {
 }
 
 func (c *Calculator) 攻击区() *Formula {
-	基础攻击力 := c.values.Add("基础攻击力", "人物攻击力", "武器攻击力")
-	//基础攻击力 = 人物攻击力 + 武器攻击力
-	//c.set("基础攻击力", c.basicAttributes.Get(point.Atk).value)
-	//
-	//// 基础区
-	//c.set("额外攻击力", c.Get("基础攻击力")*c.Get("攻击力%")+c.Get("攻击力"))
-	//c.set("总攻击力", c.Get("基础攻击力")+c.Get("额外攻击力"))
-	return 基础攻击力
+	c.add("基础攻击力", "人物攻击力", "武器攻击力").
+		multiply("百分比攻击力", "攻击力%").
+		add("额外攻击力", "攻击力")
+	return c.add("总攻击力", "基础攻击力", "额外攻击力")
 }
 
 func (c *Calculator) 倍率区() float64 {
