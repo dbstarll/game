@@ -36,8 +36,9 @@ func (c *Calculator) String() string {
 // 总攻击力 = 基础攻击力 + 额外攻击力;
 
 func (c *Character) Calculate(enemy *Enemy, action *Action, infusionElemental elemental.Elemental) *Calculator {
-	log.Printf("action: %s\n", action)
-	log.Printf("infusionElemental: %s\n", infusionElemental.DamageBonusPoint())
+	log.Printf("Action: %s\n", action)
+	log.Printf("Elemental: %s + %s = %s\n", action.elemental, infusionElemental, action.elemental.Infusion(infusionElemental))
+	log.Printf("DamageBonusPoint: %s\n", infusionElemental.DamageBonusPoint())
 
 	values := NewValues()
 	basicAttributes, finalAttributes := c.basicAttributes(), c.finalAttributes()

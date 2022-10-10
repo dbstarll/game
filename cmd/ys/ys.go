@@ -29,12 +29,12 @@ func main() {
 	迪卢克.Artifacts(魔女的心之火)
 	迪卢克.Artifacts(渡火者的智慧)
 
-	迪卢克.Apply(model.AddElementalDamageBonus(elemental.Pyro, 15))
+	迪卢克.Apply(model.AddElementalDamageBonus(elemental.Fire, 15))
 
 	enemy := model.NewEnemy(model.BaseEnemy(90))
 
 	迪卢克.GetActions().Loop(func(index int, action *model.Action) bool {
-		log.Printf("%+v\n", 迪卢克.Calculate(enemy, action, elemental.Pyro))
+		log.Printf("%+v\n", 迪卢克.Calculate(enemy, action, elemental.Fire))
 		//log.Printf("%s\n", action)
 		return true
 	})

@@ -12,7 +12,7 @@ import (
 
 var (
 	CharacterFactory迪卢克 = func(normal, skill, burst, constellation int) *Character {
-		return NewCharacter(5, elemental.Pyro, weaponType.Claymore,
+		return NewCharacter(5, elemental.Fire, weaponType.Claymore,
 			BaseCharacter(90, 12981, 335, 784, AddCriticalRate(19.2)),
 			TalentsTemplateModifier(NewTalentsTemplate(
 				&NormalAttack{name: "淬炼之剑", lv: 11, charged: ChargedAttack{stamina: 40, duration: time.Second * 5}},
