@@ -66,10 +66,6 @@ var (
 	}
 )
 
-//slashingDMG      float64       // 斩击
-//dot              float64       // 持续
-//explosionDMG     float64       // 爆裂
-
 type Character struct {
 	star            int
 	elemental       elemental.Elemental
@@ -181,26 +177,10 @@ func (c *Character) finalAttributes() *Attributes {
 	return final
 }
 
-// 基础区
-func (c *Character) calculatorAttack() float64 {
-	return 0
-}
-
-// 暴击区
-func (c *Character) calculatorCritical() float64 {
-	return 0
-}
-
-// 防御区
-func (c *Character) calculatorDefense() float64 {
-	return 0
-}
-
-// 基础伤害
-func (c *Character) calculatorDamageBasic() float64 {
-	return 0
-}
-
 func (c *Character) String() string {
 	return fmt.Sprintf("%s\n", c.base)
+}
+
+func (c *Character) Calculate(enemy *Enemy, action *Action, infusionElemental elemental.Elemental) *Calculator {
+	return NewCalculator(c, enemy, action, infusionElemental)
 }

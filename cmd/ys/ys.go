@@ -6,7 +6,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/model"
-	"log"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -34,8 +34,8 @@ func main() {
 	enemy := model.NewEnemy(model.BaseEnemy(90))
 
 	迪卢克.GetActions().Loop(func(index int, action *model.Action) bool {
-		log.Printf("%+v\n", 迪卢克.Calculate(enemy, action, elemental.Fire))
-		//log.Printf("%s\n", action)
+		zap.S().Infof("%s", 迪卢克.Calculate(enemy, action, elemental.Fire))
+		//zap.S().Infof("%s\n", action)
 		return true
 	})
 }

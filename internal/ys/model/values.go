@@ -1,6 +1,9 @@
 package model
 
-import "log"
+import (
+	"fmt"
+	"go.uber.org/zap"
+)
 
 type Values struct {
 	values map[string]float64
@@ -24,7 +27,17 @@ func (v *Values) Get(key string) float64 {
 	if value, exist := v.values[key]; exist {
 		return value
 	} else {
-		log.Printf("key not exist: %s\n", key)
+		zap.S().Warnf("key not exist: %s", key)
 		return 0
 	}
+}
+
+func (v *Values) String() string {
+	values := make(map[string]float64)
+	for key, val := range v.values {
+		if val != 0 {
+			values[key] = val
+		}
+	}
+	return fmt.Sprintf("%v", values)
 }
