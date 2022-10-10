@@ -1,7 +1,7 @@
 package model
 
 import (
-	"fmt"
+	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"go.uber.org/zap"
@@ -69,6 +69,9 @@ func (c *Calculator) prepare(putZero bool) {
 			c.set(key, value)
 		}
 	}
+	if c.Get("暴击率") > 1.0 {
+		c.set("暴击率", 1.0)
+	}
 }
 
 func (c *Calculator) calculate() {
@@ -77,47 +80,31 @@ func (c *Calculator) calculate() {
 	zap.S().Debugf("Action: %s", c.action)
 	zap.S().Debugf("Elemental: %s + %s = %s", c.action.elemental, c.infusionElemental, c.action.elemental.Infusion(c.infusionElemental))
 	zap.S().Debugf("DamageBonusPoint: %s", c.action.elemental.Infusion(c.infusionElemental).DamageBonusPoint())
-	zap.S().Debugf("攻击区: %s", c.攻击区().Algorithm())
-	zap.S().Debugf("倍率区: %s", c.倍率区().Algorithm())
 
-	// 基础伤害区 = 攻击区 * 倍率区
-	//伤害 = (基础伤害区 + 激化区) * 增伤区 * 暴击区 * 增幅区 * 防御区 * 抗性区
+	基础伤害区, 增伤区, 防御区, 抗性区, 增幅区 := c.基础伤害区(), c.增伤区(), c.防御区(), c.抗性区(), c.增幅区()
+	暴击收益, 暴伤倍率 := c.暴击区()
+	总伤害 := 基础伤害区.multiply("总伤害", 增伤区, 防御区, 抗性区, 增幅区)
+	总伤害平均 := 总伤害.multiply("总伤害(平均)", 暴击收益)
+	总伤害最大 := 总伤害.multiply("总伤害(暴击)", 暴伤倍率)
+	zap.S().Debugf("基础伤害区: %s", 基础伤害区.Algorithm())
+	zap.S().Debugf("增伤区: %s", 增伤区.Algorithm())
+	zap.S().Debugf("暴击区: %s, %s", 暴击收益.Algorithm(), 暴伤倍率.Algorithm())
+	zap.S().Debugf("防御区: %s", 防御区.Algorithm())
+	zap.S().Debugf("抗性区: %s", 抗性区.Algorithm())
+	zap.S().Debugf("增幅区: %s", 增幅区.Algorithm())
+	zap.S().Debugf("%s", 总伤害.Algorithm())
+	zap.S().Debugf("%s", 总伤害平均.Algorithm())
+	zap.S().Debugf("%s", 总伤害最大.Algorithm())
+	zap.S().Debugf("总伤害: [%f, %f, %f]", 总伤害.value, 总伤害平均.value, 总伤害最大.value)
 
 	//c.set("怪物防御%", c.enemy.base.Get(point.DefPercentage).value/100)
 	//
-	//// 暴击区
-	//if c.Get("暴击率") > 1.0 {
-	//	c.set("暴击率", 1.0)
-	//}
-	//c.set("暴击收益", 1+c.Get("暴击率")*c.Get("暴击伤害"))
-	//c.set("暴伤倍率", 1+c.Get("暴击伤害"))
 	//
 	//// 防御区
 	//c.set("穿防系数", 1-c.Get("无视防御"))
 	//c.set("减防系数", 1-c.Get("防御减免")+c.Get("怪物防御%"))
 	//c.set("防御系数", c.Get("穿防系数")*c.Get("减防系数")*(c.Get("怪物等级")+100))
 	//c.set("防御承伤", (c.Get("人物等级")+100)/(c.Get("人物等级")+100+c.Get("防御系数")))
-	//
-	//// 基础伤害
-	//c.set("基础伤害", c.Get("总攻击力")*c.Get("防御承伤"))
-	//c.set("基础伤害(平均)", c.Get("基础伤害")*c.Get("暴击收益"))
-	//c.set("基础伤害(暴击)", c.Get("基础伤害")*c.Get("暴伤倍率"))
-	//
-	//// 增伤区
-	//switch c.action.mode {
-	//case attackMode.NormalAttack:
-	//	c.set("普通攻击增伤", 1+c.Get(c.action.elemental.Infusion(c.infusionElemental).DamageBonusPoint().String())+c.Get("普通攻击伤害加成")+c.Get("元素影响增伤")+c.Get("伤害加成"))
-	//	break
-	//case attackMode.ChargedAttack:
-	//	c.set("重击增伤", 1+c.Get(c.action.elemental.Infusion(c.infusionElemental).DamageBonusPoint().String())+c.Get("重击伤害加成")+c.Get("元素影响增伤")+c.Get("伤害加成"))
-	//	break
-	//case attackMode.ElementalSkill:
-	//	c.set("元素战技增伤", 1+c.Get(c.action.elemental.DamageBonusPoint().String())+c.Get("元素战技伤害加成")+c.Get("元素影响增伤")+c.Get("伤害加成"))
-	//	break
-	//case attackMode.ElementalBurst:
-	//	c.set("元素爆发增伤", 1+c.Get(c.action.elemental.DamageBonusPoint().String())+c.Get("元素爆发伤害加成")+c.Get("元素影响增伤")+c.Get("伤害加成"))
-	//	break
-	//}
 
 	//            // 抗性区
 	//            const phyR = c.set("元素抗性",c.Get("怪物元素抗性") - c.Get("元素抗性减免"));
@@ -188,7 +175,6 @@ func (c *Calculator) calculate() {
 	//                    c.set("剧变伤害(" + key + ")",c.Get("剧变基础伤害") * reactions.upheaval.rate[key]);
 	//                });
 	//            }
-	fmt.Printf("finalAttributes: %+v\n", c.finalAttributes)
 }
 
 func (c *Calculator) 攻击区() *Formula {
@@ -202,9 +188,48 @@ func (c *Calculator) 倍率区() *Formula {
 	return c.set(prefix+"技能倍率", c.action.dmg/100).multiply(prefix+"伤害倍率", c.add(prefix+"技能倍率增伤", 1, prefix+"技能倍率加成"))
 }
 
-//func (c *Calculator) 基础伤害区() float64 {
-//	return c.攻击区() * c.倍率区()
-//}
+func (c *Calculator) 基础倍率区() *Formula {
+	return c.攻击区().multiply("基础倍率", c.倍率区())
+}
+
+func (c *Calculator) 激化区() *Formula {
+	//TODO 待完善
+	return c.set("激化加成值", 0)
+}
+
+func (c *Calculator) 基础伤害区() *Formula {
+	return c.基础倍率区().add("基础伤害", c.激化区())
+}
+
+func (c *Calculator) 增伤区() *Formula {
+	prefix, elemental := c.action.mode.String(), c.action.elemental
+	switch c.action.mode {
+	case attackMode.NormalAttack, attackMode.ChargedAttack, attackMode.PlungeAttack:
+		elemental = elemental.Infusion(c.infusionElemental)
+		break
+	}
+	//TODO 对元素影响下的敌人伤害提高
+	return c.add(prefix+"增伤", 1, elemental.DamageBonusPoint().String(), prefix+"伤害加成", "元素影响增伤", "伤害加成")
+}
+
+func (c *Calculator) 暴击区() (*Formula, *Formula) {
+	return c.add("暴击收益", 1, c.multiply("暴击加成", "暴击率", "暴击伤害")), c.add("暴伤倍率", 1, "暴击伤害")
+}
+
+func (c *Calculator) 防御区() *Formula {
+	//TODO 待完善
+	return c.set("防御区", 1)
+}
+
+func (c *Calculator) 抗性区() *Formula {
+	//TODO 待完善
+	return c.set("抗性区", 1)
+}
+
+func (c *Calculator) 增幅区() *Formula {
+	//TODO 待完善
+	return c.set("增幅区", 1)
+}
 
 func (c *Calculator) String() string {
 	return c.values.String()

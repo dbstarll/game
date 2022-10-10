@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"go.uber.org/zap"
+	"math"
 	"reflect"
 	"strings"
 )
@@ -50,6 +51,7 @@ func (f *Formula) String() string {
 func (v *Values) set(formula *Formula) *Formula {
 	v.values[formula.key] = formula
 	formula.values = v
+	formula.value = math.Round(formula.value*10000000) / 10000000
 	return formula
 }
 
