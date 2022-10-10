@@ -22,14 +22,14 @@ type Formula struct {
 	values    *Values
 }
 
-func (f *Formula) add(totalKey string, keys ...string) *Formula {
+func (f *Formula) add(totalKey string, objs ...interface{}) *Formula {
 	values := []*Formula{f}
-	return f.values.add(totalKey, append(values, f.values.GetAll(keys...)...)...)
+	return f.values.add(totalKey, append(values, f.values.GetAll(objs...)...)...)
 }
 
-func (f *Formula) multiply(totalKey string, keys ...string) *Formula {
+func (f *Formula) multiply(totalKey string, objs ...interface{}) *Formula {
 	values := []*Formula{f}
-	return f.values.multiply(totalKey, append(values, f.values.GetAll(keys...)...)...)
+	return f.values.multiply(totalKey, append(values, f.values.GetAll(objs...)...)...)
 }
 
 func (f *Formula) Algorithm() string {
@@ -66,24 +66,41 @@ func (v *Values) Get(key string) (*Formula, bool) {
 		return nil, false
 	}
 }
-func (v *Values) GetAll(keys ...string) []*Formula {
-	values := make([]*Formula, len(keys))
-	for idx, key := range keys {
-		if value, exist := v.Get(key); exist && value != nil {
-			values[idx] = value
+
+//func (v *Values) GetAll(keys ...string) []*Formula {
+//	values := make([]*Formula, len(keys))
+//	for idx, key := range keys {
+//		if value, exist := v.Get(key); exist && value != nil {
+//			values[idx] = value
+//		} else {
+//			values[idx] = v.Set(key, 0)
+//		}
+//	}
+//	return values
+//}
+
+func (v *Values) GetAll(objs ...interface{}) []*Formula {
+	values := make([]*Formula, 0)
+	for _, obj := range objs {
+		if formula, ok := obj.(*Formula); ok {
+			values = append(values, formula)
+		} else if key, ok := obj.(string); !ok {
+			// ignore
+		} else if value, exist := v.Get(key); exist && value != nil {
+			values = append(values, value)
 		} else {
-			values[idx] = v.Set(key, 0)
+			values = append(values, v.Set(key, 0))
 		}
 	}
 	return values
 }
 
-func (v *Values) Add(totalKey string, keys ...string) *Formula {
-	return v.add(totalKey, v.GetAll(keys...)...)
+func (v *Values) Add(totalKey string, objs ...interface{}) *Formula {
+	return v.add(totalKey, v.GetAll(objs...)...)
 }
 
-func (v *Values) Multiply(totalKey string, keys ...string) *Formula {
-	return v.multiply(totalKey, v.GetAll(keys...)...)
+func (v *Values) Multiply(totalKey string, objs ...interface{}) *Formula {
+	return v.multiply(totalKey, v.GetAll(objs...)...)
 }
 
 func (v *Values) add(totalKey string, items ...*Formula) *Formula {

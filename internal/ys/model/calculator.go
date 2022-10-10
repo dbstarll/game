@@ -45,12 +45,12 @@ func (c *Calculator) set(key string, value float64) *Formula {
 	return c.values.Set(key, value)
 }
 
-func (c *Calculator) add(totalKey string, keys ...string) *Formula {
-	return c.values.Add(totalKey, keys...)
+func (c *Calculator) add(totalKey string, objs ...interface{}) *Formula {
+	return c.values.Add(totalKey, objs...)
 }
 
-func (c *Calculator) multiply(totalKey string, keys ...string) *Formula {
-	return c.values.Multiply(totalKey, keys...)
+func (c *Calculator) multiply(totalKey string, objs ...interface{}) *Formula {
+	return c.values.Multiply(totalKey, objs...)
 }
 
 func (c *Calculator) prepare(putZero bool) {
@@ -196,10 +196,8 @@ func (c *Calculator) calculate() {
 }
 
 func (c *Calculator) 攻击区() *Formula {
-	c.add("基础攻击力", "人物攻击力", "武器攻击力").
-		multiply("百分比攻击力", "攻击力%").
-		add("额外攻击力", "攻击力")
-	return c.add("总攻击力", "基础攻击力", "额外攻击力")
+	基础攻击力 := c.add("基础攻击力", "人物攻击力", "武器攻击力")
+	return 基础攻击力.add("总攻击力", 基础攻击力.multiply("百分比攻击力", "攻击力%").add("额外攻击力", "攻击力"))
 }
 
 func (c *Calculator) 倍率区() float64 {
