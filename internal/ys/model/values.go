@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"go.uber.org/zap"
+	"reflect"
 	"strings"
 )
 
@@ -18,22 +19,24 @@ type Formula struct {
 	key       string
 	value     float64
 	algorithm string
-	refs      *[]*Formula
+	refs      *[]interface{}
 	values    *Values
 }
 
 func (f *Formula) add(totalKey string, objs ...interface{}) *Formula {
-	values := []*Formula{f}
+	values := []interface{}{f}
 	return f.values.add(totalKey, append(values, f.values.GetAll(objs...)...)...)
 }
 
 func (f *Formula) multiply(totalKey string, objs ...interface{}) *Formula {
-	values := []*Formula{f}
+	values := []interface{}{f}
 	return f.values.multiply(totalKey, append(values, f.values.GetAll(objs...)...)...)
 }
 
 func (f *Formula) Algorithm() string {
-	if len(f.algorithm) == 0 {
+	if f == nil {
+		return "nil"
+	} else if len(f.algorithm) == 0 {
 		return f.String()
 	} else {
 		return fmt.Sprintf("%s = %s", f, f.algorithm)
@@ -79,13 +82,13 @@ func (v *Values) Get(key string) (*Formula, bool) {
 //	return values
 //}
 
-func (v *Values) GetAll(objs ...interface{}) []*Formula {
-	values := make([]*Formula, 0)
+func (v *Values) GetAll(objs ...interface{}) []interface{} {
+	values := make([]interface{}, 0)
 	for _, obj := range objs {
 		if formula, ok := obj.(*Formula); ok {
 			values = append(values, formula)
 		} else if key, ok := obj.(string); !ok {
-			// ignore
+			values = append(values, obj)
 		} else if value, exist := v.Get(key); exist && value != nil {
 			values = append(values, value)
 		} else {
@@ -103,11 +106,22 @@ func (v *Values) Multiply(totalKey string, objs ...interface{}) *Formula {
 	return v.multiply(totalKey, v.GetAll(objs...)...)
 }
 
-func (v *Values) add(totalKey string, items ...*Formula) *Formula {
+func (v *Values) add(totalKey string, items ...interface{}) *Formula {
 	totalValue, algorithms := 0.0, make([]string, len(items))
 	for idx, item := range items {
-		totalValue += item.value
-		algorithms[idx] = item.String()
+		if formula, ok := item.(*Formula); ok {
+			totalValue += formula.value
+			algorithms[idx] = formula.String()
+		} else if floatValue, ok := item.(float64); ok {
+			totalValue += floatValue
+			algorithms[idx] = fmt.Sprintf("%v", floatValue)
+		} else if intValue, ok := item.(int); ok {
+			totalValue += float64(intValue)
+			algorithms[idx] = fmt.Sprintf("%d", intValue)
+		} else {
+			zap.S().Warnf("unknown item: [%s]%+v", reflect.TypeOf(item), item)
+			algorithms[idx] = fmt.Sprintf("%+v", item)
+		}
 	}
 	return v.set(&Formula{
 		key:       totalKey,
@@ -117,11 +131,22 @@ func (v *Values) add(totalKey string, items ...*Formula) *Formula {
 	})
 }
 
-func (v *Values) multiply(totalKey string, items ...*Formula) *Formula {
+func (v *Values) multiply(totalKey string, items ...interface{}) *Formula {
 	totalValue, algorithms := 1.0, make([]string, len(items))
 	for idx, item := range items {
-		totalValue *= item.value
-		algorithms[idx] = item.String()
+		if formula, ok := item.(*Formula); ok {
+			totalValue *= formula.value
+			algorithms[idx] = formula.String()
+		} else if floatValue, ok := item.(float64); ok {
+			totalValue *= floatValue
+			algorithms[idx] = fmt.Sprintf("%v", floatValue)
+		} else if intValue, ok := item.(int); ok {
+			totalValue *= float64(intValue)
+			algorithms[idx] = fmt.Sprintf("%d", intValue)
+		} else {
+			zap.S().Warnf("unknown item: [%s]%+v", reflect.TypeOf(item), item)
+			algorithms[idx] = fmt.Sprintf("%+v", item)
+		}
 	}
 	return v.set(&Formula{
 		key:       totalKey,

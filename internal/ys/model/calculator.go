@@ -78,16 +78,12 @@ func (c *Calculator) calculate() {
 	zap.S().Debugf("Elemental: %s + %s = %s", c.action.elemental, c.infusionElemental, c.action.elemental.Infusion(c.infusionElemental))
 	zap.S().Debugf("DamageBonusPoint: %s", c.action.elemental.Infusion(c.infusionElemental).DamageBonusPoint())
 	zap.S().Debugf("攻击区: %s", c.攻击区().Algorithm())
+	zap.S().Debugf("倍率区: %s", c.倍率区().Algorithm())
 
 	// 基础伤害区 = 攻击区 * 倍率区
 	//伤害 = (基础伤害区 + 激化区) * 增伤区 * 暴击区 * 增幅区 * 防御区 * 抗性区
 
 	//c.set("怪物防御%", c.enemy.base.Get(point.DefPercentage).value/100)
-	//c.set("基础攻击力", c.basicAttributes.Get(point.Atk).value)
-	//
-	//// 基础区
-	//c.set("额外攻击力", c.Get("基础攻击力")*c.Get("攻击力%")+c.Get("攻击力"))
-	//c.set("总攻击力", c.Get("基础攻击力")+c.Get("额外攻击力"))
 	//
 	//// 暴击区
 	//if c.Get("暴击率") > 1.0 {
@@ -200,8 +196,10 @@ func (c *Calculator) 攻击区() *Formula {
 	return 基础攻击力.add("总攻击力", 基础攻击力.multiply("百分比攻击力", "攻击力%").add("额外攻击力", "攻击力"))
 }
 
-func (c *Calculator) 倍率区() float64 {
-	return 1
+func (c *Calculator) 倍率区() *Formula {
+	prefix := c.action.mode.String()
+	//c.set(prefix+"技能倍率加成", 0.5)
+	return c.set(prefix+"技能倍率", c.action.dmg/100).multiply(prefix+"伤害倍率", c.add(prefix+"技能倍率增伤", 1, prefix+"技能倍率加成"))
 }
 
 //func (c *Calculator) 基础伤害区() float64 {
