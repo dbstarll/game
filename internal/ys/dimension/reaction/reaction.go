@@ -89,6 +89,21 @@ func (r Reaction) String() string {
 	}
 }
 
+func (r Reaction) Classify() Classify {
+	switch r {
+	case Vaporize, Melt:
+		return Amplify
+	case Crystallize:
+		return Crystal
+	case Overload, Superconduct, ElectroCharged, Shattered, Swirl, Frozen, Burn, Bloom, Hyperbloom, Burgeon:
+		return Upheaval
+	case Catalyze, Quicken, Aggravate, Spread:
+		return Intensify
+	default:
+		return -1
+	}
+}
+
 type Factor struct {
 	reaction Reaction
 	factor   float64
