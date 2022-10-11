@@ -117,6 +117,10 @@ func (f *Factor) GetReaction() Reaction {
 	return f.reaction
 }
 
+func (f *Factor) Match(classify Classify) bool {
+	return classify == f.reaction.Classify()
+}
+
 func (f *Factor) GetFactor() float64 {
 	return f.factor
 }

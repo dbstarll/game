@@ -186,9 +186,9 @@ func (e Elemental) ResistPoint() point.Point {
 	}
 }
 
-func (e Elemental) Reaction(elemental Elemental) *reaction.Factor {
+func (e Elemental) Reaction(attached Elemental) *reaction.Factor {
 	if rs, exist := reactions[e]; exist {
-		if r, exist := rs[elemental]; exist {
+		if r, exist := rs[attached]; exist {
 			return r
 		}
 	}

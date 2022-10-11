@@ -4,6 +4,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
+	"github.com/dbstarll/game/internal/ys/dimension/reaction"
 	"go.uber.org/zap"
 )
 
@@ -109,30 +110,6 @@ func (c *Calculator) calculate() {
 	zap.S().Debugf("%s", 总伤害最大.Algorithm())
 	zap.S().Debugf("总伤害: [%f, %f, %f]", 总伤害.value, 总伤害平均.value, 总伤害最大.value)
 
-	//            // 技能伤害
-	//            c.set("普攻伤害",c.Get("基础伤害") * c.Get("普攻倍率") * c.Get("普通攻击增伤") * c.Get("物理抗性承伤"));
-	//            c.set("普攻伤害(平均)",c.Get("普攻伤害") * c.Get("暴击收益"));
-	//            c.set("普攻伤害(暴击)",c.Get("普攻伤害") * c.Get("暴伤倍率"));
-	//            c.set("重击伤害",c.Get("基础伤害") * c.Get("重击倍率") * c.Get("重击增伤") * c.Get("物理抗性承伤"));
-	//            c.set("重击伤害(平均)",c.Get("重击伤害") * c.Get("暴击收益"));
-	//            c.set("重击伤害(暴击)",c.Get("重击伤害") * c.Get("暴伤倍率"));
-	//            c.set("附魔普攻伤害",c.Get("基础伤害") * c.Get("普攻倍率") * c.Get("附魔普通攻击增伤") * c.Get("元素抗性承伤"));
-	//            c.set("附魔普攻伤害(平均)",c.Get("附魔普攻伤害") * c.Get("暴击收益"));
-	//            c.set("附魔普攻伤害(暴击)",c.Get("附魔普攻伤害") * c.Get("暴伤倍率"));
-	//            c.set("附魔重击伤害",c.Get("基础伤害") * c.Get("重击倍率") * c.Get("附魔重击增伤") * c.Get("元素抗性承伤"));
-	//            c.set("附魔重击伤害(平均)",c.Get("附魔重击伤害") * c.Get("暴击收益"));
-	//            c.set("附魔重击伤害(暴击)",c.Get("附魔重击伤害") * c.Get("暴伤倍率"));
-	//            c.set("元素战技伤害",c.Get("基础伤害") * c.Get("元素战技倍率") * c.Get("元素战技增伤") * c.Get("元素抗性承伤"));
-	//            c.set("元素战技伤害(平均)",c.Get("元素战技伤害") * c.Get("暴击收益"));
-	//            c.set("元素战技伤害(暴击)",c.Get("元素战技伤害") * c.Get("暴伤倍率"));
-	//            c.set("元素爆发伤害",c.Get("基础伤害") * c.Get("元素爆发倍率") * c.Get("元素爆发增伤") * c.Get("元素抗性承伤"));
-	//            c.set("元素爆发伤害(平均)",c.Get("元素爆发伤害") * c.Get("暴击收益"));
-	//            c.set("元素爆发伤害(暴击)",c.Get("元素爆发伤害") * c.Get("暴伤倍率"));
-	//
-	//            // 增幅反应区
-	//            c.set("增幅精通提升",(2.78 * c.Get("元素精通")) / (c.Get("元素精通") + 1400));
-	//            c.set("增幅反应倍率",1 + c.Get("增幅精通提升") + c.Get("反应系数提高"));
-	//
 	//            // 剧变反应区
 	//            c.set("剧变精通提升",16 * c.Get("元素精通") / (c.Get("元素精通") + 2000));
 	//            c.set("剧变反应倍率",1 + c.Get("剧变精通提升") + c.Get("反应伤害提升"));
@@ -141,19 +118,6 @@ func (c *Calculator) calculate() {
 	//
 	//            // 反应伤害
 	//            const element = $("select[column=元素类型]").val());
-	//            const bonus = reactions.bonus[element]);
-	//            if ("object" === typeof bonus) {
-	//                Object.keys(bonus).forEach((key) => {
-	//                    c.set("附魔普攻伤害(" + key + ")",c.Get("附魔普攻伤害") * c.Get("增幅反应倍率") * bonus[key].rate);
-	//                    c.set("附魔重击伤害(" + key + ")",c.Get("附魔重击伤害") * c.Get("增幅反应倍率") * bonus[key].rate);
-	//                    c.set("元素战技伤害(" + key + ")",c.Get("元素战技伤害") * c.Get("增幅反应倍率") * bonus[key].rate);
-	//                    c.set("元素爆发伤害(" + key + ")",c.Get("元素爆发伤害") * c.Get("增幅反应倍率") * bonus[key].rate);
-	//                    c.set("附魔普攻伤害(" + key.substr(0, 1) + "暴)",c.Get("附魔普攻伤害(" + key + ")") * c.Get("暴伤倍率"));
-	//                    c.set("附魔重击伤害(" + key.substr(0, 1) + "暴)",c.Get("附魔重击伤害(" + key + ")") * c.Get("暴伤倍率"));
-	//                    c.set("元素战技伤害(" + key.substr(0, 1) + "暴)",c.Get("元素战技伤害(" + key + ")") * c.Get("暴伤倍率"));
-	//                    c.set("元素爆发伤害(" + key.substr(0, 1) + "暴)",c.Get("元素爆发伤害(" + key + ")") * c.Get("暴伤倍率"));
-	//                });
-	//            }
 	//            const upheaval = reactions.upheaval[element];
 	//            if ("object" === typeof upheaval) {
 	//                Object.keys(upheaval).forEach((key) => {
@@ -218,8 +182,13 @@ func (c *Calculator) 抗性区() *Formula {
 }
 
 func (c *Calculator) 增幅区() *Formula {
-	//TODO 待完善
-	return c.set("增幅区", 1)
+	for _, factor := range c.enemy.DetectReaction(c.elemental, reaction.Amplify) {
+		reactionName := factor.GetReaction().String()
+		增幅精通提升 := c.multiply("增幅精通系数1", 2.78, "元素精通").divide("增幅精通提升", c.add("增幅精通系数2", 1400, "元素精通"))
+		增幅反应倍率 := c.add("增幅反应倍率", 1, 增幅精通提升, reactionName+"反应系数提高")
+		return c.set(reactionName+"反应基础倍率", factor.GetFactor()).multiply(reactionName+"反应总倍率", 增幅反应倍率)
+	}
+	return c.set("无增幅反应", 1)
 }
 
 func (c *Calculator) String() string {
