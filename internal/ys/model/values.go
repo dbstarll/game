@@ -66,20 +66,17 @@ func (v *Values) Multiply(totalKey string, items ...interface{}) *Formula {
 
 func (v *Values) multiOperate(totalKey string, operator Operator, items ...interface{}) *Formula {
 	items = v.getAll(items...)
-	totalValue, algorithms := operator.base(), make([]string, len(items))
+	totalValue, initialized, algorithms := 0.0, false, make([]string, len(items))
 	for idx, item := range items {
-		if formula, ok := item.(*Formula); ok {
-			totalValue = operator.operate(totalValue, formula.value)
-			algorithms[idx] = formula.String()
-		} else if floatValue, ok := item.(float64); ok {
-			totalValue = operator.operate(totalValue, floatValue)
-			algorithms[idx] = fmt.Sprintf("%v", floatValue)
-		} else if intValue, ok := item.(int); ok {
-			totalValue = operator.operate(totalValue, float64(intValue))
-			algorithms[idx] = fmt.Sprintf("%d", intValue)
+		if value, algorithm, ok := v.parseItem(item); !ok {
+			algorithms[idx] = algorithm
+		} else if !initialized {
+			totalValue = value
+			algorithms[idx] = algorithm
+			initialized = true
 		} else {
-			zap.S().Warnf("unknown item: [%s]%+v", reflect.TypeOf(item), item)
-			algorithms[idx] = fmt.Sprintf("%s", item)
+			totalValue = operator.operate(totalValue, value)
+			algorithms[idx] = algorithm
 		}
 	}
 	return v.set(&Formula{
@@ -88,6 +85,19 @@ func (v *Values) multiOperate(totalKey string, operator Operator, items ...inter
 		algorithm: strings.Join(algorithms, operator.separator()),
 		refs:      &items,
 	})
+}
+
+func (v *Values) parseItem(item interface{}) (float64, string, bool) {
+	if formula, ok := item.(*Formula); ok {
+		return formula.value, formula.String(), true
+	} else if floatValue, ok := item.(float64); ok {
+		return floatValue, fmt.Sprintf("%v", floatValue), true
+	} else if intValue, ok := item.(int); ok {
+		return float64(intValue), fmt.Sprintf("%d", intValue), true
+	} else {
+		zap.S().Warnf("unknown item: [%s]%+v", reflect.TypeOf(item), item)
+		return 0, fmt.Sprintf("%s", item), false
+	}
 }
 
 func (v *Values) String() string {

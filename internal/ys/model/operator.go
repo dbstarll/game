@@ -1,25 +1,21 @@
 package model
 
 var (
-	AddOperator      = &addOperator{}
-	MultiplyOperator = &multiplyOperator{}
+	AddOperator      Operator = &addOperator{}
+	MultiplyOperator Operator = &multiplyOperator{}
+	ReduceOperator   Operator = &reduceOperator{}
 )
 
 type Operator interface {
-	base() float64
-	operate(one, two float64) float64
+	operate(first, second float64) float64
 	separator() string
 }
 
 type addOperator struct {
 }
 
-func (o *addOperator) base() float64 {
-	return 0
-}
-
-func (o *addOperator) operate(one, two float64) float64 {
-	return one + two
+func (o *addOperator) operate(first, second float64) float64 {
+	return first + second
 }
 
 func (o *addOperator) separator() string {
@@ -29,14 +25,21 @@ func (o *addOperator) separator() string {
 type multiplyOperator struct {
 }
 
-func (o *multiplyOperator) base() float64 {
-	return 1
-}
-
-func (o *multiplyOperator) operate(one, two float64) float64 {
-	return one * two
+func (o *multiplyOperator) operate(first, second float64) float64 {
+	return first * second
 }
 
 func (o *multiplyOperator) separator() string {
 	return " * "
+}
+
+type reduceOperator struct {
+}
+
+func (o *reduceOperator) operate(first, second float64) float64 {
+	return first - second
+}
+
+func (o *reduceOperator) separator() string {
+	return " - "
 }
