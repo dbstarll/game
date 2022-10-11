@@ -8,25 +8,30 @@ import (
 )
 
 type Calculator struct {
-	finalAttributes   *Attributes
-	enemy             *Enemy
-	action            *Action
-	infusionElemental elemental.Elemental
-	values            *Values
-	init              map[string]float64
+	finalAttributes *Attributes
+	enemy           *Enemy
+	action          *Action
+	elemental       elemental.Elemental
+	values          *Values
+	init            map[string]float64
 }
 
 func NewCalculator(character *Character, enemy *Enemy, action *Action, infusionElemental elemental.Elemental) *Calculator {
 	calculator := &Calculator{
-		finalAttributes:   character.finalAttributes(),
-		enemy:             enemy,
-		action:            action,
-		infusionElemental: infusionElemental,
+		finalAttributes: character.finalAttributes(),
+		enemy:           enemy,
+		action:          action,
+		elemental:       action.elemental,
 		init: map[string]float64{
 			"人物等级":  float64(character.level),
 			"人物攻击力": character.base.Get(point.Atk).value,
 			"武器攻击力": character.weapon.base.Get(point.Atk).value,
 		},
+	}
+	switch action.mode {
+	case attackMode.NormalAttack, attackMode.ChargedAttack, attackMode.PlungeAttack:
+		calculator.elemental = calculator.elemental.Infusion(infusionElemental)
+		break
 	}
 	calculator.calculate()
 	return calculator
@@ -85,8 +90,8 @@ func (c *Calculator) calculate() {
 	c.prepare(true)
 
 	zap.S().Debugf("Action: %s", c.action)
-	zap.S().Debugf("Elemental: %s + %s = %s", c.action.elemental, c.infusionElemental, c.action.elemental.Infusion(c.infusionElemental))
-	zap.S().Debugf("DamageBonusPoint: %s", c.action.elemental.Infusion(c.infusionElemental).DamageBonusPoint())
+	zap.S().Debugf("Elemental: %s => %s", c.action.elemental, c.elemental)
+	zap.S().Debugf("DamageBonusPoint: %s", c.elemental.DamageBonusPoint())
 
 	基础伤害区, 增伤区, 防御区, 抗性区, 增幅区 := c.基础伤害区(), c.增伤区(), c.防御区(), c.抗性区(), c.增幅区()
 	暴击收益, 暴伤倍率 := c.暴击区()
@@ -104,24 +109,6 @@ func (c *Calculator) calculate() {
 	zap.S().Debugf("%s", 总伤害最大.Algorithm())
 	zap.S().Debugf("总伤害: [%f, %f, %f]", 总伤害.value, 总伤害平均.value, 总伤害最大.value)
 
-	//            // 抗性区
-	//            const phyR = c.set("元素抗性",c.Get("怪物元素抗性") - c.Get("元素抗性减免"));
-	//            if (phyR > 0.75) {
-	//                c.set("元素抗性承伤",1 / (1 + 4 * phyR));
-	//            } else if (phyR >= 0) {
-	//                c.set("元素抗性承伤",1 - phyR);
-	//            } else {
-	//                c.set("元素抗性承伤",1 - phyR / 2);
-	//            }
-	//            const eleR = c.set("物理抗性",c.Get("怪物物理抗性") - c.Get("物理抗性减免"));
-	//            if (eleR > 0.75) {
-	//                c.set("物理抗性承伤",1 / (1 + 4 * eleR));
-	//            } else if (eleR >= 0) {
-	//                c.set("物理抗性承伤",1 - eleR);
-	//            } else {
-	//                c.set("物理抗性承伤",1 - eleR / 2);
-	//            }
-	//
 	//            // 技能伤害
 	//            c.set("普攻伤害",c.Get("基础伤害") * c.Get("普攻倍率") * c.Get("普通攻击增伤") * c.Get("物理抗性承伤"));
 	//            c.set("普攻伤害(平均)",c.Get("普攻伤害") * c.Get("暴击收益"));
@@ -200,14 +187,9 @@ func (c *Calculator) 基础伤害区() *Formula {
 }
 
 func (c *Calculator) 增伤区() *Formula {
-	prefix, elemental := c.action.mode.String(), c.action.elemental
-	switch c.action.mode {
-	case attackMode.NormalAttack, attackMode.ChargedAttack, attackMode.PlungeAttack:
-		elemental = elemental.Infusion(c.infusionElemental)
-		break
-	}
+	prefix := c.action.mode.String()
 	//TODO 对元素影响下的敌人伤害提高
-	return c.add(prefix+"增伤", 1, elemental.DamageBonusPoint().String(), prefix+"伤害加成", "元素影响增伤", "伤害加成")
+	return c.add(prefix+"增伤", 1, c.elemental.DamageBonusPoint().String(), prefix+"伤害加成", "元素影响增伤", "伤害加成")
 }
 
 func (c *Calculator) 暴击区() (*Formula, *Formula) {
@@ -224,8 +206,15 @@ func (c *Calculator) 防御区() *Formula {
 }
 
 func (c *Calculator) 抗性区() *Formula {
-	//TODO 待完善
-	return c.set("抗性区", 1)
+	prefix := c.elemental.ResistPoint().String()
+	抗性 := c.set("怪物"+prefix, c.enemy.base.Get(c.elemental.ResistPoint()).value/100)
+	if 抗性.value > 0.75 {
+		return c.divide(prefix+"承伤", 1, 抗性.multiply("怪物"+prefix+"系数1", 4).add("怪物"+prefix+"系数2", 1))
+	} else if 抗性.value >= 0 {
+		return c.reduce(prefix+"承伤", 1, 抗性)
+	} else {
+		return c.reduce(prefix+"承伤", 1, 抗性.divide("怪物"+prefix+"系数3", 2))
+	}
 }
 
 func (c *Calculator) 增幅区() *Formula {

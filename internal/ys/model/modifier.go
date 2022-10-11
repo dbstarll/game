@@ -77,6 +77,18 @@ func AddElementalDamageBonus(e elemental.Elemental, add float64) AttributeModifi
 	return NewAttribute(e.DamageBonusPoint(), add).Accumulation()
 }
 
+func AddElementalResist(e elemental.Elemental, add float64) AttributeModifier {
+	return NewAttribute(e.ResistPoint(), add).Accumulation()
+}
+
+func AddAllElementalResist(add float64) AttributeModifier {
+	modifiers := []AttributeModifier{NewAttribute(point.PhysicalResist, add).Accumulation()}
+	for _, e := range elemental.Elementals {
+		modifiers = append(modifiers, AddElementalResist(e, add))
+	}
+	return MergeAttributes(modifiers...)
+}
+
 func AddDamageBonus(add float64) AttributeModifier {
 	return NewAttribute(point.DamageBonus, add).Accumulation()
 }

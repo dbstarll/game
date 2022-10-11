@@ -113,3 +113,28 @@ func (e Elemental) DamageBonusPoint() point.Point {
 		}
 	}
 }
+
+func (e Elemental) ResistPoint() point.Point {
+	switch e {
+	case Fire:
+		return point.PyroResist
+	case Water:
+		return point.HydroResist
+	case Grass:
+		return point.DendroResist
+	case Electric:
+		return point.ElectroResist
+	case Wind:
+		return point.AnemoResist
+	case Ice:
+		return point.CryoResist
+	case Earth:
+		return point.GeoResist
+	default:
+		if e < 0 {
+			return point.PhysicalResist
+		} else {
+			return -1
+		}
+	}
+}

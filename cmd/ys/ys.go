@@ -31,7 +31,7 @@ func main() {
 
 	迪卢克.Apply(model.AddElementalDamageBonus(elemental.Fire, 15))
 
-	enemy := model.NewEnemy(model.BaseEnemy(90))
+	enemy := model.NewEnemy(model.BaseEnemy(90, model.AddAllElementalResist(10)))
 
 	迪卢克.GetActions().Loop(func(index int, action *model.Action) bool {
 		zap.S().Infof("%s", 迪卢克.Calculate(enemy, action, elemental.Fire))
