@@ -23,8 +23,7 @@ func NewCalculator(character *Character, enemy *Enemy, action *Action, infusionE
 		action:            action,
 		infusionElemental: infusionElemental,
 		init: map[string]float64{
-			"人物等级": float64(character.level),
-			//"怪物等级":  float64(enemy.level),
+			"人物等级":  float64(character.level),
 			"人物攻击力": character.base.Get(point.Atk).value,
 			"武器攻击力": character.weapon.base.Get(point.Atk).value,
 		},
@@ -49,8 +48,16 @@ func (c *Calculator) add(totalKey string, objs ...interface{}) *Formula {
 	return c.values.Add(totalKey, objs...)
 }
 
+func (c *Calculator) reduce(totalKey string, objs ...interface{}) *Formula {
+	return c.values.Reduce(totalKey, objs...)
+}
+
 func (c *Calculator) multiply(totalKey string, objs ...interface{}) *Formula {
 	return c.values.Multiply(totalKey, objs...)
+}
+
+func (c *Calculator) divide(totalKey string, objs ...interface{}) *Formula {
+	return c.values.Divide(totalKey, objs...)
 }
 
 func (c *Calculator) prepare(putZero bool) {
@@ -96,15 +103,6 @@ func (c *Calculator) calculate() {
 	zap.S().Debugf("%s", 总伤害平均.Algorithm())
 	zap.S().Debugf("%s", 总伤害最大.Algorithm())
 	zap.S().Debugf("总伤害: [%f, %f, %f]", 总伤害.value, 总伤害平均.value, 总伤害最大.value)
-
-	//c.set("怪物防御%", c.enemy.base.Get(point.DefPercentage).value/100)
-	//
-	//
-	//// 防御区
-	//c.set("穿防系数", 1-c.Get("无视防御"))
-	//c.set("减防系数", 1-c.Get("防御减免")+c.Get("怪物防御%"))
-	//c.set("防御系数", c.Get("穿防系数")*c.Get("减防系数")*(c.Get("怪物等级")+100))
-	//c.set("防御承伤", (c.Get("人物等级")+100)/(c.Get("人物等级")+100+c.Get("防御系数")))
 
 	//            // 抗性区
 	//            const phyR = c.set("元素抗性",c.Get("怪物元素抗性") - c.Get("元素抗性减免"));
@@ -217,8 +215,12 @@ func (c *Calculator) 暴击区() (*Formula, *Formula) {
 }
 
 func (c *Calculator) 防御区() *Formula {
-	//TODO 待完善
-	return c.set("防御区", 1)
+	怪物等级系数 := c.set("怪物等级", float64(c.enemy.level)).add("怪物等级系数", 100)
+	怪物防御 := c.set("怪物防御%", c.enemy.base.Get(point.DefPercentage).value/100)
+	人物等级系数 := c.add("人物等级系数", "人物等级", 100)
+	减防系数 := c.add("怪物防御系数", 1, 怪物防御).reduce("减防系数", "防御减免")
+	防御承伤基准 := c.reduce("穿防系数", 1, "无视防御").multiply("防御系数", 减防系数, 怪物等级系数).add("防御承伤基准", 人物等级系数)
+	return 人物等级系数.divide("防御承伤", 防御承伤基准)
 }
 
 func (c *Calculator) 抗性区() *Formula {
