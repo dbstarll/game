@@ -15,9 +15,19 @@ func (f *Formula) add(totalKey string, items ...interface{}) *Formula {
 	return f.values.Add(totalKey, append(values, items...)...)
 }
 
+func (f *Formula) reduce(totalKey string, items ...interface{}) *Formula {
+	values := []interface{}{f}
+	return f.values.Reduce(totalKey, append(values, items...)...)
+}
+
 func (f *Formula) multiply(totalKey string, items ...interface{}) *Formula {
 	values := []interface{}{f}
 	return f.values.Multiply(totalKey, append(values, items...)...)
+}
+
+func (f *Formula) divide(totalKey string, items ...interface{}) *Formula {
+	values := []interface{}{f}
+	return f.values.Divide(totalKey, append(values, items...)...)
 }
 
 func (f *Formula) Algorithm() string {

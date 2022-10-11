@@ -60,8 +60,16 @@ func (v *Values) Add(totalKey string, items ...interface{}) *Formula {
 	return v.multiOperate(totalKey, AddOperator, items...)
 }
 
+func (v *Values) Reduce(totalKey string, items ...interface{}) *Formula {
+	return v.multiOperate(totalKey, ReduceOperator, items...)
+}
+
 func (v *Values) Multiply(totalKey string, items ...interface{}) *Formula {
 	return v.multiOperate(totalKey, MultiplyOperator, items...)
+}
+
+func (v *Values) Divide(totalKey string, items ...interface{}) *Formula {
+	return v.multiOperate(totalKey, DivideOperator, items...)
 }
 
 func (v *Values) multiOperate(totalKey string, operator Operator, items ...interface{}) *Formula {

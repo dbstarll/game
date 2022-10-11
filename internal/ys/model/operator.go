@@ -4,6 +4,7 @@ var (
 	AddOperator      Operator = &addOperator{}
 	MultiplyOperator Operator = &multiplyOperator{}
 	ReduceOperator   Operator = &reduceOperator{}
+	DivideOperator   Operator = &divideOperator{}
 )
 
 type Operator interface {
@@ -42,4 +43,15 @@ func (o *reduceOperator) operate(first, second float64) float64 {
 
 func (o *reduceOperator) separator() string {
 	return " - "
+}
+
+type divideOperator struct {
+}
+
+func (o *divideOperator) operate(first, second float64) float64 {
+	return first / second
+}
+
+func (o *divideOperator) separator() string {
+	return " / "
 }
