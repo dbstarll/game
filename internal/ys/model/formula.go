@@ -40,6 +40,10 @@ func (f *Formula) Algorithm() string {
 	}
 }
 
+func (f *Formula) Value() float64 {
+	return f.value
+}
+
 func (f *Formula) String() string {
 	return fmt.Sprintf("%s[%v]", f.key, f.value)
 }

@@ -32,11 +32,12 @@ func main() {
 	迪卢克.Apply(model.AddElementalDamageBonus(elemental.Fire, 15))
 
 	enemy := model.NewEnemy(model.BaseEnemy(90, model.AddAllElementalResist(10)))
-	enemy.Attach(elemental.Ice, 12)
+	enemy.Attach(elemental.Electric, 12)
+	enemy.Attach(elemental.Water, 12)
 
 	迪卢克.GetActions().Loop(func(index int, action *model.Action) bool {
-		zap.S().Infof("%s", 迪卢克.Calculate(enemy, action, elemental.Fire))
-		//zap.S().Infof("%s\n", action)
-		return true
+		min, avg, max := 迪卢克.Calculate(enemy, action, elemental.Fire).Calculate()
+		zap.S().Infof("总伤害: [%.0f, %.0f, %.0f] - %s", min.Value(), avg.Value(), max.Value(), action)
+		return false
 	})
 }

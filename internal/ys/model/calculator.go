@@ -1,11 +1,11 @@
 package model
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
-	"go.uber.org/zap"
 )
 
 type Calculator struct {
@@ -34,7 +34,6 @@ func NewCalculator(character *Character, enemy *Enemy, action *Action, infusionE
 		calculator.elemental = calculator.elemental.Infusion(infusionElemental)
 		break
 	}
-	calculator.calculate()
 	return calculator
 }
 
@@ -87,43 +86,27 @@ func (c *Calculator) prepare(putZero bool) {
 	}
 }
 
-func (c *Calculator) calculate() {
+func (c *Calculator) Calculate() (*Formula, *Formula, *Formula) {
 	c.prepare(true)
-
-	zap.S().Debugf("Action: %s", c.action)
-	zap.S().Debugf("Elemental: %s => %s", c.action.elemental, c.elemental)
-	zap.S().Debugf("DamageBonusPoint: %s", c.elemental.DamageBonusPoint())
 
 	基础伤害区, 增伤区, 防御区, 抗性区, 增幅区 := c.基础伤害区(), c.增伤区(), c.防御区(), c.抗性区(), c.增幅区()
 	暴击收益, 暴伤倍率 := c.暴击区()
-	总伤害 := 基础伤害区.multiply("总伤害", 增伤区, 防御区, 抗性区, 增幅区)
-	总伤害平均 := 总伤害.multiply("总伤害(平均)", 暴击收益)
-	总伤害最大 := 总伤害.multiply("总伤害(暴击)", 暴伤倍率)
-	zap.S().Debugf("基础伤害区: %s", 基础伤害区.Algorithm())
-	zap.S().Debugf("增伤区: %s", 增伤区.Algorithm())
-	zap.S().Debugf("暴击区: %s, %s", 暴击收益.Algorithm(), 暴伤倍率.Algorithm())
-	zap.S().Debugf("防御区: %s", 防御区.Algorithm())
-	zap.S().Debugf("抗性区: %s", 抗性区.Algorithm())
-	zap.S().Debugf("增幅区: %s", 增幅区.Algorithm())
-	zap.S().Debugf("%s", 总伤害.Algorithm())
-	zap.S().Debugf("%s", 总伤害平均.Algorithm())
-	zap.S().Debugf("%s", 总伤害最大.Algorithm())
-	zap.S().Debugf("总伤害: [%f, %f, %f]", 总伤害.value, 总伤害平均.value, 总伤害最大.value)
+	增幅总伤害 := 基础伤害区.multiply("增幅总伤害", 增伤区, 防御区, 抗性区, 增幅区)
+	增幅总伤害平均 := 增幅总伤害.multiply("增幅总伤害(平均)", 暴击收益)
+	增幅总伤害最大 := 增幅总伤害.multiply("增幅总伤害(暴击)", 暴伤倍率)
 
-	//            // 剧变反应区
-	//            c.set("剧变精通提升",16 * c.Get("元素精通") / (c.Get("元素精通") + 2000));
-	//            c.set("剧变反应倍率",1 + c.Get("剧变精通提升") + c.Get("反应伤害提升"));
-	//            c.set("等级系数",upheavals[c.Get("人物等级") - 1]);
-	//            c.set("剧变基础伤害",c.Get("等级系数") * c.Get("元素抗性承伤") * c.Get("剧变反应倍率"));
-	//
-	//            // 反应伤害
-	//            const element = $("select[column=元素类型]").val());
-	//            const upheaval = reactions.upheaval[element];
-	//            if ("object" === typeof upheaval) {
-	//                Object.keys(upheaval).forEach((key) => {
-	//                    c.set("剧变伤害(" + key + ")",c.Get("剧变基础伤害") * reactions.upheaval.rate[key]);
-	//                });
-	//            }
+	剧变区 := c.剧变区(抗性区)
+	总伤害 := 增幅总伤害.add("总伤害", 剧变区...)
+	总伤害平均 := 增幅总伤害平均.add("总伤害(平均)", 剧变区...)
+	总伤害最大 := 增幅总伤害最大.add("总伤害(暴击)", 剧变区...)
+	//zap.S().Debugf("基础伤害区: %s", 基础伤害区.Algorithm())
+	//zap.S().Debugf("增伤区: %s", 增伤区.Algorithm())
+	//zap.S().Debugf("暴击区: %s, %s", 暴击收益.Algorithm(), 暴伤倍率.Algorithm())
+	//zap.S().Debugf("防御区: %s", 防御区.Algorithm())
+	//zap.S().Debugf("抗性区: %s", 抗性区.Algorithm())
+	//zap.S().Debugf("增幅区: %s", 增幅区.Algorithm())
+	//zap.S().Debugf("剧变区: %s", 剧变区)
+	return 总伤害, 总伤害平均, 总伤害最大
 }
 
 func (c *Calculator) 攻击区() *Formula {
@@ -182,15 +165,27 @@ func (c *Calculator) 抗性区() *Formula {
 }
 
 func (c *Calculator) 增幅区() *Formula {
+	增幅精通提升 := c.multiply("增幅精通系数1", 25.0/9, "元素精通").divide("增幅精通提升", c.add("增幅精通系数2", 1400, "元素精通"))
 	for _, factor := range c.enemy.DetectReaction(c.elemental, reaction.Amplify) {
 		reactionName := factor.GetReaction().String()
-		增幅精通提升 := c.multiply("增幅精通系数1", 2.78, "元素精通").divide("增幅精通提升", c.add("增幅精通系数2", 1400, "元素精通"))
 		增幅反应倍率 := c.add("增幅反应倍率", 1, 增幅精通提升, reactionName+"反应系数提高")
 		return c.set(reactionName+"反应基础倍率", factor.GetFactor()).multiply(reactionName+"反应总倍率", 增幅反应倍率)
 	}
 	return c.set("无增幅反应", 1)
 }
 
+func (c *Calculator) 剧变区(抗性承伤 *Formula) []interface{} {
+	damages := make([]interface{}, 0)
+	剧变等级系数 := c.set("剧变等级系数", 1446.85)
+	剧变精通提升 := c.multiply("剧变精通系数1", 16, "元素精通").divide("剧变精通提升", c.add("剧变精通系数2", 2000, "元素精通"))
+	for _, factor := range c.enemy.DetectReaction(c.elemental, reaction.Upheaval) {
+		reactionName := factor.GetReaction().String()
+		剧变反应倍率 := c.add(reactionName+"反应倍率", 1, 剧变精通提升, reactionName+"反应伤害提升")
+		damages = append(damages, c.set(reactionName+"反应基础倍率", factor.GetFactor()).multiply(reactionName+"反应伤害", 剧变等级系数, 抗性承伤, 剧变反应倍率))
+	}
+	return damages
+}
+
 func (c *Calculator) String() string {
-	return c.values.String()
+	return fmt.Sprintf("%s", c.values)
 }
