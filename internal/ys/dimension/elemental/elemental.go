@@ -1,6 +1,9 @@
 package elemental
 
-import "github.com/dbstarll/game/internal/ys/dimension/attribute/point"
+import (
+	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
+	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+)
 
 // 元素类型
 type Elemental int
@@ -25,11 +28,55 @@ var (
 		Ice,
 		Earth,
 	}
-	restraint = map[Elemental]map[Elemental]int{
+	restraints = map[Elemental]map[Elemental]int{
 		Fire:     {Ice: 2, Electric: 1, Wind: 1},
 		Water:    {Fire: 2, Electric: 1, Wind: 1},
 		Ice:      {Water: 2, Electric: 1, Wind: 1},
 		Electric: {Wind: 1},
+	}
+	reactions = map[Elemental]map[Elemental]*reaction.Factor{
+		Fire: {
+			Water:    reaction.NewFactor(reaction.Vaporize, 1.5),
+			Grass:    reaction.NewFactor(reaction.Burn, 0.25),
+			Ice:      reaction.NewFactor(reaction.Melt, 2),
+			Electric: reaction.NewFactor(reaction.Overload, 2),
+			Wind:     reaction.NewFactor(reaction.Swirl, 0.6),
+		},
+		Water: {
+			Fire:     reaction.NewFactor(reaction.Vaporize, 2),
+			Grass:    reaction.NewFactor(reaction.Bloom, 2),
+			Electric: reaction.NewFactor(reaction.ElectroCharged, 1.2),
+			Wind:     reaction.NewFactor(reaction.Swirl, 0.6),
+			Ice:      reaction.NewFactor(reaction.Frozen, 0),
+		},
+		Grass: {
+			Fire:  reaction.NewFactor(reaction.Burn, 0.25),
+			Water: reaction.NewFactor(reaction.Bloom, 2),
+		},
+		Electric: {
+			Fire:  reaction.NewFactor(reaction.Overload, 2),
+			Water: reaction.NewFactor(reaction.ElectroCharged, 1.2),
+			Wind:  reaction.NewFactor(reaction.Swirl, 0.6),
+			Ice:   reaction.NewFactor(reaction.Superconduct, 0.5),
+		},
+		Wind: {
+			Fire:     reaction.NewFactor(reaction.Swirl, 0.6),
+			Water:    reaction.NewFactor(reaction.Swirl, 0.6),
+			Electric: reaction.NewFactor(reaction.Swirl, 0.6),
+			Ice:      reaction.NewFactor(reaction.Swirl, 0.6),
+		},
+		Ice: {
+			Fire:     reaction.NewFactor(reaction.Melt, 1.5),
+			Water:    reaction.NewFactor(reaction.Frozen, 0),
+			Electric: reaction.NewFactor(reaction.Superconduct, 0.5),
+			Wind:     reaction.NewFactor(reaction.Swirl, 0.6),
+		},
+		Earth: {
+			Fire:     reaction.NewFactor(reaction.Crystallize, 1),
+			Water:    reaction.NewFactor(reaction.Crystallize, 1),
+			Electric: reaction.NewFactor(reaction.Crystallize, 1),
+			Ice:      reaction.NewFactor(reaction.Crystallize, 1),
+		},
 	}
 )
 
@@ -61,7 +108,7 @@ func (e Elemental) String() string {
 }
 
 func (e Elemental) Restraint(elemental Elemental) int {
-	if ratios, exist := restraint[e]; exist {
+	if ratios, exist := restraints[e]; exist {
 		if ratio, exist := ratios[elemental]; exist {
 			return ratio
 		}
@@ -137,4 +184,13 @@ func (e Elemental) ResistPoint() point.Point {
 			return -1
 		}
 	}
+}
+
+func (e Elemental) Reaction(elemental Elemental) *reaction.Factor {
+	if rs, exist := reactions[e]; exist {
+		if r, exist := rs[elemental]; exist {
+			return r
+		}
+	}
+	return nil
 }
