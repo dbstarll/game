@@ -1,13 +1,22 @@
 package main
 
 import (
+	"fmt"
 	_ "github.com/dbstarll/game/internal/logger"
 	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
+	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/model"
-	"go.uber.org/zap"
+	"sort"
 )
+
+type FinalDamage func(player *model.Character) float64
+
+type Profit struct {
+	Name  string
+	Value float64
+}
 
 func main() {
 	迪卢克 := model.CharacterFactory迪卢克(10, 9, 9, 0)
@@ -23,6 +32,7 @@ func main() {
 		model.AddAtkPercentage(15.2), model.AddCriticalRate(6.6), model.AddEnergyRecharge(11.7), model.AddHp(269))
 
 	迪卢克.Weapon(model.WeaponFactory螭骨剑(3))
+	//迪卢克.Weapon(model.WeaponFactory无工之剑(1))
 	迪卢克.Artifacts(魔女的炎之花)
 	迪卢克.Artifacts(魔女常燃之羽)
 	迪卢克.Artifacts(魔女破灭之时)
@@ -32,12 +42,53 @@ func main() {
 	迪卢克.Apply(model.AddElementalDamageBonus(elemental.Fire, 15))
 
 	enemy := model.NewEnemy(model.BaseEnemy(90, model.AddAllElementalResist(10)))
-	enemy.Attach(elemental.Electric, 12)
+	//enemy.Attach(elemental.Electric, 12)
 	enemy.Attach(elemental.Water, 12)
 
-	迪卢克.GetActions().Loop(func(index int, action *model.Action) bool {
-		min, avg, max := 迪卢克.Calculate(enemy, action, elemental.Fire).Calculate()
-		zap.S().Infof("总伤害: [%.0f, %.0f, %.0f] - %s", min.Value(), avg.Value(), max.Value(), action)
-		return false
+	action := 迪卢克.GetActions().GetAction(attackMode.ElementalSkill, "逆焰之刃•1段")
+	profitDetect(迪卢克, func(player *model.Character) float64 {
+		_, avg, _ := 迪卢克.Calculate(enemy, action, -1).Calculate()
+		return avg.Value()
+	}, map[string]model.AttributeModifier{
+		point.CriticalRate.String():     model.AddCriticalRate(2.7),
+		point.HpPercentage.String():     model.AddHpPercentage(4.1),
+		point.AtkPercentage.String():    model.AddAtkPercentage(4.1),
+		point.EnergyRecharge.String():   model.AddEnergyRecharge(4.5),
+		point.DefPercentage.String():    model.AddDefPercentage(5.1),
+		point.CriticalDamage.String():   model.AddCriticalDamage(5.4),
+		point.Atk.String():              model.AddAtk(14),
+		point.Def.String():              model.AddDef(16),
+		point.ElementalMastery.String(): model.AddElementalMastery(16),
+		point.Hp.String():               model.AddHp(209),
 	})
+}
+
+func profitDetect(character *model.Character, fn FinalDamage, customDetects map[string]model.AttributeModifier) {
+	fmt.Printf("base: %f\n", fn(character))
+	base := fn(character)
+	var profits []*Profit
+	for name, modifier := range customDetects {
+		cancel := character.Apply(modifier)
+		value := fn(character)
+		if value != base {
+			profits = append(profits, &Profit{
+				Name:  name,
+				Value: 100 * (value - base) / base,
+			})
+		}
+		cancel()
+	}
+	sort.Slice(profits, func(i, j int) bool {
+		if profits[i].Value < profits[j].Value {
+			return false
+		} else if profits[i].Value > profits[j].Value {
+			return true
+		} else {
+			return profits[i].Name < profits[j].Name
+		}
+	})
+	fmt.Printf("素质:\n")
+	for _, p := range profits {
+		fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
+	}
 }

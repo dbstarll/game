@@ -22,6 +22,10 @@ func NewAction(mode attackMode.AttackMode, dmg float64, elemental elemental.Elem
 	}
 }
 
+func (a *Action) Mode() attackMode.AttackMode {
+	return a.mode
+}
+
 func (a *Action) String() string {
 	if a.elemental < 0 {
 		return fmt.Sprintf("%s[%s][物理][技能倍率: %+v%%]", a.name, a.mode, a.dmg)
