@@ -26,6 +26,7 @@ type NormalAttack struct {
 type ChargedAttack struct {
 	cyclic   float64
 	final    float64
+	hits     []float64
 	stamina  int
 	duration time.Duration
 }
@@ -37,10 +38,13 @@ type PlungeAttack struct {
 }
 
 type ElementalSkill struct {
-	name string
-	lv   int
-	dmgs map[string]float64
-	cd   time.Duration // 冷却时间
+	name           string
+	lv             int
+	dmgs           map[string]float64
+	cure           int
+	curePercentage float64
+	duration       time.Duration // 附魔持续时间
+	cd             time.Duration // 冷却时间
 }
 
 type ElementalBurst struct {
@@ -77,6 +81,7 @@ func (t *TalentsTemplate) addNormalAttack(value *NormalAttack) *TalentsTemplate 
 		copy.hits = value.hits
 		copy.charged.cyclic = value.charged.cyclic
 		copy.charged.final = value.charged.final
+		copy.charged.hits = value.charged.hits
 		copy.plunge = value.plunge
 		t.normalAttacks[copy.lv] = &copy
 	}
@@ -88,6 +93,8 @@ func (t *TalentsTemplate) addElementalSkill(value *ElementalSkill) *TalentsTempl
 		copy := *t.elementalSkills[0]
 		copy.lv = value.lv
 		copy.dmgs = value.dmgs
+		copy.cure = value.cure
+		copy.curePercentage = value.curePercentage
 		t.elementalSkills[copy.lv] = &copy
 	}
 	return t
@@ -153,6 +160,13 @@ func (a *ChargedAttack) DMGs(name string, elemental elemental.Elemental) *action
 	}
 	if a.final > 0 {
 		actions.Add(action.New(attackMode.ChargedAttack, a.final, elemental, fmt.Sprintf("%s•重击终结", name)))
+	}
+	hits := 0.0
+	for _, hit := range a.hits {
+		hits += hit
+	}
+	if hits > 0 {
+		actions.Add(action.New(attackMode.ChargedAttack, hits, elemental, fmt.Sprintf("%s•重击伤害", name)))
 	}
 	return actions
 }

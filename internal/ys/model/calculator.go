@@ -9,6 +9,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
+	"go.uber.org/zap"
 )
 
 type Calculator struct {
@@ -124,7 +125,7 @@ func (c *Calculator) prepare(putZero bool) {
 	}
 }
 
-func (c *Calculator) Calculate() (*Formula, *Formula, *Formula) {
+func (c *Calculator) Calculate(debug bool) (*Formula, *Formula, *Formula) {
 	c.prepare(true)
 
 	基础伤害区, 增伤区, 防御区, 抗性区, 增幅区 := c.基础伤害区(), c.增伤区(), c.防御区(), c.抗性区(), c.增幅区()
@@ -137,13 +138,22 @@ func (c *Calculator) Calculate() (*Formula, *Formula, *Formula) {
 	总伤害 := 增幅总伤害.add("总伤害", 剧变区...)
 	总伤害平均 := 增幅总伤害平均.add("总伤害(平均)", 剧变区...)
 	总伤害最大 := 增幅总伤害最大.add("总伤害(暴击)", 剧变区...)
-	//zap.S().Debugf("基础伤害区: %s", 基础伤害区.Algorithm())
-	//zap.S().Debugf("增伤区: %s", 增伤区.Algorithm())
-	//zap.S().Debugf("暴击区: %s, %s", 暴击收益.Algorithm(), 暴伤倍率.Algorithm())
-	//zap.S().Debugf("防御区: %s", 防御区.Algorithm())
-	//zap.S().Debugf("抗性区: %s", 抗性区.Algorithm())
-	//zap.S().Debugf("增幅区: %s", 增幅区.Algorithm())
-	//zap.S().Debugf("剧变区: %s", 剧变区)
+	if debug {
+		zap.S().Debugf("Action: %s", c.action)
+		zap.S().Debugf("基础伤害区: %s", 基础伤害区.Algorithm())
+		zap.S().Debugf("增伤区: %s", 增伤区.Algorithm())
+		zap.S().Debugf("暴击区: %s, %s", 暴击收益.Algorithm(), 暴伤倍率.Algorithm())
+		zap.S().Debugf("防御区: %s", 防御区.Algorithm())
+		zap.S().Debugf("抗性区: %s", 抗性区.Algorithm())
+		zap.S().Debugf("增幅区: %s", 增幅区.Algorithm())
+		zap.S().Debugf("剧变区: %s", 剧变区)
+		zap.S().Debugf("%s", 增幅总伤害.Algorithm())
+		zap.S().Debugf("%s", 增幅总伤害平均.Algorithm())
+		zap.S().Debugf("%s", 增幅总伤害最大.Algorithm())
+		zap.S().Debugf("%s", 总伤害.Algorithm())
+		zap.S().Debugf("%s", 总伤害平均.Algorithm())
+		zap.S().Debugf("%s", 总伤害最大.Algorithm())
+	}
 	return 总伤害, 总伤害平均, 总伤害最大
 }
 

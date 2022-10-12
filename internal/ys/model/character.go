@@ -16,6 +16,58 @@ import (
 )
 
 var (
+	CharacterFactory久岐忍 = func(normal, skill, burst, constellation int) *Character {
+		return NewCharacter(4, elemental.Electric, weaponType.Sword,
+			BaseCharacter(90, 12289, 213, 751, buff.AddHpPercentage(24)),
+			TalentsTemplateModifier(NewTalentsTemplate(
+				&NormalAttack{name: "忍流飞刃斩", lv: 11, charged: ChargedAttack{stamina: 20}},
+				&ElementalSkill{name: "越祓雷草之轮", lv: 13, duration: time.Second * 12, cd: time.Second * 15},
+				&ElementalBurst{name: "御咏鸣神刈山祭", lv: 13, cd: time.Second * 15, energyCost: 60}).
+				addNormalAttacks(
+					&NormalAttack{lv: 1, hits: []float64{48.8, 44.5, 59.3, 76.1}, charged: ChargedAttack{hits: []float64{55.6, 66.8}}, plunge: PlungeAttack{63.9, 128, 160}},
+					&NormalAttack{lv: 2, hits: []float64{52.7, 48.2, 64.2, 82.3}, charged: ChargedAttack{hits: []float64{60.2, 72.2}}, plunge: PlungeAttack{69.1, 138, 173}},
+					&NormalAttack{lv: 3, hits: []float64{56.7, 51.8, 69.0, 88.5}, charged: ChargedAttack{hits: []float64{64.7, 77.6}}, plunge: PlungeAttack{74.3, 149, 186}},
+					&NormalAttack{lv: 4, hits: []float64{62.4, 57.0, 75.9, 97.4}, charged: ChargedAttack{hits: []float64{71.2, 85.4}}, plunge: PlungeAttack{81.8, 164, 204}},
+					&NormalAttack{lv: 5, hits: []float64{66.3, 60.6, 80.7, 103.5}, charged: ChargedAttack{hits: []float64{75.7, 90.8}}, plunge: PlungeAttack{87.0, 174, 217}},
+					&NormalAttack{lv: 6, hits: []float64{70.9, 64.8, 86.3, 110.6}, charged: ChargedAttack{hits: []float64{80.9, 97.0}}, plunge: PlungeAttack{92.9, 186, 232}},
+					&NormalAttack{lv: 7, hits: []float64{77.1, 70.4, 93.8, 120.4}, charged: ChargedAttack{hits: []float64{88.0, 105.6}}, plunge: PlungeAttack{101.1, 202, 253}},
+					&NormalAttack{lv: 8, hits: []float64{83.3, 76.1, 101.4, 130.1}, charged: ChargedAttack{hits: []float64{95.1, 114.1}}, plunge: PlungeAttack{109.3, 219, 273}},
+					&NormalAttack{lv: 9, hits: []float64{89.6, 81.8, 109.0, 139.8}, charged: ChargedAttack{hits: []float64{102.2, 122.7}}, plunge: PlungeAttack{117.5, 235, 293}},
+					&NormalAttack{lv: 10, hits: []float64{96.4, 88.1, 117.3, 150.5}, charged: ChargedAttack{hits: []float64{110.0, 132.0}}, plunge: PlungeAttack{126.4, 253, 316}},
+					&NormalAttack{lv: 11, hits: []float64{103.2, 94.3, 125.6, 161.1}, charged: ChargedAttack{hits: []float64{117.7, 141.3}}, plunge: PlungeAttack{135.3, 271, 338}},
+				).
+				addElementalSkills(
+					&ElementalSkill{lv: 1, dmgs: map[string]float64{"技能伤害": 76, "越祓草轮伤害": 25.2}, curePercentage: 3.0, cure: 289},
+					&ElementalSkill{lv: 2, dmgs: map[string]float64{"技能伤害": 81, "越祓草轮伤害": 27.1}, curePercentage: 3.2, cure: 318},
+					&ElementalSkill{lv: 3, dmgs: map[string]float64{"技能伤害": 87, "越祓草轮伤害": 29.0}, curePercentage: 3.5, cure: 349},
+					&ElementalSkill{lv: 4, dmgs: map[string]float64{"技能伤害": 95, "越祓草轮伤害": 31.6}, curePercentage: 3.8, cure: 383},
+					&ElementalSkill{lv: 5, dmgs: map[string]float64{"技能伤害": 100, "越祓草轮伤害": 33.4}, curePercentage: 4.0, cure: 419},
+					&ElementalSkill{lv: 6, dmgs: map[string]float64{"技能伤害": 106, "越祓草轮伤害": 35.3}, curePercentage: 4.2, cure: 457},
+					&ElementalSkill{lv: 7, dmgs: map[string]float64{"技能伤害": 114, "越祓草轮伤害": 37.9}, curePercentage: 4.5, cure: 498},
+					&ElementalSkill{lv: 8, dmgs: map[string]float64{"技能伤害": 121, "越祓草轮伤害": 40.4}, curePercentage: 4.8, cure: 542},
+					&ElementalSkill{lv: 9, dmgs: map[string]float64{"技能伤害": 129, "越祓草轮伤害": 42.9}, curePercentage: 5.1, cure: 587},
+					&ElementalSkill{lv: 10, dmgs: map[string]float64{"技能伤害": 136, "越祓草轮伤害": 45.4}, curePercentage: 5.4, cure: 636},
+					&ElementalSkill{lv: 11, dmgs: map[string]float64{"技能伤害": 144, "越祓草轮伤害": 48.0}, curePercentage: 5.7, cure: 686},
+					&ElementalSkill{lv: 12, dmgs: map[string]float64{"技能伤害": 151, "越祓草轮伤害": 50.5}, curePercentage: 6.0, cure: 739},
+					&ElementalSkill{lv: 13, dmgs: map[string]float64{"技能伤害": 161, "越祓草轮伤害": 53.6}, curePercentage: 6.4, cure: 795},
+				).
+				addElementalBursts(
+					&ElementalBurst{lv: 1, dmgs: map[string]float64{"技能伤害": 3.6, "总伤害": 25.2, "半血总伤害": 43.3}},
+					&ElementalBurst{lv: 2, dmgs: map[string]float64{"技能伤害": 3.9, "总伤害": 27.1, "半血总伤害": 46.5}},
+					&ElementalBurst{lv: 3, dmgs: map[string]float64{"技能伤害": 4.1, "总伤害": 29.0, "半血总伤害": 49.8}},
+					&ElementalBurst{lv: 4, dmgs: map[string]float64{"技能伤害": 4.5, "总伤害": 31.5, "半血总伤害": 54.0}},
+					&ElementalBurst{lv: 5, dmgs: map[string]float64{"技能伤害": 4.8, "总伤害": 33.4, "半血总伤害": 57.3}},
+					&ElementalBurst{lv: 6, dmgs: map[string]float64{"技能伤害": 5.0, "总伤害": 35.3, "半血总伤害": 60.6}},
+					&ElementalBurst{lv: 7, dmgs: map[string]float64{"技能伤害": 5.4, "总伤害": 37.9, "半血总伤害": 64.9}},
+					&ElementalBurst{lv: 8, dmgs: map[string]float64{"技能伤害": 5.8, "总伤害": 40.4, "半血总伤害": 69.2}},
+					&ElementalBurst{lv: 9, dmgs: map[string]float64{"技能伤害": 6.1, "总伤害": 42.9, "半血总伤害": 73.5}},
+					&ElementalBurst{lv: 10, dmgs: map[string]float64{"技能伤害": 6.5, "总伤害": 45.4, "半血总伤害": 77.9}},
+					&ElementalBurst{lv: 11, dmgs: map[string]float64{"技能伤害": 6.8, "总伤害": 47.9, "半血总伤害": 82.1}},
+					&ElementalBurst{lv: 12, dmgs: map[string]float64{"技能伤害": 7.2, "总伤害": 50.5, "半血总伤害": 86.5}},
+					&ElementalBurst{lv: 13, dmgs: map[string]float64{"技能伤害": 7.7, "总伤害": 53.6, "半血总伤害": 91.9}},
+				).check()),
+		).Talents(normal, skill, burst)
+	}
 	CharacterFactory迪卢克 = func(normal, skill, burst, constellation int) *Character {
 		return NewCharacter(5, elemental.Fire, weaponType.Claymore,
 			BaseCharacter(90, 12981, 335, 784, buff.AddCriticalRate(19.2)),

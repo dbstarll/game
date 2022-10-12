@@ -21,7 +21,7 @@ type Modifier struct {
 	enemyModifier     attr.AttributeModifier
 }
 
-type FinalDamage func(character *model.Character, enemy *enemy.Enemy) float64
+type FinalDamage func(character *model.Character, enemy *enemy.Enemy, debug bool) float64
 
 var (
 	baseDetects = initBaseDetects(map[string]*Modifier{
@@ -98,12 +98,12 @@ func (m *Modifier) Apply(character *model.Character, enemy *enemy.Enemy) func() 
 }
 
 func ProfitDetect(character *model.Character, enemy *enemy.Enemy, baseDetect bool, fn FinalDamage, customDetects map[string]*Modifier) []*Profit {
-	base := fn(character, enemy)
+	base := fn(character, enemy, false)
 	var profits []*Profit
 	if baseDetect {
 		for name, modifier := range baseDetects {
 			cancel := modifier.Apply(character, enemy)
-			value := fn(character, enemy)
+			value := fn(character, enemy, false)
 			if value != base {
 				profits = append(profits, &Profit{
 					Name:  name,
@@ -115,7 +115,7 @@ func ProfitDetect(character *model.Character, enemy *enemy.Enemy, baseDetect boo
 	}
 	for name, modifier := range customDetects {
 		cancel := modifier.Apply(character, enemy)
-		value := fn(character, enemy)
+		value := fn(character, enemy, false)
 		if value != base {
 			profits = append(profits, &Profit{
 				Name:  name,
