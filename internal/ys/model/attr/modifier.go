@@ -1,6 +1,7 @@
 package attr
 
 import (
+	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
 )
@@ -54,5 +55,19 @@ func AddElementalAttachedDamageBonus(e elemental.Elemental, add float64) Attribu
 func AddReactionDamageBonus(r reaction.Reaction, add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
 		return attributes.addReactionDamageBonus(r, add)
+	}
+}
+
+// 单个攻击模式伤害加成
+func AddAttackDamageBonus(r attackMode.AttackMode, add float64) AttributeModifier {
+	return func(attributes *Attributes) func() {
+		return attributes.addAttackDamageBonus(r, add)
+	}
+}
+
+// 攻击模式技能倍率加成
+func AddAttackFactorBonus(r attackMode.AttackMode, add float64) AttributeModifier {
+	return func(attributes *Attributes) func() {
+		return attributes.addAttackFactorBonus(r, add)
 	}
 }

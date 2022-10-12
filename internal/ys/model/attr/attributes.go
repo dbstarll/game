@@ -2,6 +2,7 @@ package attr
 
 import (
 	"fmt"
+	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
@@ -9,10 +10,12 @@ import (
 
 type Attributes struct {
 	values                       map[point.Point]*Attribute
-	elementalDamageBonus         map[elemental.Elemental]float64 // 元素伤害加成
-	elementalResist              map[elemental.Elemental]float64 // 元素抗性
-	elementalAttachedDamageBonus map[elemental.Elemental]float64 // 元素影响下增伤
-	reactionDamageBonus          map[reaction.Reaction]float64   // 元素反应系数提高/元素反应伤害提升
+	elementalDamageBonus         map[elemental.Elemental]float64   // 元素伤害加成
+	elementalResist              map[elemental.Elemental]float64   // 元素抗性
+	elementalAttachedDamageBonus map[elemental.Elemental]float64   // 元素影响下增伤
+	reactionDamageBonus          map[reaction.Reaction]float64     // 元素反应系数提高/元素反应伤害提升
+	attackModeDamageBonus        map[attackMode.AttackMode]float64 // 攻击模式伤害加成
+	attackModeFactorBonus        map[attackMode.AttackMode]float64 // 攻击模式技能倍率加成
 }
 
 func NewAttributes(modifiers ...AttributeModifier) *Attributes {
@@ -22,6 +25,8 @@ func NewAttributes(modifiers ...AttributeModifier) *Attributes {
 		elementalResist:              make(map[elemental.Elemental]float64),
 		elementalAttachedDamageBonus: make(map[elemental.Elemental]float64),
 		reactionDamageBonus:          make(map[reaction.Reaction]float64),
+		attackModeDamageBonus:        make(map[attackMode.AttackMode]float64),
+		attackModeFactorBonus:        make(map[attackMode.AttackMode]float64),
 	}
 	MergeAttributes(modifiers...)(a)
 	return a
@@ -88,6 +93,30 @@ func (a *Attributes) addReactionDamageBonus(r reaction.Reaction, v float64) func
 	}
 }
 
+func (a *Attributes) addAttackDamageBonus(mode attackMode.AttackMode, add float64) func() {
+	return addAttackModeMap(mode, add, a.attackModeDamageBonus, a.addAttackDamageBonus)
+}
+
+func (a *Attributes) addAttackFactorBonus(mode attackMode.AttackMode, add float64) func() {
+	return addAttackModeMap(mode, add, a.attackModeFactorBonus, a.addAttackFactorBonus)
+}
+
+func addAttackModeMap(e attackMode.AttackMode, v float64, values map[attackMode.AttackMode]float64, cancel func(attackMode.AttackMode, float64) func()) func() {
+	if v == 0 {
+		return NopCallBack
+	}
+	if oldValue, exist := values[e]; !exist {
+		values[e] = v
+	} else if newValue := oldValue + v; newValue == 0 {
+		delete(values, e)
+	} else {
+		values[e] = newValue
+	}
+	return func() {
+		cancel(e, -v)
+	}
+}
+
 func (a *Attributes) Accumulation() AttributeModifier {
 	var modifiers []AttributeModifier
 	for _, attr := range a.values {
@@ -104,6 +133,12 @@ func (a *Attributes) Accumulation() AttributeModifier {
 	}
 	for r, val := range a.reactionDamageBonus {
 		modifiers = append(modifiers, AddReactionDamageBonus(r, val))
+	}
+	for r, val := range a.attackModeDamageBonus {
+		modifiers = append(modifiers, AddAttackDamageBonus(r, val))
+	}
+	for r, val := range a.attackModeFactorBonus {
+		modifiers = append(modifiers, AddAttackFactorBonus(r, val))
 	}
 	return MergeAttributes(modifiers...)
 }
@@ -154,6 +189,22 @@ func (a *Attributes) GetReactionDamageBonus(reaction reaction.Reaction) float64 
 	}
 }
 
+func (a *Attributes) GetAttackDamageBonus(mode attackMode.AttackMode) float64 {
+	if value, exist := a.attackModeDamageBonus[mode]; exist {
+		return value
+	} else {
+		return 0
+	}
+}
+
+func (a *Attributes) GetAttackFactorBonus(mode attackMode.AttackMode) float64 {
+	if value, exist := a.attackModeFactorBonus[mode]; exist {
+		return value
+	} else {
+		return 0
+	}
+}
+
 func (a *Attributes) String() string {
 	var values []string
 	for _, point := range point.Points {
@@ -165,5 +216,7 @@ func (a *Attributes) String() string {
 	values = append(values, fmt.Sprintf("元素抗性: %v", a.elementalResist))
 	values = append(values, fmt.Sprintf("元素影响下增伤: %v", a.elementalAttachedDamageBonus))
 	values = append(values, fmt.Sprintf("元素反应系数提高: %v", a.elementalAttachedDamageBonus))
+	values = append(values, fmt.Sprintf("攻击模式伤害加成: %v", a.attackModeDamageBonus))
+	values = append(values, fmt.Sprintf("攻击模式技能倍率加成: %v", a.attackModeFactorBonus))
 	return fmt.Sprintf("%s", values)
 }

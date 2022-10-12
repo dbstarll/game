@@ -105,6 +105,15 @@ func (c *Calculator) prepare(putZero bool) {
 			}
 		}
 	}
+	for _, mode := range attackMode.AttackModes {
+		if v := c.finalAttributes.GetAttackDamageBonus(mode); putZero || v != 0 {
+			c.set(fmt.Sprintf("%s伤害加成", mode), v/100)
+		}
+		if v := c.finalAttributes.GetAttackFactorBonus(mode); putZero || v != 0 {
+			c.set(fmt.Sprintf("%s技能倍率加成", mode), v/100)
+		}
+	}
+
 	for key, value := range c.init {
 		if putZero || value != 0 {
 			c.set(key, value)
