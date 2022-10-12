@@ -8,12 +8,16 @@ import (
 
 type Attributes struct {
 	values                       map[point.Point]*Attribute
-	elementalAttachedDamageBonus map[elemental.Elemental]float64
+	elementalDamageBonus         map[elemental.Elemental]float64 // 元素伤害加成
+	elementalResist              map[elemental.Elemental]float64 // 元素抗性
+	elementalAttachedDamageBonus map[elemental.Elemental]float64 // 元素影响下增伤
 }
 
 func NewAttributes(modifiers ...AttributeModifier) *Attributes {
 	a := &Attributes{
 		values:                       make(map[point.Point]*Attribute),
+		elementalDamageBonus:         make(map[elemental.Elemental]float64),
+		elementalResist:              make(map[elemental.Elemental]float64),
 		elementalAttachedDamageBonus: make(map[elemental.Elemental]float64),
 	}
 	MergeAttributes(modifiers...)(a)
@@ -37,19 +41,31 @@ func (a *Attributes) add(attribute *Attribute) func() {
 	}
 }
 
+func (a *Attributes) addElementalDamageBonus(elemental elemental.Elemental, add float64) func() {
+	return addElementalMap(elemental, add, a.elementalDamageBonus, a.addElementalDamageBonus)
+}
+
+func (a *Attributes) addElementalResist(elemental elemental.Elemental, add float64) func() {
+	return addElementalMap(elemental, add, a.elementalResist, a.addElementalResist)
+}
+
 func (a *Attributes) addElementalAttachedDamageBonus(elemental elemental.Elemental, add float64) func() {
-	if add == 0 {
+	return addElementalMap(elemental, add, a.elementalAttachedDamageBonus, a.addElementalAttachedDamageBonus)
+}
+
+func addElementalMap(e elemental.Elemental, v float64, values map[elemental.Elemental]float64, cancel func(elemental.Elemental, float64) func()) func() {
+	if v == 0 {
 		return NopCallBack
 	}
-	if oldValue, exist := a.elementalAttachedDamageBonus[elemental]; !exist {
-		a.elementalAttachedDamageBonus[elemental] = add
-	} else if newValue := oldValue + add; newValue == 0 {
-		delete(a.elementalAttachedDamageBonus, elemental)
+	if oldValue, exist := values[e]; !exist {
+		values[e] = v
+	} else if newValue := oldValue + v; newValue == 0 {
+		delete(values, e)
 	} else {
-		a.elementalAttachedDamageBonus[elemental] = newValue
+		values[e] = newValue
 	}
 	return func() {
-		a.addElementalAttachedDamageBonus(elemental, -add)
+		cancel(e, -v)
 	}
 }
 
@@ -57,6 +73,12 @@ func (a *Attributes) Accumulation() AttributeModifier {
 	var modifiers []AttributeModifier
 	for _, attr := range a.values {
 		modifiers = append(modifiers, attr.Accumulation())
+	}
+	for ele, val := range a.elementalDamageBonus {
+		modifiers = append(modifiers, AddElementalDamageBonus(ele, val))
+	}
+	for ele, val := range a.elementalResist {
+		modifiers = append(modifiers, AddElementalResist(ele, val))
 	}
 	for ele, val := range a.elementalAttachedDamageBonus {
 		modifiers = append(modifiers, AddElementalAttachedDamageBonus(ele, val))
@@ -78,6 +100,22 @@ func (a *Attributes) Get(point point.Point) float64 {
 	}
 }
 
+func (a *Attributes) GetElementalDamageBonus(elemental elemental.Elemental) float64 {
+	if value, exist := a.elementalDamageBonus[elemental]; exist {
+		return value
+	} else {
+		return 0
+	}
+}
+
+func (a *Attributes) GetElementalResist(elemental elemental.Elemental) float64 {
+	if value, exist := a.elementalResist[elemental]; exist {
+		return value
+	} else {
+		return 0
+	}
+}
+
 func (a *Attributes) GetElementalAttachedDamageBonus(elemental elemental.Elemental) float64 {
 	if value, exist := a.elementalAttachedDamageBonus[elemental]; exist {
 		return value
@@ -93,6 +131,8 @@ func (a *Attributes) String() string {
 			values = append(values, value.String())
 		}
 	}
+	values = append(values, fmt.Sprintf("元素伤害加成: %v", a.elementalDamageBonus))
+	values = append(values, fmt.Sprintf("元素抗性: %v", a.elementalResist))
 	values = append(values, fmt.Sprintf("元素影响下增伤: %v", a.elementalAttachedDamageBonus))
 	return fmt.Sprintf("%s", values)
 }

@@ -1,6 +1,7 @@
 package detect
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/model"
@@ -12,7 +13,7 @@ import (
 type FinalDamage func(character *model.Character) float64
 
 var (
-	baseDetects = map[string]attr.AttributeModifier{
+	baseDetects = initBaseDetects(map[string]attr.AttributeModifier{
 		point.Hp.String():               buff.AddHp(209),              // 生命值
 		point.HpPercentage.String():     buff.AddHpPercentage(4.1),    // 生命值%
 		point.Atk.String():              buff.AddAtk(14),              // 攻击力
@@ -27,22 +28,6 @@ var (
 		point.EnergyRecharge.String(): buff.AddEnergyRecharge(4.5), // 元素充能效率
 		//CDReduction                            // 冷却缩减
 		//ShieldStrength                         // 护盾强效
-		point.FireDamageBonus.String(): buff.AddElementalDamageBonus(elemental.Fire, 4.1), // 火元素伤害加成
-		//FireResist                             // 火元素抗性
-		//WaterDamageBonus                       // 水元素伤害加成
-		//WaterResist                            // 水元素抗性
-		//GrassDamageBonus                      // 草元素伤害加成
-		//GrassResist                           // 草元素抗性
-		//ElectricDamageBonus                     // 雷元素伤害加成
-		//ElectricResist                          // 雷元素抗性
-		//WindDamageBonus                       // 风元素伤害加成
-		//WindResist                            // 风元素抗性
-		//IceDamageBonus                        // 冰元素伤害加成
-		//IceResist                             // 冰元素抗性
-		//EarthDamageBonus                         // 岩元素伤害加成
-		//EarthResist                              // 岩元素抗性
-		point.PhysicalDamageBonus.String(): buff.AddElementalDamageBonus(-1, 4.1), // 物理伤害加成
-		//PhysicalResist                         // 物理抗性
 		//DamageBonus                            // 伤害加成
 		//IncomingDamageBonus                    // 受到的伤害加成
 		//IgnoreDefence                          // 无视防御
@@ -57,9 +42,19 @@ var (
 		//PlungeAttackFactorBonus                // 下坠攻击技能倍率加成
 		//ElementalSkillFactorBonus              // 元素战技技能倍率加成
 		//ElementalBurstFactorBonus              // 元素爆发技能倍率加成
-		// 元素影响下增伤
-	}
+
+	})
 )
+
+func initBaseDetects(detects map[string]attr.AttributeModifier) map[string]attr.AttributeModifier {
+	// TODO
+	//   元素抗性
+	//   元素影响下增伤
+	for _, ele := range append(elemental.Elementals, -1) {
+		detects[fmt.Sprintf("%s伤害加成", ele.Name())] = buff.AddElementalDamageBonus(4.1, ele)
+	}
+	return detects
+}
 
 func ProfitDetect(character *model.Character, baseDetect bool, fn FinalDamage, customDetects map[string]attr.AttributeModifier) []*Profit {
 	base := fn(character)

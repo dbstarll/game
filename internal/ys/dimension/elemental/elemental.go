@@ -1,7 +1,6 @@
 package elemental
 
 import (
-	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
 )
 
@@ -80,6 +79,33 @@ var (
 	}
 )
 
+func (e Elemental) Name() string {
+	switch e {
+	case Fire:
+		return "火元素"
+	case Water:
+		return "水元素"
+	case Grass:
+		return "草元素"
+	case Electric:
+		return "雷元素"
+	case Wind:
+		return "风元素"
+	case Ice:
+		return "冰元素"
+	case Earth:
+		return "岩元素"
+	default:
+		if e < -1 {
+			return "不限"
+		} else if e == -1 {
+			return "物理"
+		} else {
+			return "未知"
+		}
+	}
+}
+
 func (e Elemental) String() string {
 	switch e {
 	case Fire:
@@ -133,56 +159,6 @@ func (e Elemental) Infusion(elemental Elemental) Elemental {
 		return elemental
 	} else {
 		return e
-	}
-}
-
-func (e Elemental) DamageBonusPoint() point.Point {
-	switch e {
-	case Fire:
-		return point.FireDamageBonus
-	case Water:
-		return point.WaterDamageBonus
-	case Grass:
-		return point.GrassDamageBonus
-	case Electric:
-		return point.ElectricDamageBonus
-	case Wind:
-		return point.WindDamageBonus
-	case Ice:
-		return point.IceDamageBonus
-	case Earth:
-		return point.EarthDamageBonus
-	default:
-		if e < 0 {
-			return point.PhysicalDamageBonus
-		} else {
-			return -1
-		}
-	}
-}
-
-func (e Elemental) ResistPoint() point.Point {
-	switch e {
-	case Fire:
-		return point.FireResist
-	case Water:
-		return point.WaterResist
-	case Grass:
-		return point.GrassResist
-	case Electric:
-		return point.ElectricResist
-	case Wind:
-		return point.WindResist
-	case Ice:
-		return point.IceResist
-	case Earth:
-		return point.EarthResist
-	default:
-		if e < 0 {
-			return point.PhysicalResist
-		} else {
-			return -1
-		}
 	}
 }
 

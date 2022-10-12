@@ -40,12 +40,20 @@ func New(modifiers ...Modifier) *Enemy {
 	return enemy
 }
 
+func (e *Enemy) Apply(modifiers ...attr.AttributeModifier) func() {
+	return attr.MergeAttributes(modifiers...)(e.base)
+}
+
 func (e *Enemy) Level() int {
 	return e.level
 }
 
 func (e *Enemy) Get(point point.Point) float64 {
 	return e.base.Get(point)
+}
+
+func (e *Enemy) GetElementalResist(elemental elemental.Elemental) float64 {
+	return e.base.GetElementalResist(elemental)
 }
 
 // TODO 附着元素量

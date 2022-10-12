@@ -69,7 +69,6 @@ func (c *Calculator) divide(totalKey string, objs ...interface{}) *Formula {
 }
 
 func (c *Calculator) prepare(putZero bool) {
-	fmt.Println(c.finalAttributes)
 	c.values = NewValues()
 	for _, p := range point.Points {
 		if v := c.finalAttributes.Get(p); putZero || v != 0 {
@@ -80,9 +79,15 @@ func (c *Calculator) prepare(putZero bool) {
 			}
 		}
 	}
-	for _, ele := range elemental.Elementals {
+	for _, ele := range append(elemental.Elementals, -1) {
+		if v := c.finalAttributes.GetElementalDamageBonus(ele); putZero || v != 0 {
+			c.set(fmt.Sprintf("%s伤害加成", ele.Name()), v/100)
+		}
+		if v := c.finalAttributes.GetElementalResist(ele); putZero || v != 0 {
+			c.set(fmt.Sprintf("%s抗性", ele.Name()), v/100)
+		}
 		if v := c.finalAttributes.GetElementalAttachedDamageBonus(ele); putZero || v != 0 {
-			c.set(fmt.Sprintf("%s元素影响下增伤", ele), v/100)
+			c.set(fmt.Sprintf("%s影响下增伤", ele.Name()), v/100)
 		}
 	}
 	for key, value := range c.init {
@@ -143,9 +148,9 @@ func (c *Calculator) 基础伤害区() *Formula {
 
 func (c *Calculator) 增伤区() *Formula {
 	prefix := c.action.Mode().String()
-	objs := []interface{}{1, c.elemental.DamageBonusPoint().String(), prefix + "伤害加成", "伤害加成"}
+	objs := []interface{}{1, fmt.Sprintf("%s伤害加成", c.elemental.Name()), prefix + "伤害加成", "伤害加成"}
 	for _, element := range c.enemy.Attached() {
-		objs = append(objs, element.String()+"元素影响下增伤")
+		objs = append(objs, fmt.Sprintf("%s影响下增伤", element.Name()))
 	}
 	return c.add(prefix+"增伤", objs...)
 }
@@ -164,8 +169,8 @@ func (c *Calculator) 防御区() *Formula {
 }
 
 func (c *Calculator) 抗性区() *Formula {
-	prefix := c.elemental.ResistPoint().String()
-	抗性 := c.set("怪物"+prefix, c.enemy.Get(c.elemental.ResistPoint())/100)
+	prefix := fmt.Sprintf("%s抗性", c.elemental.Name())
+	抗性 := c.set("怪物"+prefix, c.enemy.GetElementalResist(c.elemental)/100)
 	if 抗性.value > 0.75 {
 		return c.divide(prefix+"承伤", 1, 抗性.multiply("怪物"+prefix+"系数1", 4).add("怪物"+prefix+"系数2", 1))
 	} else if 抗性.value >= 0 {

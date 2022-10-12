@@ -3,16 +3,16 @@ package model
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
-	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/model/attr"
+	"github.com/dbstarll/game/internal/ys/model/buff"
 )
 
 var (
 	ArtifactsFactory生之花 = func(star int, secondaryModifiers ...attr.AttributeModifier) *Artifacts {
-		return NewArtifacts(star, position.FlowerOfLife, BaseArtifacts(20, point.Hp, 4780), secondaryModifiers...)
+		return NewArtifacts(star, position.FlowerOfLife, BaseArtifacts(20, buff.AddHp(4780)), secondaryModifiers...)
 	}
 	ArtifactsFactory死之羽 = func(star int, secondaryModifiers ...attr.AttributeModifier) *Artifacts {
-		return NewArtifacts(star, position.PlumeOfDeath, BaseArtifacts(20, point.Atk, 311), secondaryModifiers...)
+		return NewArtifacts(star, position.PlumeOfDeath, BaseArtifacts(20, buff.AddAtk(311)), secondaryModifiers...)
 	}
 )
 
@@ -20,18 +20,20 @@ type Artifacts struct {
 	star      int
 	position  position.Position
 	level     int
-	primary   *attr.Attribute
+	primary   *attr.Attributes
 	secondary *attr.Attributes
 }
 
 type ArtifactsModifier func(artifacts *Artifacts) func()
 
-func BaseArtifacts(level int, point point.Point, value float64) ArtifactsModifier {
+func BaseArtifacts(level int, primaryModifier attr.AttributeModifier) ArtifactsModifier {
 	return func(artifacts *Artifacts) func() {
-		oldLevel, oldPrimary := artifacts.level, artifacts.primary
-		artifacts.level, artifacts.primary = level, attr.New(point, value)
+		oldLevel := artifacts.level
+		artifacts.level = level
+		callback := primaryModifier(artifacts.primary)
 		return func() {
-			artifacts.level, artifacts.primary = oldLevel, oldPrimary
+			callback()
+			artifacts.level = oldLevel
 		}
 	}
 }
@@ -41,6 +43,7 @@ func NewArtifacts(star int, position position.Position, baseModifier ArtifactsMo
 		star:      star,
 		position:  position,
 		level:     1,
+		primary:   attr.NewAttributes(),
 		secondary: attr.NewAttributes(),
 	}
 	baseModifier(a)

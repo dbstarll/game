@@ -17,22 +17,6 @@ const (
 	EnergyRecharge                         // 元素充能效率
 	CDReduction                            // 冷却缩减
 	ShieldStrength                         // 护盾强效
-	FireDamageBonus                        // 火元素伤害加成
-	FireResist                             // 火元素抗性
-	WaterDamageBonus                       // 水元素伤害加成
-	WaterResist                            // 水元素抗性
-	GrassDamageBonus                       // 草元素伤害加成
-	GrassResist                            // 草元素抗性
-	ElectricDamageBonus                    // 雷元素伤害加成
-	ElectricResist                         // 雷元素抗性
-	WindDamageBonus                        // 风元素伤害加成
-	WindResist                             // 风元素抗性
-	IceDamageBonus                         // 冰元素伤害加成
-	IceResist                              // 冰元素抗性
-	EarthDamageBonus                       // 岩元素伤害加成
-	EarthResist                            // 岩元素抗性
-	PhysicalDamageBonus                    // 物理伤害加成
-	PhysicalResist                         // 物理抗性
 	DamageBonus                            // 伤害加成
 	IncomingDamageBonus                    // 受到的伤害加成
 	IgnoreDefence                          // 无视防御
@@ -64,22 +48,6 @@ var Points = []Point{
 	EnergyRecharge,
 	CDReduction,
 	ShieldStrength,
-	FireDamageBonus,
-	FireResist,
-	WaterDamageBonus,
-	WaterResist,
-	GrassDamageBonus,
-	GrassResist,
-	ElectricDamageBonus,
-	ElectricResist,
-	WindDamageBonus,
-	WindResist,
-	IceDamageBonus,
-	IceResist,
-	EarthDamageBonus,
-	EarthResist,
-	PhysicalDamageBonus,
-	PhysicalResist,
 	DamageBonus,
 	IncomingDamageBonus,
 	IgnoreDefence,
@@ -135,38 +103,6 @@ func (e Point) String() string {
 		return "冷却缩减"
 	case ShieldStrength:
 		return "护盾强效"
-	case FireDamageBonus:
-		return "火元素伤害加成"
-	case FireResist:
-		return "火元素抗性"
-	case WaterDamageBonus:
-		return "水元素伤害加成"
-	case WaterResist:
-		return "水元素抗性"
-	case GrassDamageBonus:
-		return "草元素伤害加成"
-	case GrassResist:
-		return "草元素抗性"
-	case ElectricDamageBonus:
-		return "雷元素伤害加成"
-	case ElectricResist:
-		return "雷元素抗性"
-	case WindDamageBonus:
-		return "风元素伤害加成"
-	case WindResist:
-		return "风元素抗性"
-	case IceDamageBonus:
-		return "冰元素伤害加成"
-	case IceResist:
-		return "冰元素抗性"
-	case EarthDamageBonus:
-		return "岩元素伤害加成"
-	case EarthResist:
-		return "岩元素抗性"
-	case PhysicalDamageBonus:
-		return "物理伤害加成"
-	case PhysicalResist:
-		return "物理抗性"
 	case DamageBonus:
 		return "伤害加成"
 	case IncomingDamageBonus:

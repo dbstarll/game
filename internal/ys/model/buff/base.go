@@ -77,25 +77,6 @@ func AddShieldStrength(add float64) attr.AttributeModifier {
 	return attr.New(point.ShieldStrength, add).Accumulation()
 }
 
-// 单个元素伤害加成 or 物理伤害加成
-func AddElementalDamageBonus(e elemental.Elemental, add float64) attr.AttributeModifier {
-	return attr.New(e.DamageBonusPoint(), add).Accumulation()
-}
-
-// 所有元素伤害加成 and 物理伤害加成
-func AddAllElementalResist(add float64) attr.AttributeModifier {
-	modifiers := []attr.AttributeModifier{attr.New(point.PhysicalResist, add).Accumulation()}
-	for _, e := range elemental.Elementals {
-		modifiers = append(modifiers, AddElementalResist(e, add))
-	}
-	return attr.MergeAttributes(modifiers...)
-}
-
-// 单个元素抗性 or 物理抗性
-func AddElementalResist(e elemental.Elemental, add float64) attr.AttributeModifier {
-	return attr.New(e.ResistPoint(), add).Accumulation()
-}
-
 // 伤害加成
 func AddDamageBonus(add float64) attr.AttributeModifier {
 	return attr.New(point.DamageBonus, add).Accumulation()
@@ -124,4 +105,36 @@ func AddAttackDamageBonus(m attackMode.AttackMode, add float64) attr.AttributeMo
 // 单个攻击模式的技能倍率加成
 func AddAttackFactorBonus(m attackMode.AttackMode, add float64) attr.AttributeModifier {
 	return attr.New(m.FactorBonusPoint(), add).Accumulation()
+}
+
+// 单个元素/物理伤害加成
+func AddElementalDamageBonus(add float64, es ...elemental.Elemental) attr.AttributeModifier {
+	var modifiers []attr.AttributeModifier
+	for _, e := range es {
+		modifiers = append(modifiers, attr.AddElementalDamageBonus(e, add))
+	}
+	return attr.MergeAttributes(modifiers...)
+}
+
+// 全元素/物理抗性
+func AddAllElementalResist(add float64) attr.AttributeModifier {
+	return AddElementalResist(add, append(elemental.Elementals, -1)...)
+}
+
+// 单个元素/物理抗性
+func AddElementalResist(add float64, es ...elemental.Elemental) attr.AttributeModifier {
+	var modifiers []attr.AttributeModifier
+	for _, e := range es {
+		modifiers = append(modifiers, attr.AddElementalResist(e, add))
+	}
+	return attr.MergeAttributes(modifiers...)
+}
+
+// 单个元素影响下增伤
+func AddElementalAttachedDamageBonus(add float64, es ...elemental.Elemental) attr.AttributeModifier {
+	var modifiers []attr.AttributeModifier
+	for _, e := range es {
+		modifiers = append(modifiers, attr.AddElementalAttachedDamageBonus(e, add))
+	}
+	return attr.MergeAttributes(modifiers...)
 }

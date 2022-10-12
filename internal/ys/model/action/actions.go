@@ -3,6 +3,7 @@ package action
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
+	"strings"
 )
 
 type Actions struct {
@@ -46,6 +47,11 @@ func (a *Actions) Get(mode attackMode.AttackMode, name string) *Action {
 	if nameMaps, exist := a.actionMap[mode]; exist {
 		if action, exist := nameMaps[name]; exist {
 			return action
+		}
+		for key, action := range nameMaps {
+			if strings.HasSuffix(key, name) {
+				return action
+			}
 		}
 	}
 	return nil

@@ -26,6 +26,20 @@ func MergeAttributes(modifiers ...AttributeModifier) AttributeModifier {
 	}
 }
 
+// 单个元素伤害加成
+func AddElementalDamageBonus(e elemental.Elemental, add float64) AttributeModifier {
+	return func(attributes *Attributes) func() {
+		return attributes.addElementalDamageBonus(e, add)
+	}
+}
+
+// 单个元素抗性
+func AddElementalResist(e elemental.Elemental, add float64) AttributeModifier {
+	return func(attributes *Attributes) func() {
+		return attributes.addElementalResist(e, add)
+	}
+}
+
 // 单个元素影响下增伤
 func AddElementalAttachedDamageBonus(e elemental.Elemental, add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {

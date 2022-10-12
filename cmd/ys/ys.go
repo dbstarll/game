@@ -5,7 +5,6 @@ import (
 	_ "github.com/dbstarll/game/internal/logger"
 	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
-	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/model"
 	"github.com/dbstarll/game/internal/ys/model/attr"
@@ -21,11 +20,11 @@ func main() {
 		buff.AddCriticalRate(3.1), buff.AddDefPercentage(6.6))
 	魔女常燃之羽 := model.ArtifactsFactory死之羽(5, buff.AddCriticalRate(7.8), buff.AddHp(239),
 		buff.AddCriticalDamage(14), buff.AddElementalMastery(54))
-	魔女破灭之时 := model.NewArtifacts(5, position.SandsOfEon, model.BaseArtifacts(20, point.AtkPercentage, 46.6),
+	魔女破灭之时 := model.NewArtifacts(5, position.SandsOfEon, model.BaseArtifacts(20, buff.AddAtkPercentage(46.6)),
 		buff.AddCriticalDamage(11.7), buff.AddElementalMastery(61), buff.AddEnergyRecharge(15.5), buff.AddCriticalRate(3.1))
-	魔女的心之火 := model.NewArtifacts(5, position.GobletOfEonothem, model.BaseArtifacts(20, point.FireDamageBonus, 46.6),
+	魔女的心之火 := model.NewArtifacts(5, position.GobletOfEonothem, model.BaseArtifacts(20, buff.AddElementalDamageBonus(46.6, elemental.Fire)),
 		buff.AddHp(986), buff.AddHpPercentage(9.3), buff.AddCriticalRate(3.9), buff.AddDef(35))
-	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, model.BaseArtifacts(20, point.CriticalDamage, 62.2),
+	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, model.BaseArtifacts(20, buff.AddCriticalDamage(62.2)),
 		buff.AddAtkPercentage(15.2), buff.AddCriticalRate(6.6), buff.AddEnergyRecharge(11.7), buff.AddHp(269))
 
 	迪卢克.Weapon(weapon.Factory螭骨剑(3))
@@ -36,13 +35,16 @@ func main() {
 	迪卢克.Artifacts(魔女的心之火)
 	迪卢克.Artifacts(渡火者的智慧)
 
-	迪卢克.Apply(buff.AddElementalDamageBonus(elemental.Fire, 15))
+	迪卢克.Apply(
+		buff.AddElementalDamageBonus(15, elemental.Fire),
+		buff.AddElementalAttachedDamageBonus(20, elemental.Fire, elemental.Electric),
+	)
 
 	enemy := enemy.New(enemy.Base(90))
 	enemy.Attach(elemental.Electric, 12)
 	enemy.Attach(elemental.Water, 12)
 
-	action := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "逆焰之刃•1段")
+	action := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
 	profitDetect(迪卢克, func(player *model.Character) float64 {
 		_, avg, _ := 迪卢克.Calculate(enemy, action, -1).Calculate()
 		return avg.Value()
