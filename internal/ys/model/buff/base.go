@@ -96,6 +96,11 @@ func AddElementalResist(e elemental.Elemental, add float64) attr.AttributeModifi
 	return attr.New(e.ResistPoint(), add).Accumulation()
 }
 
+// 单个元素影响下增伤
+func AddElementalAttachedDamageBonus(e elemental.Elemental, add float64) attr.AttributeModifier {
+	return attr.New(e.AttachedDamageBonusPoint(), add).Accumulation()
+}
+
 // 伤害加成
 func AddDamageBonus(add float64) attr.AttributeModifier {
 	return attr.New(point.DamageBonus, add).Accumulation()
@@ -119,4 +124,9 @@ func AddDefenceReduction(add float64) attr.AttributeModifier {
 // 单个攻击模式的伤害加成
 func AddAttackDamageBonus(m attackMode.AttackMode, add float64) attr.AttributeModifier {
 	return attr.New(m.DamageBonusPoint(), add).Accumulation()
+}
+
+// 单个攻击模式的技能倍率加成
+func AddAttackFactorBonus(m attackMode.AttackMode, add float64) attr.AttributeModifier {
+	return attr.New(m.FactorBonusPoint(), add).Accumulation()
 }

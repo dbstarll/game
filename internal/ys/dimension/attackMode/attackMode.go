@@ -80,3 +80,20 @@ func (m AttackMode) DamageBonusPoint() point.Point {
 		return -1
 	}
 }
+
+func (m AttackMode) FactorBonusPoint() point.Point {
+	switch m {
+	case NormalAttack:
+		return point.NormalAttackFactorBonus
+	case ChargedAttack:
+		return point.ChargedAttackFactorBonus
+	case PlungeAttack:
+		return point.PlungeAttackFactorBonus
+	case ElementalSkill:
+		return point.ElementalSkillFactorBonus
+	case ElementalBurst:
+		return point.ElementalBurstFactorBonus
+	default:
+		return -1
+	}
+}

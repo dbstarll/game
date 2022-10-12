@@ -23,7 +23,7 @@ func main() {
 		buff.AddCriticalDamage(14), buff.AddElementalMastery(54))
 	魔女破灭之时 := model.NewArtifacts(5, position.SandsOfEon, model.BaseArtifacts(20, point.AtkPercentage, 46.6),
 		buff.AddCriticalDamage(11.7), buff.AddElementalMastery(61), buff.AddEnergyRecharge(15.5), buff.AddCriticalRate(3.1))
-	魔女的心之火 := model.NewArtifacts(5, position.GobletOfEonothem, model.BaseArtifacts(20, point.PyroDamageBonus, 46.6),
+	魔女的心之火 := model.NewArtifacts(5, position.GobletOfEonothem, model.BaseArtifacts(20, point.FireDamageBonus, 46.6),
 		buff.AddHp(986), buff.AddHpPercentage(9.3), buff.AddCriticalRate(3.9), buff.AddDef(35))
 	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, model.BaseArtifacts(20, point.CriticalDamage, 62.2),
 		buff.AddAtkPercentage(15.2), buff.AddCriticalRate(6.6), buff.AddEnergyRecharge(11.7), buff.AddHp(269))
@@ -39,7 +39,7 @@ func main() {
 	迪卢克.Apply(buff.AddElementalDamageBonus(elemental.Fire, 15))
 
 	enemy := enemy.New(enemy.Base(90))
-	//enemy.Attach(elemental.Electric, 12)
+	enemy.Attach(elemental.Electric, 12)
 	enemy.Attach(elemental.Water, 12)
 
 	action := 迪卢克.GetActions().GetAction(attackMode.ElementalSkill, "逆焰之刃•1段")

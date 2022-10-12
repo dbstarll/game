@@ -139,19 +139,19 @@ func (e Elemental) Infusion(elemental Elemental) Elemental {
 func (e Elemental) DamageBonusPoint() point.Point {
 	switch e {
 	case Fire:
-		return point.PyroDamageBonus
+		return point.FireDamageBonus
 	case Water:
-		return point.HydroDamageBonus
+		return point.WaterDamageBonus
 	case Grass:
-		return point.DendroDamageBonus
+		return point.GrassDamageBonus
 	case Electric:
-		return point.ElectroDamageBonus
+		return point.ElectricDamageBonus
 	case Wind:
-		return point.AnemoDamageBonus
+		return point.WindDamageBonus
 	case Ice:
-		return point.CryoDamageBonus
+		return point.IceDamageBonus
 	case Earth:
-		return point.GeoDamageBonus
+		return point.EarthDamageBonus
 	default:
 		if e < 0 {
 			return point.PhysicalDamageBonus
@@ -164,25 +164,46 @@ func (e Elemental) DamageBonusPoint() point.Point {
 func (e Elemental) ResistPoint() point.Point {
 	switch e {
 	case Fire:
-		return point.PyroResist
+		return point.FireResist
 	case Water:
-		return point.HydroResist
+		return point.WaterResist
 	case Grass:
-		return point.DendroResist
+		return point.GrassResist
 	case Electric:
-		return point.ElectroResist
+		return point.ElectricResist
 	case Wind:
-		return point.AnemoResist
+		return point.WindResist
 	case Ice:
-		return point.CryoResist
+		return point.IceResist
 	case Earth:
-		return point.GeoResist
+		return point.EarthResist
 	default:
 		if e < 0 {
 			return point.PhysicalResist
 		} else {
 			return -1
 		}
+	}
+}
+
+func (e Elemental) AttachedDamageBonusPoint() point.Point {
+	switch e {
+	case Fire:
+		return point.FireAttachedDamageBonus
+	case Water:
+		return point.WaterAttachedDamageBonus
+	case Grass:
+		return point.GrassAttachedDamageBonus
+	case Electric:
+		return point.ElectricAttachedDamageBonus
+	case Wind:
+		return point.WindAttachedDamageBonus
+	case Ice:
+		return point.IceAttachedDamageBonus
+	case Earth:
+		return point.EarthAttachedDamageBonus
+	default:
+		return -1
 	}
 }
 

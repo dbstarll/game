@@ -48,6 +48,7 @@ func (e *Enemy) Get(point point.Point) *attr.Attribute {
 	return e.base.Get(point)
 }
 
+// TODO 附着元素量
 func (e *Enemy) Attach(attached elemental.Elemental, amount float64) {
 	e.attachedAmounts[attached] = amount
 }
@@ -62,4 +63,14 @@ func (e *Enemy) DetectReaction(trigger elemental.Elemental, classify reaction.Cl
 		}
 	}
 	return factors
+}
+
+func (e *Enemy) Attached() []elemental.Elemental {
+	elements := make([]elemental.Elemental, 0)
+	for attached, amount := range e.attachedAmounts {
+		if amount > 0 {
+			elements = append(elements, attached)
+		}
+	}
+	return elements
 }

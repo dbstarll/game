@@ -27,20 +27,20 @@ var (
 		point.EnergyRecharge.String(): buff.AddEnergyRecharge(4.5), // 元素充能效率
 		//CDReduction                            // 冷却缩减
 		//ShieldStrength                         // 护盾强效
-		point.PyroDamageBonus.String(): buff.AddElementalDamageBonus(elemental.Fire, 4.1), // 火元素伤害加成
-		//PyroResist                             // 火元素抗性
-		//HydroDamageBonus                       // 水元素伤害加成
-		//HydroResist                            // 水元素抗性
-		//DendroDamageBonus                      // 草元素伤害加成
-		//DendroResist                           // 草元素抗性
-		//ElectroDamageBonus                     // 雷元素伤害加成
-		//ElectroResist                          // 雷元素抗性
-		//AnemoDamageBonus                       // 风元素伤害加成
-		//AnemoResist                            // 风元素抗性
-		//CryoDamageBonus                        // 冰元素伤害加成
-		//CryoResist                             // 冰元素抗性
-		//GeoDamageBonus                         // 岩元素伤害加成
-		//GeoResist                              // 岩元素抗性
+		point.FireDamageBonus.String(): buff.AddElementalDamageBonus(elemental.Fire, 4.1), // 火元素伤害加成
+		//FireResist                             // 火元素抗性
+		//WaterDamageBonus                       // 水元素伤害加成
+		//WaterResist                            // 水元素抗性
+		//GrassDamageBonus                      // 草元素伤害加成
+		//GrassResist                           // 草元素抗性
+		//ElectricDamageBonus                     // 雷元素伤害加成
+		//ElectricResist                          // 雷元素抗性
+		//WindDamageBonus                       // 风元素伤害加成
+		//WindResist                            // 风元素抗性
+		//IceDamageBonus                        // 冰元素伤害加成
+		//IceResist                             // 冰元素抗性
+		//EarthDamageBonus                         // 岩元素伤害加成
+		//EarthResist                              // 岩元素抗性
 		point.PhysicalDamageBonus.String(): buff.AddElementalDamageBonus(-1, 4.1), // 物理伤害加成
 		//PhysicalResist                         // 物理抗性
 		//DamageBonus                            // 伤害加成
@@ -52,6 +52,18 @@ var (
 		//PlungeAttackDamageBonus                // 下坠攻击伤害加成
 		//ElementalSkillDamageBonus              // 元素战技伤害加成
 		//ElementalBurstDamageBonus              // 元素爆发伤害加成
+		//NormalAttackFactorBonus                // 普通攻击技能倍率加成
+		//ChargedAttackFactorBonus               // 重击技能倍率加成
+		//PlungeAttackFactorBonus                // 下坠攻击技能倍率加成
+		//ElementalSkillFactorBonus              // 元素战技技能倍率加成
+		//ElementalBurstFactorBonus              // 元素爆发技能倍率加成
+		//FireAttachedDamageBonus                  // 火元素影响下增伤
+		//WaterAttachedDamageBonus                 // 水元素影响下增伤
+		//GrassAttachedDamageBonus                 // 草元素影响下增伤
+		//ElectricAttachedDamageBonus              // 雷元素影响下增伤
+		//WindAttachedDamageBonus                  // 风元素影响下增伤
+		//IceAttachedDamageBonus                   // 冰元素影响下增伤
+		//EarthAttachedDamageBonus                 // 岩元素影响下增伤
 	}
 )
 

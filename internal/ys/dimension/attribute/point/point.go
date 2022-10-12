@@ -3,45 +3,57 @@ package point
 type Point int
 
 const (
-	Hp                        Point = iota // 生命值
-	HpPercentage                           // 生命值%
-	Atk                                    // 攻击力
-	AtkPercentage                          // 攻击力%
-	Def                                    // 防御力
-	DefPercentage                          // 防御力%
-	ElementalMastery                       // 元素精通
-	CriticalRate                           // 暴击率
-	CriticalDamage                         // 暴击伤害
-	HealingBonus                           // 治疗加成
-	IncomingHealingBonus                   // 受治疗加成
-	EnergyRecharge                         // 元素充能效率
-	CDReduction                            // 冷却缩减
-	ShieldStrength                         // 护盾强效
-	PyroDamageBonus                        // 火元素伤害加成
-	PyroResist                             // 火元素抗性
-	HydroDamageBonus                       // 水元素伤害加成
-	HydroResist                            // 水元素抗性
-	DendroDamageBonus                      // 草元素伤害加成
-	DendroResist                           // 草元素抗性
-	ElectroDamageBonus                     // 雷元素伤害加成
-	ElectroResist                          // 雷元素抗性
-	AnemoDamageBonus                       // 风元素伤害加成
-	AnemoResist                            // 风元素抗性
-	CryoDamageBonus                        // 冰元素伤害加成
-	CryoResist                             // 冰元素抗性
-	GeoDamageBonus                         // 岩元素伤害加成
-	GeoResist                              // 岩元素抗性
-	PhysicalDamageBonus                    // 物理伤害加成
-	PhysicalResist                         // 物理抗性
-	DamageBonus                            // 伤害加成
-	IncomingDamageBonus                    // 受到的伤害加成
-	IgnoreDefence                          // 无视防御
-	DefenceReduction                       // 防御减免
-	NormalAttackDamageBonus                // 普通攻击伤害加成
-	ChargedAttackDamageBonus               // 重击伤害加成
-	PlungeAttackDamageBonus                // 下坠攻击伤害加成
-	ElementalSkillDamageBonus              // 元素战技伤害加成
-	ElementalBurstDamageBonus              // 元素爆发伤害加成
+	Hp                          Point = iota // 生命值
+	HpPercentage                             // 生命值%
+	Atk                                      // 攻击力
+	AtkPercentage                            // 攻击力%
+	Def                                      // 防御力
+	DefPercentage                            // 防御力%
+	ElementalMastery                         // 元素精通
+	CriticalRate                             // 暴击率
+	CriticalDamage                           // 暴击伤害
+	HealingBonus                             // 治疗加成
+	IncomingHealingBonus                     // 受治疗加成
+	EnergyRecharge                           // 元素充能效率
+	CDReduction                              // 冷却缩减
+	ShieldStrength                           // 护盾强效
+	FireDamageBonus                          // 火元素伤害加成
+	FireResist                               // 火元素抗性
+	WaterDamageBonus                         // 水元素伤害加成
+	WaterResist                              // 水元素抗性
+	GrassDamageBonus                         // 草元素伤害加成
+	GrassResist                              // 草元素抗性
+	ElectricDamageBonus                      // 雷元素伤害加成
+	ElectricResist                           // 雷元素抗性
+	WindDamageBonus                          // 风元素伤害加成
+	WindResist                               // 风元素抗性
+	IceDamageBonus                           // 冰元素伤害加成
+	IceResist                                // 冰元素抗性
+	EarthDamageBonus                         // 岩元素伤害加成
+	EarthResist                              // 岩元素抗性
+	PhysicalDamageBonus                      // 物理伤害加成
+	PhysicalResist                           // 物理抗性
+	DamageBonus                              // 伤害加成
+	IncomingDamageBonus                      // 受到的伤害加成
+	IgnoreDefence                            // 无视防御
+	DefenceReduction                         // 防御减免
+	NormalAttackDamageBonus                  // 普通攻击伤害加成
+	ChargedAttackDamageBonus                 // 重击伤害加成
+	PlungeAttackDamageBonus                  // 下坠攻击伤害加成
+	ElementalSkillDamageBonus                // 元素战技伤害加成
+	ElementalBurstDamageBonus                // 元素爆发伤害加成
+	NormalAttackFactorBonus                  // 普通攻击技能倍率加成
+	ChargedAttackFactorBonus                 // 重击技能倍率加成
+	PlungeAttackFactorBonus                  // 下坠攻击技能倍率加成
+	ElementalSkillFactorBonus                // 元素战技技能倍率加成
+	ElementalBurstFactorBonus                // 元素爆发技能倍率加成
+	FireAttachedDamageBonus                  // 火元素影响下增伤
+	WaterAttachedDamageBonus                 // 水元素影响下增伤
+	GrassAttachedDamageBonus                 // 草元素影响下增伤
+	ElectricAttachedDamageBonus              // 雷元素影响下增伤
+	WindAttachedDamageBonus                  // 风元素影响下增伤
+	IceAttachedDamageBonus                   // 冰元素影响下增伤
+	EarthAttachedDamageBonus                 // 岩元素影响下增伤
 )
 
 var Points = []Point{
@@ -59,20 +71,20 @@ var Points = []Point{
 	EnergyRecharge,
 	CDReduction,
 	ShieldStrength,
-	PyroDamageBonus,
-	PyroResist,
-	HydroDamageBonus,
-	HydroResist,
-	DendroDamageBonus,
-	DendroResist,
-	ElectroDamageBonus,
-	ElectroResist,
-	AnemoDamageBonus,
-	AnemoResist,
-	CryoDamageBonus,
-	CryoResist,
-	GeoDamageBonus,
-	GeoResist,
+	FireDamageBonus,
+	FireResist,
+	WaterDamageBonus,
+	WaterResist,
+	GrassDamageBonus,
+	GrassResist,
+	ElectricDamageBonus,
+	ElectricResist,
+	WindDamageBonus,
+	WindResist,
+	IceDamageBonus,
+	IceResist,
+	EarthDamageBonus,
+	EarthResist,
 	PhysicalDamageBonus,
 	PhysicalResist,
 	DamageBonus,
@@ -84,6 +96,18 @@ var Points = []Point{
 	PlungeAttackDamageBonus,
 	ElementalSkillDamageBonus,
 	ElementalBurstDamageBonus,
+	NormalAttackFactorBonus,
+	ChargedAttackFactorBonus,
+	PlungeAttackFactorBonus,
+	ElementalSkillFactorBonus,
+	ElementalBurstFactorBonus,
+	FireAttachedDamageBonus,
+	WaterAttachedDamageBonus,
+	GrassAttachedDamageBonus,
+	ElectricAttachedDamageBonus,
+	WindAttachedDamageBonus,
+	IceAttachedDamageBonus,
+	EarthAttachedDamageBonus,
 }
 
 func (e Point) IsPercentage() bool {
@@ -125,33 +149,33 @@ func (e Point) String() string {
 		return "冷却缩减"
 	case ShieldStrength:
 		return "护盾强效"
-	case PyroDamageBonus:
+	case FireDamageBonus:
 		return "火元素伤害加成"
-	case PyroResist:
+	case FireResist:
 		return "火元素抗性"
-	case HydroDamageBonus:
+	case WaterDamageBonus:
 		return "水元素伤害加成"
-	case HydroResist:
+	case WaterResist:
 		return "水元素抗性"
-	case DendroDamageBonus:
+	case GrassDamageBonus:
 		return "草元素伤害加成"
-	case DendroResist:
+	case GrassResist:
 		return "草元素抗性"
-	case ElectroDamageBonus:
+	case ElectricDamageBonus:
 		return "雷元素伤害加成"
-	case ElectroResist:
+	case ElectricResist:
 		return "雷元素抗性"
-	case AnemoDamageBonus:
+	case WindDamageBonus:
 		return "风元素伤害加成"
-	case AnemoResist:
+	case WindResist:
 		return "风元素抗性"
-	case CryoDamageBonus:
+	case IceDamageBonus:
 		return "冰元素伤害加成"
-	case CryoResist:
+	case IceResist:
 		return "冰元素抗性"
-	case GeoDamageBonus:
+	case EarthDamageBonus:
 		return "岩元素伤害加成"
-	case GeoResist:
+	case EarthResist:
 		return "岩元素抗性"
 	case PhysicalDamageBonus:
 		return "物理伤害加成"
@@ -175,6 +199,30 @@ func (e Point) String() string {
 		return "元素战技伤害加成"
 	case ElementalBurstDamageBonus:
 		return "元素爆发伤害加成"
+	case NormalAttackFactorBonus:
+		return "普通攻击技能倍率加成"
+	case ChargedAttackFactorBonus:
+		return "重击技能倍率加成"
+	case PlungeAttackFactorBonus:
+		return "下坠攻击技能倍率加成"
+	case ElementalSkillFactorBonus:
+		return "元素战技技能倍率加成"
+	case ElementalBurstFactorBonus:
+		return "元素爆发技能倍率加成"
+	case FireAttachedDamageBonus:
+		return "火元素影响下增伤"
+	case WaterAttachedDamageBonus:
+		return "水元素影响下增伤"
+	case GrassAttachedDamageBonus:
+		return "草元素影响下增伤"
+	case ElectricAttachedDamageBonus:
+		return "雷元素影响下增伤"
+	case WindAttachedDamageBonus:
+		return "风元素影响下增伤"
+	case IceAttachedDamageBonus:
+		return "冰元素影响下增伤"
+	case EarthAttachedDamageBonus:
+		return "岩元素影响下增伤"
 	default:
 		if e < 0 {
 			return "不限"

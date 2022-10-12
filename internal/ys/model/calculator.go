@@ -119,7 +119,6 @@ func (c *Calculator) 攻击区() *Formula {
 
 func (c *Calculator) 倍率区() *Formula {
 	prefix := c.action.Mode().String()
-	//c.set(prefix+"技能倍率加成", 0.5)
 	return c.set(prefix+"技能倍率", c.action.DMG()/100).multiply(prefix+"伤害倍率", c.add(prefix+"技能倍率增伤", 1, prefix+"技能倍率加成"))
 }
 
@@ -138,8 +137,11 @@ func (c *Calculator) 基础伤害区() *Formula {
 
 func (c *Calculator) 增伤区() *Formula {
 	prefix := c.action.Mode().String()
-	//TODO 对元素影响下的敌人伤害提高
-	return c.add(prefix+"增伤", 1, c.elemental.DamageBonusPoint().String(), prefix+"伤害加成", "元素影响增伤", "伤害加成")
+	objs := []interface{}{1, c.elemental.DamageBonusPoint().String(), prefix + "伤害加成", "伤害加成"}
+	for _, element := range c.enemy.Attached() {
+		objs = append(objs, element.String()+"元素影响下增伤")
+	}
+	return c.add(prefix+"增伤", objs...)
 }
 
 func (c *Calculator) 暴击区() (*Formula, *Formula) {
