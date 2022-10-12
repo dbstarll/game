@@ -54,7 +54,7 @@ func (a *Attributes) Get(point point.Point) *Attribute {
 	if value, exist := a.values[point]; exist {
 		return value
 	} else {
-		return NewAttribute(point, 0)
+		return New(point, 0)
 	}
 }
 

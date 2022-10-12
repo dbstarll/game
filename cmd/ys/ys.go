@@ -38,7 +38,7 @@ func main() {
 
 	迪卢克.Apply(buff.AddElementalDamageBonus(elemental.Fire, 15))
 
-	enemy := enemy.NewEnemy(enemy.BaseEnemy(90))
+	enemy := enemy.New(enemy.Base(90))
 	//enemy.Attach(elemental.Electric, 12)
 	enemy.Attach(elemental.Water, 12)
 

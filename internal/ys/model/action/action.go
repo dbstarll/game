@@ -13,7 +13,7 @@ type Action struct {
 	elemental elemental.Elemental
 }
 
-func NewAction(mode attackMode.AttackMode, dmg float64, elemental elemental.Elemental, name string) *Action {
+func New(mode attackMode.AttackMode, dmg float64, elemental elemental.Elemental, name string) *Action {
 	return &Action{
 		mode:      mode,
 		dmg:       dmg,

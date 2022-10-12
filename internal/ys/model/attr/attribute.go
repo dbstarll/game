@@ -10,7 +10,7 @@ type Attribute struct {
 	value float64
 }
 
-func NewAttribute(point point.Point, value float64) *Attribute {
+func New(point point.Point, value float64) *Attribute {
 	return &Attribute{
 		point: point,
 		value: value,
@@ -36,15 +36,15 @@ func (a *Attribute) IsZero() bool {
 }
 
 func (a *Attribute) Clone() *Attribute {
-	return NewAttribute(a.point, a.value)
+	return New(a.point, a.value)
 }
 
 func (a *Attribute) Reverse() *Attribute {
-	return NewAttribute(a.point, -a.value)
+	return New(a.point, -a.value)
 }
 
 func (a *Attribute) Add(value float64) *Attribute {
-	return NewAttribute(a.point, a.value+value)
+	return New(a.point, a.value+value)
 }
 
 func (a Attribute) String() string {

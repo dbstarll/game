@@ -29,7 +29,7 @@ type ArtifactsModifier func(artifacts *Artifacts) func()
 func BaseArtifacts(level int, point point.Point, value float64) ArtifactsModifier {
 	return func(artifacts *Artifacts) func() {
 		oldLevel, oldPrimary := artifacts.level, artifacts.primary
-		artifacts.level, artifacts.primary = level, attr.NewAttribute(point, value)
+		artifacts.level, artifacts.primary = level, attr.New(point, value)
 		return func() {
 			artifacts.level, artifacts.primary = oldLevel, oldPrimary
 		}

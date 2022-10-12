@@ -16,7 +16,7 @@ type Enemy struct {
 
 type Modifier func(enemy *Enemy) func()
 
-func BaseEnemy(level int, modifiers ...attr.AttributeModifier) Modifier {
+func Base(level int, modifiers ...attr.AttributeModifier) Modifier {
 	return func(enemy *Enemy) func() {
 		oldLevel := enemy.level
 		enemy.level = level
@@ -28,7 +28,7 @@ func BaseEnemy(level int, modifiers ...attr.AttributeModifier) Modifier {
 	}
 }
 
-func NewEnemy(modifiers ...Modifier) *Enemy {
+func New(modifiers ...Modifier) *Enemy {
 	enemy := &Enemy{
 		level:           1,
 		base:            attr.NewAttributes(buff.AddAllElementalResist(10)),
