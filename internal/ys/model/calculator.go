@@ -29,7 +29,7 @@ func NewCalculator(character *Character, enemy *enemy.Enemy, action *action.Acti
 		init: map[string]float64{
 			"人物等级":  float64(character.level),
 			"人物攻击力": character.base.Get(point.Atk).GetValue(),
-			"武器攻击力": character.weapon.base.Get(point.Atk).GetValue(),
+			"武器攻击力": character.weapon.Get(point.Atk).GetValue(),
 		},
 	}
 	switch action.Mode() {

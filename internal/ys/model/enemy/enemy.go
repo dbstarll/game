@@ -5,6 +5,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
 	"github.com/dbstarll/game/internal/ys/model/attr"
+	"github.com/dbstarll/game/internal/ys/model/buff"
 )
 
 type Enemy struct {
@@ -28,7 +29,11 @@ func BaseEnemy(level int, modifiers ...attr.AttributeModifier) Modifier {
 }
 
 func NewEnemy(modifiers ...Modifier) *Enemy {
-	enemy := &Enemy{level: 1, base: attr.NewAttributes(), attachedAmounts: make(map[elemental.Elemental]float64)}
+	enemy := &Enemy{
+		level:           1,
+		base:            attr.NewAttributes(buff.AddAllElementalResist(10)),
+		attachedAmounts: make(map[elemental.Elemental]float64),
+	}
 	for _, modifier := range modifiers {
 		modifier(enemy)
 	}

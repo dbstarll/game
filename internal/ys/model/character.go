@@ -10,6 +10,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
+	"github.com/dbstarll/game/internal/ys/model/weapon"
 	"github.com/pkg/errors"
 	"time"
 )
@@ -78,7 +79,7 @@ type Character struct {
 	base            *attr.Attributes
 	talents         Talents
 	talentsTemplate *TalentsTemplate
-	weapon          *Weapon
+	weapon          *weapon.Weapon
 	artifacts       map[position.Position]*Artifacts
 	attached        *attr.Attributes
 }
@@ -123,13 +124,13 @@ func NewCharacter(star int, elemental elemental.Elemental, weaponType weaponType
 	return c
 }
 
-func (c *Character) Weapon(newWeapon *Weapon) (*Weapon, error) {
+func (c *Character) Weapon(newWeapon *weapon.Weapon) (*weapon.Weapon, error) {
 	if oldWeapon := c.weapon; newWeapon == nil {
 		// 卸下武器
 		c.weapon = nil
 		return oldWeapon, nil
-	} else if c.weaponType != newWeapon.weaponType {
-		return nil, errors.Errorf("不能装备此类型的武器: %s, 需要: %s", newWeapon.weaponType, c.weaponType)
+	} else if c.weaponType != newWeapon.Type() {
+		return nil, errors.Errorf("不能装备此类型的武器: %s, 需要: %s", newWeapon.Type(), c.weaponType)
 	} else {
 		// 替换武器
 		c.weapon = newWeapon
