@@ -1,6 +1,7 @@
 package attackMode
 
 import (
+	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
 )
@@ -60,5 +61,22 @@ func (m AttackMode) Elemental(weapon weaponType.WeaponType, elemental elemental.
 		}
 	default:
 		return elemental
+	}
+}
+
+func (m AttackMode) DamageBonusPoint() point.Point {
+	switch m {
+	case NormalAttack:
+		return point.NormalAttackDamageBonus
+	case ChargedAttack:
+		return point.ChargedAttackDamageBonus
+	case PlungeAttack:
+		return point.PlungeAttackDamageBonus
+	case ElementalSkill:
+		return point.ElementalSkillDamageBonus
+	case ElementalBurst:
+		return point.ElementalBurstDamageBonus
+	default:
+		return -1
 	}
 }

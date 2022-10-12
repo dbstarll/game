@@ -1,6 +1,7 @@
 package buff
 
 import (
+	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/model/attr"
@@ -66,7 +67,10 @@ func AddEnergyRecharge(add float64) attr.AttributeModifier {
 	return attr.NewAttribute(point.EnergyRecharge, add).Accumulation()
 }
 
-//CDReduction                            // 冷却缩减
+// 冷却缩减
+func AddCDReduction(add float64) attr.AttributeModifier {
+	return attr.NewAttribute(point.CDReduction, add).Accumulation()
+}
 
 // 护盾强效
 func AddShieldStrength(add float64) attr.AttributeModifier {
@@ -102,10 +106,17 @@ func AddIncomingDamageBonus(add float64) attr.AttributeModifier {
 	return attr.NewAttribute(point.IncomingDamageBonus, add).Accumulation()
 }
 
-//IgnoreDefence                          // 无视防御
-//DefenceReduction                       // 防御减免
-//NormalAttackDamageBonus                // 普通攻击伤害加成
-//ChargedAttackDamageBonus               // 重击伤害加成
-//PlungeAttackDamageBonus                // 下坠攻击伤害加成
-//ElementalSkillDamageBonus              // 元素战技伤害加成
-//ElementalBurstDamageBonus              // 元素爆发伤害加成
+// 无视防御
+func AddIgnoreDefence(add float64) attr.AttributeModifier {
+	return attr.NewAttribute(point.IgnoreDefence, add).Accumulation()
+}
+
+// 防御减免
+func AddDefenceReduction(add float64) attr.AttributeModifier {
+	return attr.NewAttribute(point.DefenceReduction, add).Accumulation()
+}
+
+// 单个攻击模式的伤害加成
+func AddAttackDamageBonus(m attackMode.AttackMode, add float64) attr.AttributeModifier {
+	return attr.NewAttribute(m.DamageBonusPoint(), add).Accumulation()
+}
