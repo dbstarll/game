@@ -1,4 +1,4 @@
-package model
+package action
 
 import (
 	"fmt"
@@ -24,6 +24,14 @@ func NewAction(mode attackMode.AttackMode, dmg float64, elemental elemental.Elem
 
 func (a *Action) Mode() attackMode.AttackMode {
 	return a.mode
+}
+
+func (a *Action) DMG() float64 {
+	return a.dmg
+}
+
+func (a *Action) Elemental() elemental.Elemental {
+	return a.elemental
 }
 
 func (a *Action) String() string {

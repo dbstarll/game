@@ -1,4 +1,4 @@
-package model
+package action
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ type Actions struct {
 	actionMap  map[attackMode.AttackMode]map[string]*Action
 }
 
-type ActionIterator func(index int, action *Action) bool
+type Iterator func(index int, action *Action) bool
 
 func NewActions() *Actions {
 	return &Actions{
@@ -19,7 +19,7 @@ func NewActions() *Actions {
 	}
 }
 
-func (a *Actions) add(action *Action) {
+func (a *Actions) Add(action *Action) {
 	if action != nil {
 		if oldMap, exist := a.actionMap[action.mode]; !exist {
 			a.actionList = append(a.actionList, action)
@@ -34,10 +34,10 @@ func (a *Actions) add(action *Action) {
 	}
 }
 
-func (a *Actions) addAll(other *Actions) {
+func (a *Actions) AddAll(other *Actions) {
 	if other != nil {
 		for _, action := range other.actionList {
-			a.add(action)
+			a.Add(action)
 		}
 	}
 }
@@ -51,7 +51,7 @@ func (a *Actions) GetAction(mode attackMode.AttackMode, name string) *Action {
 	return nil
 }
 
-func (a *Actions) Loop(iterator ActionIterator) {
+func (a *Actions) Loop(iterator Iterator) {
 	for idx, action := range a.actionList {
 		if iterator(idx, action) {
 			break

@@ -6,6 +6,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
+	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
 	"github.com/pkg/errors"
@@ -156,7 +157,7 @@ func (c *Character) Apply(modifiers ...attr.AttributeModifier) func() {
 	return attr.MergeAttributes(modifiers...)(c.attached)
 }
 
-func (c *Character) GetActions() *Actions {
+func (c *Character) GetActions() *action.Actions {
 	return c.talents.DMGs(c.weaponType, c.elemental)
 }
 
@@ -183,6 +184,6 @@ func (c *Character) String() string {
 	return fmt.Sprintf("%s\n", c.base)
 }
 
-func (c *Character) Calculate(enemy *Enemy, action *Action, infusionElemental elemental.Elemental) *Calculator {
+func (c *Character) Calculate(enemy *Enemy, action *action.Action, infusionElemental elemental.Elemental) *Calculator {
 	return NewCalculator(c, enemy, action, infusionElemental)
 }

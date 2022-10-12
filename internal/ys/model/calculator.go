@@ -6,31 +6,32 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 )
 
 type Calculator struct {
 	finalAttributes *attr.Attributes
 	enemy           *Enemy
-	action          *Action
+	action          *action.Action
 	elemental       elemental.Elemental
 	values          *Values
 	init            map[string]float64
 }
 
-func NewCalculator(character *Character, enemy *Enemy, action *Action, infusionElemental elemental.Elemental) *Calculator {
+func NewCalculator(character *Character, enemy *Enemy, action *action.Action, infusionElemental elemental.Elemental) *Calculator {
 	calculator := &Calculator{
 		finalAttributes: character.finalAttributes(),
 		enemy:           enemy,
 		action:          action,
-		elemental:       action.elemental,
+		elemental:       action.Elemental(),
 		init: map[string]float64{
 			"人物等级":  float64(character.level),
 			"人物攻击力": character.base.Get(point.Atk).GetValue(),
 			"武器攻击力": character.weapon.base.Get(point.Atk).GetValue(),
 		},
 	}
-	switch action.mode {
+	switch action.Mode() {
 	case attackMode.NormalAttack, attackMode.ChargedAttack, attackMode.PlungeAttack:
 		calculator.elemental = calculator.elemental.Infusion(infusionElemental)
 		break
@@ -116,9 +117,9 @@ func (c *Calculator) 攻击区() *Formula {
 }
 
 func (c *Calculator) 倍率区() *Formula {
-	prefix := c.action.mode.String()
+	prefix := c.action.Mode().String()
 	//c.set(prefix+"技能倍率加成", 0.5)
-	return c.set(prefix+"技能倍率", c.action.dmg/100).multiply(prefix+"伤害倍率", c.add(prefix+"技能倍率增伤", 1, prefix+"技能倍率加成"))
+	return c.set(prefix+"技能倍率", c.action.DMG()/100).multiply(prefix+"伤害倍率", c.add(prefix+"技能倍率增伤", 1, prefix+"技能倍率加成"))
 }
 
 func (c *Calculator) 基础倍率区() *Formula {
@@ -135,7 +136,7 @@ func (c *Calculator) 基础伤害区() *Formula {
 }
 
 func (c *Calculator) 增伤区() *Formula {
-	prefix := c.action.mode.String()
+	prefix := c.action.Mode().String()
 	//TODO 对元素影响下的敌人伤害提高
 	return c.add(prefix+"增伤", 1, c.elemental.DamageBonusPoint().String(), prefix+"伤害加成", "元素影响增伤", "伤害加成")
 }
