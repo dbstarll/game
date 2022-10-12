@@ -8,18 +8,19 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
 	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
+	"github.com/dbstarll/game/internal/ys/model/enemy"
 )
 
 type Calculator struct {
 	finalAttributes *attr.Attributes
-	enemy           *Enemy
+	enemy           *enemy.Enemy
 	action          *action.Action
 	elemental       elemental.Elemental
 	values          *Values
 	init            map[string]float64
 }
 
-func NewCalculator(character *Character, enemy *Enemy, action *action.Action, infusionElemental elemental.Elemental) *Calculator {
+func NewCalculator(character *Character, enemy *enemy.Enemy, action *action.Action, infusionElemental elemental.Elemental) *Calculator {
 	calculator := &Calculator{
 		finalAttributes: character.finalAttributes(),
 		enemy:           enemy,
@@ -146,8 +147,8 @@ func (c *Calculator) 暴击区() (*Formula, *Formula) {
 }
 
 func (c *Calculator) 防御区() *Formula {
-	怪物等级系数 := c.set("怪物等级", float64(c.enemy.level)).add("怪物等级系数", 100)
-	怪物防御 := c.set("怪物防御%", c.enemy.base.Get(point.DefPercentage).GetValue()/100)
+	怪物等级系数 := c.set("怪物等级", float64(c.enemy.Level())).add("怪物等级系数", 100)
+	怪物防御 := c.set("怪物防御%", c.enemy.Get(point.DefPercentage).GetValue()/100)
 	人物等级系数 := c.add("人物等级系数", "人物等级", 100)
 	减防系数 := c.add("怪物防御系数", 1, 怪物防御).reduce("减防系数", "防御减免")
 	防御承伤基准 := c.reduce("穿防系数", 1, "无视防御").multiply("防御系数", 减防系数, 怪物等级系数).add("防御承伤基准", 人物等级系数)
@@ -156,7 +157,7 @@ func (c *Calculator) 防御区() *Formula {
 
 func (c *Calculator) 抗性区() *Formula {
 	prefix := c.elemental.ResistPoint().String()
-	抗性 := c.set("怪物"+prefix, c.enemy.base.Get(c.elemental.ResistPoint()).GetValue()/100)
+	抗性 := c.set("怪物"+prefix, c.enemy.Get(c.elemental.ResistPoint()).GetValue()/100)
 	if 抗性.value > 0.75 {
 		return c.divide(prefix+"承伤", 1, 抗性.multiply("怪物"+prefix+"系数1", 4).add("怪物"+prefix+"系数2", 1))
 	} else if 抗性.value >= 0 {

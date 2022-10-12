@@ -11,6 +11,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
 	"github.com/dbstarll/game/internal/ys/model/detect"
+	"github.com/dbstarll/game/internal/ys/model/enemy"
 )
 
 func main() {
@@ -36,7 +37,7 @@ func main() {
 
 	迪卢克.Apply(buff.AddElementalDamageBonus(elemental.Fire, 15))
 
-	enemy := model.NewEnemy(model.BaseEnemy(90, buff.AddAllElementalResist(10)))
+	enemy := enemy.NewEnemy(enemy.BaseEnemy(90, buff.AddAllElementalResist(10)))
 	//enemy.Attach(elemental.Electric, 12)
 	enemy.Attach(elemental.Water, 12)
 

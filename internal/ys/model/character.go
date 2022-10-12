@@ -9,6 +9,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
+	"github.com/dbstarll/game/internal/ys/model/enemy"
 	"github.com/pkg/errors"
 	"time"
 )
@@ -184,6 +185,6 @@ func (c *Character) String() string {
 	return fmt.Sprintf("%s\n", c.base)
 }
 
-func (c *Character) Calculate(enemy *Enemy, action *action.Action, infusionElemental elemental.Elemental) *Calculator {
+func (c *Character) Calculate(enemy *enemy.Enemy, action *action.Action, infusionElemental elemental.Elemental) *Calculator {
 	return NewCalculator(c, enemy, action, infusionElemental)
 }
