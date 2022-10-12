@@ -6,6 +6,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
 	"github.com/dbstarll/game/internal/ys/model/attr"
+	"time"
 )
 
 // 生命值
@@ -153,6 +154,14 @@ func AddAttackFactorBonus(add float64, rs ...attackMode.AttackMode) attr.Attribu
 	var modifiers []attr.AttributeModifier
 	for _, r := range rs {
 		modifiers = append(modifiers, attr.AddAttackFactorBonus(r, add))
+	}
+	return attr.MergeAttributes(modifiers...)
+}
+
+func Superposition(times int, duration, interval time.Duration, modifier attr.AttributeModifier) attr.AttributeModifier {
+	modifiers := make([]attr.AttributeModifier, times)
+	for i := 0; i < times; i++ {
+		modifiers[i] = modifier
 	}
 	return attr.MergeAttributes(modifiers...)
 }
