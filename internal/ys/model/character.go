@@ -16,6 +16,36 @@ import (
 )
 
 var (
+	CharacterFactory草主 = func(normal, skill, burst, constellation int) *Character {
+		return NewCharacter(4, elemental.Grass, weaponType.Sword,
+			BaseCharacter(90, 10875, 216, 683, buff.AddAtkPercentage(24)),
+			TalentsTemplateModifier(NewTalentsTemplate(
+				&NormalAttack{name: "异邦草翦", lv: 1, charged: ChargedAttack{stamina: 20}},
+				&ElementalSkill{name: "草缘剑", lv: 13, cd: time.Second * 8},
+				&ElementalBurst{name: "偃草若化", lv: 1, infusionDuration: time.Second * 12, cd: time.Second * 20, energyCost: 80}).
+				addNormalAttacks(
+					&NormalAttack{lv: 1, hits: []float64{44.5, 43.4, 53.0, 58.3, 70.8}, charged: ChargedAttack{hits: []float64{55.9, 60.8}}, plunge: PlungeAttack{63.9, 128, 160}},
+				).
+				addElementalSkills(
+					&ElementalSkill{lv: 1, dmgs: map[string]float64{"技能伤害": 230}},
+					&ElementalSkill{lv: 2, dmgs: map[string]float64{"技能伤害": 248}},
+					&ElementalSkill{lv: 3, dmgs: map[string]float64{"技能伤害": 265}},
+					&ElementalSkill{lv: 4, dmgs: map[string]float64{"技能伤害": 288}},
+					&ElementalSkill{lv: 5, dmgs: map[string]float64{"技能伤害": 305}},
+					&ElementalSkill{lv: 6, dmgs: map[string]float64{"技能伤害": 323}},
+					&ElementalSkill{lv: 7, dmgs: map[string]float64{"技能伤害": 346}},
+					&ElementalSkill{lv: 8, dmgs: map[string]float64{"技能伤害": 369}},
+					&ElementalSkill{lv: 9, dmgs: map[string]float64{"技能伤害": 392}},
+					&ElementalSkill{lv: 10, dmgs: map[string]float64{"技能伤害": 415}},
+					&ElementalSkill{lv: 11, dmgs: map[string]float64{"技能伤害": 438}},
+					&ElementalSkill{lv: 12, dmgs: map[string]float64{"技能伤害": 461}},
+					&ElementalSkill{lv: 13, dmgs: map[string]float64{"技能伤害": 490}},
+				).
+				addElementalBursts(
+					&ElementalBurst{lv: 1, dmgs: map[string]float64{"草灯莲攻击伤害": 80.2, "激烈爆发伤害": 400.8}},
+				).check()),
+		).Talents(normal, skill, burst)
+	}
 	CharacterFactory久岐忍 = func(normal, skill, burst, constellation int) *Character {
 		return NewCharacter(4, elemental.Electric, weaponType.Sword,
 			BaseCharacter(90, 12289, 213, 751, buff.AddHpPercentage(24)),

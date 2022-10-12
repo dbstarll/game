@@ -20,7 +20,26 @@ import (
 
 func main() {
 	//迪卢克1()
-	感电队()
+	//感电队()
+	绽放队()
+}
+
+func 绽放队() {
+	草主 := model.CharacterFactory草主(1, 1, 1, 6)
+	草主.Weapon(weapon.Factory原木刀(1))
+	草主.Apply(buff.AddElementalMastery(1000))
+	草主.GetActions().Loop(func(index int, action *action.Action) bool {
+		fmt.Println(action)
+		return false
+	})
+	action := 草主.GetActions().Get(attackMode.ElementalSkill, "技能伤害")
+	挨揍的 := enemy.New(enemy.Base(90))
+	//挨揍的.Attach(elemental.Electric, 12)
+	挨揍的.Attach(elemental.Water, 12)
+	profitDetect(草主, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
+		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
+		return avg.Value()
+	}, CustomDetects(elemental.Grass))
 }
 
 func 感电队() {
