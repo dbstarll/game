@@ -12,6 +12,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/buff"
 	"github.com/dbstarll/game/internal/ys/model/detect"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
+	"github.com/dbstarll/game/internal/ys/model/weapon"
 )
 
 func main() {
@@ -27,8 +28,8 @@ func main() {
 	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, model.BaseArtifacts(20, point.CriticalDamage, 62.2),
 		buff.AddAtkPercentage(15.2), buff.AddCriticalRate(6.6), buff.AddEnergyRecharge(11.7), buff.AddHp(269))
 
-	迪卢克.Weapon(model.WeaponFactory螭骨剑(3))
-	//迪卢克.Weapon(model.WeaponFactory无工之剑(1))
+	迪卢克.Weapon(weapon.Factory螭骨剑(3))
+	//迪卢克.Weapon(model.Factory无工之剑(1))
 	迪卢克.Artifacts(魔女的炎之花)
 	迪卢克.Artifacts(魔女常燃之羽)
 	迪卢克.Artifacts(魔女破灭之时)
@@ -37,7 +38,7 @@ func main() {
 
 	迪卢克.Apply(buff.AddElementalDamageBonus(elemental.Fire, 15))
 
-	enemy := enemy.NewEnemy(enemy.BaseEnemy(90, buff.AddAllElementalResist(10)))
+	enemy := enemy.NewEnemy(enemy.BaseEnemy(90))
 	//enemy.Attach(elemental.Electric, 12)
 	enemy.Attach(elemental.Water, 12)
 
