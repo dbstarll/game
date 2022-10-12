@@ -11,29 +11,25 @@ type Attributes struct {
 
 func NewAttributes(modifiers ...AttributeModifier) *Attributes {
 	a := &Attributes{values: make(map[point.Point]*Attribute)}
-	a.Apply(modifiers...)
+	MergeAttributes(modifiers...)(a)
 	return a
 }
 
-func (a *Attributes) Add(attribute *Attribute) func() {
-	if attribute.IsZero() {
+func (a *Attributes) add(attribute *Attribute) func() {
+	if attribute.isZero() {
 		return NopCallBack
 	}
-	point := attribute.GetPoint()
+	point := attribute.point
 	if oldValue, exist := a.values[point]; !exist {
-		a.values[point] = attribute.Clone()
-	} else if newValue := oldValue.Add(attribute.GetValue()); newValue.IsZero() {
+		a.values[point] = attribute.clone()
+	} else if newValue := oldValue.add(attribute.value); newValue.isZero() {
 		delete(a.values, point)
 	} else {
 		a.values[point] = newValue
 	}
 	return func() {
-		a.Add(attribute.Reverse())
+		a.add(attribute.reverse())
 	}
-}
-
-func (a *Attributes) Apply(modifiers ...AttributeModifier) func() {
-	return MergeAttributes(modifiers...)(a)
 }
 
 func (a *Attributes) Accumulation() AttributeModifier {
@@ -50,11 +46,11 @@ func (a *Attributes) Clear(points ...point.Point) {
 	}
 }
 
-func (a *Attributes) Get(point point.Point) *Attribute {
-	if value, exist := a.values[point]; exist {
-		return value
+func (a *Attributes) Get(point point.Point) float64 {
+	if value, exist := a.values[point]; exist && !value.isZero() {
+		return value.value
 	} else {
-		return New(point, 0)
+		return 0
 	}
 }
 

@@ -42,7 +42,7 @@ func main() {
 	enemy.Attach(elemental.Electric, 12)
 	enemy.Attach(elemental.Water, 12)
 
-	action := 迪卢克.GetActions().GetAction(attackMode.ElementalSkill, "逆焰之刃•1段")
+	action := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "逆焰之刃•1段")
 	profitDetect(迪卢克, func(player *model.Character) float64 {
 		_, avg, _ := 迪卢克.Calculate(enemy, action, -1).Calculate()
 		return avg.Value()

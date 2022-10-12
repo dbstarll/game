@@ -42,7 +42,7 @@ func (a *Actions) AddAll(other *Actions) {
 	}
 }
 
-func (a *Actions) GetAction(mode attackMode.AttackMode, name string) *Action {
+func (a *Actions) Get(mode attackMode.AttackMode, name string) *Action {
 	if nameMaps, exist := a.actionMap[mode]; exist {
 		if action, exist := nameMaps[name]; exist {
 			return action

@@ -44,7 +44,7 @@ func (e *Enemy) Level() int {
 	return e.level
 }
 
-func (e *Enemy) Get(point point.Point) *attr.Attribute {
+func (e *Enemy) Get(point point.Point) float64 {
 	return e.base.Get(point)
 }
 

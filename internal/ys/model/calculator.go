@@ -28,8 +28,8 @@ func NewCalculator(character *Character, enemy *enemy.Enemy, action *action.Acti
 		elemental:       action.Elemental(),
 		init: map[string]float64{
 			"人物等级":  float64(character.level),
-			"人物攻击力": character.base.Get(point.Atk).GetValue(),
-			"武器攻击力": character.weapon.Get(point.Atk).GetValue(),
+			"人物攻击力": character.base.Get(point.Atk),
+			"武器攻击力": character.weapon.Get(point.Atk),
 		},
 	}
 	switch action.Mode() {
@@ -71,11 +71,11 @@ func (c *Calculator) divide(totalKey string, objs ...interface{}) *Formula {
 func (c *Calculator) prepare(putZero bool) {
 	c.values = NewValues()
 	for _, p := range point.Points {
-		if v := c.finalAttributes.Get(p); putZero || !v.IsZero() {
+		if v := c.finalAttributes.Get(p); putZero || v != 0 {
 			if p.IsPercentage() {
-				c.set(p.String(), v.GetValue()/100)
+				c.set(p.String(), v/100)
 			} else {
-				c.set(p.String(), v.GetValue())
+				c.set(p.String(), v)
 			}
 		}
 	}
@@ -150,7 +150,7 @@ func (c *Calculator) 暴击区() (*Formula, *Formula) {
 
 func (c *Calculator) 防御区() *Formula {
 	怪物等级系数 := c.set("怪物等级", float64(c.enemy.Level())).add("怪物等级系数", 100)
-	怪物防御 := c.set("怪物防御%", c.enemy.Get(point.DefPercentage).GetValue()/100)
+	怪物防御 := c.set("怪物防御%", c.enemy.Get(point.DefPercentage)/100)
 	人物等级系数 := c.add("人物等级系数", "人物等级", 100)
 	减防系数 := c.add("怪物防御系数", 1, 怪物防御).reduce("减防系数", "防御减免")
 	防御承伤基准 := c.reduce("穿防系数", 1, "无视防御").multiply("防御系数", 减防系数, 怪物等级系数).add("防御承伤基准", 人物等级系数)
@@ -159,7 +159,7 @@ func (c *Calculator) 防御区() *Formula {
 
 func (c *Calculator) 抗性区() *Formula {
 	prefix := c.elemental.ResistPoint().String()
-	抗性 := c.set("怪物"+prefix, c.enemy.Get(c.elemental.ResistPoint()).GetValue()/100)
+	抗性 := c.set("怪物"+prefix, c.enemy.Get(c.elemental.ResistPoint())/100)
 	if 抗性.value > 0.75 {
 		return c.divide(prefix+"承伤", 1, 抗性.multiply("怪物"+prefix+"系数1", 4).add("怪物"+prefix+"系数2", 1))
 	} else if 抗性.value >= 0 {

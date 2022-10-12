@@ -68,7 +68,7 @@ func New(star int, weaponType weaponType.WeaponType, baseModifier Modifier, refi
 	return w
 }
 
-func (w *Weapon) Get(point point.Point) *attr.Attribute {
+func (w *Weapon) Get(point point.Point) float64 {
 	return w.base.Get(point)
 }
 

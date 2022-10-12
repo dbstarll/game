@@ -19,31 +19,23 @@ func New(point point.Point, value float64) *Attribute {
 
 func (a *Attribute) Accumulation() AttributeModifier {
 	return func(attributes *Attributes) func() {
-		return attributes.Add(a)
+		return attributes.add(a)
 	}
 }
 
-func (a *Attribute) GetPoint() point.Point {
-	return a.point
-}
-
-func (a *Attribute) GetValue() float64 {
-	return a.value
-}
-
-func (a *Attribute) IsZero() bool {
+func (a *Attribute) isZero() bool {
 	return a == nil || a.value == 0.0
 }
 
-func (a *Attribute) Clone() *Attribute {
+func (a *Attribute) clone() *Attribute {
 	return New(a.point, a.value)
 }
 
-func (a *Attribute) Reverse() *Attribute {
+func (a *Attribute) reverse() *Attribute {
 	return New(a.point, -a.value)
 }
 
-func (a *Attribute) Add(value float64) *Attribute {
+func (a *Attribute) add(value float64) *Attribute {
 	return New(a.point, a.value+value)
 }
 
