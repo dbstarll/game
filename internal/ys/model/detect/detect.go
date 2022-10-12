@@ -57,13 +57,7 @@ var (
 		//PlungeAttackFactorBonus                // 下坠攻击技能倍率加成
 		//ElementalSkillFactorBonus              // 元素战技技能倍率加成
 		//ElementalBurstFactorBonus              // 元素爆发技能倍率加成
-		//FireAttachedDamageBonus                  // 火元素影响下增伤
-		//WaterAttachedDamageBonus                 // 水元素影响下增伤
-		//GrassAttachedDamageBonus                 // 草元素影响下增伤
-		//ElectricAttachedDamageBonus              // 雷元素影响下增伤
-		//WindAttachedDamageBonus                  // 风元素影响下增伤
-		//IceAttachedDamageBonus                   // 冰元素影响下增伤
-		//EarthAttachedDamageBonus                 // 岩元素影响下增伤
+		// 元素影响下增伤
 	}
 )
 

@@ -1,5 +1,7 @@
 package attr
 
+import "github.com/dbstarll/game/internal/ys/dimension/elemental"
+
 var (
 	NopCallBack          = func() {}
 	NopAttributeModifier = func(_ *Attributes) func() {
@@ -21,5 +23,12 @@ func MergeAttributes(modifiers ...AttributeModifier) AttributeModifier {
 				cancel()
 			}
 		}
+	}
+}
+
+// 单个元素影响下增伤
+func AddElementalAttachedDamageBonus(e elemental.Elemental, add float64) AttributeModifier {
+	return func(attributes *Attributes) func() {
+		return attributes.addElementalAttachedDamageBonus(e, add)
 	}
 }

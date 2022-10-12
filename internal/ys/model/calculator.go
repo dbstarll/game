@@ -69,6 +69,7 @@ func (c *Calculator) divide(totalKey string, objs ...interface{}) *Formula {
 }
 
 func (c *Calculator) prepare(putZero bool) {
+	fmt.Println(c.finalAttributes)
 	c.values = NewValues()
 	for _, p := range point.Points {
 		if v := c.finalAttributes.Get(p); putZero || v != 0 {
@@ -77,6 +78,11 @@ func (c *Calculator) prepare(putZero bool) {
 			} else {
 				c.set(p.String(), v)
 			}
+		}
+	}
+	for _, ele := range elemental.Elementals {
+		if v := c.finalAttributes.GetElementalAttachedDamageBonus(ele); putZero || v != 0 {
+			c.set(fmt.Sprintf("%s元素影响下增伤", ele), v/100)
 		}
 	}
 	for key, value := range c.init {

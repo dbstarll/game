@@ -186,27 +186,6 @@ func (e Elemental) ResistPoint() point.Point {
 	}
 }
 
-func (e Elemental) AttachedDamageBonusPoint() point.Point {
-	switch e {
-	case Fire:
-		return point.FireAttachedDamageBonus
-	case Water:
-		return point.WaterAttachedDamageBonus
-	case Grass:
-		return point.GrassAttachedDamageBonus
-	case Electric:
-		return point.ElectricAttachedDamageBonus
-	case Wind:
-		return point.WindAttachedDamageBonus
-	case Ice:
-		return point.IceAttachedDamageBonus
-	case Earth:
-		return point.EarthAttachedDamageBonus
-	default:
-		return -1
-	}
-}
-
 func (e Elemental) Reaction(attached Elemental) *reaction.Factor {
 	if rs, exist := reactions[e]; exist {
 		if r, exist := rs[attached]; exist {

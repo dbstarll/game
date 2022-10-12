@@ -96,11 +96,6 @@ func AddElementalResist(e elemental.Elemental, add float64) attr.AttributeModifi
 	return attr.New(e.ResistPoint(), add).Accumulation()
 }
 
-// 单个元素影响下增伤
-func AddElementalAttachedDamageBonus(e elemental.Elemental, add float64) attr.AttributeModifier {
-	return attr.New(e.AttachedDamageBonusPoint(), add).Accumulation()
-}
-
 // 伤害加成
 func AddDamageBonus(add float64) attr.AttributeModifier {
 	return attr.New(point.DamageBonus, add).Accumulation()
