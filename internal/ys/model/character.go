@@ -6,6 +6,8 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
+	"github.com/dbstarll/game/internal/ys/model/attr"
+	"github.com/dbstarll/game/internal/ys/model/buff"
 	"github.com/pkg/errors"
 	"time"
 )
@@ -13,7 +15,7 @@ import (
 var (
 	CharacterFactory迪卢克 = func(normal, skill, burst, constellation int) *Character {
 		return NewCharacter(5, elemental.Fire, weaponType.Claymore,
-			BaseCharacter(90, 12981, 335, 784, AddCriticalRate(19.2)),
+			BaseCharacter(90, 12981, 335, 784, buff.AddCriticalRate(19.2)),
 			TalentsTemplateModifier(NewTalentsTemplate(
 				&NormalAttack{name: "淬炼之剑", lv: 11, charged: ChargedAttack{stamina: 40, duration: time.Second * 5}},
 				&ElementalSkill{name: "逆焰之刃", lv: 13, cd: time.Second * 10},
@@ -71,21 +73,21 @@ type Character struct {
 	elemental       elemental.Elemental
 	weaponType      weaponType.WeaponType
 	level           int
-	base            *Attributes
+	base            *attr.Attributes
 	talents         Talents
 	talentsTemplate *TalentsTemplate
 	weapon          *Weapon
 	artifacts       map[position.Position]*Artifacts
-	attached        *Attributes
+	attached        *attr.Attributes
 }
 
 type CharacterModifier func(character *Character) func()
 
-func BaseCharacter(level, baseHp, baseAtk, baseDef int, baseModifier AttributeModifier) CharacterModifier {
+func BaseCharacter(level, baseHp, baseAtk, baseDef int, baseModifier attr.AttributeModifier) CharacterModifier {
 	return func(character *Character) func() {
 		oldLevel := character.level
 		character.level = level
-		callback := MergeAttributes(AddHp(baseHp), AddAtk(baseAtk), AddDef(baseDef), baseModifier)(character.base)
+		callback := attr.MergeAttributes(buff.AddHp(baseHp), buff.AddAtk(baseAtk), buff.AddDef(baseDef), baseModifier)(character.base)
 		return func() {
 			callback()
 			character.level = oldLevel
@@ -109,9 +111,9 @@ func NewCharacter(star int, elemental elemental.Elemental, weaponType weaponType
 		elemental:  elemental,
 		weaponType: weaponType,
 		level:      1,
-		base:       NewAttributes(AddCriticalRate(5), AddCriticalDamage(50), AddEnergyRecharge(100)),
+		base:       attr.NewAttributes(buff.AddCriticalRate(5), buff.AddCriticalDamage(50), buff.AddEnergyRecharge(100)),
 		artifacts:  make(map[position.Position]*Artifacts),
-		attached:   NewAttributes(),
+		attached:   attr.NewAttributes(),
 	}
 	for _, modifier := range modifiers {
 		modifier(c)
@@ -150,23 +152,23 @@ func (c *Character) Talents(normal, skill, burst int) *Character {
 	return c
 }
 
-func (c *Character) Apply(modifiers ...AttributeModifier) func() {
-	return MergeAttributes(modifiers...)(c.attached)
+func (c *Character) Apply(modifiers ...attr.AttributeModifier) func() {
+	return attr.MergeAttributes(modifiers...)(c.attached)
 }
 
 func (c *Character) GetActions() *Actions {
 	return c.talents.DMGs(c.weaponType, c.elemental)
 }
 
-func (c *Character) basicAttributes() *Attributes {
-	basic := NewAttributes()
+func (c *Character) basicAttributes() *attr.Attributes {
+	basic := attr.NewAttributes()
 	c.base.Accumulation()(basic)
 	c.weapon.AccumulationBase()(basic)
 	return basic
 }
 
-func (c *Character) finalAttributes() *Attributes {
-	final := NewAttributes()
+func (c *Character) finalAttributes() *attr.Attributes {
+	final := attr.NewAttributes()
 	c.basicAttributes().Accumulation()(final)
 	final.Clear(point.Hp, point.Atk, point.Def)
 	c.weapon.AccumulationRefine()(final)

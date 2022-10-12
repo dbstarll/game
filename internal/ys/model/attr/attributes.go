@@ -1,4 +1,4 @@
-package model
+package attr
 
 import (
 	"fmt"
@@ -11,11 +11,11 @@ type Attributes struct {
 
 func NewAttributes(modifiers ...AttributeModifier) *Attributes {
 	a := &Attributes{values: make(map[point.Point]*Attribute)}
-	MergeAttributes(modifiers...)(a)
+	a.Apply(modifiers...)
 	return a
 }
 
-func (a *Attributes) Modify(attribute *Attribute) func() {
+func (a *Attributes) Add(attribute *Attribute) func() {
 	if attribute.IsZero() {
 		return NopCallBack
 	}
@@ -28,7 +28,7 @@ func (a *Attributes) Modify(attribute *Attribute) func() {
 		a.values[point] = newValue
 	}
 	return func() {
-		a.Modify(attribute.Reverse())
+		a.Add(attribute.Reverse())
 	}
 }
 

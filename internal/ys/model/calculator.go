@@ -6,10 +6,11 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+	"github.com/dbstarll/game/internal/ys/model/attr"
 )
 
 type Calculator struct {
-	finalAttributes *Attributes
+	finalAttributes *attr.Attributes
 	enemy           *Enemy
 	action          *Action
 	elemental       elemental.Elemental
@@ -25,8 +26,8 @@ func NewCalculator(character *Character, enemy *Enemy, action *Action, infusionE
 		elemental:       action.elemental,
 		init: map[string]float64{
 			"人物等级":  float64(character.level),
-			"人物攻击力": character.base.Get(point.Atk).value,
-			"武器攻击力": character.weapon.base.Get(point.Atk).value,
+			"人物攻击力": character.base.Get(point.Atk).GetValue(),
+			"武器攻击力": character.weapon.base.Get(point.Atk).GetValue(),
 		},
 	}
 	switch action.mode {
@@ -70,9 +71,9 @@ func (c *Calculator) prepare(putZero bool) {
 	for _, p := range point.Points {
 		if v := c.finalAttributes.Get(p); putZero || !v.IsZero() {
 			if p.IsPercentage() {
-				c.set(p.String(), v.value/100)
+				c.set(p.String(), v.GetValue()/100)
 			} else {
-				c.set(p.String(), v.value)
+				c.set(p.String(), v.GetValue())
 			}
 		}
 	}
@@ -145,7 +146,7 @@ func (c *Calculator) 暴击区() (*Formula, *Formula) {
 
 func (c *Calculator) 防御区() *Formula {
 	怪物等级系数 := c.set("怪物等级", float64(c.enemy.level)).add("怪物等级系数", 100)
-	怪物防御 := c.set("怪物防御%", c.enemy.base.Get(point.DefPercentage).value/100)
+	怪物防御 := c.set("怪物防御%", c.enemy.base.Get(point.DefPercentage).GetValue()/100)
 	人物等级系数 := c.add("人物等级系数", "人物等级", 100)
 	减防系数 := c.add("怪物防御系数", 1, 怪物防御).reduce("减防系数", "防御减免")
 	防御承伤基准 := c.reduce("穿防系数", 1, "无视防御").multiply("防御系数", 减防系数, 怪物等级系数).add("防御承伤基准", 人物等级系数)
@@ -154,7 +155,7 @@ func (c *Calculator) 防御区() *Formula {
 
 func (c *Calculator) 抗性区() *Formula {
 	prefix := c.elemental.ResistPoint().String()
-	抗性 := c.set("怪物"+prefix, c.enemy.base.Get(c.elemental.ResistPoint()).value/100)
+	抗性 := c.set("怪物"+prefix, c.enemy.base.Get(c.elemental.ResistPoint()).GetValue()/100)
 	if 抗性.value > 0.75 {
 		return c.divide(prefix+"承伤", 1, 抗性.multiply("怪物"+prefix+"系数1", 4).add("怪物"+prefix+"系数2", 1))
 	} else if 抗性.value >= 0 {

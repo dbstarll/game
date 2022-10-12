@@ -8,28 +8,23 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/model"
-	"sort"
+	"github.com/dbstarll/game/internal/ys/model/attr"
+	"github.com/dbstarll/game/internal/ys/model/buff"
+	"github.com/dbstarll/game/internal/ys/model/detect"
 )
-
-type FinalDamage func(player *model.Character) float64
-
-type Profit struct {
-	Name  string
-	Value float64
-}
 
 func main() {
 	迪卢克 := model.CharacterFactory迪卢克(10, 9, 9, 0)
-	魔女的炎之花 := model.ArtifactsFactory生之花(5, model.AddAtk(51), model.AddAtkPercentage(12.8),
-		model.AddCriticalRate(3.1), model.AddDefPercentage(6.6))
-	魔女常燃之羽 := model.ArtifactsFactory死之羽(5, model.AddCriticalRate(7.8), model.AddHp(239),
-		model.AddCriticalDamage(14), model.AddElementalMastery(54))
+	魔女的炎之花 := model.ArtifactsFactory生之花(5, buff.AddAtk(51), buff.AddAtkPercentage(12.8),
+		buff.AddCriticalRate(3.1), buff.AddDefPercentage(6.6))
+	魔女常燃之羽 := model.ArtifactsFactory死之羽(5, buff.AddCriticalRate(7.8), buff.AddHp(239),
+		buff.AddCriticalDamage(14), buff.AddElementalMastery(54))
 	魔女破灭之时 := model.NewArtifacts(5, position.SandsOfEon, model.BaseArtifacts(20, point.AtkPercentage, 46.6),
-		model.AddCriticalDamage(11.7), model.AddElementalMastery(61), model.AddEnergyRecharge(15.5), model.AddCriticalRate(3.1))
+		buff.AddCriticalDamage(11.7), buff.AddElementalMastery(61), buff.AddEnergyRecharge(15.5), buff.AddCriticalRate(3.1))
 	魔女的心之火 := model.NewArtifacts(5, position.GobletOfEonothem, model.BaseArtifacts(20, point.PyroDamageBonus, 46.6),
-		model.AddHp(986), model.AddHpPercentage(9.3), model.AddCriticalRate(3.9), model.AddDef(35))
+		buff.AddHp(986), buff.AddHpPercentage(9.3), buff.AddCriticalRate(3.9), buff.AddDef(35))
 	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, model.BaseArtifacts(20, point.CriticalDamage, 62.2),
-		model.AddAtkPercentage(15.2), model.AddCriticalRate(6.6), model.AddEnergyRecharge(11.7), model.AddHp(269))
+		buff.AddAtkPercentage(15.2), buff.AddCriticalRate(6.6), buff.AddEnergyRecharge(11.7), buff.AddHp(269))
 
 	迪卢克.Weapon(model.WeaponFactory螭骨剑(3))
 	//迪卢克.Weapon(model.WeaponFactory无工之剑(1))
@@ -39,9 +34,9 @@ func main() {
 	迪卢克.Artifacts(魔女的心之火)
 	迪卢克.Artifacts(渡火者的智慧)
 
-	迪卢克.Apply(model.AddElementalDamageBonus(elemental.Fire, 15))
+	迪卢克.Apply(buff.AddElementalDamageBonus(elemental.Fire, 15))
 
-	enemy := model.NewEnemy(model.BaseEnemy(90, model.AddAllElementalResist(10)))
+	enemy := model.NewEnemy(model.BaseEnemy(90, buff.AddAllElementalResist(10)))
 	//enemy.Attach(elemental.Electric, 12)
 	enemy.Attach(elemental.Water, 12)
 
@@ -49,45 +44,20 @@ func main() {
 	profitDetect(迪卢克, func(player *model.Character) float64 {
 		_, avg, _ := 迪卢克.Calculate(enemy, action, -1).Calculate()
 		return avg.Value()
-	}, map[string]model.AttributeModifier{
-		point.CriticalRate.String():     model.AddCriticalRate(2.7),
-		point.HpPercentage.String():     model.AddHpPercentage(4.1),
-		point.AtkPercentage.String():    model.AddAtkPercentage(4.1),
-		point.EnergyRecharge.String():   model.AddEnergyRecharge(4.5),
-		point.DefPercentage.String():    model.AddDefPercentage(5.1),
-		point.CriticalDamage.String():   model.AddCriticalDamage(5.4),
-		point.Atk.String():              model.AddAtk(14),
-		point.Def.String():              model.AddDef(16),
-		point.ElementalMastery.String(): model.AddElementalMastery(16),
-		point.Hp.String():               model.AddHp(209),
+	}, map[string]attr.AttributeModifier{
+		//"玉璋护盾": nil,
 	})
 }
 
-func profitDetect(character *model.Character, fn FinalDamage, customDetects map[string]model.AttributeModifier) {
+func profitDetect(character *model.Character, fn detect.FinalDamage, customDetects map[string]attr.AttributeModifier) {
 	fmt.Printf("base: %f\n", fn(character))
-	base := fn(character)
-	var profits []*Profit
-	for name, modifier := range customDetects {
-		cancel := character.Apply(modifier)
-		value := fn(character)
-		if value != base {
-			profits = append(profits, &Profit{
-				Name:  name,
-				Value: 100 * (value - base) / base,
-			})
-		}
-		cancel()
-	}
-	sort.Slice(profits, func(i, j int) bool {
-		if profits[i].Value < profits[j].Value {
-			return false
-		} else if profits[i].Value > profits[j].Value {
-			return true
-		} else {
-			return profits[i].Name < profits[j].Name
-		}
-	})
+	profits := detect.ProfitDetect(character, true, fn, nil)
 	fmt.Printf("素质:\n")
+	for _, p := range profits {
+		fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
+	}
+	profits = detect.ProfitDetect(character, false, fn, customDetects)
+	fmt.Printf("custom:\n")
 	for _, p := range profits {
 		fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
 	}

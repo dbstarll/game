@@ -3,21 +3,22 @@ package model
 import (
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+	"github.com/dbstarll/game/internal/ys/model/attr"
 )
 
 type Enemy struct {
 	level           int
-	base            *Attributes
+	base            *attr.Attributes
 	attachedAmounts map[elemental.Elemental]float64 // 附着的元素量
 }
 
 type EnemyModifier func(enemy *Enemy) func()
 
-func BaseEnemy(level int, modifiers ...AttributeModifier) EnemyModifier {
+func BaseEnemy(level int, modifiers ...attr.AttributeModifier) EnemyModifier {
 	return func(enemy *Enemy) func() {
 		oldLevel := enemy.level
 		enemy.level = level
-		callback := MergeAttributes(modifiers...)(enemy.base)
+		callback := attr.MergeAttributes(modifiers...)(enemy.base)
 		return func() {
 			callback()
 			enemy.level = oldLevel
@@ -26,7 +27,7 @@ func BaseEnemy(level int, modifiers ...AttributeModifier) EnemyModifier {
 }
 
 func NewEnemy(modifiers ...EnemyModifier) *Enemy {
-	enemy := &Enemy{level: 1, base: NewAttributes(), attachedAmounts: make(map[elemental.Elemental]float64)}
+	enemy := &Enemy{level: 1, base: attr.NewAttributes(), attachedAmounts: make(map[elemental.Elemental]float64)}
 	for _, modifier := range modifiers {
 		modifier(enemy)
 	}

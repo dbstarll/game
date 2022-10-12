@@ -34,7 +34,7 @@ const (
 	PhysicalDamageBonus                    // 物理伤害加成
 	PhysicalResist                         // 物理抗性
 	DamageBonus                            // 伤害加成
-	IncomingDamageBonus                    // 收到的伤害加成
+	IncomingDamageBonus                    // 受到的伤害加成
 	IgnoreDefence                          // 无视防御
 	DefenceReduction                       // 防御减免
 	NormalAttackDamageBonus                // 普通攻击伤害加成

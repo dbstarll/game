@@ -1,4 +1,4 @@
-package model
+package attr
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ func NewAttribute(point point.Point, value float64) *Attribute {
 
 func (a *Attribute) Accumulation() AttributeModifier {
 	return func(attributes *Attributes) func() {
-		return attributes.Modify(a)
+		return attributes.Add(a)
 	}
 }
 
