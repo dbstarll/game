@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
+	"github.com/dbstarll/game/internal/ys/dimension/reaction"
 )
 
 type Attributes struct {
@@ -11,6 +12,7 @@ type Attributes struct {
 	elementalDamageBonus         map[elemental.Elemental]float64 // 元素伤害加成
 	elementalResist              map[elemental.Elemental]float64 // 元素抗性
 	elementalAttachedDamageBonus map[elemental.Elemental]float64 // 元素影响下增伤
+	reactionDamageBonus          map[reaction.Reaction]float64   // 元素反应系数提高/元素反应伤害提升
 }
 
 func NewAttributes(modifiers ...AttributeModifier) *Attributes {
@@ -19,6 +21,7 @@ func NewAttributes(modifiers ...AttributeModifier) *Attributes {
 		elementalDamageBonus:         make(map[elemental.Elemental]float64),
 		elementalResist:              make(map[elemental.Elemental]float64),
 		elementalAttachedDamageBonus: make(map[elemental.Elemental]float64),
+		reactionDamageBonus:          make(map[reaction.Reaction]float64),
 	}
 	MergeAttributes(modifiers...)(a)
 	return a
@@ -69,6 +72,22 @@ func addElementalMap(e elemental.Elemental, v float64, values map[elemental.Elem
 	}
 }
 
+func (a *Attributes) addReactionDamageBonus(r reaction.Reaction, v float64) func() {
+	if v == 0 {
+		return NopCallBack
+	}
+	if oldValue, exist := a.reactionDamageBonus[r]; !exist {
+		a.reactionDamageBonus[r] = v
+	} else if newValue := oldValue + v; newValue == 0 {
+		delete(a.reactionDamageBonus, r)
+	} else {
+		a.reactionDamageBonus[r] = newValue
+	}
+	return func() {
+		a.addReactionDamageBonus(r, -v)
+	}
+}
+
 func (a *Attributes) Accumulation() AttributeModifier {
 	var modifiers []AttributeModifier
 	for _, attr := range a.values {
@@ -82,6 +101,9 @@ func (a *Attributes) Accumulation() AttributeModifier {
 	}
 	for ele, val := range a.elementalAttachedDamageBonus {
 		modifiers = append(modifiers, AddElementalAttachedDamageBonus(ele, val))
+	}
+	for r, val := range a.reactionDamageBonus {
+		modifiers = append(modifiers, AddReactionDamageBonus(r, val))
 	}
 	return MergeAttributes(modifiers...)
 }
@@ -124,6 +146,14 @@ func (a *Attributes) GetElementalAttachedDamageBonus(elemental elemental.Element
 	}
 }
 
+func (a *Attributes) GetReactionDamageBonus(reaction reaction.Reaction) float64 {
+	if value, exist := a.reactionDamageBonus[reaction]; exist {
+		return value
+	} else {
+		return 0
+	}
+}
+
 func (a *Attributes) String() string {
 	var values []string
 	for _, point := range point.Points {
@@ -134,5 +164,6 @@ func (a *Attributes) String() string {
 	values = append(values, fmt.Sprintf("元素伤害加成: %v", a.elementalDamageBonus))
 	values = append(values, fmt.Sprintf("元素抗性: %v", a.elementalResist))
 	values = append(values, fmt.Sprintf("元素影响下增伤: %v", a.elementalAttachedDamageBonus))
+	values = append(values, fmt.Sprintf("元素反应系数提高: %v", a.elementalAttachedDamageBonus))
 	return fmt.Sprintf("%s", values)
 }

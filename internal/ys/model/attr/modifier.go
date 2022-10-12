@@ -1,6 +1,9 @@
 package attr
 
-import "github.com/dbstarll/game/internal/ys/dimension/elemental"
+import (
+	"github.com/dbstarll/game/internal/ys/dimension/elemental"
+	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+)
 
 var (
 	NopCallBack          = func() {}
@@ -44,5 +47,12 @@ func AddElementalResist(e elemental.Elemental, add float64) AttributeModifier {
 func AddElementalAttachedDamageBonus(e elemental.Elemental, add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
 		return attributes.addElementalAttachedDamageBonus(e, add)
+	}
+}
+
+// 单个元素反应系数提高/元素反应伤害提升
+func AddReactionDamageBonus(r reaction.Reaction, add float64) AttributeModifier {
+	return func(attributes *Attributes) func() {
+		return attributes.addReactionDamageBonus(r, add)
 	}
 }

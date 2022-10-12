@@ -4,6 +4,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elemental"
+	"github.com/dbstarll/game/internal/ys/dimension/reaction"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 )
 
@@ -135,6 +136,15 @@ func AddElementalAttachedDamageBonus(add float64, es ...elemental.Elemental) att
 	var modifiers []attr.AttributeModifier
 	for _, e := range es {
 		modifiers = append(modifiers, attr.AddElementalAttachedDamageBonus(e, add))
+	}
+	return attr.MergeAttributes(modifiers...)
+}
+
+// 单个元素反应系数提高/元素反应伤害提升
+func AddReactionDamageBonus(add float64, rs ...reaction.Reaction) attr.AttributeModifier {
+	var modifiers []attr.AttributeModifier
+	for _, r := range rs {
+		modifiers = append(modifiers, attr.AddReactionDamageBonus(r, add))
 	}
 	return attr.MergeAttributes(modifiers...)
 }

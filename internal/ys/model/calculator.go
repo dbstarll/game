@@ -90,6 +90,21 @@ func (c *Calculator) prepare(putZero bool) {
 			c.set(fmt.Sprintf("%s影响下增伤", ele.Name()), v/100)
 		}
 	}
+	for _, ra := range reaction.Reactions {
+		if v := c.finalAttributes.GetReactionDamageBonus(ra); putZero || v != 0 {
+			switch ra.Classify() {
+			case reaction.Amplify:
+				c.set(fmt.Sprintf("%s反应系数提高", ra), v/100)
+				break
+			case reaction.Upheaval:
+				c.set(fmt.Sprintf("%s反应伤害提升", ra), v/100)
+				break
+				//TODO
+				// Crystal                   // 结晶
+				// Intensify                 // 激化
+			}
+		}
+	}
 	for key, value := range c.init {
 		if putZero || value != 0 {
 			c.set(key, value)
