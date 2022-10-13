@@ -110,7 +110,7 @@ func AddElementalDamageBonus(add float64, es ...elemental.Elemental) attr.Attrib
 
 // 全元素/物理抗性
 func AddAllElementalResist(add float64) attr.AttributeModifier {
-	return AddElementalResist(add, append(elemental.Elementals, -1)...)
+	return AddElementalResist(add, elemental.Elements...)
 }
 
 // 元素/物理抗性

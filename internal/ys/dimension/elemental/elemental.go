@@ -1,6 +1,7 @@
 package elemental
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/reaction"
 )
 
@@ -8,17 +9,19 @@ import (
 type Elemental int
 
 const (
-	Fire     Elemental = iota // 火(Pyro)
-	Water                     // 水(Hydro)
-	Grass                     // 草(Dendro)
-	Electric                  // 雷(Electro)
-	Wind                      // 风(Anemo)
-	Ice                       // 冰(Cryo)
-	Earth                     // 岩(Geo)
+	Physical Elemental = iota // 物理
+	Fire                      // 火
+	Water                     // 水
+	Grass                     // 草
+	Electric                  // 雷
+	Wind                      // 风
+	Ice                       // 冰
+	Earth                     // 岩
 )
 
 var (
-	Elementals = []Elemental{
+	Elements = []Elemental{
+		Physical,
 		Fire,
 		Water,
 		Grass,
@@ -57,6 +60,7 @@ var (
 			Water: reaction.NewFactor(reaction.ElectroCharged, 1.2),
 			Wind:  reaction.NewFactor(reaction.Swirl, 0.6),
 			Ice:   reaction.NewFactor(reaction.Superconduct, 0.5),
+			//Grass: reaction.NewFactor(reaction.Hyperbloom, 3),
 		},
 		Wind: {
 			Fire:     reaction.NewFactor(reaction.Swirl, 0.6),
@@ -80,34 +84,17 @@ var (
 )
 
 func (e Elemental) Name() string {
-	switch e {
-	case Fire:
-		return "火元素"
-	case Water:
-		return "水元素"
-	case Grass:
-		return "草元素"
-	case Electric:
-		return "雷元素"
-	case Wind:
-		return "风元素"
-	case Ice:
-		return "冰元素"
-	case Earth:
-		return "岩元素"
-	default:
-		if e < -1 {
-			return "不限"
-		} else if e == -1 {
-			return "物理"
-		} else {
-			return "未知"
-		}
+	if e > Physical && e <= Earth {
+		return fmt.Sprintf("%s元素", e)
+	} else {
+		return e.String()
 	}
 }
 
 func (e Elemental) String() string {
 	switch e {
+	case Physical:
+		return "物理"
 	case Fire:
 		return "火"
 	case Water:
@@ -123,13 +110,7 @@ func (e Elemental) String() string {
 	case Earth:
 		return "岩"
 	default:
-		if e < -1 {
-			return "不限"
-		} else if e == -1 {
-			return "物理"
-		} else {
-			return "未知"
-		}
+		return "未知"
 	}
 }
 

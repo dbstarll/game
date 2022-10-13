@@ -20,8 +20,8 @@ import (
 
 func main() {
 	//迪卢克1()
-	//感电队()
-	绽放队()
+	感电队()
+	//绽放队()
 }
 
 func 绽放队() {
@@ -50,10 +50,10 @@ func 感电队() {
 		fmt.Println(action)
 		return false
 	})
-	action := 久岐忍.GetActions().Get(attackMode.ElementalSkill, "技能伤害")
+	action := 久岐忍.GetActions().Get(attackMode.ElementalSkill, "")
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Attach(elemental.Electric, 12)
-	挨揍的.Attach(elemental.Water, 12)
+	挨揍的.Attach(elemental.Grass, 12)
 	profitDetect(久岐忍, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()

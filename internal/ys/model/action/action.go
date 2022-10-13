@@ -35,9 +35,5 @@ func (a *Action) Elemental() elemental.Elemental {
 }
 
 func (a *Action) String() string {
-	if a.elemental < 0 {
-		return fmt.Sprintf("%s[%s][物理][技能倍率: %+v%%]", a.name, a.mode, a.dmg)
-	} else {
-		return fmt.Sprintf("%s[%s][%s元素][技能倍率: %+v%%]", a.name, a.mode, a.elemental, a.dmg)
-	}
+	return fmt.Sprintf("%s[%s][%s][技能倍率: %+v%%]", a.name, a.mode, a.elemental.Name(), a.dmg)
 }

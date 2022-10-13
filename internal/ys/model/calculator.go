@@ -80,15 +80,18 @@ func (c *Calculator) prepare(putZero bool) {
 			}
 		}
 	}
-	for _, ele := range append(elemental.Elementals, -1) {
+	for _, ele := range elemental.Elements {
 		if v := c.finalAttributes.GetElementalDamageBonus(ele); putZero || v != 0 {
 			c.set(fmt.Sprintf("%s伤害加成", ele.Name()), v/100)
 		}
 		if v := c.finalAttributes.GetElementalResist(ele); putZero || v != 0 {
 			c.set(fmt.Sprintf("%s抗性", ele.Name()), v/100)
 		}
-		if v := c.finalAttributes.GetElementalAttachedDamageBonus(ele); putZero || v != 0 {
-			c.set(fmt.Sprintf("%s影响下增伤", ele.Name()), v/100)
+		if ele != elemental.Physical {
+			// 没有物理影响下增伤
+			if v := c.finalAttributes.GetElementalAttachedDamageBonus(ele); putZero || v != 0 {
+				c.set(fmt.Sprintf("%s影响下增伤", ele.Name()), v/100)
+			}
 		}
 	}
 	for _, ra := range reaction.Reactions {

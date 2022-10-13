@@ -44,21 +44,25 @@ func (m AttackMode) String() string {
 	}
 }
 
-func (m AttackMode) Elemental(weapon weaponType.WeaponType, elemental elemental.Elemental) elemental.Elemental {
+// 计算攻击模式对应的元素属性.
+// @param weapon 所使用的武器类型
+// @param characterElemental 角色的自身属性
+// @return 攻击模式对应的元素属性
+func (m AttackMode) Elemental(weapon weaponType.WeaponType, characterElemental elemental.Elemental) elemental.Elemental {
 	switch m {
 	case NormalAttack, PlungeAttack:
 		if weapon == weaponType.Catalyst {
-			return elemental
+			return characterElemental
 		} else {
-			return -1
+			return elemental.Physical
 		}
 	case ChargedAttack:
 		if weapon == weaponType.Bow || weapon == weaponType.Catalyst {
-			return elemental
+			return characterElemental
 		} else {
-			return -1
+			return elemental.Physical
 		}
 	default:
-		return elemental
+		return characterElemental
 	}
 }
