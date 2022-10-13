@@ -83,6 +83,11 @@ var (
 	}
 )
 
+// 判断是否可作为角色的神之眼属性
+func (e Elemental) IsCharacter() bool {
+	return e > Physical && e <= Earth
+}
+
 func (e Elemental) Name() string {
 	if e > Physical && e <= Earth {
 		return fmt.Sprintf("%s元素", e)
@@ -114,6 +119,7 @@ func (e Elemental) String() string {
 	}
 }
 
+// 元素克制与元素量消耗比率
 func (e Elemental) Restraint(elemental Elemental) int {
 	if ratios, exist := restraints[e]; exist {
 		if ratio, exist := ratios[elemental]; exist {
@@ -123,21 +129,14 @@ func (e Elemental) Restraint(elemental Elemental) int {
 	return 0
 }
 
-// 附魔优先级：
-// 火雷附魔，火伤
-// 火冰附魔，火伤
-// 冰水附魔，冰伤
-// 冰雷附魔，冰伤
-// 水火附魔，水伤
-// 水雷附魔，水伤
-// 风元素附魔会被水火冰雷任何一种元素覆盖
-func (e Elemental) Infusion(elemental Elemental) Elemental {
-	if e.Restraint(elemental) > 0 {
+// 多种附魔属性叠加后的最终附魔属性
+func (e Elemental) Infusion(infusionElemental Elemental) Elemental {
+	if e.Restraint(infusionElemental) > 0 {
 		return e
-	} else if elemental.Restraint(e) > 0 {
-		return elemental
-	} else if e < 0 {
-		return elemental
+	} else if infusionElemental.Restraint(e) > 0 {
+		return infusionElemental
+	} else if e <= Physical {
+		return infusionElemental
 	} else {
 		return e
 	}

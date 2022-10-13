@@ -19,10 +19,21 @@ func TestElemental_Infusion(t *testing.T) {
 		{name: "冰雷附魔，冰伤", a: Ice, b: Electric, want: Ice},
 		{name: "水火附魔，水伤", a: Water, b: Fire, want: Water},
 		{name: "水雷附魔，水伤", a: Water, b: Electric, want: Water},
-		{name: "风元素附魔会被水火冰雷任何一种元素覆盖", a: Wind, b: Water, want: Water},
-		{name: "风元素附魔会被水火冰雷任何一种元素覆盖", a: Wind, b: Fire, want: Fire},
-		{name: "风元素附魔会被水火冰雷任何一种元素覆盖", a: Wind, b: Ice, want: Ice},
-		{name: "风元素附魔会被水火冰雷任何一种元素覆盖", a: Wind, b: Electric, want: Electric},
+		{name: "风水附魔，水伤", a: Wind, b: Water, want: Water},
+		{name: "风火附魔，火伤", a: Wind, b: Fire, want: Fire},
+		{name: "风冰附魔，冰伤", a: Wind, b: Ice, want: Ice},
+		{name: "风雷附魔，雷伤", a: Wind, b: Electric, want: Electric},
+	}
+	for _, e := range Elements {
+		tests = append(tests, []struct {
+			name string
+			a    Elemental
+			b    Elemental
+			want Elemental
+		}{
+			{name: "物理可以被任何元素附魔", a: Physical, b: e, want: e},
+			{name: "相同附魔无变化", a: e, b: e, want: e},
+		}...)
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
