@@ -65,7 +65,6 @@ var (
 			Water: &reactionFactor{reactions.ElectroCharged, 1.2},
 			Wind:  &reactionFactor{reactions.Swirl, 0.6},
 			Ice:   &reactionFactor{reactions.Superconduct, 0.5},
-			//Grass: &reactionFactor{reaction.Hyperbloom, 3},
 		},
 		Wind: {
 			Fire:     &reactionFactor{reactions.Swirl, 0.6},
@@ -88,13 +87,27 @@ var (
 	}
 )
 
+func (e Elemental) IsValid() bool {
+	return e >= Physical && e <= Earth
+}
+
 // 判断是否可作为角色的神之眼属性
 func (e Elemental) IsCharacter() bool {
-	return e > Physical && e <= Earth
+	return e.IsValid() && e != Physical
+}
+
+// 是否可附魔
+func (e Elemental) CanInfusion() bool {
+	switch e {
+	case Fire, Water, Electric, Ice:
+		return true
+	default:
+		return false
+	}
 }
 
 func (e Elemental) Name() string {
-	if e > Physical && e <= Earth {
+	if e.IsCharacter() {
 		return fmt.Sprintf("%s元素", e)
 	} else {
 		return e.String()
@@ -120,7 +133,7 @@ func (e Elemental) String() string {
 	case Earth:
 		return "岩"
 	default:
-		return "未知"
+		return fmt.Sprintf("未知[%d]", e)
 	}
 }
 
@@ -136,14 +149,16 @@ func (e Elemental) Restraint(elemental Elemental) int {
 
 // 多种附魔属性叠加后的最终附魔属性
 func (e Elemental) Infusion(infusionElemental Elemental) Elemental {
-	if e.Restraint(infusionElemental) > 0 {
+	if !infusionElemental.CanInfusion() {
+		return e
+	} else if e.Restraint(infusionElemental) > 0 {
 		return e
 	} else if infusionElemental.Restraint(e) > 0 {
 		return infusionElemental
-	} else if e <= Physical {
-		return infusionElemental
-	} else {
+	} else if e.CanInfusion() {
 		return e
+	} else {
+		return infusionElemental
 	}
 }
 

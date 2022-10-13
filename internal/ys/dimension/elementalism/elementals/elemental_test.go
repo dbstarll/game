@@ -1,49 +1,86 @@
 package elementals
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 	"reflect"
 	"testing"
 )
 
 func TestElemental_Infusion(t *testing.T) {
-	tests := []struct {
-		name string
-		a    Elemental
-		b    Elemental
-		want Elemental
-	}{
-		{name: "火冰附魔，火伤", a: Fire, b: Ice, want: Fire},
-		{name: "火雷附魔，火伤", a: Fire, b: Electric, want: Fire},
-		{name: "冰水附魔，冰伤", a: Ice, b: Water, want: Ice},
-		{name: "冰雷附魔，冰伤", a: Ice, b: Electric, want: Ice},
-		{name: "水火附魔，水伤", a: Water, b: Fire, want: Water},
-		{name: "水雷附魔，水伤", a: Water, b: Electric, want: Water},
-		{name: "风水附魔，水伤", a: Wind, b: Water, want: Water},
-		{name: "风火附魔，火伤", a: Wind, b: Fire, want: Fire},
-		{name: "风冰附魔，冰伤", a: Wind, b: Ice, want: Ice},
-		{name: "风雷附魔，雷伤", a: Wind, b: Electric, want: Electric},
+	type test struct {
+		name     string
+		owner    Elemental
+		infusion Elemental
+		want     Elemental
+		twoWay   bool
 	}
-	for _, e := range Elementals {
-		tests = append(tests, []struct {
-			name string
-			a    Elemental
-			b    Elemental
-			want Elemental
-		}{
-			{name: "物理可以被任何元素附魔", a: Physical, b: e, want: e},
-			{name: "相同附魔无变化", a: e, b: e, want: e},
-		}...)
+	all := make(map[string]bool)
+	for _, from := range append(Elementals, -1, 1000) {
+		for _, to := range append(Elementals, -1, 1000) {
+			all[fmt.Sprintf("%s -> %s", from, to)] = false
+		}
+	}
+
+	tests := []test{
+		{name: "火水附魔，水伤", owner: Fire, infusion: Water, want: Water, twoWay: true},
+		{name: "火雷附魔，火伤", owner: Fire, infusion: Electric, want: Fire, twoWay: true},
+		{name: "火冰附魔，火伤", owner: Fire, infusion: Ice, want: Fire, twoWay: true},
+		{name: "水雷附魔，水伤", owner: Water, infusion: Electric, want: Water, twoWay: true},
+		{name: "水冰附魔，冰伤", owner: Water, infusion: Ice, want: Ice, twoWay: true},
+		{name: "雷冰附魔，冰伤", owner: Electric, infusion: Ice, want: Ice, twoWay: true},
+	}
+	for _, from := range append(Elementals, -1, 1000) {
+		for _, to := range append(Elementals, -1, 1000) {
+			if !from.CanInfusion() && to.CanInfusion() {
+				tests = append(tests, []test{
+					{name: "非附魔元素可以被附魔元素附魔", owner: from, infusion: to, want: to, twoWay: false},
+				}...)
+			} else if !to.CanInfusion() {
+				tests = append(tests, []test{
+					{name: "不可附魔元素不能改变原元素", owner: from, infusion: to, want: from, twoWay: false},
+				}...)
+			} else if from == to {
+				tests = append(tests, []test{
+					{name: "同元素附魔", owner: from, infusion: from, want: from, twoWay: false},
+				}...)
+			}
+		}
+		//	tests = append(tests, []test{
+		//		{name: "物理可以被任何元素附魔", owner: Physical, infusion: e, want: e, twoWay: true},
+		//		{name: "相同附魔无变化", owner: e, infusion: e, want: e, twoWay: true},
+		//		{name: "未知[-1]可以被任何元素附魔", owner: -1, infusion: e, want: e, twoWay: true},
+		//		{name: "未知[1000]可以被任何元素附魔", owner: 1000, infusion: e, want: e, twoWay: true},
+		//	}...)
+		//	if e.CanInfusion() {
+		//		tests = append(tests, []test{
+		//			{name: "岩元素可以被任何元素附魔", owner: Earth, infusion: e, want: e, twoWay: true},
+		//			{name: "草元素可以被任何元素附魔", owner: Grass, infusion: e, want: e, twoWay: true},
+		//		}...)
+		//	}
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.a.Infusion(tt.b); got != tt.want {
-				t.Errorf("Infusion() = %v, want %v", got, tt.want)
+			if got := tt.owner.Infusion(tt.infusion); got != tt.want {
+				t.Errorf("%s.Infusion(%s) = %v, want %v", tt.owner, tt.infusion, got, tt.want)
+			} else {
+				delete(all, fmt.Sprintf("%s -> %s", tt.owner, tt.infusion))
 			}
-			if got := tt.b.Infusion(tt.a); got != tt.want {
-				t.Errorf("Infusion() = %v, want %v", got, tt.want)
+			if tt.twoWay {
+				if got := tt.infusion.Infusion(tt.owner); got != tt.want {
+					t.Errorf("%s.Infusion(%s) = %v, want %v", tt.infusion, tt.owner, got, tt.want)
+				} else {
+					delete(all, fmt.Sprintf("%s -> %s", tt.infusion, tt.owner))
+				}
 			}
 		})
+	}
+
+	if len(all) > 0 {
+		t.Errorf("未测试：%d", len(all))
+		for k, _ := range all {
+			t.Logf("\t场景：%s", k)
+		}
 	}
 }
 
