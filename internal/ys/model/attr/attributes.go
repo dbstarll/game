@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
-	"github.com/dbstarll/game/internal/ys/dimension/elemental"
-	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 )
 
 type Attributes struct {
 	values                       map[point.Point]*Attribute
-	elementalDamageBonus         map[elemental.Elemental]float64   // 元素伤害加成
-	elementalResist              map[elemental.Elemental]float64   // 元素抗性
-	elementalAttachedDamageBonus map[elemental.Elemental]float64   // 元素影响下增伤
-	reactionDamageBonus          map[reaction.Reaction]float64     // 元素反应系数提高/元素反应伤害提升
+	elementalDamageBonus         map[elementals.Elemental]float64  // 元素伤害加成
+	elementalResist              map[elementals.Elemental]float64  // 元素抗性
+	elementalAttachedDamageBonus map[elementals.Elemental]float64  // 元素影响下增伤
+	reactionDamageBonus          map[reactions.Reaction]float64    // 元素反应系数提高/元素反应伤害提升
 	attackModeDamageBonus        map[attackMode.AttackMode]float64 // 攻击模式伤害加成
 	attackModeFactorBonus        map[attackMode.AttackMode]float64 // 攻击模式技能倍率加成
 }
@@ -21,10 +21,10 @@ type Attributes struct {
 func NewAttributes(modifiers ...AttributeModifier) *Attributes {
 	a := &Attributes{
 		values:                       make(map[point.Point]*Attribute),
-		elementalDamageBonus:         make(map[elemental.Elemental]float64),
-		elementalResist:              make(map[elemental.Elemental]float64),
-		elementalAttachedDamageBonus: make(map[elemental.Elemental]float64),
-		reactionDamageBonus:          make(map[reaction.Reaction]float64),
+		elementalDamageBonus:         make(map[elementals.Elemental]float64),
+		elementalResist:              make(map[elementals.Elemental]float64),
+		elementalAttachedDamageBonus: make(map[elementals.Elemental]float64),
+		reactionDamageBonus:          make(map[reactions.Reaction]float64),
 		attackModeDamageBonus:        make(map[attackMode.AttackMode]float64),
 		attackModeFactorBonus:        make(map[attackMode.AttackMode]float64),
 	}
@@ -49,19 +49,19 @@ func (a *Attributes) add(attribute *Attribute) func() {
 	}
 }
 
-func (a *Attributes) addElementalDamageBonus(elemental elemental.Elemental, add float64) func() {
+func (a *Attributes) addElementalDamageBonus(elemental elementals.Elemental, add float64) func() {
 	return addElementalMap(elemental, add, a.elementalDamageBonus, a.addElementalDamageBonus)
 }
 
-func (a *Attributes) addElementalResist(elemental elemental.Elemental, add float64) func() {
+func (a *Attributes) addElementalResist(elemental elementals.Elemental, add float64) func() {
 	return addElementalMap(elemental, add, a.elementalResist, a.addElementalResist)
 }
 
-func (a *Attributes) addElementalAttachedDamageBonus(elemental elemental.Elemental, add float64) func() {
+func (a *Attributes) addElementalAttachedDamageBonus(elemental elementals.Elemental, add float64) func() {
 	return addElementalMap(elemental, add, a.elementalAttachedDamageBonus, a.addElementalAttachedDamageBonus)
 }
 
-func addElementalMap(e elemental.Elemental, v float64, values map[elemental.Elemental]float64, cancel func(elemental.Elemental, float64) func()) func() {
+func addElementalMap(e elementals.Elemental, v float64, values map[elementals.Elemental]float64, cancel func(elementals.Elemental, float64) func()) func() {
 	if v == 0 {
 		return NopCallBack
 	}
@@ -77,7 +77,7 @@ func addElementalMap(e elemental.Elemental, v float64, values map[elemental.Elem
 	}
 }
 
-func (a *Attributes) addReactionDamageBonus(r reaction.Reaction, v float64) func() {
+func (a *Attributes) addReactionDamageBonus(r reactions.Reaction, v float64) func() {
 	if v == 0 {
 		return NopCallBack
 	}
@@ -157,7 +157,7 @@ func (a *Attributes) Get(point point.Point) float64 {
 	}
 }
 
-func (a *Attributes) GetElementalDamageBonus(elemental elemental.Elemental) float64 {
+func (a *Attributes) GetElementalDamageBonus(elemental elementals.Elemental) float64 {
 	if value, exist := a.elementalDamageBonus[elemental]; exist {
 		return value
 	} else {
@@ -165,7 +165,7 @@ func (a *Attributes) GetElementalDamageBonus(elemental elemental.Elemental) floa
 	}
 }
 
-func (a *Attributes) GetElementalResist(elemental elemental.Elemental) float64 {
+func (a *Attributes) GetElementalResist(elemental elementals.Elemental) float64 {
 	if value, exist := a.elementalResist[elemental]; exist {
 		return value
 	} else {
@@ -173,7 +173,7 @@ func (a *Attributes) GetElementalResist(elemental elemental.Elemental) float64 {
 	}
 }
 
-func (a *Attributes) GetElementalAttachedDamageBonus(elemental elemental.Elemental) float64 {
+func (a *Attributes) GetElementalAttachedDamageBonus(elemental elementals.Elemental) float64 {
 	if value, exist := a.elementalAttachedDamageBonus[elemental]; exist {
 		return value
 	} else {
@@ -181,7 +181,7 @@ func (a *Attributes) GetElementalAttachedDamageBonus(elemental elemental.Element
 	}
 }
 
-func (a *Attributes) GetReactionDamageBonus(reaction reaction.Reaction) float64 {
+func (a *Attributes) GetReactionDamageBonus(reaction reactions.Reaction) float64 {
 	if value, exist := a.reactionDamageBonus[reaction]; exist {
 		return value
 	} else {

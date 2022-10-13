@@ -5,8 +5,8 @@ import (
 	_ "github.com/dbstarll/game/internal/logger"
 	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
-	"github.com/dbstarll/game/internal/ys/dimension/elemental"
-	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 	"github.com/dbstarll/game/internal/ys/model"
 	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
@@ -35,11 +35,11 @@ func 绽放队() {
 	action := 草主.GetActions().Get(attackMode.ElementalSkill, "技能伤害")
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Attach(elemental.Electric, 12)
-	挨揍的.Attach(elemental.Water, 12)
+	挨揍的.Attach(elementals.Water, 12)
 	profitDetect(草主, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()
-	}, CustomDetects(elemental.Grass))
+	}, CustomDetects(elementals.Grass))
 }
 
 func 感电队() {
@@ -53,11 +53,11 @@ func 感电队() {
 	action := 久岐忍.GetActions().Get(attackMode.ElementalSkill, "")
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Attach(elemental.Electric, 12)
-	挨揍的.Attach(elemental.Grass, 12)
+	挨揍的.Attach(elementals.Grass, 12)
 	profitDetect(久岐忍, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()
-	}, CustomDetects(elemental.Electric))
+	}, CustomDetects(elementals.Electric))
 }
 
 func 迪卢克1() {
@@ -68,7 +68,7 @@ func 迪卢克1() {
 		buff.AddCriticalDamage(14), buff.AddElementalMastery(54))
 	魔女破灭之时 := model.NewArtifacts(5, position.SandsOfEon, model.BaseArtifacts(20, buff.AddAtkPercentage(46.6)),
 		buff.AddCriticalDamage(11.7), buff.AddElementalMastery(61), buff.AddEnergyRecharge(15.5), buff.AddCriticalRate(3.1))
-	魔女的心之火 := model.NewArtifacts(5, position.GobletOfEonothem, model.BaseArtifacts(20, buff.AddElementalDamageBonus(46.6, elemental.Fire)),
+	魔女的心之火 := model.NewArtifacts(5, position.GobletOfEonothem, model.BaseArtifacts(20, buff.AddElementalDamageBonus(46.6, elementals.Fire)),
 		buff.AddHp(986), buff.AddHpPercentage(9.3), buff.AddCriticalRate(3.9), buff.AddDef(35))
 	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, model.BaseArtifacts(20, buff.AddCriticalDamage(62.2)),
 		buff.AddAtkPercentage(15.2), buff.AddCriticalRate(6.6), buff.AddEnergyRecharge(11.7), buff.AddHp(269))
@@ -82,16 +82,16 @@ func 迪卢克1() {
 	迪卢克.Artifacts(渡火者的智慧)
 
 	迪卢克.Apply(
-		buff.AddElementalDamageBonus(20, elemental.Fire),   // 卢姥爷大招
-		buff.AddElementalDamageBonus(37.5, elemental.Fire), // 魔女套
-		buff.AddReactionDamageBonus(40, reaction.Overload, reaction.Burn, reaction.Burgeon),
-		buff.AddReactionDamageBonus(15, reaction.Vaporize, reaction.Melt),
+		buff.AddElementalDamageBonus(20, elementals.Fire),   // 卢姥爷大招
+		buff.AddElementalDamageBonus(37.5, elementals.Fire), // 魔女套
+		buff.AddReactionDamageBonus(40, reactions.Overload, reactions.Burn, reactions.Burgeon),
+		buff.AddReactionDamageBonus(15, reactions.Vaporize, reactions.Melt),
 		buff.AddAtkPercentage(25), // 双火共鸣
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Attach(elemental.Electric, 12)
-	挨揍的.Attach(elemental.Water, 12)
+	挨揍的.Attach(elementals.Water, 12)
 
 	迪卢克.GetActions().Loop(func(index int, action *action.Action) bool {
 		fmt.Println(action)
@@ -102,10 +102,10 @@ func 迪卢克1() {
 	profitDetect(迪卢克, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()
-	}, CustomDetects(elemental.Fire))
+	}, CustomDetects(elementals.Fire))
 }
 
-func CustomDetects(dye elemental.Elemental) map[string]*detect.Modifier {
+func CustomDetects(dye elementals.Elemental) map[string]*detect.Modifier {
 	return map[string]*detect.Modifier{
 		"玉璋护盾":      detect.NewModifier(buff.Superposition(5, time.Second*20, 0, buff.AddShieldStrength(5)), buff.AddAllElementalResist(-20)),
 		"万叶扩散":      detect.NewCharacterModifier(buff.AddElementalDamageBonus(0.04*1000, dye)),

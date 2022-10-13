@@ -1,7 +1,7 @@
 package attackMode
 
 import (
-	"github.com/dbstarll/game/internal/ys/dimension/elemental"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
 )
 
@@ -48,19 +48,19 @@ func (m AttackMode) String() string {
 // @param weapon 所使用的武器类型
 // @param characterElemental 角色的自身属性
 // @return 攻击模式对应的元素属性
-func (m AttackMode) Elemental(weapon weaponType.WeaponType, characterElemental elemental.Elemental) elemental.Elemental {
+func (m AttackMode) Elemental(weapon weaponType.WeaponType, characterElemental elementals.Elemental) elementals.Elemental {
 	switch m {
 	case NormalAttack, PlungeAttack:
 		if weapon == weaponType.Catalyst {
 			return characterElemental
 		} else {
-			return elemental.Physical
+			return elementals.Physical
 		}
 	case ChargedAttack:
 		if weapon == weaponType.Bow || weapon == weaponType.Catalyst {
 			return characterElemental
 		} else {
-			return elemental.Physical
+			return elementals.Physical
 		}
 	default:
 		return characterElemental

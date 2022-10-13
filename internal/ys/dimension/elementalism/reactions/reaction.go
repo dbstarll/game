@@ -1,5 +1,10 @@
-package reaction
+package reactions
 
+import (
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions/classifies"
+)
+
+// 元素反应
 type Reaction int
 
 const (
@@ -89,16 +94,16 @@ func (r Reaction) String() string {
 	}
 }
 
-func (r Reaction) Classify() Classify {
+func (r Reaction) Classify() classifies.Classify {
 	switch r {
 	case Vaporize, Melt:
-		return Amplify
+		return classifies.Amplify
 	case Crystallize:
-		return Crystal
+		return classifies.Crystal
 	case Overload, Superconduct, ElectroCharged, Shattered, Swirl, Frozen, Burn, Bloom, Hyperbloom, Burgeon:
-		return Upheaval
+		return classifies.Upheaval
 	case Catalyze, Quicken, Aggravate, Spread:
-		return Intensify
+		return classifies.Intensify
 	default:
 		return -1
 	}
@@ -117,7 +122,7 @@ func (f *Factor) GetReaction() Reaction {
 	return f.reaction
 }
 
-func (f *Factor) Match(classify Classify) bool {
+func (f *Factor) Match(classify classifies.Classify) bool {
 	return classify == f.reaction.Classify()
 }
 

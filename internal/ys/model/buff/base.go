@@ -3,8 +3,8 @@ package buff
 import (
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
-	"github.com/dbstarll/game/internal/ys/dimension/elemental"
-	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"time"
 )
@@ -100,7 +100,7 @@ func AddDefenceReduction(add float64) attr.AttributeModifier {
 }
 
 // 元素/物理伤害加成
-func AddElementalDamageBonus(add float64, es ...elemental.Elemental) attr.AttributeModifier {
+func AddElementalDamageBonus(add float64, es ...elementals.Elemental) attr.AttributeModifier {
 	var modifiers []attr.AttributeModifier
 	for _, e := range es {
 		modifiers = append(modifiers, attr.AddElementalDamageBonus(e, add))
@@ -110,11 +110,11 @@ func AddElementalDamageBonus(add float64, es ...elemental.Elemental) attr.Attrib
 
 // 全元素/物理抗性
 func AddAllElementalResist(add float64) attr.AttributeModifier {
-	return AddElementalResist(add, elemental.Elements...)
+	return AddElementalResist(add, elementals.Elements...)
 }
 
 // 元素/物理抗性
-func AddElementalResist(add float64, es ...elemental.Elemental) attr.AttributeModifier {
+func AddElementalResist(add float64, es ...elementals.Elemental) attr.AttributeModifier {
 	var modifiers []attr.AttributeModifier
 	for _, e := range es {
 		modifiers = append(modifiers, attr.AddElementalResist(e, add))
@@ -123,7 +123,7 @@ func AddElementalResist(add float64, es ...elemental.Elemental) attr.AttributeMo
 }
 
 // 元素影响下增伤
-func AddElementalAttachedDamageBonus(add float64, es ...elemental.Elemental) attr.AttributeModifier {
+func AddElementalAttachedDamageBonus(add float64, es ...elementals.Elemental) attr.AttributeModifier {
 	var modifiers []attr.AttributeModifier
 	for _, e := range es {
 		modifiers = append(modifiers, attr.AddElementalAttachedDamageBonus(e, add))
@@ -132,7 +132,7 @@ func AddElementalAttachedDamageBonus(add float64, es ...elemental.Elemental) att
 }
 
 // 元素反应系数提高/元素反应伤害提升
-func AddReactionDamageBonus(add float64, rs ...reaction.Reaction) attr.AttributeModifier {
+func AddReactionDamageBonus(add float64, rs ...reactions.Reaction) attr.AttributeModifier {
 	var modifiers []attr.AttributeModifier
 	for _, r := range rs {
 		modifiers = append(modifiers, attr.AddReactionDamageBonus(r, add))

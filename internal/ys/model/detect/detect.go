@@ -3,7 +3,7 @@ package detect
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
-	"github.com/dbstarll/game/internal/ys/dimension/elemental"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/model"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
@@ -76,7 +76,7 @@ func initBaseDetects(detects map[string]*Modifier) map[string]*Modifier {
 	// TODO
 	//   元素抗性
 	//   元素影响下增伤
-	for _, ele := range elemental.Elements {
+	for _, ele := range elementals.Elements {
 		detects[fmt.Sprintf("%s伤害加成", ele.Name())] = NewCharacterModifier(buff.AddElementalDamageBonus(4.1, ele))
 	}
 	return detects

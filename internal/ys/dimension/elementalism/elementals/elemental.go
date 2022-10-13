@@ -1,11 +1,11 @@
-package elemental
+package elementals
 
 import (
 	"fmt"
-	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+	reactions2 "github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 )
 
-// 元素类型
+// 元素
 type Elemental int
 
 const (
@@ -36,49 +36,49 @@ var (
 		Ice:      {Water: 2, Electric: 1, Wind: 1},
 		Electric: {Wind: 1},
 	}
-	reactions = map[Elemental]map[Elemental]*reaction.Factor{
+	reactions = map[Elemental]map[Elemental]*reactions2.Factor{
 		Fire: {
-			Water:    reaction.NewFactor(reaction.Vaporize, 1.5),
-			Grass:    reaction.NewFactor(reaction.Burn, 0.25),
-			Ice:      reaction.NewFactor(reaction.Melt, 2),
-			Electric: reaction.NewFactor(reaction.Overload, 2),
-			Wind:     reaction.NewFactor(reaction.Swirl, 0.6),
+			Water:    reactions2.NewFactor(reactions2.Vaporize, 1.5),
+			Grass:    reactions2.NewFactor(reactions2.Burn, 0.25),
+			Ice:      reactions2.NewFactor(reactions2.Melt, 2),
+			Electric: reactions2.NewFactor(reactions2.Overload, 2),
+			Wind:     reactions2.NewFactor(reactions2.Swirl, 0.6),
 		},
 		Water: {
-			Fire:     reaction.NewFactor(reaction.Vaporize, 2),
-			Grass:    reaction.NewFactor(reaction.Bloom, 2),
-			Electric: reaction.NewFactor(reaction.ElectroCharged, 1.2),
-			Wind:     reaction.NewFactor(reaction.Swirl, 0.6),
-			Ice:      reaction.NewFactor(reaction.Frozen, 0),
+			Fire:     reactions2.NewFactor(reactions2.Vaporize, 2),
+			Grass:    reactions2.NewFactor(reactions2.Bloom, 2),
+			Electric: reactions2.NewFactor(reactions2.ElectroCharged, 1.2),
+			Wind:     reactions2.NewFactor(reactions2.Swirl, 0.6),
+			Ice:      reactions2.NewFactor(reactions2.Frozen, 0),
 		},
 		Grass: {
-			Fire:  reaction.NewFactor(reaction.Burn, 0.25),
-			Water: reaction.NewFactor(reaction.Bloom, 2),
+			Fire:  reactions2.NewFactor(reactions2.Burn, 0.25),
+			Water: reactions2.NewFactor(reactions2.Bloom, 2),
 		},
 		Electric: {
-			Fire:  reaction.NewFactor(reaction.Overload, 2),
-			Water: reaction.NewFactor(reaction.ElectroCharged, 1.2),
-			Wind:  reaction.NewFactor(reaction.Swirl, 0.6),
-			Ice:   reaction.NewFactor(reaction.Superconduct, 0.5),
+			Fire:  reactions2.NewFactor(reactions2.Overload, 2),
+			Water: reactions2.NewFactor(reactions2.ElectroCharged, 1.2),
+			Wind:  reactions2.NewFactor(reactions2.Swirl, 0.6),
+			Ice:   reactions2.NewFactor(reactions2.Superconduct, 0.5),
 			//Grass: reaction.NewFactor(reaction.Hyperbloom, 3),
 		},
 		Wind: {
-			Fire:     reaction.NewFactor(reaction.Swirl, 0.6),
-			Water:    reaction.NewFactor(reaction.Swirl, 0.6),
-			Electric: reaction.NewFactor(reaction.Swirl, 0.6),
-			Ice:      reaction.NewFactor(reaction.Swirl, 0.6),
+			Fire:     reactions2.NewFactor(reactions2.Swirl, 0.6),
+			Water:    reactions2.NewFactor(reactions2.Swirl, 0.6),
+			Electric: reactions2.NewFactor(reactions2.Swirl, 0.6),
+			Ice:      reactions2.NewFactor(reactions2.Swirl, 0.6),
 		},
 		Ice: {
-			Fire:     reaction.NewFactor(reaction.Melt, 1.5),
-			Water:    reaction.NewFactor(reaction.Frozen, 0),
-			Electric: reaction.NewFactor(reaction.Superconduct, 0.5),
-			Wind:     reaction.NewFactor(reaction.Swirl, 0.6),
+			Fire:     reactions2.NewFactor(reactions2.Melt, 1.5),
+			Water:    reactions2.NewFactor(reactions2.Frozen, 0),
+			Electric: reactions2.NewFactor(reactions2.Superconduct, 0.5),
+			Wind:     reactions2.NewFactor(reactions2.Swirl, 0.6),
 		},
 		Earth: {
-			Fire:     reaction.NewFactor(reaction.Crystallize, 1),
-			Water:    reaction.NewFactor(reaction.Crystallize, 1),
-			Electric: reaction.NewFactor(reaction.Crystallize, 1),
-			Ice:      reaction.NewFactor(reaction.Crystallize, 1),
+			Fire:     reactions2.NewFactor(reactions2.Crystallize, 1),
+			Water:    reactions2.NewFactor(reactions2.Crystallize, 1),
+			Electric: reactions2.NewFactor(reactions2.Crystallize, 1),
+			Ice:      reactions2.NewFactor(reactions2.Crystallize, 1),
 		},
 	}
 )
@@ -142,7 +142,7 @@ func (e Elemental) Infusion(infusionElemental Elemental) Elemental {
 	}
 }
 
-func (e Elemental) Reaction(attached Elemental) *reaction.Factor {
+func (e Elemental) Reaction(attached Elemental) *reactions2.Factor {
 	if rs, exist := reactions[e]; exist {
 		if r, exist := rs[attached]; exist {
 			return r

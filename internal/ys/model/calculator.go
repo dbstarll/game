@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
-	"github.com/dbstarll/game/internal/ys/dimension/elemental"
-	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions/classifies"
 	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
@@ -16,12 +17,12 @@ type Calculator struct {
 	finalAttributes *attr.Attributes
 	enemy           *enemy.Enemy
 	action          *action.Action
-	elemental       elemental.Elemental
+	elemental       elementals.Elemental
 	values          *Values
 	init            map[string]float64
 }
 
-func NewCalculator(character *Character, enemy *enemy.Enemy, action *action.Action, infusionElemental elemental.Elemental) *Calculator {
+func NewCalculator(character *Character, enemy *enemy.Enemy, action *action.Action, infusionElemental elementals.Elemental) *Calculator {
 	calculator := &Calculator{
 		finalAttributes: character.finalAttributes(),
 		enemy:           enemy,
@@ -80,27 +81,27 @@ func (c *Calculator) prepare(putZero bool) {
 			}
 		}
 	}
-	for _, ele := range elemental.Elements {
+	for _, ele := range elementals.Elements {
 		if v := c.finalAttributes.GetElementalDamageBonus(ele); putZero || v != 0 {
 			c.set(fmt.Sprintf("%s伤害加成", ele.Name()), v/100)
 		}
 		if v := c.finalAttributes.GetElementalResist(ele); putZero || v != 0 {
 			c.set(fmt.Sprintf("%s抗性", ele.Name()), v/100)
 		}
-		if ele != elemental.Physical {
+		if ele != elementals.Physical {
 			// 没有物理影响下增伤
 			if v := c.finalAttributes.GetElementalAttachedDamageBonus(ele); putZero || v != 0 {
 				c.set(fmt.Sprintf("%s影响下增伤", ele.Name()), v/100)
 			}
 		}
 	}
-	for _, ra := range reaction.Reactions {
+	for _, ra := range reactions.Reactions {
 		if v := c.finalAttributes.GetReactionDamageBonus(ra); putZero || v != 0 {
 			switch ra.Classify() {
-			case reaction.Amplify:
+			case classifies.Amplify:
 				c.set(fmt.Sprintf("%s反应系数提高", ra), v/100)
 				break
-			case reaction.Upheaval:
+			case classifies.Upheaval:
 				c.set(fmt.Sprintf("%s反应伤害提升", ra), v/100)
 				break
 				//TODO
@@ -219,7 +220,7 @@ func (c *Calculator) 抗性区() *Formula {
 
 func (c *Calculator) 增幅区() *Formula {
 	增幅精通提升 := c.multiply("增幅精通系数1", 25.0/9, "元素精通").divide("增幅精通提升", c.add("增幅精通系数2", 1400, "元素精通"))
-	for _, factor := range c.enemy.DetectReaction(c.elemental, reaction.Amplify) {
+	for _, factor := range c.enemy.DetectReaction(c.elemental, classifies.Amplify) {
 		reactionName := factor.GetReaction().String()
 		增幅反应倍率 := c.add("增幅反应倍率", 1, 增幅精通提升, reactionName+"反应系数提高")
 		return c.set(reactionName+"反应基础倍率", factor.GetFactor()).multiply(reactionName+"反应总倍率", 增幅反应倍率)
@@ -231,7 +232,7 @@ func (c *Calculator) 剧变区(抗性承伤 *Formula) []interface{} {
 	damages := make([]interface{}, 0)
 	剧变等级系数 := c.set("剧变等级系数", 1446.85)
 	剧变精通提升 := c.multiply("剧变精通系数1", 16, "元素精通").divide("剧变精通提升", c.add("剧变精通系数2", 2000, "元素精通"))
-	for _, factor := range c.enemy.DetectReaction(c.elemental, reaction.Upheaval) {
+	for _, factor := range c.enemy.DetectReaction(c.elemental, classifies.Upheaval) {
 		reactionName := factor.GetReaction().String()
 		剧变反应倍率 := c.add(reactionName+"反应倍率", 1, 剧变精通提升, reactionName+"反应伤害提升")
 		damages = append(damages, c.set(reactionName+"反应基础倍率", factor.GetFactor()).multiply(reactionName+"反应伤害", 剧变等级系数, 抗性承伤, 剧变反应倍率))

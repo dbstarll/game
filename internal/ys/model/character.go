@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
-	"github.com/dbstarll/game/internal/ys/dimension/elemental"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
 	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
@@ -17,7 +17,7 @@ import (
 
 var (
 	CharacterFactory草主 = func(normal, skill, burst, constellation int) *Character {
-		return NewCharacter(4, elemental.Grass, weaponType.Sword,
+		return NewCharacter(4, elementals.Grass, weaponType.Sword,
 			BaseCharacter(90, 10875, 216, 683, buff.AddAtkPercentage(24)),
 			TalentsTemplateModifier(NewTalentsTemplate(
 				&NormalAttack{name: "异邦草翦", lv: 1, charged: ChargedAttack{stamina: 20}},
@@ -47,7 +47,7 @@ var (
 		).Talents(normal, skill, burst)
 	}
 	CharacterFactory久岐忍 = func(normal, skill, burst, constellation int) *Character {
-		return NewCharacter(4, elemental.Electric, weaponType.Sword,
+		return NewCharacter(4, elementals.Electric, weaponType.Sword,
 			BaseCharacter(90, 12289, 213, 751, buff.AddHpPercentage(24)),
 			TalentsTemplateModifier(NewTalentsTemplate(
 				&NormalAttack{name: "忍流飞刃斩", lv: 11, charged: ChargedAttack{stamina: 20}},
@@ -99,7 +99,7 @@ var (
 		).Talents(normal, skill, burst)
 	}
 	CharacterFactory迪卢克 = func(normal, skill, burst, constellation int) *Character {
-		return NewCharacter(5, elemental.Fire, weaponType.Claymore,
+		return NewCharacter(5, elementals.Fire, weaponType.Claymore,
 			BaseCharacter(90, 12981, 335, 784, buff.AddCriticalRate(19.2)),
 			TalentsTemplateModifier(NewTalentsTemplate(
 				&NormalAttack{name: "淬炼之剑", lv: 11, charged: ChargedAttack{stamina: 40, duration: time.Second * 5}},
@@ -155,7 +155,7 @@ var (
 
 type Character struct {
 	star            int
-	elemental       elemental.Elemental
+	elemental       elementals.Elemental
 	weaponType      weaponType.WeaponType
 	level           int
 	base            *attr.Attributes
@@ -190,7 +190,7 @@ func TalentsTemplateModifier(talentsTemplate *TalentsTemplate) CharacterModifier
 	}
 }
 
-func NewCharacter(star int, elemental elemental.Elemental, weaponType weaponType.WeaponType, modifiers ...CharacterModifier) *Character {
+func NewCharacter(star int, elemental elementals.Elemental, weaponType weaponType.WeaponType, modifiers ...CharacterModifier) *Character {
 	c := &Character{
 		star:       star,
 		elemental:  elemental,
@@ -268,6 +268,6 @@ func (c *Character) String() string {
 	return fmt.Sprintf("%s\n", c.base)
 }
 
-func (c *Character) Calculate(enemy *enemy.Enemy, action *action.Action, infusionElemental elemental.Elemental) *Calculator {
+func (c *Character) Calculate(enemy *enemy.Enemy, action *action.Action, infusionElemental elementals.Elemental) *Calculator {
 	return NewCalculator(c, enemy, action, infusionElemental)
 }

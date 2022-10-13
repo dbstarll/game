@@ -2,8 +2,8 @@ package attr
 
 import (
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
-	"github.com/dbstarll/game/internal/ys/dimension/elemental"
-	"github.com/dbstarll/game/internal/ys/dimension/reaction"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 )
 
 var (
@@ -31,28 +31,28 @@ func MergeAttributes(modifiers ...AttributeModifier) AttributeModifier {
 }
 
 // 单个元素伤害加成
-func AddElementalDamageBonus(e elemental.Elemental, add float64) AttributeModifier {
+func AddElementalDamageBonus(e elementals.Elemental, add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
 		return attributes.addElementalDamageBonus(e, add)
 	}
 }
 
 // 单个元素抗性
-func AddElementalResist(e elemental.Elemental, add float64) AttributeModifier {
+func AddElementalResist(e elementals.Elemental, add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
 		return attributes.addElementalResist(e, add)
 	}
 }
 
 // 单个元素影响下增伤
-func AddElementalAttachedDamageBonus(e elemental.Elemental, add float64) AttributeModifier {
+func AddElementalAttachedDamageBonus(e elementals.Elemental, add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
 		return attributes.addElementalAttachedDamageBonus(e, add)
 	}
 }
 
 // 单个元素反应系数提高/元素反应伤害提升
-func AddReactionDamageBonus(r reaction.Reaction, add float64) AttributeModifier {
+func AddReactionDamageBonus(r reactions.Reaction, add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
 		return attributes.addReactionDamageBonus(r, add)
 	}

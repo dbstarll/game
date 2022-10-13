@@ -3,17 +3,17 @@ package action
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
-	"github.com/dbstarll/game/internal/ys/dimension/elemental"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 )
 
 type Action struct {
 	mode      attackMode.AttackMode
 	dmg       float64
 	name      string
-	elemental elemental.Elemental
+	elemental elementals.Elemental
 }
 
-func New(mode attackMode.AttackMode, dmg float64, elemental elemental.Elemental, name string) *Action {
+func New(mode attackMode.AttackMode, dmg float64, elemental elementals.Elemental, name string) *Action {
 	return &Action{
 		mode:      mode,
 		dmg:       dmg,
@@ -30,7 +30,7 @@ func (a *Action) DMG() float64 {
 	return a.dmg
 }
 
-func (a *Action) Elemental() elemental.Elemental {
+func (a *Action) Elemental() elementals.Elemental {
 	return a.elemental
 }
 

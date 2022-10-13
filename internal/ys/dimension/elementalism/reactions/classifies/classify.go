@@ -1,5 +1,6 @@
-package reaction
+package classifies
 
+// 元素反应类型
 type Classify int
 
 const (
