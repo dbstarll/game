@@ -28,10 +28,6 @@ func (c Classify) String() string {
 	case Intensify:
 		return "激化"
 	default:
-		if c < 0 {
-			return "不限"
-		} else {
-			return "未知"
-		}
+		return "未知"
 	}
 }

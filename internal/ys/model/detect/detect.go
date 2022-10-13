@@ -76,7 +76,7 @@ func initBaseDetects(detects map[string]*Modifier) map[string]*Modifier {
 	// TODO
 	//   元素抗性
 	//   元素影响下增伤
-	for _, ele := range elementals.Elements {
+	for _, ele := range elementals.Elementals {
 		detects[fmt.Sprintf("%s伤害加成", ele.Name())] = NewCharacterModifier(buff.AddElementalDamageBonus(4.1, ele))
 	}
 	return detects

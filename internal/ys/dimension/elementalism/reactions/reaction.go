@@ -86,11 +86,7 @@ func (r Reaction) String() string {
 	case Spread:
 		return "蔓激化"
 	default:
-		if r < 0 {
-			return "不限"
-		} else {
-			return "未知"
-		}
+		return "未知"
 	}
 }
 
@@ -107,25 +103,4 @@ func (r Reaction) Classify() classifies.Classify {
 	default:
 		return -1
 	}
-}
-
-type Factor struct {
-	reaction Reaction
-	factor   float64
-}
-
-func NewFactor(reaction Reaction, factor float64) *Factor {
-	return &Factor{reaction: reaction, factor: factor}
-}
-
-func (f *Factor) GetReaction() Reaction {
-	return f.reaction
-}
-
-func (f *Factor) Match(classify classifies.Classify) bool {
-	return classify == f.reaction.Classify()
-}
-
-func (f *Factor) GetFactor() float64 {
-	return f.factor
 }

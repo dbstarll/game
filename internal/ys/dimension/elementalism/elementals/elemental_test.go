@@ -24,7 +24,7 @@ func TestElemental_Infusion(t *testing.T) {
 		{name: "风冰附魔，冰伤", a: Wind, b: Ice, want: Ice},
 		{name: "风雷附魔，雷伤", a: Wind, b: Electric, want: Electric},
 	}
-	for _, e := range Elements {
+	for _, e := range Elementals {
 		tests = append(tests, []struct {
 			name string
 			a    Elemental

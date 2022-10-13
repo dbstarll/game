@@ -2,7 +2,7 @@ package elementals
 
 import (
 	"fmt"
-	reactions2 "github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 )
 
 // 元素
@@ -20,7 +20,7 @@ const (
 )
 
 var (
-	Elements = []Elemental{
+	Elementals = []Elemental{
 		Physical,
 		Fire,
 		Water,
@@ -30,55 +30,55 @@ var (
 		Ice,
 		Earth,
 	}
-	restraints = map[Elemental]map[Elemental]int{
+	restraintMap = map[Elemental]map[Elemental]int{
 		Fire:     {Ice: 2, Electric: 1, Wind: 1},
 		Water:    {Fire: 2, Electric: 1, Wind: 1},
 		Ice:      {Water: 2, Electric: 1, Wind: 1},
 		Electric: {Wind: 1},
 	}
-	reactions = map[Elemental]map[Elemental]*reactions2.Factor{
+	reactionMap = map[Elemental]map[Elemental]*reactions.Factor{
 		Fire: {
-			Water:    reactions2.NewFactor(reactions2.Vaporize, 1.5),
-			Grass:    reactions2.NewFactor(reactions2.Burn, 0.25),
-			Ice:      reactions2.NewFactor(reactions2.Melt, 2),
-			Electric: reactions2.NewFactor(reactions2.Overload, 2),
-			Wind:     reactions2.NewFactor(reactions2.Swirl, 0.6),
+			Water:    reactions.NewFactor(reactions.Vaporize, 1.5),
+			Grass:    reactions.NewFactor(reactions.Burn, 0.25),
+			Ice:      reactions.NewFactor(reactions.Melt, 2),
+			Electric: reactions.NewFactor(reactions.Overload, 2),
+			Wind:     reactions.NewFactor(reactions.Swirl, 0.6),
 		},
 		Water: {
-			Fire:     reactions2.NewFactor(reactions2.Vaporize, 2),
-			Grass:    reactions2.NewFactor(reactions2.Bloom, 2),
-			Electric: reactions2.NewFactor(reactions2.ElectroCharged, 1.2),
-			Wind:     reactions2.NewFactor(reactions2.Swirl, 0.6),
-			Ice:      reactions2.NewFactor(reactions2.Frozen, 0),
+			Fire:     reactions.NewFactor(reactions.Vaporize, 2),
+			Grass:    reactions.NewFactor(reactions.Bloom, 2),
+			Electric: reactions.NewFactor(reactions.ElectroCharged, 1.2),
+			Wind:     reactions.NewFactor(reactions.Swirl, 0.6),
+			Ice:      reactions.NewFactor(reactions.Frozen, 0),
 		},
 		Grass: {
-			Fire:  reactions2.NewFactor(reactions2.Burn, 0.25),
-			Water: reactions2.NewFactor(reactions2.Bloom, 2),
+			Fire:  reactions.NewFactor(reactions.Burn, 0.25),
+			Water: reactions.NewFactor(reactions.Bloom, 2),
 		},
 		Electric: {
-			Fire:  reactions2.NewFactor(reactions2.Overload, 2),
-			Water: reactions2.NewFactor(reactions2.ElectroCharged, 1.2),
-			Wind:  reactions2.NewFactor(reactions2.Swirl, 0.6),
-			Ice:   reactions2.NewFactor(reactions2.Superconduct, 0.5),
+			Fire:  reactions.NewFactor(reactions.Overload, 2),
+			Water: reactions.NewFactor(reactions.ElectroCharged, 1.2),
+			Wind:  reactions.NewFactor(reactions.Swirl, 0.6),
+			Ice:   reactions.NewFactor(reactions.Superconduct, 0.5),
 			//Grass: reaction.NewFactor(reaction.Hyperbloom, 3),
 		},
 		Wind: {
-			Fire:     reactions2.NewFactor(reactions2.Swirl, 0.6),
-			Water:    reactions2.NewFactor(reactions2.Swirl, 0.6),
-			Electric: reactions2.NewFactor(reactions2.Swirl, 0.6),
-			Ice:      reactions2.NewFactor(reactions2.Swirl, 0.6),
+			Fire:     reactions.NewFactor(reactions.Swirl, 0.6),
+			Water:    reactions.NewFactor(reactions.Swirl, 0.6),
+			Electric: reactions.NewFactor(reactions.Swirl, 0.6),
+			Ice:      reactions.NewFactor(reactions.Swirl, 0.6),
 		},
 		Ice: {
-			Fire:     reactions2.NewFactor(reactions2.Melt, 1.5),
-			Water:    reactions2.NewFactor(reactions2.Frozen, 0),
-			Electric: reactions2.NewFactor(reactions2.Superconduct, 0.5),
-			Wind:     reactions2.NewFactor(reactions2.Swirl, 0.6),
+			Fire:     reactions.NewFactor(reactions.Melt, 1.5),
+			Water:    reactions.NewFactor(reactions.Frozen, 0),
+			Electric: reactions.NewFactor(reactions.Superconduct, 0.5),
+			Wind:     reactions.NewFactor(reactions.Swirl, 0.6),
 		},
 		Earth: {
-			Fire:     reactions2.NewFactor(reactions2.Crystallize, 1),
-			Water:    reactions2.NewFactor(reactions2.Crystallize, 1),
-			Electric: reactions2.NewFactor(reactions2.Crystallize, 1),
-			Ice:      reactions2.NewFactor(reactions2.Crystallize, 1),
+			Fire:     reactions.NewFactor(reactions.Crystallize, 1),
+			Water:    reactions.NewFactor(reactions.Crystallize, 1),
+			Electric: reactions.NewFactor(reactions.Crystallize, 1),
+			Ice:      reactions.NewFactor(reactions.Crystallize, 1),
 		},
 	}
 )
@@ -121,7 +121,7 @@ func (e Elemental) String() string {
 
 // 元素克制与元素量消耗比率
 func (e Elemental) Restraint(elemental Elemental) int {
-	if ratios, exist := restraints[e]; exist {
+	if ratios, exist := restraintMap[e]; exist {
 		if ratio, exist := ratios[elemental]; exist {
 			return ratio
 		}
@@ -142,8 +142,8 @@ func (e Elemental) Infusion(infusionElemental Elemental) Elemental {
 	}
 }
 
-func (e Elemental) Reaction(attached Elemental) *reactions2.Factor {
-	if rs, exist := reactions[e]; exist {
+func (e Elemental) Reaction(attached Elemental) *reactions.Factor {
+	if rs, exist := reactionMap[e]; exist {
 		if r, exist := rs[attached]; exist {
 			return r
 		}

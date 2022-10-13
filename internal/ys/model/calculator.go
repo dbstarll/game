@@ -81,7 +81,7 @@ func (c *Calculator) prepare(putZero bool) {
 			}
 		}
 	}
-	for _, ele := range elementals.Elements {
+	for _, ele := range elementals.Elementals {
 		if v := c.finalAttributes.GetElementalDamageBonus(ele); putZero || v != 0 {
 			c.set(fmt.Sprintf("%s伤害加成", ele.Name()), v/100)
 		}
