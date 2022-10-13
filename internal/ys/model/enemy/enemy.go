@@ -62,8 +62,8 @@ func (e *Enemy) Attach(attached elementals.Elemental, amount float64) {
 	e.attachedAmounts[attached] = amount
 }
 
-func (e *Enemy) DetectReaction(trigger elementals.Elemental, classify classifies.Classify) []*reactions.Factor {
-	factors := make([]*reactions.Factor, 0)
+func (e *Enemy) DetectReaction(trigger elementals.Elemental, classify classifies.Classify) []*reactions.React {
+	factors := make([]*reactions.React, 0)
 	for attached, amount := range e.attachedAmounts {
 		if amount > 0 {
 			if factor := trigger.Reaction(attached); factor != nil && factor.Match(classify) {

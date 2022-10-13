@@ -8,6 +8,11 @@ import (
 // 元素
 type Elemental int
 
+type reactionFactor struct {
+	reaction reactions.Reaction
+	factor   float64
+}
+
 const (
 	Physical Elemental = iota // 物理
 	Fire                      // 火
@@ -36,49 +41,49 @@ var (
 		Ice:      {Water: 2, Electric: 1, Wind: 1},
 		Electric: {Wind: 1},
 	}
-	reactionMap = map[Elemental]map[Elemental]*reactions.Factor{
+	reactionMap = map[Elemental]map[Elemental]*reactionFactor{
 		Fire: {
-			Water:    reactions.NewFactor(reactions.Vaporize, 1.5),
-			Grass:    reactions.NewFactor(reactions.Burn, 0.25),
-			Ice:      reactions.NewFactor(reactions.Melt, 2),
-			Electric: reactions.NewFactor(reactions.Overload, 2),
-			Wind:     reactions.NewFactor(reactions.Swirl, 0.6),
+			Water:    &reactionFactor{reactions.Vaporize, 1.5},
+			Grass:    &reactionFactor{reactions.Burn, 0.25},
+			Ice:      &reactionFactor{reactions.Melt, 2},
+			Electric: &reactionFactor{reactions.Overload, 2},
+			Wind:     &reactionFactor{reactions.Swirl, 0.6},
 		},
 		Water: {
-			Fire:     reactions.NewFactor(reactions.Vaporize, 2),
-			Grass:    reactions.NewFactor(reactions.Bloom, 2),
-			Electric: reactions.NewFactor(reactions.ElectroCharged, 1.2),
-			Wind:     reactions.NewFactor(reactions.Swirl, 0.6),
-			Ice:      reactions.NewFactor(reactions.Frozen, 0),
+			Fire:     &reactionFactor{reactions.Vaporize, 2},
+			Grass:    &reactionFactor{reactions.Bloom, 2},
+			Electric: &reactionFactor{reactions.ElectroCharged, 1.2},
+			Wind:     &reactionFactor{reactions.Swirl, 0.6},
+			Ice:      &reactionFactor{reactions.Frozen, 0},
 		},
 		Grass: {
-			Fire:  reactions.NewFactor(reactions.Burn, 0.25),
-			Water: reactions.NewFactor(reactions.Bloom, 2),
+			Fire:  &reactionFactor{reactions.Burn, 0.25},
+			Water: &reactionFactor{reactions.Bloom, 2},
 		},
 		Electric: {
-			Fire:  reactions.NewFactor(reactions.Overload, 2),
-			Water: reactions.NewFactor(reactions.ElectroCharged, 1.2),
-			Wind:  reactions.NewFactor(reactions.Swirl, 0.6),
-			Ice:   reactions.NewFactor(reactions.Superconduct, 0.5),
-			//Grass: reaction.NewFactor(reaction.Hyperbloom, 3),
+			Fire:  &reactionFactor{reactions.Overload, 2},
+			Water: &reactionFactor{reactions.ElectroCharged, 1.2},
+			Wind:  &reactionFactor{reactions.Swirl, 0.6},
+			Ice:   &reactionFactor{reactions.Superconduct, 0.5},
+			//Grass: &reactionFactor{reaction.Hyperbloom, 3},
 		},
 		Wind: {
-			Fire:     reactions.NewFactor(reactions.Swirl, 0.6),
-			Water:    reactions.NewFactor(reactions.Swirl, 0.6),
-			Electric: reactions.NewFactor(reactions.Swirl, 0.6),
-			Ice:      reactions.NewFactor(reactions.Swirl, 0.6),
+			Fire:     &reactionFactor{reactions.Swirl, 0.6},
+			Water:    &reactionFactor{reactions.Swirl, 0.6},
+			Electric: &reactionFactor{reactions.Swirl, 0.6},
+			Ice:      &reactionFactor{reactions.Swirl, 0.6},
 		},
 		Ice: {
-			Fire:     reactions.NewFactor(reactions.Melt, 1.5),
-			Water:    reactions.NewFactor(reactions.Frozen, 0),
-			Electric: reactions.NewFactor(reactions.Superconduct, 0.5),
-			Wind:     reactions.NewFactor(reactions.Swirl, 0.6),
+			Fire:     &reactionFactor{reactions.Melt, 1.5},
+			Water:    &reactionFactor{reactions.Frozen, 0},
+			Electric: &reactionFactor{reactions.Superconduct, 0.5},
+			Wind:     &reactionFactor{reactions.Swirl, 0.6},
 		},
 		Earth: {
-			Fire:     reactions.NewFactor(reactions.Crystallize, 1),
-			Water:    reactions.NewFactor(reactions.Crystallize, 1),
-			Electric: reactions.NewFactor(reactions.Crystallize, 1),
-			Ice:      reactions.NewFactor(reactions.Crystallize, 1),
+			Fire:     &reactionFactor{reactions.Crystallize, 1},
+			Water:    &reactionFactor{reactions.Crystallize, 1},
+			Electric: &reactionFactor{reactions.Crystallize, 1},
+			Ice:      &reactionFactor{reactions.Crystallize, 1},
 		},
 	}
 )
@@ -142,10 +147,10 @@ func (e Elemental) Infusion(infusionElemental Elemental) Elemental {
 	}
 }
 
-func (e Elemental) Reaction(attached Elemental) *reactions.Factor {
+func (e Elemental) Reaction(attached Elemental) *reactions.React {
 	if rs, exist := reactionMap[e]; exist {
 		if r, exist := rs[attached]; exist {
-			return r
+			return reactions.NewReact(r.reaction, r.factor)
 		}
 	}
 	return nil

@@ -1,7 +1,7 @@
 package elementals
 
 import (
-	reactions2 "github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 	"reflect"
 	"testing"
 )
@@ -52,34 +52,34 @@ func TestElemental_Reaction(t *testing.T) {
 		name     string
 		trigger  Elemental
 		attached Elemental
-		want     *reactions2.Factor
+		want     *reactions.React
 	}{
 		// 增幅反应
-		{name: "火水蒸发", trigger: Fire, attached: Water, want: reactions2.NewFactor(reactions2.Vaporize, 1.5)},
-		{name: "水火蒸发", trigger: Water, attached: Fire, want: reactions2.NewFactor(reactions2.Vaporize, 2)},
-		{name: "火冰融化", trigger: Fire, attached: Ice, want: reactions2.NewFactor(reactions2.Melt, 2)},
-		{name: "冰火融化", trigger: Ice, attached: Fire, want: reactions2.NewFactor(reactions2.Melt, 1.5)},
+		{name: "火水蒸发", trigger: Fire, attached: Water, want: reactions.NewReact(reactions.Vaporize, 1.5)},
+		{name: "水火蒸发", trigger: Water, attached: Fire, want: reactions.NewReact(reactions.Vaporize, 2)},
+		{name: "火冰融化", trigger: Fire, attached: Ice, want: reactions.NewReact(reactions.Melt, 2)},
+		{name: "冰火融化", trigger: Ice, attached: Fire, want: reactions.NewReact(reactions.Melt, 1.5)},
 		// 剧变反应
-		{name: "火雷超载", trigger: Fire, attached: Electric, want: reactions2.NewFactor(reactions2.Overload, 2)},
-		{name: "雷火超载", trigger: Electric, attached: Fire, want: reactions2.NewFactor(reactions2.Overload, 2)},
-		{name: "冰雷超导", trigger: Ice, attached: Electric, want: reactions2.NewFactor(reactions2.Superconduct, 0.5)},
-		{name: "雷冰超导", trigger: Electric, attached: Ice, want: reactions2.NewFactor(reactions2.Superconduct, 0.5)},
-		{name: "水雷感电", trigger: Water, attached: Electric, want: reactions2.NewFactor(reactions2.ElectroCharged, 1.2)},
-		{name: "雷水感电", trigger: Electric, attached: Water, want: reactions2.NewFactor(reactions2.ElectroCharged, 1.2)},
-		{name: "火风扩散", trigger: Fire, attached: Wind, want: reactions2.NewFactor(reactions2.Swirl, 0.6)},
-		{name: "风火扩散", trigger: Wind, attached: Fire, want: reactions2.NewFactor(reactions2.Swirl, 0.6)},
-		{name: "水风扩散", trigger: Water, attached: Wind, want: reactions2.NewFactor(reactions2.Swirl, 0.6)},
-		{name: "风水扩散", trigger: Wind, attached: Water, want: reactions2.NewFactor(reactions2.Swirl, 0.6)},
-		{name: "冰风扩散", trigger: Ice, attached: Wind, want: reactions2.NewFactor(reactions2.Swirl, 0.6)},
-		{name: "风冰扩散", trigger: Wind, attached: Ice, want: reactions2.NewFactor(reactions2.Swirl, 0.6)},
-		{name: "雷风扩散", trigger: Electric, attached: Wind, want: reactions2.NewFactor(reactions2.Swirl, 0.6)},
-		{name: "风雷扩散", trigger: Wind, attached: Electric, want: reactions2.NewFactor(reactions2.Swirl, 0.6)},
-		{name: "水草绽放", trigger: Water, attached: Grass, want: reactions2.NewFactor(reactions2.Bloom, 2)},
-		{name: "草水绽放", trigger: Grass, attached: Water, want: reactions2.NewFactor(reactions2.Bloom, 2)},
-		{name: "火草燃烧", trigger: Fire, attached: Grass, want: reactions2.NewFactor(reactions2.Burn, 0.25)},
-		{name: "草火燃烧", trigger: Grass, attached: Fire, want: reactions2.NewFactor(reactions2.Burn, 0.25)},
-		{name: "水冰冻结", trigger: Water, attached: Ice, want: reactions2.NewFactor(reactions2.Frozen, 0)},
-		{name: "冰水冻结", trigger: Ice, attached: Water, want: reactions2.NewFactor(reactions2.Frozen, 0)},
+		{name: "火雷超载", trigger: Fire, attached: Electric, want: reactions.NewReact(reactions.Overload, 2)},
+		{name: "雷火超载", trigger: Electric, attached: Fire, want: reactions.NewReact(reactions.Overload, 2)},
+		{name: "冰雷超导", trigger: Ice, attached: Electric, want: reactions.NewReact(reactions.Superconduct, 0.5)},
+		{name: "雷冰超导", trigger: Electric, attached: Ice, want: reactions.NewReact(reactions.Superconduct, 0.5)},
+		{name: "水雷感电", trigger: Water, attached: Electric, want: reactions.NewReact(reactions.ElectroCharged, 1.2)},
+		{name: "雷水感电", trigger: Electric, attached: Water, want: reactions.NewReact(reactions.ElectroCharged, 1.2)},
+		{name: "火风扩散", trigger: Fire, attached: Wind, want: reactions.NewReact(reactions.Swirl, 0.6)},
+		{name: "风火扩散", trigger: Wind, attached: Fire, want: reactions.NewReact(reactions.Swirl, 0.6)},
+		{name: "水风扩散", trigger: Water, attached: Wind, want: reactions.NewReact(reactions.Swirl, 0.6)},
+		{name: "风水扩散", trigger: Wind, attached: Water, want: reactions.NewReact(reactions.Swirl, 0.6)},
+		{name: "冰风扩散", trigger: Ice, attached: Wind, want: reactions.NewReact(reactions.Swirl, 0.6)},
+		{name: "风冰扩散", trigger: Wind, attached: Ice, want: reactions.NewReact(reactions.Swirl, 0.6)},
+		{name: "雷风扩散", trigger: Electric, attached: Wind, want: reactions.NewReact(reactions.Swirl, 0.6)},
+		{name: "风雷扩散", trigger: Wind, attached: Electric, want: reactions.NewReact(reactions.Swirl, 0.6)},
+		{name: "水草绽放", trigger: Water, attached: Grass, want: reactions.NewReact(reactions.Bloom, 2)},
+		{name: "草水绽放", trigger: Grass, attached: Water, want: reactions.NewReact(reactions.Bloom, 2)},
+		{name: "火草燃烧", trigger: Fire, attached: Grass, want: reactions.NewReact(reactions.Burn, 0.25)},
+		{name: "草火燃烧", trigger: Grass, attached: Fire, want: reactions.NewReact(reactions.Burn, 0.25)},
+		{name: "水冰冻结", trigger: Water, attached: Ice, want: reactions.NewReact(reactions.Frozen, 0)},
+		{name: "冰水冻结", trigger: Ice, attached: Water, want: reactions.NewReact(reactions.Frozen, 0)},
 
 		// 碎冰1.5：烈绽放3：超绽放3
 		//Shattered                      // 碎冰
