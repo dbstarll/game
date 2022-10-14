@@ -132,7 +132,7 @@ func (c *Calculator) prepare(putZero bool) {
 func (c *Calculator) Calculate(debug bool) (*Formula, *Formula, *Formula) {
 	c.prepare(true)
 
-	基础伤害区, 增伤区, 防御区, 抗性区, 增幅区 := c.基础伤害区(), c.增伤区(), c.防御区(), c.抗性区(), c.增幅区()
+	基础伤害区, 增伤区, 防御区, 抗性区, 增幅区 := c.基础伤害区(), c.增伤区(), c.防御区(), c.抗性区(c.elemental), c.增幅区()
 	暴击收益, 暴伤倍率 := c.暴击区()
 	增幅总伤害 := 基础伤害区.multiply("增幅总伤害", 增伤区, 防御区, 抗性区, 增幅区)
 	增幅总伤害平均 := 增幅总伤害.multiply("增幅总伤害(平均)", 暴击收益)
@@ -177,6 +177,8 @@ func (c *Calculator) 基础倍率区() *Formula {
 
 func (c *Calculator) 激化区() *Formula {
 	//TODO 待完善
+	// 伤害提高值 = 1447 * 反应倍率 * (1 + 5X)/(X + 1200), X = 元素精通
+	// 超激化反应倍率 = 1.15, 蔓激化反应倍率 = 1.25
 	return c.set("激化加成值", 0)
 }
 
@@ -206,9 +208,9 @@ func (c *Calculator) 防御区() *Formula {
 	return 人物等级系数.divide("防御承伤", 防御承伤基准)
 }
 
-func (c *Calculator) 抗性区() *Formula {
-	prefix := fmt.Sprintf("%s抗性", c.elemental.Name())
-	抗性 := c.set("怪物"+prefix, c.enemy.GetElementalResist(c.elemental)/100)
+func (c *Calculator) 抗性区(elemental elementals.Elemental) *Formula {
+	prefix := fmt.Sprintf("%s抗性", elemental.Name())
+	抗性 := c.set("怪物"+prefix, c.enemy.GetElementalResist(elemental)/100)
 	if 抗性.value > 0.75 {
 		return c.divide(prefix+"承伤", 1, 抗性.multiply("怪物"+prefix+"系数1", 4).add("怪物"+prefix+"系数2", 1))
 	} else if 抗性.value >= 0 {
@@ -236,6 +238,16 @@ func (c *Calculator) 剧变区(抗性承伤 *Formula) []interface{} {
 		reactionName := factor.GetReaction().String()
 		剧变反应倍率 := c.add(reactionName+"反应倍率", 1, 剧变精通提升, reactionName+"反应伤害提升")
 		damages = append(damages, c.set(reactionName+"反应基础倍率", factor.GetFactor()).multiply(reactionName+"反应伤害", 剧变等级系数, 抗性承伤, 剧变反应倍率))
+	}
+	for _, factor := range c.enemy.DetectStateReaction(c.elemental, classifies.Upheaval) {
+		reactionName := factor.Reaction.String()
+		剧变反应倍率 := c.add(reactionName+"反应倍率", 1, 剧变精通提升, reactionName+"反应伤害提升")
+		if factor.Elemental.IsValid() && factor.Elemental != c.elemental {
+			状态抗性承伤 := c.抗性区(factor.Elemental)
+			damages = append(damages, c.set(reactionName+"反应基础倍率", factor.Factor).multiply(reactionName+"反应伤害", 剧变等级系数, 状态抗性承伤, 剧变反应倍率))
+		} else {
+			damages = append(damages, c.set(reactionName+"反应基础倍率", factor.Factor).multiply(reactionName+"反应伤害", 剧变等级系数, 抗性承伤, 剧变反应倍率))
+		}
 	}
 	return damages
 }

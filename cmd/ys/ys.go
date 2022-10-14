@@ -7,6 +7,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/states"
 	"github.com/dbstarll/game/internal/ys/model"
 	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
@@ -20,7 +21,7 @@ import (
 
 func main() {
 	//迪卢克1()
-	感电队()
+	超绽放队()
 	//绽放队()
 }
 
@@ -42,7 +43,7 @@ func 绽放队() {
 	}, CustomDetects(elementals.Grass))
 }
 
-func 感电队() {
+func 超绽放队() {
 	久岐忍 := model.CharacterFactory久岐忍(1, 6, 1, 0)
 	久岐忍.Weapon(weapon.Factory原木刀(1))
 	久岐忍.Apply(buff.AddElementalMastery(1000))
@@ -52,8 +53,7 @@ func 感电队() {
 	})
 	action := 久岐忍.GetActions().Get(attackMode.ElementalSkill, "")
 	挨揍的 := enemy.New(enemy.Base(90))
-	//挨揍的.Attach(elemental.Electric, 12)
-	挨揍的.Attach(elementals.Grass, 12)
+	挨揍的.AttachState(states.Bloom, 12)
 	profitDetect(久岐忍, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()

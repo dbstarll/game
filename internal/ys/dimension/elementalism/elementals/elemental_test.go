@@ -149,8 +149,7 @@ func TestElemental_StateReaction(t *testing.T) {
 		name     string
 		trigger  Elemental
 		attached states.State
-		want     *reactions.React
-		want1    Elemental
+		want     *ReactWithElemental
 	}
 	all := make(map[string]bool)
 	for _, from := range append(Elementals, -1, 1000) {
@@ -159,34 +158,34 @@ func TestElemental_StateReaction(t *testing.T) {
 		}
 	}
 	tests := []test{
-		{name: "超绽放", trigger: Electric, attached: states.Bloom, want: reactions.NewReact(reactions.Hyperbloom, 3), want1: Grass},
-		{name: "烈绽放", trigger: Fire, attached: states.Bloom, want: reactions.NewReact(reactions.Burgeon, 3), want1: Grass},
-		{name: "超激化", trigger: Electric, attached: states.Quicken, want: reactions.NewReact(reactions.Aggravate, 1.15), want1: -1},
-		{name: "蔓激化", trigger: Grass, attached: states.Quicken, want: reactions.NewReact(reactions.Spread, 1.25), want1: -1},
+		{name: "超绽放", trigger: Electric, attached: states.Bloom, want: &ReactWithElemental{Reaction: reactions.Hyperbloom, Factor: 3, Elemental: Grass}},
+		{name: "烈绽放", trigger: Fire, attached: states.Bloom, want: &ReactWithElemental{Reaction: reactions.Burgeon, Factor: 3, Elemental: Grass}},
+		{name: "超激化", trigger: Electric, attached: states.Quicken, want: &ReactWithElemental{Reaction: reactions.Aggravate, Factor: 1.15, Elemental: -1}},
+		{name: "蔓激化", trigger: Grass, attached: states.Quicken, want: &ReactWithElemental{Reaction: reactions.Spread, Factor: 1.25, Elemental: -1}},
 	}
 	for _, from := range append(Elementals, -1, 1000) {
 		for _, to := range append(states.States, -1, 1000) {
 			if !from.IsValid() || !to.IsValid() {
-				tests = append(tests, test{name: "无效元素无反应", trigger: from, attached: to, want: nil, want1: -1})
+				tests = append(tests, test{name: "无效元素无反应", trigger: from, attached: to, want: nil})
 			} else if !to.IsMiddle() {
-				tests = append(tests, test{name: "无后续反应", trigger: from, attached: to, want: nil, want1: -1})
+				tests = append(tests, test{name: "无后续反应", trigger: from, attached: to, want: nil})
 			} else if to == states.Frozen {
-				tests = append(tests, test{name: "碎冰", trigger: from, attached: to, want: reactions.NewReact(reactions.Shattered, 1.5), want1: Physical})
+				tests = append(tests, test{name: "碎冰", trigger: from, attached: to, want: &ReactWithElemental{Reaction: reactions.Shattered, Factor: 1.5, Elemental: Physical}})
 			} else if to == states.Bloom {
 				if from != Electric && from != Fire {
-					tests = append(tests, test{name: "无后续反应", trigger: from, attached: to, want: nil, want1: -1})
+					tests = append(tests, test{name: "无后续反应", trigger: from, attached: to, want: nil})
 				}
 			} else if to == states.Quicken {
 				if from != Electric && from != Grass {
-					tests = append(tests, test{name: "无后续反应", trigger: from, attached: to, want: nil, want1: -1})
+					tests = append(tests, test{name: "无后续反应", trigger: from, attached: to, want: nil})
 				}
 			}
 		}
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got, got1 := tt.trigger.StateReaction(tt.attached); !reflect.DeepEqual(got, tt.want) || got1 != tt.want1 {
-				t.Errorf("%s.StateReaction(%s) = (%v, %v), want (%v, %v)", tt.trigger, tt.attached, got, got1, tt.want, tt.want1)
+			if got := tt.trigger.StateReaction(tt.attached); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("%s.StateReaction(%s) = %v, want %v)", tt.trigger, tt.attached, got, tt.want)
 			} else {
 				delete(all, fmt.Sprintf("%s -> %s", tt.trigger, tt.attached))
 			}

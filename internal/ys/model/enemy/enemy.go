@@ -5,6 +5,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions/classifies"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/states"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
 )
@@ -13,6 +14,7 @@ type Enemy struct {
 	level           int
 	base            *attr.Attributes
 	attachedAmounts map[elementals.Elemental]float64 // 附着的元素量
+	attachedStates  map[states.State]float64         // 附着的状态
 }
 
 type Modifier func(enemy *Enemy) func()
@@ -34,6 +36,7 @@ func New(modifiers ...Modifier) *Enemy {
 		level:           1,
 		base:            attr.NewAttributes(buff.AddAllElementalResist(10)),
 		attachedAmounts: make(map[elementals.Elemental]float64),
+		attachedStates:  make(map[states.State]float64),
 	}
 	for _, modifier := range modifiers {
 		modifier(enemy)
@@ -62,12 +65,29 @@ func (e *Enemy) Attach(attached elementals.Elemental, amount float64) {
 	e.attachedAmounts[attached] = amount
 }
 
+// TODO 附着状态
+func (e *Enemy) AttachState(attached states.State, amount float64) {
+	e.attachedStates[attached] = amount
+}
+
 func (e *Enemy) DetectReaction(trigger elementals.Elemental, classify classifies.Classify) []*reactions.React {
 	factors := make([]*reactions.React, 0)
 	for attached, amount := range e.attachedAmounts {
 		if amount > 0 {
-			if factor := trigger.Reaction(attached); factor != nil && factor.Match(classify) {
-				factors = append(factors, factor)
+			if react := trigger.Reaction(attached); react != nil && react.Match(classify) {
+				factors = append(factors, react)
+			}
+		}
+	}
+	return factors
+}
+
+func (e *Enemy) DetectStateReaction(trigger elementals.Elemental, classify classifies.Classify) []*elementals.ReactWithElemental {
+	factors := make([]*elementals.ReactWithElemental, 0)
+	for attached, amount := range e.attachedStates {
+		if amount > 0 {
+			if react := trigger.StateReaction(attached); react != nil && react.Reaction.Classify() == classify {
+				factors = append(factors, react)
 			}
 		}
 	}

@@ -196,16 +196,22 @@ func (e Elemental) Reaction(attached Elemental) *reactions.React {
 	return nil
 }
 
-func (e Elemental) StateReaction(attached states.State) (*reactions.React, Elemental) {
+func (e Elemental) StateReaction(attached states.State) *ReactWithElemental {
 	if e.IsValid() && attached.IsValid() {
 		if attached == states.Frozen {
-			return reactions.NewReact(reactions.Shattered, 1.5), Physical
+			return &ReactWithElemental{Reaction: reactions.Shattered, Factor: 1.5, Elemental: Physical}
 		}
 		if rs, exist := stateMap[e]; exist {
 			if r, exist := rs[attached]; exist {
-				return reactions.NewReact(r.reaction, r.factor), r.elemental
+				return &ReactWithElemental{Reaction: r.reaction, Factor: r.factor, Elemental: r.elemental}
 			}
 		}
 	}
-	return nil, -1
+	return nil
+}
+
+type ReactWithElemental struct {
+	Reaction  reactions.Reaction
+	Factor    float64
+	Elemental Elemental
 }
