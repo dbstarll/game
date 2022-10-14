@@ -3,6 +3,7 @@ package elementals
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/states"
 	"reflect"
 	"testing"
 )
@@ -86,13 +87,13 @@ func TestElemental_Reaction(t *testing.T) {
 		{name: "冰火融化", trigger: Ice, attached: Fire, want: reactions.NewReact(reactions.Melt, 1.5)},
 		// 剧变反应
 		{name: "火雷超载", trigger: Fire, attached: Electric, want: reactions.NewReact(reactions.Overload, 2), twoWay: true},
-		{name: "冰雷超导", trigger: Ice, attached: Electric, want: reactions.NewReact(reactions.Superconduct, 0.5), twoWay: true},
-		{name: "水雷感电", trigger: Water, attached: Electric, want: reactions.NewReact(reactions.ElectroCharged, 1.2), twoWay: true},
-		{name: "水草绽放", trigger: Water, attached: Grass, want: reactions.NewReact(reactions.Bloom, 2), twoWay: true},
-		{name: "火草燃烧", trigger: Fire, attached: Grass, want: reactions.NewReact(reactions.Burn, 0.25), twoWay: true},
-		{name: "水冰冻结", trigger: Water, attached: Ice, want: reactions.NewReact(reactions.Frozen, 0), twoWay: true},
+		{name: "冰雷超导", trigger: Ice, attached: Electric, want: reactions.NewReactWithState(reactions.Superconduct, 0.5, states.Superconduct), twoWay: true},
+		{name: "水雷感电", trigger: Water, attached: Electric, want: reactions.NewReactWithState(reactions.ElectroCharged, 1.2, states.ElectroCharged), twoWay: true},
+		{name: "水草绽放", trigger: Water, attached: Grass, want: reactions.NewReactWithState(reactions.Bloom, 2, states.Bloom), twoWay: true},
+		{name: "火草燃烧", trigger: Fire, attached: Grass, want: reactions.NewReactWithState(reactions.Burn, 0.25, states.Burn), twoWay: true},
+		{name: "水冰冻结", trigger: Water, attached: Ice, want: reactions.NewReactWithState(reactions.Frozen, 0, states.Frozen), twoWay: true},
 		// 激化反应
-		{name: "草雷激化", trigger: Grass, attached: Electric, want: reactions.NewReact(reactions.Catalyze, 0), twoWay: true},
+		{name: "草雷激化", trigger: Grass, attached: Electric, want: reactions.NewReactWithState(reactions.Catalyze, 0, states.Quicken), twoWay: true},
 		// 无反应
 		{name: "草冰无反应", trigger: Grass, attached: Ice, want: nil, twoWay: true},
 	}
@@ -112,7 +113,7 @@ func TestElemental_Reaction(t *testing.T) {
 				}
 			} else if from == Earth {
 				if to.CanInfusion() {
-					tests = append(tests, test{name: fmt.Sprintf("岩%s结晶", to), trigger: from, attached: to, want: reactions.NewReact(reactions.Crystallize, 0), twoWay: true})
+					tests = append(tests, test{name: fmt.Sprintf("岩%s结晶", to), trigger: from, attached: to, want: reactions.NewReactWithState(reactions.Crystallize, 0, states.Crystallize), twoWay: true})
 				} else {
 					tests = append(tests, test{name: fmt.Sprintf("岩%s无反应", to), trigger: from, attached: to, want: nil, twoWay: true})
 				}
@@ -132,6 +133,62 @@ func TestElemental_Reaction(t *testing.T) {
 				} else {
 					delete(all, fmt.Sprintf("%s -> %s", tt.attached, tt.trigger))
 				}
+			}
+		})
+	}
+	if len(all) > 0 {
+		t.Errorf("未测试：%d", len(all))
+		for k, _ := range all {
+			t.Logf("\t场景：%s", k)
+		}
+	}
+}
+
+func TestElemental_StateReaction(t *testing.T) {
+	type test struct {
+		name     string
+		trigger  Elemental
+		attached states.State
+		want     *reactions.React
+		want1    Elemental
+	}
+	all := make(map[string]bool)
+	for _, from := range append(Elementals, -1, 1000) {
+		for _, to := range append(states.States, -1, 1000) {
+			all[fmt.Sprintf("%s -> %s", from, to)] = false
+		}
+	}
+	tests := []test{
+		{name: "超绽放", trigger: Electric, attached: states.Bloom, want: reactions.NewReact(reactions.Hyperbloom, 3), want1: Grass},
+		{name: "烈绽放", trigger: Fire, attached: states.Bloom, want: reactions.NewReact(reactions.Burgeon, 3), want1: Grass},
+		{name: "超激化", trigger: Electric, attached: states.Quicken, want: reactions.NewReact(reactions.Aggravate, 1.15), want1: -1},
+		{name: "蔓激化", trigger: Grass, attached: states.Quicken, want: reactions.NewReact(reactions.Spread, 1.25), want1: -1},
+	}
+	for _, from := range append(Elementals, -1, 1000) {
+		for _, to := range append(states.States, -1, 1000) {
+			if !from.IsValid() || !to.IsValid() {
+				tests = append(tests, test{name: "无效元素无反应", trigger: from, attached: to, want: nil, want1: -1})
+			} else if !to.IsMiddle() {
+				tests = append(tests, test{name: "无后续反应", trigger: from, attached: to, want: nil, want1: -1})
+			} else if to == states.Frozen {
+				tests = append(tests, test{name: "碎冰", trigger: from, attached: to, want: reactions.NewReact(reactions.Shattered, 1.5), want1: Physical})
+			} else if to == states.Bloom {
+				if from != Electric && from != Fire {
+					tests = append(tests, test{name: "无后续反应", trigger: from, attached: to, want: nil, want1: -1})
+				}
+			} else if to == states.Quicken {
+				if from != Electric && from != Grass {
+					tests = append(tests, test{name: "无后续反应", trigger: from, attached: to, want: nil, want1: -1})
+				}
+			}
+		}
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got, got1 := tt.trigger.StateReaction(tt.attached); !reflect.DeepEqual(got, tt.want) || got1 != tt.want1 {
+				t.Errorf("%s.StateReaction(%s) = (%v, %v), want (%v, %v)", tt.trigger, tt.attached, got, got1, tt.want, tt.want1)
+			} else {
+				delete(all, fmt.Sprintf("%s -> %s", tt.trigger, tt.attached))
 			}
 		})
 	}
