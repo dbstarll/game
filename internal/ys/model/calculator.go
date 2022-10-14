@@ -98,7 +98,7 @@ func (c *Calculator) prepare(putZero bool) {
 	for _, ra := range reactions.Reactions {
 		if v := c.finalAttributes.GetReactionDamageBonus(ra); putZero || v != 0 {
 			switch ra.Classify() {
-			case classifies.Amplify:
+			case classifies.Amplify, classifies.Intensify:
 				c.set(fmt.Sprintf("%s反应系数提高", ra), v/100)
 				break
 			case classifies.Upheaval:
@@ -176,10 +176,14 @@ func (c *Calculator) 基础倍率区() *Formula {
 }
 
 func (c *Calculator) 激化区() *Formula {
-	//TODO 待完善
-	// 伤害提高值 = 1447 * 反应倍率 * (1 + 5X)/(X + 1200), X = 元素精通
-	// 超激化反应倍率 = 1.15, 蔓激化反应倍率 = 1.25
-	return c.set("激化加成值", 0)
+	for _, react := range c.enemy.DetectStateReaction(c.elemental, classifies.Intensify) {
+		激化等级系数 := c.set("激化等级系数", 1446.85)
+		激化精通提升 := c.multiply("激化精通系数1", 5, "元素精通").divide("激化精通提升", c.add("激化精通系数2", 1200, "元素精通"))
+		reactionName := react.Reaction.String()
+		激化反应倍率 := c.add(reactionName+"反应倍率", 1, 激化精通提升, reactionName+"反应系数提高")
+		return c.set(reactionName+"反应基础倍率", react.Factor).multiply(reactionName+"反应伤害", 激化等级系数, 激化反应倍率)
+	}
+	return c.set("无激化加成", 0)
 }
 
 func (c *Calculator) 基础伤害区() *Formula {

@@ -54,6 +54,7 @@ func 超绽放队() {
 	action := 久岐忍.GetActions().Get(attackMode.ElementalSkill, "")
 	挨揍的 := enemy.New(enemy.Base(90))
 	挨揍的.AttachState(states.Bloom, 12)
+	挨揍的.AttachState(states.Quicken, 12)
 	profitDetect(久岐忍, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()
