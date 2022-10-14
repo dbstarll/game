@@ -92,12 +92,10 @@ func (r Reaction) Classify() classifies.Classify {
 		return classifies.Amplify
 	case Crystallize:
 		return classifies.Crystal
-	case Overload, Superconduct, ElectroCharged, Swirl, Frozen, Burn, Bloom:
+	case Overload, Superconduct, ElectroCharged, Swirl, Frozen, Burn, Bloom, Catalyze:
 		return classifies.Upheaval
 	case Shattered, Hyperbloom, Burgeon: //状态类反应
 		return classifies.Upheaval
-	case Catalyze:
-		return classifies.Intensify
 	case Aggravate, Spread: //状态类反应
 		return classifies.Intensify
 	default:
