@@ -22,7 +22,6 @@ const (
 	Hyperbloom                     // 超绽放
 	Burgeon                        // 烈绽放
 	Catalyze                       // 激化
-	Quicken                        // 原激化
 	Aggravate                      // 超激化
 	Spread                         // 蔓激化
 )
@@ -43,7 +42,6 @@ var (
 		Hyperbloom,
 		Burgeon,
 		Catalyze,
-		Quicken,
 		Aggravate,
 		Spread,
 	}
@@ -79,8 +77,6 @@ func (r Reaction) String() string {
 		return "烈绽放"
 	case Catalyze:
 		return "激化"
-	case Quicken:
-		return "原激化"
 	case Aggravate:
 		return "超激化"
 	case Spread:
@@ -96,9 +92,13 @@ func (r Reaction) Classify() classifies.Classify {
 		return classifies.Amplify
 	case Crystallize:
 		return classifies.Crystal
-	case Overload, Superconduct, ElectroCharged, Shattered, Swirl, Frozen, Burn, Bloom, Hyperbloom, Burgeon:
+	case Overload, Superconduct, ElectroCharged, Swirl, Frozen, Burn, Bloom:
 		return classifies.Upheaval
-	case Catalyze, Quicken, Aggravate, Spread:
+	case Shattered, Hyperbloom, Burgeon: //状态类反应
+		return classifies.Upheaval
+	case Catalyze:
+		return classifies.Intensify
+	case Aggravate, Spread: //状态类反应
 		return classifies.Intensify
 	default:
 		return -1

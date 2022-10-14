@@ -48,6 +48,7 @@ var (
 			Ice:      &reactionFactor{reactions.Melt, 2},
 			Electric: &reactionFactor{reactions.Overload, 2},
 			Wind:     &reactionFactor{reactions.Swirl, 0.6},
+			Earth:    &reactionFactor{reactions.Crystallize, 0},
 		},
 		Water: {
 			Fire:     &reactionFactor{reactions.Vaporize, 2},
@@ -55,16 +56,20 @@ var (
 			Electric: &reactionFactor{reactions.ElectroCharged, 1.2},
 			Wind:     &reactionFactor{reactions.Swirl, 0.6},
 			Ice:      &reactionFactor{reactions.Frozen, 0},
+			Earth:    &reactionFactor{reactions.Crystallize, 0},
 		},
 		Grass: {
-			Fire:  &reactionFactor{reactions.Burn, 0.25},
-			Water: &reactionFactor{reactions.Bloom, 2},
+			Fire:     &reactionFactor{reactions.Burn, 0.25},
+			Water:    &reactionFactor{reactions.Bloom, 2},
+			Electric: &reactionFactor{reactions.Catalyze, 0},
 		},
 		Electric: {
 			Fire:  &reactionFactor{reactions.Overload, 2},
 			Water: &reactionFactor{reactions.ElectroCharged, 1.2},
+			Grass: &reactionFactor{reactions.Catalyze, 0},
 			Wind:  &reactionFactor{reactions.Swirl, 0.6},
 			Ice:   &reactionFactor{reactions.Superconduct, 0.5},
+			Earth: &reactionFactor{reactions.Crystallize, 0},
 		},
 		Wind: {
 			Fire:     &reactionFactor{reactions.Swirl, 0.6},
@@ -77,12 +82,13 @@ var (
 			Water:    &reactionFactor{reactions.Frozen, 0},
 			Electric: &reactionFactor{reactions.Superconduct, 0.5},
 			Wind:     &reactionFactor{reactions.Swirl, 0.6},
+			Earth:    &reactionFactor{reactions.Crystallize, 0},
 		},
 		Earth: {
-			Fire:     &reactionFactor{reactions.Crystallize, 1},
-			Water:    &reactionFactor{reactions.Crystallize, 1},
-			Electric: &reactionFactor{reactions.Crystallize, 1},
-			Ice:      &reactionFactor{reactions.Crystallize, 1},
+			Fire:     &reactionFactor{reactions.Crystallize, 0},
+			Water:    &reactionFactor{reactions.Crystallize, 0},
+			Electric: &reactionFactor{reactions.Crystallize, 0},
+			Ice:      &reactionFactor{reactions.Crystallize, 0},
 		},
 	}
 )
@@ -138,7 +144,7 @@ func (e Elemental) String() string {
 }
 
 // 元素克制与元素量消耗比率
-func (e Elemental) Restraint(elemental Elemental) int {
+func (e Elemental) restraint(elemental Elemental) int {
 	if ratios, exist := restraintMap[e]; exist {
 		if ratio, exist := ratios[elemental]; exist {
 			return ratio
@@ -151,9 +157,9 @@ func (e Elemental) Restraint(elemental Elemental) int {
 func (e Elemental) Infusion(infusionElemental Elemental) Elemental {
 	if !infusionElemental.CanInfusion() {
 		return e
-	} else if e.Restraint(infusionElemental) > 0 {
+	} else if e.restraint(infusionElemental) > 0 {
 		return e
-	} else if infusionElemental.Restraint(e) > 0 {
+	} else if infusionElemental.restraint(e) > 0 {
 		return infusionElemental
 	} else if e.CanInfusion() {
 		return e
@@ -168,5 +174,12 @@ func (e Elemental) Reaction(attached Elemental) *reactions.React {
 			return reactions.NewReact(r.reaction, r.factor)
 		}
 	}
+	// TODO 碎冰1.5：烈绽放3：超绽放3
+	//   Shattered                      // 碎冰
+	//   Hyperbloom                     // 超绽放
+	//   Burgeon                        // 烈绽放
+	//   Quicken                        // 原激化
+	//   Aggravate                      // 超激化
+	//   Spread                         // 蔓激化
 	return nil
 }
