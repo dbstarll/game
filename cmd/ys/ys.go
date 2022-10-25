@@ -20,8 +20,8 @@ import (
 )
 
 func main() {
-	//迪卢克1()
-	超绽放队()
+	迪卢克1()
+	//超绽放队()
 	//绽放队()
 }
 
@@ -46,13 +46,14 @@ func 绽放队() {
 func 超绽放队() {
 	久岐忍 := model.CharacterFactory久岐忍(1, 6, 1, 0)
 	久岐忍.Weapon(weapon.Factory原木刀(1))
-	久岐忍.Apply(buff.AddElementalMastery(1000))
+	久岐忍.Apply(buff.AddElementalMastery(860))
 	久岐忍.GetActions().Loop(func(index int, action *action.Action) bool {
 		fmt.Println(action)
 		return false
 	})
 	action := 久岐忍.GetActions().Get(attackMode.ElementalSkill, "")
 	挨揍的 := enemy.New(enemy.Base(90))
+	挨揍的.Apply(buff.AddElementalResist(-30, elementals.Grass))
 	挨揍的.Attach(elementals.Grass, 12)
 	挨揍的.AttachState(states.Bloom, 12)
 	挨揍的.AttachState(states.Quicken, 12)
@@ -64,15 +65,15 @@ func 超绽放队() {
 
 func 迪卢克1() {
 	迪卢克 := model.CharacterFactory迪卢克(10, 9, 9, 0)
-	魔女的炎之花 := model.ArtifactsFactory生之花(5, buff.AddAtk(51), buff.AddAtkPercentage(12.8),
+	魔女的炎之花 := model.ArtifactsFactory生之花(5, "魔女的炎之花", buff.AddAtk(51), buff.AddAtkPercentage(12.8),
 		buff.AddCriticalRate(3.1), buff.AddDefPercentage(6.6))
-	魔女常燃之羽 := model.ArtifactsFactory死之羽(5, buff.AddCriticalRate(7.8), buff.AddHp(239),
+	魔女常燃之羽 := model.ArtifactsFactory死之羽(4, "魔女常燃之羽", buff.AddCriticalRate(7.8), buff.AddHp(239),
 		buff.AddCriticalDamage(14), buff.AddElementalMastery(54))
-	魔女破灭之时 := model.NewArtifacts(5, position.SandsOfEon, model.BaseArtifacts(20, buff.AddAtkPercentage(46.6)),
+	魔女破灭之时 := model.NewArtifacts(3, position.SandsOfEon, "魔女破灭之时", model.BaseArtifacts(20, buff.AddAtkPercentage(46.6)),
 		buff.AddCriticalDamage(11.7), buff.AddElementalMastery(61), buff.AddEnergyRecharge(15.5), buff.AddCriticalRate(3.1))
-	魔女的心之火 := model.NewArtifacts(5, position.GobletOfEonothem, model.BaseArtifacts(20, buff.AddElementalDamageBonus(46.6, elementals.Fire)),
+	魔女的心之火 := model.NewArtifacts(2, position.GobletOfEonothem, "魔女的心之火", model.BaseArtifacts(20, buff.AddElementalDamageBonus(46.6, elementals.Fire)),
 		buff.AddHp(986), buff.AddHpPercentage(9.3), buff.AddCriticalRate(3.9), buff.AddDef(35))
-	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, model.BaseArtifacts(20, buff.AddCriticalDamage(62.2)),
+	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, "渡火者的智慧", model.BaseArtifacts(20, buff.AddCriticalDamage(62.2)),
 		buff.AddAtkPercentage(15.2), buff.AddCriticalRate(6.6), buff.AddEnergyRecharge(11.7), buff.AddHp(269))
 
 	迪卢克.Weapon(weapon.Factory螭骨剑(3))
@@ -119,6 +120,8 @@ func CustomDetects(dye elementals.Elemental) map[string]*detect.Modifier {
 		"砂糖":        detect.NewCharacterModifier(buff.AddElementalMastery(50 + 200)),
 		"砂糖6命":      detect.NewCharacterModifier(attr.MergeAttributes(buff.AddElementalMastery(50+200), buff.AddElementalDamageBonus(20, dye))),
 		"莫娜星异":      detect.NewCharacterModifier(buff.AddDamageBonus(60)),
+		"深林四件套":     detect.NewEnemyModifier(buff.AddElementalResist(-30, elementals.Grass)),
+		"如雷四件套":     detect.NewCharacterModifier(buff.AddReactionDamageBonus(40, reactions.Overload, reactions.ElectroCharged, reactions.Superconduct, reactions.Hyperbloom)),
 	}
 }
 

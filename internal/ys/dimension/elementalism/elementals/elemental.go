@@ -162,6 +162,15 @@ func (e Elemental) String() string {
 	}
 }
 
+func (e Elemental) Multiple() float64 {
+	switch e {
+	case Physical:
+		return 1.875
+	default:
+		return 1.5
+	}
+}
+
 // 元素克制与元素量消耗比率
 func (e Elemental) restraint(elemental Elemental) int {
 	if ratios, exist := restraintMap[e]; exist {

@@ -227,6 +227,7 @@ func (c *Character) Artifacts(newArtifacts *Artifacts) *Artifacts {
 	position := newArtifacts.position
 	oldArtifacts, _ := c.artifacts[position]
 	c.artifacts[position] = newArtifacts
+	newArtifacts.Evaluate()
 	return oldArtifacts
 }
 
