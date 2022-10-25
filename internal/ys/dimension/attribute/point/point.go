@@ -60,15 +60,15 @@ func (e Point) Multiple() float64 {
 	case HpPercentage: // 生命值%
 		return 1.5
 	case Atk: // 攻击力
-		return 10
+		return 10.005
 	case AtkPercentage: // 攻击力%
 		return 1.5
 	case Def: // 防御力
-		return 6
+		return 5.955
 	case DefPercentage: // 防御力%
 		return 1.875
 	case ElementalMastery: // 元素精通
-		return 6
+		return 5.996
 	case CriticalRate: // 暴击率
 		return 1
 	case CriticalDamage: // 暴击伤害

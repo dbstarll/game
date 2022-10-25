@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
-	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
 )
@@ -15,6 +14,13 @@ var (
 	}
 	ArtifactsFactory死之羽 = func(star int, name string, secondaryModifiers ...attr.AttributeModifier) *Artifacts {
 		return NewArtifacts(star, position.PlumeOfDeath, name, BaseArtifacts(20, buff.AddAtk(311)), secondaryModifiers...)
+	}
+	starHpRect = [][]float64{
+		{0, 1, 1, 0, 0, 0, 0},
+		{4, 551, 258, 0, 0, 0, 0},
+		{12, 1893, 430, 0, 0, 0, 0},
+		{16, 3571, 645, 167, 191, 215, 239},
+		{20, 4780, 717, 209.13, 239, 268.88, 298.75},
 	}
 )
 
@@ -60,63 +66,30 @@ func (a *Artifacts) Accumulation() attr.AttributeModifier {
 }
 
 func (a *Artifacts) Evaluate() {
-	primaryFactor, levelFactor, secondaryFactor := a.primaryFactor(), a.levelFactor(0), a.secondaryFactor()
-	fmt.Printf("%s[%d], level: %d, (%v, %v, %v)\n", a.name, a.star, a.level, primaryFactor, levelFactor, secondaryFactor)
+	primaryFactor, levelFactor := a.primaryFactor(), a.levelFactor(0)
+	secondaryFactors := a.secondaryFactors()
+	fmt.Printf("%s[%d], level: %d, (%.2f, %.2f, %.2f)\n", a.name, a.star, a.level, primaryFactor, levelFactor, secondaryFactors)
 	for _, p := range point.Points {
 		if r := p.Multiple(); r > 0 {
-			fmt.Printf("\t%s: %v, (%v, %v, %v)\n", p, r, r*primaryFactor*levelFactor, r*primaryFactor, r*secondaryFactor)
-		}
-	}
-	for _, e := range elementals.Elementals {
-		if r := e.Multiple(); r > 0 {
-			fmt.Printf("\t%s: %v, (%v, %v)\n", e.Name(), r, r*primaryFactor*levelFactor, r*primaryFactor)
+			sr, max := r, r*primaryFactor
+			if p == point.Hp || p == point.Atk {
+				sr /= 2
+			}
+			fmt.Printf("\t%s: 主词条(%.2f, %.2f), 副词条(%.2f, %.2f, %.2f, %.2f)\n", p, max*levelFactor, max, sr*secondaryFactors[0], sr*secondaryFactors[1], sr*secondaryFactors[2], sr*secondaryFactors[3])
 		}
 	}
 }
 
 func (a *Artifacts) primaryFactor() float64 {
-	switch a.star {
-	case 2:
-		return 551.0 / point.Hp.Multiple()
-	case 3:
-		return 1893.0 / point.Hp.Multiple()
-	case 4:
-		return 3571.0 / point.Hp.Multiple()
-	case 5:
-		return 4780.0 / point.Hp.Multiple()
-	default:
-		return 0
-	}
+	return starHpRect[a.star-1][1] / point.Hp.Multiple()
 }
 
 func (a *Artifacts) baseFactor() float64 {
-	switch a.star {
-	case 2:
-		return 258.0 / 551.0
-	case 3:
-		return 430.0 / 1893.0
-	case 4:
-		return 645.0 / 3571.0
-	case 5:
-		return 717.0 / 4780.0
-	default:
-		return 0
-	}
+	return starHpRect[a.star-1][2] / starHpRect[a.star-1][1]
 }
 
 func (a *Artifacts) maxLevel() int {
-	switch a.star {
-	case 2:
-		return 4
-	case 3:
-		return 12
-	case 4:
-		return 16
-	case 5:
-		return 20
-	default:
-		return 0
-	}
+	return int(starHpRect[a.star-1][0])
 }
 
 func (a *Artifacts) levelFactor(level int) float64 {
@@ -124,14 +97,14 @@ func (a *Artifacts) levelFactor(level int) float64 {
 	return (baseFactor*float64(maxLevel-level) + float64(level)) / float64(maxLevel)
 }
 
-func (a *Artifacts) secondaryFactor() float64 {
-	switch a.star {
-	case 4:
-		return 2.5 * 3571.0 / point.Hp.Multiple() / 20
-	case 5:
-		return 2.5 * 4780.0 / point.Hp.Multiple() / 20
-	default:
-		return 0
+func (a *Artifacts) secondaryFactors() []float64 {
+	rect := starHpRect[a.star-1]
+	base := a.primaryFactor() * 2 / rect[1]
+	return []float64{
+		base * rect[3],
+		base * rect[4],
+		base * rect[5],
+		base * rect[6],
 	}
 }
 
