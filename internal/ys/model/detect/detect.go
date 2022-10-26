@@ -1,12 +1,9 @@
 package detect
 
 import (
-	"fmt"
-	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
-	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
+	"github.com/dbstarll/game/internal/ys/dimension/artifacts/entry"
 	"github.com/dbstarll/game/internal/ys/model"
 	"github.com/dbstarll/game/internal/ys/model/attr"
-	"github.com/dbstarll/game/internal/ys/model/buff"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
 	"sort"
 )
@@ -19,45 +16,18 @@ type Profit struct {
 type FinalDamage func(character *model.Character, enemy *enemy.Enemy, debug bool) float64
 
 var (
-	baseDetects = initBaseDetects(map[string]*attr.Modifier{
-		point.Hp.String():               attr.NewCharacterModifier(buff.AddHp(209)),              // 生命值
-		point.HpPercentage.String():     attr.NewCharacterModifier(buff.AddHpPercentage(4.1)),    // 生命值%
-		point.Atk.String():              attr.NewCharacterModifier(buff.AddAtk(14)),              // 攻击力
-		point.AtkPercentage.String():    attr.NewCharacterModifier(buff.AddAtkPercentage(4.1)),   // 攻击力%
-		point.Def.String():              attr.NewCharacterModifier(buff.AddDef(16)),              // 防御力
-		point.DefPercentage.String():    attr.NewCharacterModifier(buff.AddDefPercentage(5.1)),   // 防御力%
-		point.ElementalMastery.String(): attr.NewCharacterModifier(buff.AddElementalMastery(16)), // 元素精通
-		point.CriticalRate.String():     attr.NewCharacterModifier(buff.AddCriticalRate(2.7)),    // 暴击率
-		point.CriticalDamage.String():   attr.NewCharacterModifier(buff.AddCriticalDamage(5.4)),  // 暴击伤害
-		point.HealingBonus.String():     attr.NewCharacterModifier(buff.AddHealingBonus(3.1)),    // 治疗加成
-		//IncomingHealingBonus                   // 受治疗加成
-		point.EnergyRecharge.String(): attr.NewCharacterModifier(buff.AddEnergyRecharge(4.5)), // 元素充能效率
-		//CDReduction                            // 冷却缩减
-		//ShieldStrength                         // 护盾强效
-		//DamageBonus                            // 伤害加成
-		//IncomingDamageBonus                    // 受到的伤害加成
-		//IgnoreDefence                          // 无视防御
-		//DefenceReduction                       // 防御减免
-		//NormalAttackDamageBonus                // 普通攻击伤害加成
-		//ChargedAttackDamageBonus               // 重击伤害加成
-		//PlungeAttackDamageBonus                // 下坠攻击伤害加成
-		//ElementalSkillDamageBonus              // 元素战技伤害加成
-		//ElementalBurstDamageBonus              // 元素爆发伤害加成
-		//NormalAttackFactorBonus                // 普通攻击技能倍率加成
-		//ChargedAttackFactorBonus               // 重击技能倍率加成
-		//PlungeAttackFactorBonus                // 下坠攻击技能倍率加成
-		//ElementalSkillFactorBonus              // 元素战技技能倍率加成
-		//ElementalBurstFactorBonus              // 元素爆发技能倍率加成
-
-	})
+	baseDetects = initBaseDetects(map[string]*attr.Modifier{})
 )
 
 func initBaseDetects(detects map[string]*attr.Modifier) map[string]*attr.Modifier {
-	// TODO
-	//   元素抗性
-	//   元素影响下增伤
-	for _, ele := range elementals.Elementals {
-		detects[fmt.Sprintf("%s伤害加成", ele.Name())] = attr.NewCharacterModifier(buff.AddElementalDamageBonus(4.1, ele))
+	for _, entry := range entry.Entries {
+		if rate, fn := entry.Multiple(); rate == 0 || fn == nil {
+			continue
+		} else if ratio, exist := entry.Secondary(); exist {
+			detects[entry.String()] = attr.NewCharacterModifier(fn(3.89 * rate / ratio))
+		} else {
+			detects[entry.String()] = attr.NewCharacterModifier(fn(3.89 * rate))
+		}
 	}
 	return detects
 }

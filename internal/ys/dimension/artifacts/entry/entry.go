@@ -216,7 +216,7 @@ func (e Entry) Multiple() (float64, func(add float64) attr.AttributeModifier) {
 		}
 	case IceDamageBonus: // 冰元素伤害加成
 		return 1.5, func(add float64) attr.AttributeModifier {
-			return attr.AddElementalDamageBonus(elementals.Fire, add)
+			return attr.AddElementalDamageBonus(elementals.Ice, add)
 		}
 	case EarthDamageBonus: // 岩元素伤害加成
 		return 1.5, func(add float64) attr.AttributeModifier {

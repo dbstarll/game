@@ -22,7 +22,7 @@ import (
 )
 
 func main() {
-	if err := 迪卢克1(); err != nil {
+	if err := 迪卢克2(); err != nil {
 		log.Fatalf("%+v", err)
 	}
 	//超绽放队()
@@ -95,6 +95,54 @@ func 迪卢克1() error {
 		迪卢克.Artifacts(魔女破灭之时)
 		迪卢克.Artifacts(魔女的心之火)
 		迪卢克.Artifacts(渡火者的智慧)
+	}
+
+	迪卢克.Apply(
+		buff.AddElementalDamageBonus(20, elementals.Fire),   // 卢姥爷大招
+		buff.AddElementalDamageBonus(37.5, elementals.Fire), // 魔女套
+		buff.AddReactionDamageBonus(40, reactions.Overload, reactions.Burn, reactions.Burgeon),
+		buff.AddReactionDamageBonus(15, reactions.Vaporize, reactions.Melt),
+		buff.AddAtkPercentage(25), // 双火共鸣
+	)
+
+	挨揍的 := enemy.New(enemy.Base(90))
+	//挨揍的.Attach(elemental.Electric, 12)
+	挨揍的.Attach(elementals.Water, 12)
+
+	action := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
+	profitDetect(迪卢克, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
+		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
+		return avg.Value()
+	}, CustomDetects(elementals.Fire))
+	return nil
+}
+
+func 迪卢克2() error {
+	迪卢克 := model.CharacterFactory迪卢克(10, 9, 9, 0)
+
+	if _, err := 迪卢克.Weapon(weapon.Factory无工之剑(1)); err != nil {
+		return err
+	} else if 明威之镡, err := model.ArtifactsFactory生之花(5, "明威之镡", 20, map[entry.Entry]float64{
+		entry.CriticalDamage: 26.4, entry.AtkPercentage: 4.1, entry.CriticalRate: 3.9, entry.Def: 42}); err != nil {
+		return err
+	} else if 魔女常燃之羽, err := model.ArtifactsFactory死之羽(5, "魔女常燃之羽", 20, map[entry.Entry]float64{
+		entry.CriticalRate: 7.8, entry.Hp: 239, entry.CriticalDamage: 14, entry.ElementalMastery: 54}); err != nil {
+		return err
+	} else if 魔女破灭之时, err := model.ArtifactsFactory时之沙(5, "魔女破灭之时", entry.AtkPercentage, 20, map[entry.Entry]float64{
+		entry.CriticalDamage: 11.7, entry.ElementalMastery: 61, entry.EnergyRecharge: 15.5, entry.CriticalRate: 3.1}); err != nil {
+		return err
+	} else if 魔女的心之火, err := model.ArtifactsFactory空之杯(5, "魔女的心之火", entry.FireDamageBonus, 20, map[entry.Entry]float64{
+		entry.Hp: 986, entry.HpPercentage: 9.3, entry.CriticalRate: 3.9, entry.Def: 35}); err != nil {
+		return err
+	} else if 焦灼的魔女帽, err := model.ArtifactsFactory理之冠(5, "焦灼的魔女帽", entry.CriticalRate, 20, map[entry.Entry]float64{
+		entry.AtkPercentage: 9.9, entry.Atk: 18, entry.ElementalMastery: 35, entry.CriticalDamage: 20.2}); err != nil {
+		return err
+	} else {
+		迪卢克.Artifacts(明威之镡)
+		迪卢克.Artifacts(魔女常燃之羽)
+		迪卢克.Artifacts(魔女破灭之时)
+		迪卢克.Artifacts(魔女的心之火)
+		迪卢克.Artifacts(焦灼的魔女帽)
 	}
 
 	迪卢克.Apply(
