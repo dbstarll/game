@@ -21,7 +21,9 @@ import (
 )
 
 func main() {
-	迪卢克1()
+	if err := 迪卢克1(); err != nil {
+		log.Fatalf("%+v", err)
+	}
 	//超绽放队()
 	//绽放队()
 }
@@ -64,41 +66,35 @@ func 超绽放队() {
 	}, CustomDetects(elementals.Electric))
 }
 
-func 迪卢克1() {
+func 迪卢克1() error {
 	迪卢克 := model.CharacterFactory迪卢克(10, 9, 9, 0)
-	魔女的炎之花, err := model.ArtifactsFactory生之花(5, "魔女的炎之花", 20, buff.AddAtk(51), buff.AddAtkPercentage(12.8),
-		buff.AddCriticalRate(3.1), buff.AddDefPercentage(6.6))
-	if err != nil {
-		log.Fatalf("%+v", err)
-	}
-	魔女常燃之羽, err := model.ArtifactsFactory死之羽(5, "魔女常燃之羽", 20, buff.AddCriticalRate(7.8), buff.AddHp(239),
-		buff.AddCriticalDamage(14), buff.AddElementalMastery(54))
-	if err != nil {
-		log.Fatalf("%+v", err)
-	}
-	魔女破灭之时, err := model.ArtifactsFactory时之沙(5, "魔女破灭之时", entry.AtkPercentage, 20,
-		buff.AddCriticalDamage(11.7), buff.AddElementalMastery(61), buff.AddEnergyRecharge(15.5), buff.AddCriticalRate(3.1))
-	if err != nil {
-		log.Fatalf("%+v", err)
-	}
-	魔女的心之火, err := model.ArtifactsFactory空之杯(5, "魔女的心之火", entry.FireDamageBonus, 20,
-		buff.AddHp(986), buff.AddHpPercentage(9.3), buff.AddCriticalRate(3.9), buff.AddDef(35))
-	if err != nil {
-		log.Fatalf("%+v", err)
-	}
-	渡火者的智慧, err := model.ArtifactsFactory理之冠(5, "渡火者的智慧", entry.CriticalDamage, 20,
-		buff.AddAtkPercentage(15.2), buff.AddCriticalRate(6.6), buff.AddEnergyRecharge(11.7), buff.AddHp(269))
-	if err != nil {
-		log.Fatalf("%+v", err)
-	}
 
-	迪卢克.Weapon(weapon.Factory螭骨剑(3))
-	//迪卢克.Weapon(weapon.Factory无工之剑(1))
-	迪卢克.Artifacts(魔女的炎之花)
-	迪卢克.Artifacts(魔女常燃之羽)
-	迪卢克.Artifacts(魔女破灭之时)
-	迪卢克.Artifacts(魔女的心之火)
-	迪卢克.Artifacts(渡火者的智慧)
+	if _, err := 迪卢克.Weapon(weapon.Factory螭骨剑(3)); err != nil {
+		return err
+		//} else if _, err := 迪卢克.Weapon(weapon.Factory无工之剑(1)); err != nil {
+		//	return err
+	} else if 魔女的炎之花, err := model.ArtifactsFactory生之花(5, "魔女的炎之花", 20, map[entry.Entry]float64{
+		entry.Atk: 51, entry.AtkPercentage: 12.8, entry.CriticalRate: 3.1, entry.DefPercentage: 6.6}); err != nil {
+		return err
+	} else if 魔女常燃之羽, err := model.ArtifactsFactory死之羽(5, "魔女常燃之羽", 20, map[entry.Entry]float64{
+		entry.CriticalRate: 7.8, entry.Hp: 239, entry.CriticalDamage: 14, entry.ElementalMastery: 54}); err != nil {
+		return err
+	} else if 魔女破灭之时, err := model.ArtifactsFactory时之沙(5, "魔女破灭之时", entry.AtkPercentage, 20, map[entry.Entry]float64{
+		entry.CriticalDamage: 11.7, entry.ElementalMastery: 61, entry.EnergyRecharge: 15.5, entry.CriticalRate: 3.1}); err != nil {
+		return err
+	} else if 魔女的心之火, err := model.ArtifactsFactory空之杯(5, "魔女的心之火", entry.FireDamageBonus, 20, map[entry.Entry]float64{
+		entry.Hp: 986, entry.HpPercentage: 9.3, entry.CriticalRate: 3.9, entry.Def: 35}); err != nil {
+		return err
+	} else if 渡火者的智慧, err := model.ArtifactsFactory理之冠(5, "渡火者的智慧", entry.CriticalDamage, 20, map[entry.Entry]float64{
+		entry.AtkPercentage: 15.2, entry.CriticalRate: 6.6, entry.EnergyRecharge: 11.7, entry.Hp: 269}); err != nil {
+		return err
+	} else {
+		迪卢克.Artifacts(魔女的炎之花)
+		迪卢克.Artifacts(魔女常燃之羽)
+		迪卢克.Artifacts(魔女破灭之时)
+		迪卢克.Artifacts(魔女的心之火)
+		迪卢克.Artifacts(渡火者的智慧)
+	}
 
 	迪卢克.Apply(
 		buff.AddElementalDamageBonus(20, elementals.Fire),   // 卢姥爷大招
@@ -124,6 +120,7 @@ func 迪卢克1() {
 	}, CustomDetects(elementals.Fire))
 
 	迪卢克.Evaluate()
+	return nil
 }
 
 func CustomDetects(dye elementals.Elemental) map[string]*detect.Modifier {

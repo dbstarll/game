@@ -6,23 +6,24 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/pkg/errors"
+	"math"
 )
 
 var (
-	ArtifactsFactory生之花 = func(star int, name string, level int, secondaryModifiers ...attr.AttributeModifier) (*Artifacts, error) {
-		return NewArtifacts(star, position.FlowerOfLife, entry.Hp, name, BaseArtifacts(level), secondaryModifiers...)
+	ArtifactsFactory生之花 = func(star int, name string, level int, secondaryEntries map[entry.Entry]float64) (*Artifacts, error) {
+		return newArtifacts(star, position.FlowerOfLife, entry.Hp, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
-	ArtifactsFactory死之羽 = func(star int, name string, level int, secondaryModifiers ...attr.AttributeModifier) (*Artifacts, error) {
-		return NewArtifacts(star, position.PlumeOfDeath, entry.Atk, name, BaseArtifacts(level), secondaryModifiers...)
+	ArtifactsFactory死之羽 = func(star int, name string, level int, secondaryEntries map[entry.Entry]float64) (*Artifacts, error) {
+		return newArtifacts(star, position.PlumeOfDeath, entry.Atk, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
-	ArtifactsFactory时之沙 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryModifiers ...attr.AttributeModifier) (*Artifacts, error) {
-		return NewArtifacts(star, position.SandsOfEon, primaryEntry, name, BaseArtifacts(level), secondaryModifiers...)
+	ArtifactsFactory时之沙 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries map[entry.Entry]float64) (*Artifacts, error) {
+		return newArtifacts(star, position.SandsOfEon, primaryEntry, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
-	ArtifactsFactory空之杯 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryModifiers ...attr.AttributeModifier) (*Artifacts, error) {
-		return NewArtifacts(star, position.GobletOfEonothem, primaryEntry, name, BaseArtifacts(level), secondaryModifiers...)
+	ArtifactsFactory空之杯 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries map[entry.Entry]float64) (*Artifacts, error) {
+		return newArtifacts(star, position.GobletOfEonothem, primaryEntry, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
-	ArtifactsFactory理之冠 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryModifiers ...attr.AttributeModifier) (*Artifacts, error) {
-		return NewArtifacts(star, position.CircletOfLogos, primaryEntry, name, BaseArtifacts(level), secondaryModifiers...)
+	ArtifactsFactory理之冠 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries map[entry.Entry]float64) (*Artifacts, error) {
+		return newArtifacts(star, position.CircletOfLogos, primaryEntry, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
 	starHpRect = [][]float64{
 		{0, 1, 1, 0, 0, 0, 0},
@@ -34,18 +35,19 @@ var (
 )
 
 type Artifacts struct {
-	star         int
-	position     position.Position
-	name         string
-	level        int
-	primaryEntry entry.Entry
-	primary      *attr.Attributes
-	secondary    *attr.Attributes
+	star             int
+	position         position.Position
+	name             string
+	level            int
+	primaryEntry     entry.Entry
+	secondaryEntries map[entry.Entry][]int
+	primary          *attr.Attributes
+	secondary        *attr.Attributes
 }
 
 type ArtifactsModifier func(artifacts *Artifacts) (func(), error)
 
-func BaseArtifacts(level int) ArtifactsModifier {
+func baseArtifacts(level int) ArtifactsModifier {
 	return func(artifacts *Artifacts) (func(), error) {
 		if level < 0 {
 			return nil, errors.Errorf("圣遗物等级[%d]不能为负数", level)
@@ -66,26 +68,98 @@ func BaseArtifacts(level int) ArtifactsModifier {
 	}
 }
 
-func NewArtifacts(star int, position position.Position, primaryEntry entry.Entry, name string, baseModifier ArtifactsModifier, secondaryModifiers ...attr.AttributeModifier) (*Artifacts, error) {
+func secondaryArtifacts(secondaryEntries map[entry.Entry]float64) ArtifactsModifier {
+	return func(artifacts *Artifacts) (f func(), err error) {
+		secondaryFactors, secondaryModifiers := artifacts.secondaryFactors(), make([]attr.AttributeModifier, 0)
+		for ent, value := range secondaryEntries {
+			if rate, fn := ent.Multiple(); rate == 0 || fn == nil {
+				return nil, errors.Errorf("圣遗物副词条[%s]增幅未定义", ent)
+			} else if matchRect, matchFactor, err := detectSecondaryEntry(ent, value/rate, secondaryFactors); err != nil {
+				return nil, err
+			} else {
+				secondaryModifiers = append(secondaryModifiers, fn(matchFactor*rate))
+				artifacts.secondaryEntries[ent] = matchRect
+			}
+		}
+		callback := attr.MergeAttributes(secondaryModifiers...)(artifacts.secondary)
+		return func() {
+			callback()
+			for ent, _ := range secondaryEntries {
+				delete(artifacts.secondaryEntries, ent)
+			}
+		}, nil
+	}
+}
+
+func detectSecondaryEntry(entry entry.Entry, value float64, secondaryFactors []float64) ([]int, float64, error) {
+	if ratio, exist := entry.Secondary(); !exist {
+		return nil, 0, errors.Errorf("圣遗物不支持副词条[%s]", entry)
+	} else {
+		factor, matchRet, matchFactor := value*ratio, make([]int, 0), 0.0
+		var ret [][]int
+		for ite := int(math.Floor((factor + 0.1) / secondaryFactors[0])); ite >= 0; ite-- {
+			if len(ret) == 0 {
+				for idx, secondaryFactor := range secondaryFactors {
+					testRet, testFactor := []int{idx}, secondaryFactor
+					if math.Abs(factor-testFactor) < math.Abs(factor-matchFactor) {
+						matchRet, matchFactor = testRet, testFactor
+					}
+					ret = append(ret, testRet)
+				}
+			} else {
+				var newRet [][]int
+				for _, sub := range ret {
+					subFactor, minIndex := 0.0, len(secondaryFactors)-1
+					for _, i := range sub {
+						subFactor += secondaryFactors[i]
+						if i < minIndex {
+							minIndex = i
+						}
+					}
+					for idx, secondaryFactor := range secondaryFactors {
+						if idx >= minIndex {
+							testRet, testFactor := append(sub, idx), subFactor+secondaryFactor
+							if math.Abs(factor-testFactor) < math.Abs(factor-matchFactor) {
+								matchRet, matchFactor = testRet, testFactor
+							}
+							newRet = append(newRet, testRet)
+						}
+					}
+				}
+				ret = newRet
+			}
+		}
+		if len(matchRet) == 0 {
+			return nil, 0, errors.Errorf("无法解析圣遗物副词条[%s]增幅: %v, %v", entry, value, secondaryFactors)
+		} else {
+			return matchRet, matchFactor / ratio, nil
+		}
+	}
+}
+
+func newArtifacts(star int, position position.Position, primaryEntry entry.Entry, name string, baseModifier, secondaryModifier ArtifactsModifier) (*Artifacts, error) {
 	if star < 3 || star > 5 {
 		return nil, errors.Errorf("不支持的星级: %d", star)
 	} else if !primaryEntry.Primary(position) {
 		return nil, errors.Errorf("圣遗物[%s]不支持主词条[%s]", position, primaryEntry)
 	}
 	a := &Artifacts{
-		star:         star,
-		position:     position,
-		name:         name,
-		level:        0,
-		primaryEntry: primaryEntry,
-		primary:      attr.NewAttributes(),
-		secondary:    attr.NewAttributes(),
+		star:             star,
+		position:         position,
+		name:             name,
+		level:            0,
+		primaryEntry:     primaryEntry,
+		secondaryEntries: make(map[entry.Entry][]int),
+		primary:          attr.NewAttributes(),
+		secondary:        attr.NewAttributes(),
 	}
 	if _, err := baseModifier(a); err != nil {
 		return nil, err
+	} else if _, err := secondaryModifier(a); err != nil {
+		return nil, err
+	} else {
+		return a, nil
 	}
-	attr.MergeAttributes(secondaryModifiers...)(a.secondary)
-	return a, nil
 }
 
 func (a *Artifacts) Accumulation() attr.AttributeModifier {
@@ -137,5 +211,5 @@ func (a *Artifacts) secondaryFactors() []float64 {
 }
 
 func (a *Artifacts) String() string {
-	return fmt.Sprintf("%s: %s{star:%d level:%d primary:%s secondary:%s}", a.name, a.position, a.star, a.level, a.primary, a.secondary)
+	return fmt.Sprintf("%s: %s{star:%d level:%d primary:%s secondary[%v]:%s}", a.name, a.position, a.star, a.level, a.primary, a.secondaryEntries, a.secondary)
 }
