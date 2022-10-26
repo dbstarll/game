@@ -118,28 +118,35 @@ func addAttackModeMap(e attackMode.AttackMode, v float64, values map[attackMode.
 	}
 }
 
-func (a *Attributes) Accumulation() AttributeModifier {
-	var modifiers []AttributeModifier
+func (a *Attributes) Accumulation(unload bool) AttributeModifier {
+	modifiers, sign := make([]AttributeModifier, 0), 1.0
+	if unload {
+		sign = -1.0
+	}
 	for _, attr := range a.values {
-		modifiers = append(modifiers, attr.Accumulation())
+		if unload {
+			modifiers = append(modifiers, attr.reverse().Accumulation())
+		} else {
+			modifiers = append(modifiers, attr.Accumulation())
+		}
 	}
 	for ele, val := range a.elementalDamageBonus {
-		modifiers = append(modifiers, AddElementalDamageBonus(ele, val))
+		modifiers = append(modifiers, AddElementalDamageBonus(ele, val*sign))
 	}
 	for ele, val := range a.elementalResist {
-		modifiers = append(modifiers, AddElementalResist(ele, val))
+		modifiers = append(modifiers, AddElementalResist(ele, val*sign))
 	}
 	for ele, val := range a.elementalAttachedDamageBonus {
-		modifiers = append(modifiers, AddElementalAttachedDamageBonus(ele, val))
+		modifiers = append(modifiers, AddElementalAttachedDamageBonus(ele, val*sign))
 	}
 	for r, val := range a.reactionDamageBonus {
-		modifiers = append(modifiers, AddReactionDamageBonus(r, val))
+		modifiers = append(modifiers, AddReactionDamageBonus(r, val*sign))
 	}
 	for r, val := range a.attackModeDamageBonus {
-		modifiers = append(modifiers, AddAttackDamageBonus(r, val))
+		modifiers = append(modifiers, AddAttackDamageBonus(r, val*sign))
 	}
 	for r, val := range a.attackModeFactorBonus {
-		modifiers = append(modifiers, AddAttackFactorBonus(r, val))
+		modifiers = append(modifiers, AddAttackFactorBonus(r, val*sign))
 	}
 	return MergeAttributes(modifiers...)
 }

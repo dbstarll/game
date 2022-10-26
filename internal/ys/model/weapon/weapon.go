@@ -72,7 +72,7 @@ func (w *Weapon) AccumulationBase() attr.AttributeModifier {
 	if w == nil {
 		return attr.NopAttributeModifier
 	} else {
-		return w.base.Accumulation()
+		return w.base.Accumulation(false)
 	}
 }
 

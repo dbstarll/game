@@ -17,6 +17,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/weapon"
 	"log"
 	"math"
+	"strings"
 	"time"
 )
 
@@ -148,10 +149,17 @@ func profitDetect(character *model.Character, enemy *enemy.Enemy, fn detect.Fina
 		}
 	}
 	if evaluateDetects := character.Evaluate(); len(evaluateDetects) > 0 {
-		profits = detect.ProfitDetect(character, enemy, false, fn, customDetects)
+		profits = detect.ProfitDetect(character, enemy, false, fn, evaluateDetects)
 		fmt.Printf("角色增益:\n")
 		for _, p := range profits {
-			fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
+			if strings.Index(p.Name, "-") < 0 {
+				fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
+				for _, s := range profits {
+					if strings.HasPrefix(s.Name, p.Name) && s.Name != p.Name {
+						fmt.Printf("\t\t增幅：%2.4f%% - %s\n", s.Value, s.Name)
+					}
+				}
+			}
 		}
 	}
 }

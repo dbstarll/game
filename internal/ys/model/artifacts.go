@@ -34,13 +34,27 @@ var (
 	}
 )
 
+type PrimaryEntry struct {
+	entry  entry.Entry
+	value  float64
+	load   attr.AttributeModifier
+	unload attr.AttributeModifier
+}
+
+type SecondaryEntry struct {
+	rect   []int
+	value  float64
+	load   attr.AttributeModifier
+	unload attr.AttributeModifier
+}
+
 type Artifacts struct {
 	star             int
 	position         position.Position
 	name             string
 	level            int
-	primaryEntry     entry.Entry
-	secondaryEntries map[entry.Entry][]int
+	primaryEntry     *PrimaryEntry
+	secondaryEntries map[entry.Entry]*SecondaryEntry
 	primary          *attr.Attributes
 	secondary        *attr.Attributes
 }
@@ -53,13 +67,17 @@ func baseArtifacts(level int) ArtifactsModifier {
 			return nil, errors.Errorf("圣遗物等级[%d]不能为负数", level)
 		} else if level > artifacts.maxLevel() {
 			return nil, errors.Errorf("圣遗物等级[%d]超过上限[%d]", level, artifacts.maxLevel())
-		} else if rate, fn := artifacts.primaryEntry.Multiple(); rate == 0 || fn == nil {
-			return nil, errors.Errorf("圣遗物主词条[%s]增幅未定义", artifacts.primaryEntry)
+		} else if rate, fn := artifacts.primaryEntry.entry.Multiple(); rate == 0 || fn == nil {
+			return nil, errors.Errorf("圣遗物主词条[%s]增幅未定义", artifacts.primaryEntry.entry)
 		} else {
 			oldLevel := artifacts.level
 			artifacts.level = level
 			primaryFactor, levelFactor := artifacts.primaryFactor(), artifacts.levelFactor(level)
-			callback := fn(rate * primaryFactor * levelFactor)(artifacts.primary)
+			value := rate * primaryFactor * levelFactor
+			artifacts.primaryEntry.value = value
+			artifacts.primaryEntry.load = fn(value)
+			artifacts.primaryEntry.unload = fn(-value)
+			callback := artifacts.primaryEntry.load(artifacts.primary)
 			return func() {
 				callback()
 				artifacts.level = oldLevel
@@ -77,8 +95,14 @@ func secondaryArtifacts(secondaryEntries map[entry.Entry]float64) ArtifactsModif
 			} else if matchRect, matchFactor, err := detectSecondaryEntry(ent, value/rate, secondaryFactors); err != nil {
 				return nil, err
 			} else {
-				secondaryModifiers = append(secondaryModifiers, fn(matchFactor*rate))
-				artifacts.secondaryEntries[ent] = matchRect
+				secondaryEntry := &SecondaryEntry{
+					rect:   matchRect,
+					value:  matchFactor * rate,
+					load:   fn(matchFactor * rate),
+					unload: fn(-matchFactor * rate),
+				}
+				secondaryModifiers = append(secondaryModifiers, secondaryEntry.load)
+				artifacts.secondaryEntries[ent] = secondaryEntry
 			}
 		}
 		callback := attr.MergeAttributes(secondaryModifiers...)(artifacts.secondary)
@@ -148,8 +172,8 @@ func newArtifacts(star int, position position.Position, primaryEntry entry.Entry
 		position:         position,
 		name:             name,
 		level:            0,
-		primaryEntry:     primaryEntry,
-		secondaryEntries: make(map[entry.Entry][]int),
+		primaryEntry:     &PrimaryEntry{entry: primaryEntry},
+		secondaryEntries: make(map[entry.Entry]*SecondaryEntry),
 		primary:          attr.NewAttributes(),
 		secondary:        attr.NewAttributes(),
 	}
@@ -162,14 +186,17 @@ func newArtifacts(star int, position position.Position, primaryEntry entry.Entry
 	}
 }
 
-func (a *Artifacts) Accumulation() attr.AttributeModifier {
-	return attr.MergeAttributes(a.primary.Accumulation(), a.secondary.Accumulation())
+func (a *Artifacts) Accumulation(unload bool) attr.AttributeModifier {
+	return attr.MergeAttributes(a.primary.Accumulation(unload), a.secondary.Accumulation(unload))
 }
 
-func (a *Artifacts) Evaluate() {
-	primaryFactor, levelFactor := a.primaryFactor(), a.levelFactor(0)
-	secondaryFactors := a.secondaryFactors()
-	fmt.Printf("%s[%d], level: %d, (%.2f, %.2f, %.2f)\n", a.name, a.star, a.level, primaryFactor, levelFactor, secondaryFactors)
+func (a *Artifacts) Evaluate() map[string]*attr.Modifier {
+	detects := make(map[string]*attr.Modifier)
+	detects[fmt.Sprintf("[主]%s: %.2f", a.primaryEntry.entry, a.primaryEntry.value)] = attr.NewCharacterModifier(a.primaryEntry.unload)
+	for ent, secondaryEntry := range a.secondaryEntries {
+		detects[fmt.Sprintf("[副]%s%v: %.2f", ent, secondaryEntry.rect, secondaryEntry.value)] = attr.NewCharacterModifier(secondaryEntry.unload)
+	}
+	return detects
 }
 
 func (a *Artifacts) primaryFactor() float64 {

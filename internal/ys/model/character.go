@@ -248,20 +248,20 @@ func (c *Character) GetActions() *action.Actions {
 
 func (c *Character) basicAttributes() *attr.Attributes {
 	basic := attr.NewAttributes()
-	c.base.Accumulation()(basic)
+	c.base.Accumulation(false)(basic)
 	c.weapon.AccumulationBase()(basic)
 	return basic
 }
 
 func (c *Character) finalAttributes() *attr.Attributes {
 	final := attr.NewAttributes()
-	c.basicAttributes().Accumulation()(final)
+	c.basicAttributes().Accumulation(false)(final)
 	final.Clear(point.Hp, point.Atk, point.Def)
 	c.weapon.AccumulationRefine()(final)
 	for _, artifacts := range c.artifacts {
-		artifacts.Accumulation()(final)
+		artifacts.Accumulation(false)(final)
 	}
-	c.attached.Accumulation()(final)
+	c.attached.Accumulation(false)(final)
 	return final
 }
 
@@ -274,9 +274,15 @@ func (c *Character) Calculate(enemy *enemy.Enemy, action *action.Action, infusio
 }
 
 func (c *Character) Evaluate() map[string]*attr.Modifier {
+	detects := make(map[string]*attr.Modifier)
 	for _, artifact := range c.artifacts {
 		zap.S().Debugf("%s", artifact)
-		artifact.Evaluate()
+		detects[artifact.name] = attr.NewCharacterModifier(artifact.Accumulation(true))
+		if artifactDetects := artifact.Evaluate(); len(artifactDetects) > 0 {
+			for n, m := range artifactDetects {
+				detects[fmt.Sprintf("%s - %s", artifact.name, n)] = m
+			}
+		}
 	}
-	return nil
+	return detects
 }

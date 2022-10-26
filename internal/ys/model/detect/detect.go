@@ -81,12 +81,10 @@ func ProfitDetect(character *model.Character, enemy *enemy.Enemy, baseDetect boo
 	for name, modifier := range customDetects {
 		cancel := modifier.Apply(character, enemy)
 		value := fn(character, enemy, false)
-		if value != base {
-			profits = append(profits, &Profit{
-				Name:  name,
-				Value: 100 * (value - base) / base,
-			})
-		}
+		profits = append(profits, &Profit{
+			Name:  name,
+			Value: 100 * (value - base) / base,
+		})
 		cancel()
 	}
 	sort.Slice(profits, func(i, j int) bool {
