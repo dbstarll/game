@@ -16,27 +16,22 @@ type Profit struct {
 	Value float64
 }
 
-type Modifier struct {
-	characterModifier attr.AttributeModifier
-	enemyModifier     attr.AttributeModifier
-}
-
 type FinalDamage func(character *model.Character, enemy *enemy.Enemy, debug bool) float64
 
 var (
-	baseDetects = initBaseDetects(map[string]*Modifier{
-		point.Hp.String():               NewCharacterModifier(buff.AddHp(209)),              // 生命值
-		point.HpPercentage.String():     NewCharacterModifier(buff.AddHpPercentage(4.1)),    // 生命值%
-		point.Atk.String():              NewCharacterModifier(buff.AddAtk(14)),              // 攻击力
-		point.AtkPercentage.String():    NewCharacterModifier(buff.AddAtkPercentage(4.1)),   // 攻击力%
-		point.Def.String():              NewCharacterModifier(buff.AddDef(16)),              // 防御力
-		point.DefPercentage.String():    NewCharacterModifier(buff.AddDefPercentage(5.1)),   // 防御力%
-		point.ElementalMastery.String(): NewCharacterModifier(buff.AddElementalMastery(16)), // 元素精通
-		point.CriticalRate.String():     NewCharacterModifier(buff.AddCriticalRate(2.7)),    // 暴击率
-		point.CriticalDamage.String():   NewCharacterModifier(buff.AddCriticalDamage(5.4)),  // 暴击伤害
-		point.HealingBonus.String():     NewCharacterModifier(buff.AddHealingBonus(3.1)),    // 治疗加成
+	baseDetects = initBaseDetects(map[string]*attr.Modifier{
+		point.Hp.String():               attr.NewCharacterModifier(buff.AddHp(209)),              // 生命值
+		point.HpPercentage.String():     attr.NewCharacterModifier(buff.AddHpPercentage(4.1)),    // 生命值%
+		point.Atk.String():              attr.NewCharacterModifier(buff.AddAtk(14)),              // 攻击力
+		point.AtkPercentage.String():    attr.NewCharacterModifier(buff.AddAtkPercentage(4.1)),   // 攻击力%
+		point.Def.String():              attr.NewCharacterModifier(buff.AddDef(16)),              // 防御力
+		point.DefPercentage.String():    attr.NewCharacterModifier(buff.AddDefPercentage(5.1)),   // 防御力%
+		point.ElementalMastery.String(): attr.NewCharacterModifier(buff.AddElementalMastery(16)), // 元素精通
+		point.CriticalRate.String():     attr.NewCharacterModifier(buff.AddCriticalRate(2.7)),    // 暴击率
+		point.CriticalDamage.String():   attr.NewCharacterModifier(buff.AddCriticalDamage(5.4)),  // 暴击伤害
+		point.HealingBonus.String():     attr.NewCharacterModifier(buff.AddHealingBonus(3.1)),    // 治疗加成
 		//IncomingHealingBonus                   // 受治疗加成
-		point.EnergyRecharge.String(): NewCharacterModifier(buff.AddEnergyRecharge(4.5)), // 元素充能效率
+		point.EnergyRecharge.String(): attr.NewCharacterModifier(buff.AddEnergyRecharge(4.5)), // 元素充能效率
 		//CDReduction                            // 冷却缩减
 		//ShieldStrength                         // 护盾强效
 		//DamageBonus                            // 伤害加成
@@ -57,47 +52,17 @@ var (
 	})
 )
 
-func NewCharacterModifier(characterModifier attr.AttributeModifier) *Modifier {
-	return NewModifier(characterModifier, nil)
-}
-
-func NewEnemyModifier(enemyModifier attr.AttributeModifier) *Modifier {
-	return NewModifier(nil, enemyModifier)
-}
-
-func NewModifier(characterModifier, enemyModifier attr.AttributeModifier) *Modifier {
-	return &Modifier{
-		characterModifier: characterModifier,
-		enemyModifier:     enemyModifier,
-	}
-}
-
-func initBaseDetects(detects map[string]*Modifier) map[string]*Modifier {
+func initBaseDetects(detects map[string]*attr.Modifier) map[string]*attr.Modifier {
 	// TODO
 	//   元素抗性
 	//   元素影响下增伤
 	for _, ele := range elementals.Elementals {
-		detects[fmt.Sprintf("%s伤害加成", ele.Name())] = NewCharacterModifier(buff.AddElementalDamageBonus(4.1, ele))
+		detects[fmt.Sprintf("%s伤害加成", ele.Name())] = attr.NewCharacterModifier(buff.AddElementalDamageBonus(4.1, ele))
 	}
 	return detects
 }
 
-func (m *Modifier) Apply(character *model.Character, enemy *enemy.Enemy) func() {
-	var cancels []func()
-	if m.characterModifier != nil {
-		cancels = append(cancels, character.Apply(m.characterModifier))
-	}
-	if m.enemyModifier != nil {
-		cancels = append(cancels, enemy.Apply(m.enemyModifier))
-	}
-	return func() {
-		for _, cancel := range cancels {
-			cancel()
-		}
-	}
-}
-
-func ProfitDetect(character *model.Character, enemy *enemy.Enemy, baseDetect bool, fn FinalDamage, customDetects map[string]*Modifier) []*Profit {
+func ProfitDetect(character *model.Character, enemy *enemy.Enemy, baseDetect bool, fn FinalDamage, customDetects map[string]*attr.Modifier) []*Profit {
 	base := fn(character, enemy, false)
 	var profits []*Profit
 	if baseDetect {

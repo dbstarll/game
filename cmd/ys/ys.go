@@ -108,48 +108,50 @@ func 迪卢克1() error {
 	//挨揍的.Attach(elemental.Electric, 12)
 	挨揍的.Attach(elementals.Water, 12)
 
-	迪卢克.GetActions().Loop(func(index int, action *action.Action) bool {
-		fmt.Println(action)
-		return false
-	})
-
 	action := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
 	profitDetect(迪卢克, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Fire))
-
-	迪卢克.Evaluate()
 	return nil
 }
 
-func CustomDetects(dye elementals.Elemental) map[string]*detect.Modifier {
-	return map[string]*detect.Modifier{
-		"玉璋护盾":      detect.NewModifier(buff.Superposition(5, time.Second*20, 0, buff.AddShieldStrength(5)), buff.AddAllElementalResist(-20)),
-		"万叶扩散":      detect.NewCharacterModifier(buff.AddElementalDamageBonus(0.04*1000, dye)),
-		"风四件套":      detect.NewEnemyModifier(buff.AddElementalResist(-40, dye)),
-		"万叶扩散+风四件套": detect.NewModifier(buff.AddElementalDamageBonus(0.04*1000, dye), buff.AddElementalResist(-40, dye)),
-		"班尼特":       detect.NewCharacterModifier(buff.AddAtk(int(math.Round(1.19 * (191 + 565))))),
-		"班尼特6命":     detect.NewCharacterModifier(attr.MergeAttributes(buff.AddAtk(int(math.Round(1.19*(191+565)))), buff.AddElementalDamageBonus(15, dye))),
-		"讨龙英杰谭":     detect.NewCharacterModifier(buff.AddAtkPercentage(48)),
-		"砂糖":        detect.NewCharacterModifier(buff.AddElementalMastery(50 + 200)),
-		"砂糖6命":      detect.NewCharacterModifier(attr.MergeAttributes(buff.AddElementalMastery(50+200), buff.AddElementalDamageBonus(20, dye))),
-		"莫娜星异":      detect.NewCharacterModifier(buff.AddDamageBonus(60)),
-		"深林四件套":     detect.NewEnemyModifier(buff.AddElementalResist(-30, elementals.Grass)),
-		"如雷四件套":     detect.NewCharacterModifier(buff.AddReactionDamageBonus(40, reactions.Overload, reactions.ElectroCharged, reactions.Superconduct, reactions.Hyperbloom)),
+func CustomDetects(dye elementals.Elemental) map[string]*attr.Modifier {
+	return map[string]*attr.Modifier{
+		"玉璋护盾":      attr.NewModifier(buff.Superposition(5, time.Second*20, 0, buff.AddShieldStrength(5)), buff.AddAllElementalResist(-20)),
+		"万叶扩散":      attr.NewCharacterModifier(buff.AddElementalDamageBonus(0.04*1000, dye)),
+		"风四件套":      attr.NewEnemyModifier(buff.AddElementalResist(-40, dye)),
+		"万叶扩散+风四件套": attr.NewModifier(buff.AddElementalDamageBonus(0.04*1000, dye), buff.AddElementalResist(-40, dye)),
+		"班尼特":       attr.NewCharacterModifier(buff.AddAtk(int(math.Round(1.19 * (191 + 565))))),
+		"班尼特6命":     attr.NewCharacterModifier(attr.MergeAttributes(buff.AddAtk(int(math.Round(1.19*(191+565)))), buff.AddElementalDamageBonus(15, dye))),
+		"讨龙英杰谭":     attr.NewCharacterModifier(buff.AddAtkPercentage(48)),
+		"砂糖":        attr.NewCharacterModifier(buff.AddElementalMastery(50 + 200)),
+		"砂糖6命":      attr.NewCharacterModifier(attr.MergeAttributes(buff.AddElementalMastery(50+200), buff.AddElementalDamageBonus(20, dye))),
+		"莫娜星异":      attr.NewCharacterModifier(buff.AddDamageBonus(60)),
+		"深林四件套":     attr.NewEnemyModifier(buff.AddElementalResist(-30, elementals.Grass)),
+		"如雷四件套":     attr.NewCharacterModifier(buff.AddReactionDamageBonus(40, reactions.Overload, reactions.ElectroCharged, reactions.Superconduct, reactions.Hyperbloom)),
 	}
 }
 
-func profitDetect(character *model.Character, enemy *enemy.Enemy, fn detect.FinalDamage, customDetects map[string]*detect.Modifier) {
+func profitDetect(character *model.Character, enemy *enemy.Enemy, fn detect.FinalDamage, customDetects map[string]*attr.Modifier) {
 	fmt.Printf("base: %f\n", fn(character, enemy, true))
 	profits := detect.ProfitDetect(character, enemy, true, fn, nil)
 	fmt.Printf("素质增益:\n")
 	for _, p := range profits {
 		fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
 	}
-	profits = detect.ProfitDetect(character, enemy, false, fn, customDetects)
-	fmt.Printf("角色增益:\n")
-	for _, p := range profits {
-		fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
+	if len(customDetects) > 0 {
+		profits = detect.ProfitDetect(character, enemy, false, fn, customDetects)
+		fmt.Printf("队友增益:\n")
+		for _, p := range profits {
+			fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
+		}
+	}
+	if evaluateDetects := character.Evaluate(); len(evaluateDetects) > 0 {
+		profits = detect.ProfitDetect(character, enemy, false, fn, customDetects)
+		fmt.Printf("角色增益:\n")
+		for _, p := range profits {
+			fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
+		}
 	}
 }

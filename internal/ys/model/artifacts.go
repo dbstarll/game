@@ -170,15 +170,6 @@ func (a *Artifacts) Evaluate() {
 	primaryFactor, levelFactor := a.primaryFactor(), a.levelFactor(0)
 	secondaryFactors := a.secondaryFactors()
 	fmt.Printf("%s[%d], level: %d, (%.2f, %.2f, %.2f)\n", a.name, a.star, a.level, primaryFactor, levelFactor, secondaryFactors)
-	for _, p := range entry.Entries {
-		if r, _ := p.Multiple(); r > 0 {
-			sr, max := r, r*primaryFactor
-			if p == entry.Hp || p == entry.Atk {
-				sr /= 2
-			}
-			fmt.Printf("\t%s: 主词条(%.2f, %.2f), 副词条(%.2f, %.2f, %.2f, %.2f)\n", p, max*levelFactor, max, sr*secondaryFactors[0], sr*secondaryFactors[1], sr*secondaryFactors[2], sr*secondaryFactors[3])
-		}
-	}
 }
 
 func (a *Artifacts) primaryFactor() float64 {

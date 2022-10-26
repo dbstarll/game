@@ -273,9 +273,10 @@ func (c *Character) Calculate(enemy *enemy.Enemy, action *action.Action, infusio
 	return NewCalculator(c, enemy, action, infusionElemental)
 }
 
-func (c *Character) Evaluate() {
+func (c *Character) Evaluate() map[string]*attr.Modifier {
 	for _, artifact := range c.artifacts {
 		zap.S().Debugf("%s", artifact)
 		artifact.Evaluate()
 	}
+	return nil
 }

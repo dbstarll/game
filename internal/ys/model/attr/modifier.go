@@ -15,6 +15,10 @@ var (
 
 type AttributeModifier func(attributes *Attributes) func()
 
+type Appliable interface {
+	Apply(modifiers ...AttributeModifier) func()
+}
+
 func MergeAttributes(modifiers ...AttributeModifier) AttributeModifier {
 	return func(attributes *Attributes) func() {
 		size := len(modifiers)
@@ -69,5 +73,40 @@ func AddAttackDamageBonus(r attackMode.AttackMode, add float64) AttributeModifie
 func AddAttackFactorBonus(r attackMode.AttackMode, add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
 		return attributes.addAttackFactorBonus(r, add)
+	}
+}
+
+type Modifier struct {
+	characterModifier AttributeModifier
+	enemyModifier     AttributeModifier
+}
+
+func NewCharacterModifier(characterModifier AttributeModifier) *Modifier {
+	return NewModifier(characterModifier, nil)
+}
+
+func NewEnemyModifier(enemyModifier AttributeModifier) *Modifier {
+	return NewModifier(nil, enemyModifier)
+}
+
+func NewModifier(characterModifier, enemyModifier AttributeModifier) *Modifier {
+	return &Modifier{
+		characterModifier: characterModifier,
+		enemyModifier:     enemyModifier,
+	}
+}
+
+func (m *Modifier) Apply(character Appliable, enemy Appliable) func() {
+	var cancels []func()
+	if m.characterModifier != nil {
+		cancels = append(cancels, character.Apply(m.characterModifier))
+	}
+	if m.enemyModifier != nil {
+		cancels = append(cancels, enemy.Apply(m.enemyModifier))
+	}
+	return func() {
+		for _, cancel := range cancels {
+			cancel()
+		}
 	}
 }
