@@ -10,25 +10,26 @@ import (
 
 var (
 	Factory无工之剑 = func(refine int) *Weapon {
-		return New(5, weaponType.Claymore, Base(90, 608, buff.AddAtkPercentage(49.6)),
+		return New(5, weaponType.Claymore, "无工之剑", Base(90, 608, buff.AddAtkPercentage(49.6)),
 			buff.AddShieldStrength(float64(15+refine*5)),
 			buff.Superposition(5, time.Second*8, time.Millisecond*300, buff.AddAtkPercentage(float64(3+refine))),
 		)
 	}
 	Factory螭骨剑 = func(refine int) *Weapon {
-		return New(5, weaponType.Claymore, Base(90, 509, buff.AddCriticalRate(27.6)),
+		return New(5, weaponType.Claymore, "螭骨剑", Base(90, 509, buff.AddCriticalRate(27.6)),
 			buff.Superposition(5, 0, time.Second*4, buff.AddDamageBonus(5.0+float64(refine))),
 			buff.Superposition(5, 0, time.Second*4, buff.AddIncomingDamageBonus([]float64{3.0, 2.7, 2.4, 2.2, 2.0}[refine-1])),
 		)
 	}
 	Factory原木刀 = func(refine int) *Weapon {
-		return New(4, weaponType.Sword, Base(90, 565, buff.AddEnergyRecharge(30.6)))
+		return New(4, weaponType.Sword, "原木刀", Base(90, 565, buff.AddEnergyRecharge(30.6)))
 	}
 )
 
 type Weapon struct {
 	star            int
 	weaponType      weaponType.WeaponType
+	name            string
 	level           int
 	base            *attr.Attributes
 	refineModifiers []attr.AttributeModifier
@@ -48,10 +49,11 @@ func Base(level, baseAtk int, baseModifier attr.AttributeModifier) Modifier {
 	}
 }
 
-func New(star int, weaponType weaponType.WeaponType, baseModifier Modifier, refineModifiers ...attr.AttributeModifier) *Weapon {
+func New(star int, weaponType weaponType.WeaponType, name string, baseModifier Modifier, refineModifiers ...attr.AttributeModifier) *Weapon {
 	w := &Weapon{
 		star:            star,
 		weaponType:      weaponType,
+		name:            name,
 		level:           1,
 		base:            attr.NewAttributes(),
 		refineModifiers: refineModifiers,
@@ -66,6 +68,10 @@ func (w *Weapon) Get(point point.Point) float64 {
 
 func (w *Weapon) Type() weaponType.WeaponType {
 	return w.weaponType
+}
+
+func (w *Weapon) Name() string {
+	return w.name
 }
 
 func (w *Weapon) AccumulationBase() attr.AttributeModifier {

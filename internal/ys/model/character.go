@@ -283,6 +283,12 @@ func (c *Character) Evaluate() map[string]*attr.Modifier {
 				detects[fmt.Sprintf("%s - %s", artifact.name, n)] = m
 			}
 		}
+		weaponBase, weaponRefine := attr.NewAttributes(), attr.NewAttributes()
+		c.weapon.AccumulationBase()(weaponBase)
+		c.weapon.AccumulationRefine()(weaponRefine)
+		detects[fmt.Sprintf("%s - 基础", c.weapon.Name())] = attr.NewCharacterModifier(weaponBase.Accumulation(true))
+		detects[fmt.Sprintf("%s - 精炼", c.weapon.Name())] = attr.NewCharacterModifier(weaponRefine.Accumulation(true))
+		detects[c.weapon.Name()] = attr.NewCharacterModifier(attr.MergeAttributes(weaponBase.Accumulation(true), weaponRefine.Accumulation(true)))
 	}
 	return detects
 }
