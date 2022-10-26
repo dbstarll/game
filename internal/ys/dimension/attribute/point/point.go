@@ -44,8 +44,8 @@ var Points = []Point{
 	DefenceReduction,
 }
 
-func (e Point) IsPercentage() bool {
-	switch e {
+func (p Point) IsPercentage() bool {
+	switch p {
 	case Hp, Atk, Def, ElementalMastery:
 		return false
 	default:
@@ -53,8 +53,8 @@ func (e Point) IsPercentage() bool {
 	}
 }
 
-func (e Point) Multiple() float64 {
-	switch e {
+func (p Point) Multiple() float64 {
+	switch p {
 	case Hp: // 生命值
 		return 153.7
 	case HpPercentage: // 生命值%
@@ -89,8 +89,8 @@ func (e Point) Multiple() float64 {
 	}
 }
 
-func (e Point) String() string {
-	switch e {
+func (p Point) String() string {
+	switch p {
 	case Hp:
 		return "生命值"
 	case HpPercentage:
@@ -128,7 +128,7 @@ func (e Point) String() string {
 	case DefenceReduction:
 		return "防御减免"
 	default:
-		if e < 0 {
+		if p < 0 {
 			return "不限"
 		} else {
 			return "未知"

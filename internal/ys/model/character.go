@@ -12,6 +12,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/enemy"
 	"github.com/dbstarll/game/internal/ys/model/weapon"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -227,7 +228,6 @@ func (c *Character) Artifacts(newArtifacts *Artifacts) *Artifacts {
 	position := newArtifacts.position
 	oldArtifacts, _ := c.artifacts[position]
 	c.artifacts[position] = newArtifacts
-	newArtifacts.Evaluate()
 	return oldArtifacts
 }
 
@@ -271,4 +271,11 @@ func (c *Character) String() string {
 
 func (c *Character) Calculate(enemy *enemy.Enemy, action *action.Action, infusionElemental elementals.Elemental) *Calculator {
 	return NewCalculator(c, enemy, action, infusionElemental)
+}
+
+func (c *Character) Evaluate() {
+	for _, artifact := range c.artifacts {
+		zap.S().Debugf("%s", artifact)
+		artifact.Evaluate()
+	}
 }

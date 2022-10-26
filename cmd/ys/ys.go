@@ -67,11 +67,11 @@ func 迪卢克1() {
 	迪卢克 := model.CharacterFactory迪卢克(10, 9, 9, 0)
 	魔女的炎之花 := model.ArtifactsFactory生之花(5, "魔女的炎之花", buff.AddAtk(51), buff.AddAtkPercentage(12.8),
 		buff.AddCriticalRate(3.1), buff.AddDefPercentage(6.6))
-	魔女常燃之羽 := model.ArtifactsFactory死之羽(4, "魔女常燃之羽", buff.AddCriticalRate(7.8), buff.AddHp(239),
+	魔女常燃之羽 := model.ArtifactsFactory死之羽(5, "魔女常燃之羽", buff.AddCriticalRate(7.8), buff.AddHp(239),
 		buff.AddCriticalDamage(14), buff.AddElementalMastery(54))
-	魔女破灭之时 := model.NewArtifacts(3, position.SandsOfEon, "魔女破灭之时", model.BaseArtifacts(20, buff.AddAtkPercentage(46.6)),
+	魔女破灭之时 := model.NewArtifacts(5, position.SandsOfEon, "魔女破灭之时", model.BaseArtifacts(20, buff.AddAtkPercentage(46.6)),
 		buff.AddCriticalDamage(11.7), buff.AddElementalMastery(61), buff.AddEnergyRecharge(15.5), buff.AddCriticalRate(3.1))
-	魔女的心之火 := model.NewArtifacts(2, position.GobletOfEonothem, "魔女的心之火", model.BaseArtifacts(20, buff.AddElementalDamageBonus(46.6, elementals.Fire)),
+	魔女的心之火 := model.NewArtifacts(5, position.GobletOfEonothem, "魔女的心之火", model.BaseArtifacts(20, buff.AddElementalDamageBonus(46.6, elementals.Fire)),
 		buff.AddHp(986), buff.AddHpPercentage(9.3), buff.AddCriticalRate(3.9), buff.AddDef(35))
 	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, "渡火者的智慧", model.BaseArtifacts(20, buff.AddCriticalDamage(62.2)),
 		buff.AddAtkPercentage(15.2), buff.AddCriticalRate(6.6), buff.AddEnergyRecharge(11.7), buff.AddHp(269))
@@ -106,6 +106,8 @@ func 迪卢克1() {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Fire))
+
+	迪卢克.Evaluate()
 }
 
 func CustomDetects(dye elementals.Elemental) map[string]*detect.Modifier {
