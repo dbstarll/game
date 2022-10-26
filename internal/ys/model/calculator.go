@@ -144,6 +144,7 @@ func (c *Calculator) Calculate(debug bool) (*Formula, *Formula, *Formula) {
 	总伤害最大 := 增幅总伤害最大.add("总伤害(暴击)", 剧变区...)
 	if debug {
 		zap.S().Debugf("Action: %s", c.action)
+		zap.S().Debugf("Attributes: %s", c.finalAttributes)
 		zap.S().Debugf("基础伤害区: %s", 基础伤害区.Algorithm())
 		zap.S().Debugf("增伤区: %s", 增伤区.Algorithm())
 		zap.S().Debugf("暴击区: %s, %s", 暴击收益.Algorithm(), 暴伤倍率.Algorithm())

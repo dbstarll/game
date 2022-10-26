@@ -16,6 +16,11 @@ var (
 			buff.Superposition(5, time.Second*8, time.Millisecond*300, buff.AddAtkPercentage(float64(3+refine))),
 		)
 	}
+	Factory黑岩斩刀 = func(refine int) *Weapon {
+		return New(4, weaponType.Claymore, "黑岩斩刀", Base(90, 510, buff.AddCriticalDamage(55.1)),
+			buff.Superposition(3, time.Second*30, 0, buff.AddAtkPercentage(float64(9+3*refine))),
+		)
+	}
 	Factory螭骨剑 = func(refine int) *Weapon {
 		return New(5, weaponType.Claymore, "螭骨剑", Base(90, 509, buff.AddCriticalRate(27.6)),
 			buff.Superposition(5, 0, time.Second*4, buff.AddDamageBonus(5.0+float64(refine))),

@@ -186,13 +186,20 @@ func newArtifacts(star int, position position.Position, primaryEntry entry.Entry
 	}
 }
 
+func (a *Artifacts) Position() position.Position {
+	return a.position
+}
+
 func (a *Artifacts) Accumulation(unload bool) attr.AttributeModifier {
 	return attr.MergeAttributes(a.primary.Accumulation(unload), a.secondary.Accumulation(unload))
 }
 
-func (a *Artifacts) Evaluate() map[string]*attr.Modifier {
+func (a *Artifacts) Evaluate(replace *Artifacts) map[string]*attr.Modifier {
 	detects := make(map[string]*attr.Modifier)
 	detects[a.name] = attr.NewCharacterModifier(a.Accumulation(true))
+	if replace != nil {
+		detects[fmt.Sprintf("%s - [替换]", a.name)] = attr.NewCharacterModifier(attr.MergeAttributes(a.Accumulation(true), replace.Accumulation(false)))
+	}
 	detects[fmt.Sprintf("%s - [主]%s: %.2f", a.name, a.primaryEntry.entry, a.primaryEntry.value)] = attr.NewCharacterModifier(a.primaryEntry.unload)
 	for ent, secondaryEntry := range a.secondaryEntries {
 		detects[fmt.Sprintf("%s - [副]%s%v: %.2f", a.name, ent, secondaryEntry.rect, secondaryEntry.value)] = attr.NewCharacterModifier(secondaryEntry.unload)

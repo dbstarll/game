@@ -272,10 +272,10 @@ func (c *Character) Calculate(enemy *enemy.Enemy, action *action.Action, infusio
 	return NewCalculator(c, enemy, action, infusionElemental)
 }
 
-func (c *Character) Evaluate() map[string]*attr.Modifier {
+func (c *Character) Evaluate(replaceArtifacts map[position.Position]*Artifacts) map[string]*attr.Modifier {
 	detects := make(map[string]*attr.Modifier)
 	for _, artifact := range c.artifacts {
-		for n, m := range artifact.Evaluate() {
+		for n, m := range artifact.Evaluate(replaceArtifacts[artifact.position]) {
 			detects[n] = m
 		}
 	}
