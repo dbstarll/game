@@ -6,6 +6,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
+	"reflect"
 )
 
 type Attributes struct {
@@ -212,11 +213,19 @@ func (a *Attributes) String() string {
 			values = append(values, value.String())
 		}
 	}
-	values = append(values, fmt.Sprintf("元素伤害加成: %v", a.elementalDamageBonus))
-	values = append(values, fmt.Sprintf("元素抗性: %v", a.elementalResist))
-	values = append(values, fmt.Sprintf("元素影响下增伤: %v", a.elementalAttachedDamageBonus))
-	values = append(values, fmt.Sprintf("元素反应系数提高: %v", a.elementalAttachedDamageBonus))
-	values = append(values, fmt.Sprintf("攻击模式伤害加成: %v", a.attackModeDamageBonus))
-	values = append(values, fmt.Sprintf("攻击模式技能倍率加成: %v", a.attackModeFactorBonus))
+	values = a.append(values, "元素伤害加成", a.elementalDamageBonus)
+	values = a.append(values, "元素抗性", a.elementalResist)
+	values = a.append(values, "元素影响下增伤", a.elementalAttachedDamageBonus)
+	values = a.append(values, "元素反应系数提高", a.elementalAttachedDamageBonus)
+	values = a.append(values, "攻击模式伤害加成", a.attackModeDamageBonus)
+	values = a.append(values, "攻击模式技能倍率加成", a.attackModeFactorBonus)
 	return fmt.Sprintf("%s", values)
+}
+
+func (a *Attributes) append(values []string, title string, field interface{}) []string {
+	if reflect.ValueOf(field).Len() == 0 {
+		return values
+	} else {
+		return append(values, fmt.Sprintf("%s: %v", title, field))
+	}
 }
