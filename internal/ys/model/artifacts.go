@@ -192,9 +192,10 @@ func (a *Artifacts) Accumulation(unload bool) attr.AttributeModifier {
 
 func (a *Artifacts) Evaluate() map[string]*attr.Modifier {
 	detects := make(map[string]*attr.Modifier)
-	detects[fmt.Sprintf("[主]%s: %.2f", a.primaryEntry.entry, a.primaryEntry.value)] = attr.NewCharacterModifier(a.primaryEntry.unload)
+	detects[a.name] = attr.NewCharacterModifier(a.Accumulation(true))
+	detects[fmt.Sprintf("%s - [主]%s: %.2f", a.name, a.primaryEntry.entry, a.primaryEntry.value)] = attr.NewCharacterModifier(a.primaryEntry.unload)
 	for ent, secondaryEntry := range a.secondaryEntries {
-		detects[fmt.Sprintf("[副]%s%v: %.2f", ent, secondaryEntry.rect, secondaryEntry.value)] = attr.NewCharacterModifier(secondaryEntry.unload)
+		detects[fmt.Sprintf("%s - [副]%s%v: %.2f", a.name, ent, secondaryEntry.rect, secondaryEntry.value)] = attr.NewCharacterModifier(secondaryEntry.unload)
 	}
 	return detects
 }
@@ -229,5 +230,5 @@ func (a *Artifacts) secondaryFactors() []float64 {
 }
 
 func (a *Artifacts) String() string {
-	return fmt.Sprintf("%s: %s{star:%d level:%d primary:%s secondary[%v]:%s}", a.name, a.position, a.star, a.level, a.primary, a.secondaryEntries, a.secondary)
+	return fmt.Sprintf("%s: %s{star:%d level:%d primary:%s secondary:%s}", a.name, a.position, a.star, a.level, a.primary, a.secondary)
 }

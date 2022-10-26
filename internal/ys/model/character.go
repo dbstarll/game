@@ -12,7 +12,6 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/enemy"
 	"github.com/dbstarll/game/internal/ys/model/weapon"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 	"time"
 )
 
@@ -276,19 +275,12 @@ func (c *Character) Calculate(enemy *enemy.Enemy, action *action.Action, infusio
 func (c *Character) Evaluate() map[string]*attr.Modifier {
 	detects := make(map[string]*attr.Modifier)
 	for _, artifact := range c.artifacts {
-		zap.S().Debugf("%s", artifact)
-		detects[artifact.name] = attr.NewCharacterModifier(artifact.Accumulation(true))
-		if artifactDetects := artifact.Evaluate(); len(artifactDetects) > 0 {
-			for n, m := range artifactDetects {
-				detects[fmt.Sprintf("%s - %s", artifact.name, n)] = m
-			}
+		for n, m := range artifact.Evaluate() {
+			detects[n] = m
 		}
-		weaponBase, weaponRefine := attr.NewAttributes(), attr.NewAttributes()
-		c.weapon.AccumulationBase()(weaponBase)
-		c.weapon.AccumulationRefine()(weaponRefine)
-		detects[fmt.Sprintf("%s - 基础", c.weapon.Name())] = attr.NewCharacterModifier(weaponBase.Accumulation(true))
-		detects[fmt.Sprintf("%s - 精炼", c.weapon.Name())] = attr.NewCharacterModifier(weaponRefine.Accumulation(true))
-		detects[c.weapon.Name()] = attr.NewCharacterModifier(attr.MergeAttributes(weaponBase.Accumulation(true), weaponRefine.Accumulation(true)))
+	}
+	for n, m := range c.weapon.Evaluate() {
+		detects[n] = m
 	}
 	return detects
 }

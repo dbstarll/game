@@ -1,6 +1,7 @@
 package weapon
 
 import (
+	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
 	"github.com/dbstarll/game/internal/ys/model/attr"
@@ -70,10 +71,6 @@ func (w *Weapon) Type() weaponType.WeaponType {
 	return w.weaponType
 }
 
-func (w *Weapon) Name() string {
-	return w.name
-}
-
 func (w *Weapon) AccumulationBase() attr.AttributeModifier {
 	if w == nil {
 		return attr.NopAttributeModifier
@@ -88,4 +85,14 @@ func (w *Weapon) AccumulationRefine() attr.AttributeModifier {
 	} else {
 		return attr.MergeAttributes(w.refineModifiers...)
 	}
+}
+
+func (w *Weapon) Evaluate() map[string]*attr.Modifier {
+	detects := make(map[string]*attr.Modifier)
+	weaponRefine := attr.NewAttributes()
+	w.AccumulationRefine()(weaponRefine)
+	detects[fmt.Sprintf("%s - 基础", w.name)] = attr.NewCharacterModifier(w.base.Accumulation(true))
+	detects[fmt.Sprintf("%s - 精炼", w.name)] = attr.NewCharacterModifier(weaponRefine.Accumulation(true))
+	detects[w.name] = attr.NewCharacterModifier(attr.MergeAttributes(w.base.Accumulation(true), weaponRefine.Accumulation(true)))
+	return detects
 }
