@@ -1,6 +1,11 @@
 package entry
 
-import "github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
+import (
+	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
+	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
+	"github.com/dbstarll/game/internal/ys/model/attr"
+)
 
 // 圣遗物词条
 type Entry int
@@ -136,5 +141,88 @@ func (e Entry) Secondary() (float64, bool) {
 		return rate, true
 	} else {
 		return 0, false
+	}
+}
+
+func (e Entry) Multiple() (float64, func(add float64) attr.AttributeModifier) {
+	switch e {
+	case Hp: // 生命值
+		return 153.7, func(add float64) attr.AttributeModifier {
+			return attr.New(point.Hp, add).Accumulation()
+		}
+	case HpPercentage: // 生命值%
+		return 1.5, func(add float64) attr.AttributeModifier {
+			return attr.New(point.HpPercentage, add).Accumulation()
+		}
+	case Atk: // 攻击力
+		return 10.005, func(add float64) attr.AttributeModifier {
+			return attr.New(point.Atk, add).Accumulation()
+		}
+	case AtkPercentage: // 攻击力%
+		return 1.5, func(add float64) attr.AttributeModifier {
+			return attr.New(point.AtkPercentage, add).Accumulation()
+		}
+	case Def: // 防御力
+		return 5.955, func(add float64) attr.AttributeModifier {
+			return attr.New(point.Def, add).Accumulation()
+		}
+	case DefPercentage: // 防御力%
+		return 1.875, func(add float64) attr.AttributeModifier {
+			return attr.New(point.DefPercentage, add).Accumulation()
+		}
+	case ElementalMastery: // 元素精通
+		return 5.996, func(add float64) attr.AttributeModifier {
+			return attr.New(point.ElementalMastery, add).Accumulation()
+		}
+	case CriticalRate: // 暴击率
+		return 1, func(add float64) attr.AttributeModifier {
+			return attr.New(point.CriticalRate, add).Accumulation()
+		}
+	case CriticalDamage: // 暴击伤害
+		return 2, func(add float64) attr.AttributeModifier {
+			return attr.New(point.CriticalDamage, add).Accumulation()
+		}
+	case HealingBonus: // 治疗加成
+		return 1.155, func(add float64) attr.AttributeModifier {
+			return attr.New(point.HealingBonus, add).Accumulation()
+		}
+	case EnergyRecharge: // 元素充能效率
+		return 5.0 / 3, func(add float64) attr.AttributeModifier {
+			return attr.New(point.EnergyRecharge, add).Accumulation()
+		}
+	case PhysicalDamageBonus: // 物理伤害加成
+		return 1.875, func(add float64) attr.AttributeModifier {
+			return attr.AddElementalDamageBonus(elementals.Physical, add)
+		}
+	case FireDamageBonus: // 火元素伤害加成
+		return 1.5, func(add float64) attr.AttributeModifier {
+			return attr.AddElementalDamageBonus(elementals.Fire, add)
+		}
+	case WaterDamageBonus: // 水元素伤害加成
+		return 1.5, func(add float64) attr.AttributeModifier {
+			return attr.AddElementalDamageBonus(elementals.Water, add)
+		}
+	case GrassDamageBonus: // 草元素伤害加成
+		return 1.5, func(add float64) attr.AttributeModifier {
+			return attr.AddElementalDamageBonus(elementals.Grass, add)
+		}
+	case ElectricDamageBonus: // 雷元素伤害加成
+		return 1.5, func(add float64) attr.AttributeModifier {
+			return attr.AddElementalDamageBonus(elementals.Electric, add)
+		}
+	case WindDamageBonus: // 风元素伤害加成
+		return 1.5, func(add float64) attr.AttributeModifier {
+			return attr.AddElementalDamageBonus(elementals.Wind, add)
+		}
+	case IceDamageBonus: // 冰元素伤害加成
+		return 1.5, func(add float64) attr.AttributeModifier {
+			return attr.AddElementalDamageBonus(elementals.Fire, add)
+		}
+	case EarthDamageBonus: // 岩元素伤害加成
+		return 1.5, func(add float64) attr.AttributeModifier {
+			return attr.AddElementalDamageBonus(elementals.Earth, add)
+		}
+	default:
+		return 0, nil
 	}
 }

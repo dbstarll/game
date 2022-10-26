@@ -32,10 +32,6 @@ func (p Position) String() string {
 	case CircletOfLogos:
 		return "理之冠"
 	default:
-		if p < 0 {
-			return "不限"
-		} else {
-			return "未知"
-		}
+		return "未知"
 	}
 }

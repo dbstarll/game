@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	_ "github.com/dbstarll/game/internal/logger"
-	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
+	"github.com/dbstarll/game/internal/ys/dimension/artifacts/entry"
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
@@ -15,6 +15,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/detect"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
 	"github.com/dbstarll/game/internal/ys/model/weapon"
+	"log"
 	"math"
 	"time"
 )
@@ -65,16 +66,31 @@ func 超绽放队() {
 
 func 迪卢克1() {
 	迪卢克 := model.CharacterFactory迪卢克(10, 9, 9, 0)
-	魔女的炎之花 := model.ArtifactsFactory生之花(5, "魔女的炎之花", buff.AddAtk(51), buff.AddAtkPercentage(12.8),
+	魔女的炎之花, err := model.ArtifactsFactory生之花(5, "魔女的炎之花", 20, buff.AddAtk(51), buff.AddAtkPercentage(12.8),
 		buff.AddCriticalRate(3.1), buff.AddDefPercentage(6.6))
-	魔女常燃之羽 := model.ArtifactsFactory死之羽(5, "魔女常燃之羽", buff.AddCriticalRate(7.8), buff.AddHp(239),
+	if err != nil {
+		log.Fatalf("%+v", err)
+	}
+	魔女常燃之羽, err := model.ArtifactsFactory死之羽(5, "魔女常燃之羽", 20, buff.AddCriticalRate(7.8), buff.AddHp(239),
 		buff.AddCriticalDamage(14), buff.AddElementalMastery(54))
-	魔女破灭之时 := model.NewArtifacts(5, position.SandsOfEon, "魔女破灭之时", model.BaseArtifacts(20, buff.AddAtkPercentage(46.6)),
+	if err != nil {
+		log.Fatalf("%+v", err)
+	}
+	魔女破灭之时, err := model.ArtifactsFactory时之沙(5, "魔女破灭之时", entry.AtkPercentage, 20,
 		buff.AddCriticalDamage(11.7), buff.AddElementalMastery(61), buff.AddEnergyRecharge(15.5), buff.AddCriticalRate(3.1))
-	魔女的心之火 := model.NewArtifacts(5, position.GobletOfEonothem, "魔女的心之火", model.BaseArtifacts(20, buff.AddElementalDamageBonus(46.6, elementals.Fire)),
+	if err != nil {
+		log.Fatalf("%+v", err)
+	}
+	魔女的心之火, err := model.ArtifactsFactory空之杯(5, "魔女的心之火", entry.FireDamageBonus, 20,
 		buff.AddHp(986), buff.AddHpPercentage(9.3), buff.AddCriticalRate(3.9), buff.AddDef(35))
-	渡火者的智慧 := model.NewArtifacts(5, position.CircletOfLogos, "渡火者的智慧", model.BaseArtifacts(20, buff.AddCriticalDamage(62.2)),
+	if err != nil {
+		log.Fatalf("%+v", err)
+	}
+	渡火者的智慧, err := model.ArtifactsFactory理之冠(5, "渡火者的智慧", entry.CriticalDamage, 20,
 		buff.AddAtkPercentage(15.2), buff.AddCriticalRate(6.6), buff.AddEnergyRecharge(11.7), buff.AddHp(269))
+	if err != nil {
+		log.Fatalf("%+v", err)
+	}
 
 	迪卢克.Weapon(weapon.Factory螭骨剑(3))
 	//迪卢克.Weapon(weapon.Factory无工之剑(1))
