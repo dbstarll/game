@@ -160,6 +160,7 @@ func 迪卢克2() error {
 		buff.AddReactionDamageBonus(40, reactions.Overload, reactions.Burn, reactions.Burgeon),
 		buff.AddReactionDamageBonus(15, reactions.Vaporize, reactions.Melt),
 		buff.AddAtkPercentage(25), // 双火共鸣
+		//buff.AddCriticalDamage(50),
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
@@ -200,18 +201,19 @@ func 迪卢克2() error {
 
 func CustomDetects(dye elementals.Elemental) map[string]*attr.Modifier {
 	return map[string]*attr.Modifier{
-		"玉璋护盾":      attr.NewModifier(buff.Superposition(5, time.Second*20, 0, buff.AddShieldStrength(5)), buff.AddAllElementalResist(-20)),
-		"万叶扩散":      attr.NewCharacterModifier(buff.AddElementalDamageBonus(0.04*1000, dye)),
-		"风四件套":      attr.NewEnemyModifier(buff.AddElementalResist(-40, dye)),
-		"万叶扩散+风四件套": attr.NewModifier(buff.AddElementalDamageBonus(0.04*1000, dye), buff.AddElementalResist(-40, dye)),
-		"班尼特":       attr.NewCharacterModifier(buff.AddAtk(int(math.Round(1.19 * (191 + 565))))),
-		"班尼特6命":     attr.NewCharacterModifier(attr.MergeAttributes(buff.AddAtk(int(math.Round(1.19*(191+565)))), buff.AddElementalDamageBonus(15, dye))),
-		"讨龙英杰谭":     attr.NewCharacterModifier(buff.AddAtkPercentage(48)),
-		"砂糖":        attr.NewCharacterModifier(buff.AddElementalMastery(50 + 200)),
-		"砂糖6命":      attr.NewCharacterModifier(attr.MergeAttributes(buff.AddElementalMastery(50+200), buff.AddElementalDamageBonus(20, dye))),
-		"莫娜星异":      attr.NewCharacterModifier(buff.AddDamageBonus(60)),
-		"深林四件套":     attr.NewEnemyModifier(buff.AddElementalResist(-30, elementals.Grass)),
-		"如雷四件套":     attr.NewCharacterModifier(buff.AddReactionDamageBonus(40, reactions.Overload, reactions.ElectroCharged, reactions.Superconduct, reactions.Hyperbloom)),
+		"玉璋护盾":    attr.NewModifier(buff.Superposition(5, time.Second*20, 0, buff.AddShieldStrength(5)), buff.AddAllElementalResist(-20)),
+		"万叶":      attr.NewCharacterModifier(buff.AddElementalDamageBonus(0.04*1000, dye)),
+		"风四件套":    attr.NewEnemyModifier(buff.AddElementalResist(-40, dye)),
+		"万叶+风四件套": attr.NewModifier(buff.AddElementalDamageBonus(0.04*1000, dye), buff.AddElementalResist(-40, dye)),
+		"班尼特":     attr.NewCharacterModifier(buff.AddAtk(int(math.Round(1.19 * (191 + 565))))),
+		"班尼特6命":   attr.NewCharacterModifier(buff.AddAtk(int(math.Round(1.19*(191+565)))), buff.AddElementalDamageBonus(15, dye)),
+		"讨龙英杰谭":   attr.NewCharacterModifier(buff.AddAtkPercentage(48)),
+		"砂糖":      attr.NewCharacterModifier(buff.AddElementalMastery(50 + 200)),
+		"砂糖+风四件套": attr.NewModifier(buff.AddElementalMastery(50+200), buff.AddElementalResist(-40, dye)),
+		"砂糖6命":    attr.NewCharacterModifier(buff.AddElementalMastery(50+200), buff.AddElementalDamageBonus(20, dye)),
+		"莫娜星异":    attr.NewCharacterModifier(buff.AddDamageBonus(60)),
+		"深林四件套":   attr.NewEnemyModifier(buff.AddElementalResist(-30, elementals.Grass)),
+		"如雷四件套":   attr.NewCharacterModifier(buff.AddReactionDamageBonus(40, reactions.Overload, reactions.ElectroCharged, reactions.Superconduct, reactions.Hyperbloom)),
 	}
 }
 

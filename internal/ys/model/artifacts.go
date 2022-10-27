@@ -198,7 +198,7 @@ func (a *Artifacts) Evaluate(replace *Artifacts) map[string]*attr.Modifier {
 	detects := make(map[string]*attr.Modifier)
 	detects[a.name] = attr.NewCharacterModifier(a.Accumulation(true))
 	if replace != nil {
-		detects[fmt.Sprintf("%s - [替换]", a.name)] = attr.NewCharacterModifier(attr.MergeAttributes(a.Accumulation(true), replace.Accumulation(false)))
+		detects[fmt.Sprintf("%s - [替换]", a.name)] = attr.NewCharacterModifier(a.Accumulation(true), replace.Accumulation(false))
 	}
 	detects[fmt.Sprintf("%s - [主]%s: %.2f", a.name, a.primaryEntry.entry, a.primaryEntry.value)] = attr.NewCharacterModifier(a.primaryEntry.unload)
 	for ent, secondaryEntry := range a.secondaryEntries {

@@ -102,6 +102,6 @@ func (w *Weapon) Evaluate() map[string]*attr.Modifier {
 	detects[fmt.Sprintf("%s - 白值", w.name)] = attr.NewCharacterModifier(w.base.Accumulation(true))
 	detects[fmt.Sprintf("%s - 主词条", w.name)] = attr.NewCharacterModifier(w.entry.Accumulation(true))
 	detects[fmt.Sprintf("%s - 精炼", w.name)] = attr.NewCharacterModifier(w.refine.Accumulation(true))
-	detects[w.name] = attr.NewCharacterModifier(attr.MergeAttributes(w.base.Accumulation(true), w.entry.Accumulation(true), w.refine.Accumulation(true)))
+	detects[w.name] = attr.NewCharacterModifier(w.base.Accumulation(true), w.entry.Accumulation(true), w.refine.Accumulation(true))
 	return detects
 }

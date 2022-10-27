@@ -20,15 +20,22 @@ type Appliable interface {
 }
 
 func MergeAttributes(modifiers ...AttributeModifier) AttributeModifier {
-	return func(attributes *Attributes) func() {
-		size := len(modifiers)
-		cancelList := make([]func(), size)
-		for idx, modifier := range modifiers {
-			cancelList[size-idx-1] = modifier(attributes)
-		}
-		return func() {
-			for _, cancel := range cancelList {
-				cancel()
+	switch len(modifiers) {
+	case 0:
+		return NopAttributeModifier
+	case 1:
+		return modifiers[0]
+	default:
+		return func(attributes *Attributes) func() {
+			size := len(modifiers)
+			cancelList := make([]func(), size)
+			for idx, modifier := range modifiers {
+				cancelList[size-idx-1] = modifier(attributes)
+			}
+			return func() {
+				for _, cancel := range cancelList {
+					cancel()
+				}
 			}
 		}
 	}
@@ -81,12 +88,26 @@ type Modifier struct {
 	enemyModifier     AttributeModifier
 }
 
-func NewCharacterModifier(characterModifier AttributeModifier) *Modifier {
-	return NewModifier(characterModifier, nil)
+func NewCharacterModifier(characterModifiers ...AttributeModifier) *Modifier {
+	switch len(characterModifiers) {
+	case 0:
+		return NewModifier(nil, nil)
+	case 1:
+		return NewModifier(characterModifiers[0], nil)
+	default:
+		return NewModifier(MergeAttributes(characterModifiers...), nil)
+	}
 }
 
-func NewEnemyModifier(enemyModifier AttributeModifier) *Modifier {
-	return NewModifier(nil, enemyModifier)
+func NewEnemyModifier(enemyModifiers ...AttributeModifier) *Modifier {
+	switch len(enemyModifiers) {
+	case 0:
+		return NewModifier(nil, nil)
+	case 1:
+		return NewModifier(nil, enemyModifiers[0])
+	default:
+		return NewModifier(nil, MergeAttributes(enemyModifiers...))
+	}
 }
 
 func NewModifier(characterModifier, enemyModifier AttributeModifier) *Modifier {
