@@ -36,7 +36,7 @@ func main() {
 func 神里绫华() error {
 	神里绫华 := model.CharacterFactory神里绫华(9, 9, 9, 0)
 
-	if _, err := 神里绫华.Weapon(weapon.Factory雾切之回光(1, 2, elementals.Ice)); err != nil {
+	if _, err := 神里绫华.Weapon(weapon.Factory雾切之回光(1, 3, elementals.Ice)); err != nil {
 		return err
 	} else if 生之花, err := model.ArtifactsFactory生之花(5, "历经风雪的思念", 20, model.FloatEntries{
 		entry.Def: 42, entry.AtkPercentage: 15.2, entry.HpPercentage: 9.3, entry.CriticalDamage: 12.4}); err != nil {
@@ -64,14 +64,15 @@ func 神里绫华() error {
 	神里绫华.Apply(
 		buff.AddAttackDamageBonus(30, attackMode.NormalAttack, attackMode.ChargedAttack), // 绫华固有天赋5
 		buff.AddElementalDamageBonus(18, elementals.Ice),                                 // 绫华固有天赋6
-		buff.AddElementalDamageBonus(15, elementals.Ice),                                 // 冰二件套
-		buff.AddCriticalRate(40),                                                         // 冰四件套
-		buff.AddCriticalRate(15),                                                         // 双冰共鸣
+		buff.Artifacts冰风迷途的勇士4(),
+		buff.TeamIce(),
+		buff.Character万叶扩散(1000, elementals.Ice),
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
 	挨揍的.Attach(elementals.Ice, 12)
 	//挨揍的.AttachState(states.Frozen, 12)
+	buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的)
 
 	replaceArtifacts := make(map[position.Position]*model.Artifacts)
 	if 生之花, err := model.ArtifactsFactory生之花(5, "历经风雪的思念", 20, model.IntEntries{
@@ -90,6 +91,7 @@ func 神里绫华() error {
 		entry.CriticalDamage: 4, entry.AtkPercentage: 3, entry.Atk: 1, entry.EnergyRecharge: 1}); err != nil {
 		return err
 	} else {
+		//神里绫华.Artifacts(理之冠)
 		replaceArtifacts[生之花.Position()] = 生之花
 		replaceArtifacts[死之羽.Position()] = 死之羽
 		replaceArtifacts[时之沙.Position()] = 时之沙
@@ -97,7 +99,7 @@ func 神里绫华() error {
 		replaceArtifacts[理之冠.Position()] = 理之冠
 	}
 
-	action := 神里绫华.GetActions().Get(attackMode.ChargedAttack, "")
+	action := 神里绫华.GetActions().Get(attackMode.ElementalBurst, "")
 	profitDetect(神里绫华, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, elementals.Ice).Calculate(debug)
 		return avg.Value()
@@ -174,11 +176,9 @@ func 迪卢克1() error {
 	}
 
 	迪卢克.Apply(
-		buff.AddElementalDamageBonus(20, elementals.Fire),   // 卢姥爷大招
-		buff.AddElementalDamageBonus(37.5, elementals.Fire), // 魔女套
-		buff.AddReactionDamageBonus(40, reactions.Overload, reactions.Burn, reactions.Burgeon),
-		buff.AddReactionDamageBonus(15, reactions.Vaporize, reactions.Melt),
-		buff.AddAtkPercentage(25), // 双火共鸣
+		buff.AddElementalDamageBonus(20, elementals.Fire), // 卢姥爷大招
+		buff.Artifacts炽烈的炎之魔女4(3),
+		buff.TeamFire(),
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
@@ -230,11 +230,9 @@ func 迪卢克2() error {
 	}
 
 	迪卢克.Apply(
-		buff.AddElementalDamageBonus(20, elementals.Fire),   // 卢姥爷大招
-		buff.AddElementalDamageBonus(37.5, elementals.Fire), // 魔女套
-		buff.AddReactionDamageBonus(40, reactions.Overload, reactions.Burn, reactions.Burgeon),
-		buff.AddReactionDamageBonus(15, reactions.Vaporize, reactions.Melt),
-		buff.AddAtkPercentage(25), // 双火共鸣
+		buff.AddElementalDamageBonus(20, elementals.Fire), // 卢姥爷大招
+		buff.Artifacts炽烈的炎之魔女4(3),
+		buff.TeamFire(),
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
@@ -275,7 +273,7 @@ func 迪卢克2() error {
 func CustomDetects(dye elementals.Elemental) map[string]*attr.Modifier {
 	return map[string]*attr.Modifier{
 		"玉璋护盾":    attr.NewModifier(buff.Superposition(5, time.Second*20, 0, buff.AddShieldStrength(5)), buff.AddAllElementalResist(-20)),
-		"万叶":      attr.NewCharacterModifier(buff.AddElementalDamageBonus(0.04*1000, dye)),
+		"万叶":      attr.NewCharacterModifier(buff.Character万叶扩散(1000, dye)),
 		"风四件套":    attr.NewEnemyModifier(buff.AddElementalResist(-40, dye)),
 		"万叶+风四件套": attr.NewModifier(buff.AddElementalDamageBonus(0.04*1000, dye), buff.AddElementalResist(-40, dye)),
 		"班尼特":     attr.NewCharacterModifier(buff.AddAtk(int(math.Round(1.19 * (191 + 565))))),

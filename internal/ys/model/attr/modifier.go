@@ -119,10 +119,10 @@ func NewModifier(characterModifier, enemyModifier AttributeModifier) *Modifier {
 
 func (m *Modifier) Apply(character Appliable, enemy Appliable) func() {
 	var cancels []func()
-	if m.characterModifier != nil {
+	if m.characterModifier != nil && character != nil {
 		cancels = append(cancels, character.Apply(m.characterModifier))
 	}
-	if m.enemyModifier != nil {
+	if m.enemyModifier != nil && enemy != nil {
 		cancels = append(cancels, enemy.Apply(m.enemyModifier))
 	}
 	return func() {
