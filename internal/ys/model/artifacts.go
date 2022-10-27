@@ -7,22 +7,23 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/pkg/errors"
 	"math"
+	"reflect"
 )
 
 var (
-	ArtifactsFactory生之花 = func(star int, name string, level int, secondaryEntries map[entry.Entry]float64) (*Artifacts, error) {
+	ArtifactsFactory生之花 = func(star int, name string, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
 		return newArtifacts(star, position.FlowerOfLife, entry.Hp, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
-	ArtifactsFactory死之羽 = func(star int, name string, level int, secondaryEntries map[entry.Entry]float64) (*Artifacts, error) {
+	ArtifactsFactory死之羽 = func(star int, name string, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
 		return newArtifacts(star, position.PlumeOfDeath, entry.Atk, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
-	ArtifactsFactory时之沙 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries map[entry.Entry]float64) (*Artifacts, error) {
+	ArtifactsFactory时之沙 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
 		return newArtifacts(star, position.SandsOfEon, primaryEntry, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
-	ArtifactsFactory空之杯 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries map[entry.Entry]float64) (*Artifacts, error) {
+	ArtifactsFactory空之杯 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
 		return newArtifacts(star, position.GobletOfEonothem, primaryEntry, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
-	ArtifactsFactory理之冠 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries map[entry.Entry]float64) (*Artifacts, error) {
+	ArtifactsFactory理之冠 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
 		return newArtifacts(star, position.CircletOfLogos, primaryEntry, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
 	starHpRect = [][]float64{
@@ -33,6 +34,31 @@ var (
 		{20, 4780, 717, 209.13, 239, 268.88, 298.75},
 	}
 )
+
+type FloatEntries map[entry.Entry]float64
+type IntEntries map[entry.Entry]int
+
+type EntriesLooper interface {
+	LoopEntries(looper func(entry entry.Entry, value interface{}) error) error
+}
+
+func (e FloatEntries) LoopEntries(looper func(entry entry.Entry, value interface{}) error) error {
+	for entry, value := range e {
+		if err := looper(entry, value); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (e IntEntries) LoopEntries(looper func(entry entry.Entry, value interface{}) error) error {
+	for entry, value := range e {
+		if err := looper(entry, value); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 type PrimaryEntry struct {
 	entry  entry.Entry
@@ -86,14 +112,32 @@ func baseArtifacts(level int) ArtifactsModifier {
 	}
 }
 
-func secondaryArtifacts(secondaryEntries map[entry.Entry]float64) ArtifactsModifier {
+func secondaryArtifacts(secondaryEntries EntriesLooper) ArtifactsModifier {
 	return func(artifacts *Artifacts) (f func(), err error) {
 		secondaryFactors, secondaryModifiers := artifacts.secondaryFactors(), make([]attr.AttributeModifier, 0)
-		for ent, value := range secondaryEntries {
-			if rate, fn := ent.Multiple(); rate == 0 || fn == nil {
-				return nil, errors.Errorf("圣遗物副词条[%s]增幅未定义", ent)
-			} else if matchRect, matchFactor, err := detectSecondaryEntry(ent, value/rate, secondaryFactors); err != nil {
-				return nil, err
+		if err := secondaryEntries.LoopEntries(func(entry entry.Entry, value interface{}) error {
+			if rate, fn := entry.Multiple(); rate == 0 || fn == nil {
+				return errors.Errorf("圣遗物副词条[%s]增幅未定义", entry)
+			} else if ratio, exist := entry.Secondary(); !exist {
+				return errors.Errorf("圣遗物不支持副词条[%s]", entry)
+			} else if intValue, ok := value.(int); ok {
+				matchRect, matchFactor := make([]int, intValue), secondaryFactors[3]*float64(intValue)/ratio
+				for ; intValue > 0; intValue-- {
+					matchRect[intValue-1] = 3
+				}
+				secondaryEntry := &SecondaryEntry{
+					rect:   matchRect,
+					value:  matchFactor * rate,
+					load:   fn(matchFactor * rate),
+					unload: fn(-matchFactor * rate),
+				}
+				secondaryModifiers = append(secondaryModifiers, secondaryEntry.load)
+				artifacts.secondaryEntries[entry] = secondaryEntry
+				return nil
+			} else if floatValue, ok := value.(float64); !ok {
+				return errors.Errorf("不支持的圣遗物副词条[%s]增幅类型: %s", entry, reflect.TypeOf(value))
+			} else if matchRect, matchFactor, err := detectSecondaryEntry(entry, floatValue/rate, ratio, secondaryFactors); err != nil {
+				return err
 			} else {
 				secondaryEntry := &SecondaryEntry{
 					rect:   matchRect,
@@ -102,62 +146,62 @@ func secondaryArtifacts(secondaryEntries map[entry.Entry]float64) ArtifactsModif
 					unload: fn(-matchFactor * rate),
 				}
 				secondaryModifiers = append(secondaryModifiers, secondaryEntry.load)
-				artifacts.secondaryEntries[ent] = secondaryEntry
+				artifacts.secondaryEntries[entry] = secondaryEntry
+				return nil
 			}
+		}); err != nil {
+			return nil, err
 		}
 		callback := attr.MergeAttributes(secondaryModifiers...)(artifacts.secondary)
 		return func() {
 			callback()
-			for ent, _ := range secondaryEntries {
-				delete(artifacts.secondaryEntries, ent)
-			}
+			secondaryEntries.LoopEntries(func(entry entry.Entry, value interface{}) error {
+				delete(artifacts.secondaryEntries, entry)
+				return nil
+			})
 		}, nil
 	}
 }
 
-func detectSecondaryEntry(entry entry.Entry, value float64, secondaryFactors []float64) ([]int, float64, error) {
-	if ratio, exist := entry.Secondary(); !exist {
-		return nil, 0, errors.Errorf("圣遗物不支持副词条[%s]", entry)
-	} else {
-		factor, matchRet, matchFactor := value*ratio, make([]int, 0), 0.0
-		var ret [][]int
-		for ite := int(math.Floor((factor + 0.1) / secondaryFactors[0])); ite >= 0; ite-- {
-			if len(ret) == 0 {
-				for idx, secondaryFactor := range secondaryFactors {
-					testRet, testFactor := []int{idx}, secondaryFactor
-					if math.Abs(factor-testFactor) < math.Abs(factor-matchFactor) {
-						matchRet, matchFactor = testRet, testFactor
-					}
-					ret = append(ret, testRet)
+func detectSecondaryEntry(entry entry.Entry, value, ratio float64, secondaryFactors []float64) ([]int, float64, error) {
+	factor, matchRet, matchFactor := value*ratio, make([]int, 0), 0.0
+	var ret [][]int
+	for ite := int(math.Floor((factor + 0.1) / secondaryFactors[0])); ite >= 0; ite-- {
+		if len(ret) == 0 {
+			for idx, secondaryFactor := range secondaryFactors {
+				testRet, testFactor := []int{idx}, secondaryFactor
+				if math.Abs(factor-testFactor) < math.Abs(factor-matchFactor) {
+					matchRet, matchFactor = testRet, testFactor
 				}
-			} else {
-				var newRet [][]int
-				for _, sub := range ret {
-					subFactor, minIndex := 0.0, len(secondaryFactors)-1
-					for _, i := range sub {
-						subFactor += secondaryFactors[i]
-						if i < minIndex {
-							minIndex = i
-						}
-					}
-					for idx, secondaryFactor := range secondaryFactors {
-						if idx >= minIndex {
-							testRet, testFactor := append(sub, idx), subFactor+secondaryFactor
-							if math.Abs(factor-testFactor) < math.Abs(factor-matchFactor) {
-								matchRet, matchFactor = testRet, testFactor
-							}
-							newRet = append(newRet, testRet)
-						}
-					}
-				}
-				ret = newRet
+				ret = append(ret, testRet)
 			}
-		}
-		if len(matchRet) == 0 {
-			return nil, 0, errors.Errorf("无法解析圣遗物副词条[%s]增幅: %v, %v", entry, value, secondaryFactors)
 		} else {
-			return matchRet, matchFactor / ratio, nil
+			var newRet [][]int
+			for _, sub := range ret {
+				subFactor, minIndex := 0.0, len(secondaryFactors)-1
+				for _, i := range sub {
+					subFactor += secondaryFactors[i]
+					if i < minIndex {
+						minIndex = i
+					}
+				}
+				for idx, secondaryFactor := range secondaryFactors {
+					if idx >= minIndex {
+						testRet, testFactor := append(sub, idx), subFactor+secondaryFactor
+						if math.Abs(factor-testFactor) < math.Abs(factor-matchFactor) {
+							matchRet, matchFactor = testRet, testFactor
+						}
+						newRet = append(newRet, testRet)
+					}
+				}
+			}
+			ret = newRet
 		}
+	}
+	if len(matchRet) == 0 {
+		return nil, 0, errors.Errorf("无法解析圣遗物副词条[%s]增幅: %v, %v", entry, value, secondaryFactors)
+	} else {
+		return matchRet, matchFactor / ratio, nil
 	}
 }
 

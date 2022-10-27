@@ -99,6 +99,11 @@ func AddDefenceReduction(add float64) attr.AttributeModifier {
 	return attr.New(point.DefenceReduction, add).Accumulation()
 }
 
+// 全元素伤害加成
+func AddAllElementalDamageBonus(add float64) attr.AttributeModifier {
+	return AddElementalDamageBonus(add, elementals.Elementals[1:]...)
+}
+
 // 元素/物理伤害加成
 func AddElementalDamageBonus(add float64, es ...elementals.Elemental) attr.AttributeModifier {
 	var modifiers []attr.AttributeModifier

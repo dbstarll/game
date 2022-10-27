@@ -3,6 +3,7 @@ package weapon
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
@@ -29,6 +30,12 @@ var (
 	}
 	Factory原木刀 = func(refine int) *Weapon {
 		return New(4, weaponType.Sword, "原木刀", Base(90, 565, buff.AddEnergyRecharge(30.6)))
+	}
+	Factory雾切之回光 = func(refine, layers int, elemental elementals.Elemental) *Weapon {
+		return New(5, weaponType.Sword, "雾切之回光", Base(90, 674, buff.AddCriticalDamage(44.1)),
+			buff.AddAllElementalDamageBonus(float64(9+refine*3)),
+			buff.AddElementalDamageBonus(float64([]int{0, 6, 12, 21}[layers]+refine*[]int{0, 2, 4, 7}[layers]), elemental), // 巴印层数
+		)
 	}
 )
 
