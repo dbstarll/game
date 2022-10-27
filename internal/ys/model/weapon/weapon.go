@@ -13,7 +13,7 @@ var (
 	Factory无工之剑 = func(refine int) *Weapon {
 		return New(5, weaponType.Claymore, "无工之剑", Base(90, 608, buff.AddAtkPercentage(49.6)),
 			buff.AddShieldStrength(float64(15+refine*5)),
-			buff.Superposition(5, time.Second*8, time.Millisecond*300, buff.AddAtkPercentage(float64(3+refine))),
+			buff.Superposition(5, time.Second*8, time.Millisecond*300, buff.AddAtkPercentage(2*float64(3+refine))),
 		)
 	}
 	Factory黑岩斩刀 = func(refine int) *Weapon {
@@ -33,22 +33,25 @@ var (
 )
 
 type Weapon struct {
-	star            int
-	weaponType      weaponType.WeaponType
-	name            string
-	level           int
-	base            *attr.Attributes
-	refineModifiers []attr.AttributeModifier
+	star       int
+	weaponType weaponType.WeaponType
+	name       string
+	level      int
+	base       *attr.Attributes
+	entry      *attr.Attributes
+	refine     *attr.Attributes
 }
 
 type Modifier func(weapon *Weapon) func()
 
-func Base(level, baseAtk int, baseModifier attr.AttributeModifier) Modifier {
+func Base(level, baseAtk int, entryModifier attr.AttributeModifier) Modifier {
 	return func(weapon *Weapon) func() {
 		oldLevel := weapon.level
 		weapon.level = level
-		callback := attr.MergeAttributes(buff.AddAtk(baseAtk), baseModifier)(weapon.base)
+		callback := buff.AddAtk(baseAtk)(weapon.base)
+		callback2 := entryModifier(weapon.entry)
 		return func() {
+			callback2()
 			callback()
 			weapon.level = oldLevel
 		}
@@ -57,14 +60,16 @@ func Base(level, baseAtk int, baseModifier attr.AttributeModifier) Modifier {
 
 func New(star int, weaponType weaponType.WeaponType, name string, baseModifier Modifier, refineModifiers ...attr.AttributeModifier) *Weapon {
 	w := &Weapon{
-		star:            star,
-		weaponType:      weaponType,
-		name:            name,
-		level:           1,
-		base:            attr.NewAttributes(),
-		refineModifiers: refineModifiers,
+		star:       star,
+		weaponType: weaponType,
+		name:       name,
+		level:      1,
+		base:       attr.NewAttributes(),
+		entry:      attr.NewAttributes(),
+		refine:     attr.NewAttributes(),
 	}
 	baseModifier(w)
+	attr.MergeAttributes(refineModifiers...)(w.refine)
 	return w
 }
 
@@ -80,7 +85,7 @@ func (w *Weapon) AccumulationBase() attr.AttributeModifier {
 	if w == nil {
 		return attr.NopAttributeModifier
 	} else {
-		return w.base.Accumulation(false)
+		return attr.MergeAttributes(w.base.Accumulation(false), w.entry.Accumulation(false))
 	}
 }
 
@@ -88,16 +93,15 @@ func (w *Weapon) AccumulationRefine() attr.AttributeModifier {
 	if w == nil {
 		return attr.NopAttributeModifier
 	} else {
-		return attr.MergeAttributes(w.refineModifiers...)
+		return w.refine.Accumulation(false)
 	}
 }
 
 func (w *Weapon) Evaluate() map[string]*attr.Modifier {
 	detects := make(map[string]*attr.Modifier)
-	weaponRefine := attr.NewAttributes()
-	w.AccumulationRefine()(weaponRefine)
-	detects[fmt.Sprintf("%s - 基础", w.name)] = attr.NewCharacterModifier(w.base.Accumulation(true))
-	detects[fmt.Sprintf("%s - 精炼", w.name)] = attr.NewCharacterModifier(weaponRefine.Accumulation(true))
-	detects[w.name] = attr.NewCharacterModifier(attr.MergeAttributes(w.base.Accumulation(true), weaponRefine.Accumulation(true)))
+	detects[fmt.Sprintf("%s - 白值", w.name)] = attr.NewCharacterModifier(w.base.Accumulation(true))
+	detects[fmt.Sprintf("%s - 主词条", w.name)] = attr.NewCharacterModifier(w.entry.Accumulation(true))
+	detects[fmt.Sprintf("%s - 精炼", w.name)] = attr.NewCharacterModifier(w.refine.Accumulation(true))
+	detects[w.name] = attr.NewCharacterModifier(attr.MergeAttributes(w.base.Accumulation(true), w.entry.Accumulation(true), w.refine.Accumulation(true)))
 	return detects
 }
