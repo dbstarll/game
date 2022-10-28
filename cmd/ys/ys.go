@@ -23,12 +23,12 @@ import (
 )
 
 func main() {
-	//if err := 迪卢克2(); err != nil {
-	//	log.Fatalf("%+v", err)
-	//}
-	if err := 神里绫华(); err != nil {
+	if err := 迪卢克2(); err != nil {
 		log.Fatalf("%+v", err)
 	}
+	//if err := 神里绫华(); err != nil {
+	//	log.Fatalf("%+v", err)
+	//}
 	//超绽放队()
 	//绽放队()
 }
@@ -36,7 +36,7 @@ func main() {
 func 神里绫华() error {
 	神里绫华 := model.CharacterFactory神里绫华(9, 9, 9, 0)
 
-	if _, err := 神里绫华.Weapon(weapon.Factory雾切之回光(1, 3, elementals.Ice)); err != nil {
+	if _, err := 神里绫华.Weapon(weapon.Factory雾切之回光(1, 2, elementals.Ice)); err != nil {
 		return err
 	} else if 生之花, err := model.ArtifactsFactory生之花(5, "历经风雪的思念", 20, model.FloatEntries{
 		entry.Def: 42, entry.AtkPercentage: 15.2, entry.HpPercentage: 9.3, entry.CriticalDamage: 12.4}); err != nil {
@@ -66,13 +66,13 @@ func 神里绫华() error {
 		buff.AddElementalDamageBonus(18, elementals.Ice),                                 // 绫华固有天赋6
 		buff.Artifacts冰风迷途的勇士4(),
 		buff.TeamIce(),
-		buff.Character万叶扩散(1000, elementals.Ice),
+		//buff.Character万叶扩散(1000, elementals.Ice),
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
 	挨揍的.Attach(elementals.Ice, 12)
 	//挨揍的.AttachState(states.Frozen, 12)
-	buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的)
+	//buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的)
 
 	replaceArtifacts := make(map[position.Position]*model.Artifacts)
 	if 生之花, err := model.ArtifactsFactory生之花(5, "历经风雪的思念", 20, model.IntEntries{
@@ -99,7 +99,7 @@ func 神里绫华() error {
 		replaceArtifacts[理之冠.Position()] = 理之冠
 	}
 
-	action := 神里绫华.GetActions().Get(attackMode.ElementalBurst, "")
+	action := 神里绫华.GetActions().Get(attackMode.ChargedAttack, "")
 	profitDetect(神里绫华, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, elementals.Ice).Calculate(debug)
 		return avg.Value()
@@ -252,7 +252,7 @@ func 迪卢克2() error {
 		entry.CriticalDamage: 5, entry.ElementalMastery: 1, entry.CriticalRate: 2, entry.AtkPercentage: 1}); err != nil {
 		return err
 	} else if 理之冠, err := model.ArtifactsFactory理之冠(5, "焦灼的魔女帽", entry.CriticalRate, 20, model.IntEntries{
-		entry.CriticalDamage: 6, entry.ElementalMastery: 1, entry.Atk: 1, entry.AtkPercentage: 13}); err != nil {
+		entry.CriticalDamage: 6, entry.ElementalMastery: 1, entry.Atk: 1, entry.AtkPercentage: 1}); err != nil {
 		return err
 	} else {
 		replaceArtifacts[生之花.Position()] = 生之花
@@ -283,6 +283,8 @@ func CustomDetects(dye elementals.Elemental) map[string]*attr.Modifier {
 		"砂糖+风四件套": attr.NewModifier(buff.AddElementalMastery(50+200), buff.AddElementalResist(-40, dye)),
 		"砂糖6命":    attr.NewCharacterModifier(buff.AddElementalMastery(50+200), buff.AddElementalDamageBonus(20, dye)),
 		"莫娜星异":    attr.NewCharacterModifier(buff.AddDamageBonus(60)),
+		"磐岩四件套":   attr.NewCharacterModifier(buff.AddAtkPercentage(20)),
+		"岩主Q":     attr.NewCharacterModifier(buff.AddCriticalRate(15)),
 		"深林四件套":   attr.NewEnemyModifier(buff.AddElementalResist(-30, elementals.Grass)),
 		"如雷四件套":   attr.NewCharacterModifier(buff.AddReactionDamageBonus(40, reactions.Overload, reactions.ElectroCharged, reactions.Superconduct, reactions.Hyperbloom)),
 	}

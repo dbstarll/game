@@ -27,11 +27,11 @@ var (
 		return newArtifacts(star, position.CircletOfLogos, primaryEntry, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
 	}
 	starHpRect = [][]float64{
-		{0, 1, 1, 0, 0, 0, 0},
-		{4, 551, 258, 0, 0, 0, 0},
-		{12, 1893, 430, 0, 0, 0, 0},
-		{16, 3571, 645, 167, 191, 215, 239},
-		{20, 4780, 717, 209.13, 239, 268.88, 298.75},
+		{0, 1, 1, 0, 0, 0, 0, 0, 0},
+		{4, 551, 258, 0, 0, 0, 0, 0, 0},
+		{12, 1893, 430, 0, 0, 0, 0, 0, 0},
+		{16, 3571, 645, 167, 191, 215, 239, 2, 3},
+		{20, 4780, 717, 209.13, 239, 268.88, 298.75, 3, 4},
 	}
 )
 
@@ -114,7 +114,7 @@ func baseArtifacts(level int) ArtifactsModifier {
 
 func secondaryArtifacts(secondaryEntries EntriesLooper) ArtifactsModifier {
 	return func(artifacts *Artifacts) (f func(), err error) {
-		secondaryFactors, secondaryModifiers := artifacts.secondaryFactors(), make([]attr.AttributeModifier, 0)
+		total, secondaryFactors, secondaryModifiers := 0, artifacts.secondaryFactors(), make([]attr.AttributeModifier, 0)
 		if err := secondaryEntries.LoopEntries(func(entry entry.Entry, value interface{}) error {
 			if rate, fn := entry.Multiple(); rate == 0 || fn == nil {
 				return errors.Errorf("圣遗物副词条[%s]增幅未定义", entry)
@@ -131,7 +131,7 @@ func secondaryArtifacts(secondaryEntries EntriesLooper) ArtifactsModifier {
 					load:   fn(matchFactor * rate),
 					unload: fn(-matchFactor * rate),
 				}
-				secondaryModifiers = append(secondaryModifiers, secondaryEntry.load)
+				total, secondaryModifiers = total+len(matchRect), append(secondaryModifiers, secondaryEntry.load)
 				artifacts.secondaryEntries[entry] = secondaryEntry
 				return nil
 			} else if floatValue, ok := value.(float64); !ok {
@@ -145,12 +145,14 @@ func secondaryArtifacts(secondaryEntries EntriesLooper) ArtifactsModifier {
 					load:   fn(matchFactor * rate),
 					unload: fn(-matchFactor * rate),
 				}
-				secondaryModifiers = append(secondaryModifiers, secondaryEntry.load)
+				total, secondaryModifiers = total+len(matchRect), append(secondaryModifiers, secondaryEntry.load)
 				artifacts.secondaryEntries[entry] = secondaryEntry
 				return nil
 			}
 		}); err != nil {
 			return nil, err
+		} else if min, max := artifacts.secondaryEntryNumber(); total > max || total < min {
+			return nil, errors.Errorf("圣遗物副词条目数量[%d]超过限制[%d, %d]", total, min, max)
 		}
 		callback := attr.MergeAttributes(secondaryModifiers...)(artifacts.secondary)
 		return func() {
@@ -242,7 +244,7 @@ func (a *Artifacts) Evaluate(replace *Artifacts) map[string]*attr.Modifier {
 	detects := make(map[string]*attr.Modifier)
 	detects[a.position.String()] = attr.NewCharacterModifier(a.Accumulation(true))
 	if replace != nil {
-		detects[fmt.Sprintf("%s - [替换]", a.position)] = attr.NewCharacterModifier(a.Accumulation(true), replace.Accumulation(false))
+		detects[fmt.Sprintf("%s - [替换]%s", a.position, replace)] = attr.NewCharacterModifier(a.Accumulation(true), replace.Accumulation(false))
 		detects[fmt.Sprintf("[替换]%s", a.position)] = attr.NewCharacterModifier(a.Accumulation(true), replace.Accumulation(false))
 	}
 	detects[fmt.Sprintf("%s - [主]%s: %.2f", a.position, a.primaryEntry.entry, a.primaryEntry.value)] = attr.NewCharacterModifier(a.primaryEntry.unload)
@@ -263,6 +265,12 @@ func (a *Artifacts) baseFactor() float64 {
 
 func (a *Artifacts) maxLevel() int {
 	return int(starHpRect[a.star-1][0])
+}
+
+// 副词条数量限制
+func (a *Artifacts) secondaryEntryNumber() (int, int) {
+	min, max, levelCount := int(starHpRect[a.star-1][7]), int(starHpRect[a.star-1][8]), a.maxLevel()/4
+	return min + levelCount, max + levelCount
 }
 
 func (a *Artifacts) levelFactor(level int) float64 {
