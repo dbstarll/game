@@ -23,12 +23,12 @@ import (
 )
 
 func main() {
-	if err := 迪卢克2(); err != nil {
-		log.Fatalf("%+v", err)
-	}
-	//if err := 神里绫华(); err != nil {
+	//if err := 迪卢克2(); err != nil {
 	//	log.Fatalf("%+v", err)
 	//}
+	if err := 神里绫华(); err != nil {
+		log.Fatalf("%+v", err)
+	}
 	//超绽放队()
 	//绽放队()
 }

@@ -116,7 +116,9 @@ func secondaryArtifacts(secondaryEntries EntriesLooper) ArtifactsModifier {
 	return func(artifacts *Artifacts) (f func(), err error) {
 		total, secondaryFactors, secondaryModifiers := 0, artifacts.secondaryFactors(), make([]attr.AttributeModifier, 0)
 		if err := secondaryEntries.LoopEntries(func(entry entry.Entry, value interface{}) error {
-			if rate, fn := entry.Multiple(); rate == 0 || fn == nil {
+			if artifacts.primaryEntry.entry == entry {
+				return errors.Errorf("圣遗物主副词条[%s]不能相同", entry)
+			} else if rate, fn := entry.Multiple(); rate == 0 || fn == nil {
 				return errors.Errorf("圣遗物副词条[%s]增幅未定义", entry)
 			} else if ratio, exist := entry.Secondary(); !exist {
 				return errors.Errorf("圣遗物不支持副词条[%s]", entry)
