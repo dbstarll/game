@@ -1,6 +1,8 @@
-package model
+package character
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Formula struct {
 	key       string

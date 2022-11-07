@@ -1,4 +1,4 @@
-package model
+package character
 
 var (
 	AddOperator      Operator = &addOperator{}

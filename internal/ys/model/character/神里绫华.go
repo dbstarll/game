@@ -1,4 +1,4 @@
-package model
+package character
 
 import (
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
@@ -8,9 +8,9 @@ import (
 	"time"
 )
 
-var CharacterFactory神里绫华 = func(normal, skill, burst, constellation int) *Character {
-	return NewCharacter(5, elementals.Ice, weaponType.Sword,
-		BaseCharacter(90, 12858, 342, 784, buff.AddCriticalDamage(38.4)),
+var Factory神里绫华 = func(normal, skill, burst, constellation int) *Character {
+	return New(5, elementals.Ice, weaponType.Sword,
+		Base(90, 12858, 342, 784, buff.AddCriticalDamage(38.4)),
 		TalentsTemplateModifier(talent.NewTalentsTemplate(
 			talent.BaseNormalAttack("神里流·倾", 11, 20),
 			talent.BaseElementalSkill("神里流·冰华", 13, time.Second*10, 0),

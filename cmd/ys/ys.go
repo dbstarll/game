@@ -9,10 +9,11 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/states"
-	"github.com/dbstarll/game/internal/ys/model"
 	"github.com/dbstarll/game/internal/ys/model/action"
+	"github.com/dbstarll/game/internal/ys/model/artifacts"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
+	"github.com/dbstarll/game/internal/ys/model/character"
 	"github.com/dbstarll/game/internal/ys/model/detect"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
 	"github.com/dbstarll/game/internal/ys/model/weapon"
@@ -34,23 +35,23 @@ func main() {
 }
 
 func 神里绫华() error {
-	神里绫华 := model.CharacterFactory神里绫华(9, 9, 9, 0)
+	神里绫华 := character.Factory神里绫华(9, 9, 9, 0)
 
 	if _, err := 神里绫华.Weapon(weapon.Factory雾切之回光(1, 2, elementals.Ice)); err != nil {
 		return err
-	} else if 生之花, err := model.ArtifactsFactory生之花(5, "历经风雪的思念", 20, model.FloatEntries{
+	} else if 生之花, err := artifacts.Factory生之花(5, "历经风雪的思念", 20, artifacts.FloatEntries{
 		entry.Def: 42, entry.AtkPercentage: 15.2, entry.HpPercentage: 9.3, entry.CriticalDamage: 12.4}); err != nil {
 		return err
-	} else if 死之羽, err := model.ArtifactsFactory死之羽(5, "摧冰而行的执望", 20, model.FloatEntries{
+	} else if 死之羽, err := artifacts.Factory死之羽(5, "摧冰而行的执望", 20, artifacts.FloatEntries{
 		entry.DefPercentage: 27, entry.EnergyRecharge: 6.5, entry.CriticalDamage: 12.4, entry.AtkPercentage: 5.3}); err != nil {
 		return err
-	} else if 时之沙, err := model.ArtifactsFactory时之沙(5, "冰雪故园的终期", entry.AtkPercentage, 20, model.FloatEntries{
+	} else if 时之沙, err := artifacts.Factory时之沙(5, "冰雪故园的终期", entry.AtkPercentage, 20, artifacts.FloatEntries{
 		entry.Atk: 18, entry.CriticalRate: 8.9, entry.CriticalDamage: 21, entry.Def: 23}); err != nil {
 		return err
-	} else if 空之杯, err := model.ArtifactsFactory空之杯(5, "度火者的醒悟", entry.IceDamageBonus, 20, model.FloatEntries{
+	} else if 空之杯, err := artifacts.Factory空之杯(5, "度火者的醒悟", entry.IceDamageBonus, 20, artifacts.FloatEntries{
 		entry.CriticalRate: 2.7, entry.EnergyRecharge: 5.2, entry.ElementalMastery: 63, entry.AtkPercentage: 16.3}); err != nil {
 		return err
-	} else if 理之冠, err := model.ArtifactsFactory理之冠(5, "破冰踏雪的回音", entry.CriticalDamage, 20, model.FloatEntries{
+	} else if 理之冠, err := artifacts.Factory理之冠(5, "破冰踏雪的回音", entry.CriticalDamage, 20, artifacts.FloatEntries{
 		entry.Def: 44, entry.EnergyRecharge: 11.7, entry.HpPercentage: 15.7, entry.Atk: 18}); err != nil {
 		return err
 	} else {
@@ -74,20 +75,20 @@ func 神里绫华() error {
 	//挨揍的.AttachState(states.Frozen, 12)
 	//buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的)
 
-	replaceArtifacts := make(map[position.Position]*model.Artifacts)
-	if 生之花, err := model.ArtifactsFactory生之花(5, "历经风雪的思念", 20, model.IntEntries{
+	replaceArtifacts := make(map[position.Position]*artifacts.Artifacts)
+	if 生之花, err := artifacts.Factory生之花(5, "历经风雪的思念", 20, artifacts.IntEntries{
 		entry.CriticalRate: 6, entry.AtkPercentage: 1, entry.CriticalDamage: 1, entry.Atk: 1}); err != nil {
 		return err
-	} else if 死之羽, err := model.ArtifactsFactory死之羽(5, "摧冰而行的执望", 20, model.IntEntries{
+	} else if 死之羽, err := artifacts.Factory死之羽(5, "摧冰而行的执望", 20, artifacts.IntEntries{
 		entry.CriticalRate: 6, entry.AtkPercentage: 1, entry.CriticalDamage: 1, entry.EnergyRecharge: 1}); err != nil {
 		return err
-	} else if 时之沙, err := model.ArtifactsFactory时之沙(5, "冰雪故园的终期", entry.AtkPercentage, 20, model.IntEntries{
+	} else if 时之沙, err := artifacts.Factory时之沙(5, "冰雪故园的终期", entry.AtkPercentage, 20, artifacts.IntEntries{
 		entry.CriticalRate: 6, entry.CriticalDamage: 1, entry.Atk: 1, entry.EnergyRecharge: 1}); err != nil {
 		return err
-	} else if 空之杯, err := model.ArtifactsFactory空之杯(5, "度火者的醒悟", entry.IceDamageBonus, 20, model.IntEntries{
+	} else if 空之杯, err := artifacts.Factory空之杯(5, "度火者的醒悟", entry.IceDamageBonus, 20, artifacts.IntEntries{
 		entry.CriticalRate: 6, entry.AtkPercentage: 1, entry.CriticalDamage: 1, entry.Atk: 1}); err != nil {
 		return err
-	} else if 理之冠, err := model.ArtifactsFactory理之冠(5, "破冰踏雪的回音", entry.CriticalRate, 20, model.IntEntries{
+	} else if 理之冠, err := artifacts.Factory理之冠(5, "破冰踏雪的回音", entry.CriticalRate, 20, artifacts.IntEntries{
 		entry.CriticalDamage: 4, entry.AtkPercentage: 3, entry.Atk: 1, entry.EnergyRecharge: 1}); err != nil {
 		return err
 	} else {
@@ -100,7 +101,7 @@ func 神里绫华() error {
 	}
 
 	action := 神里绫华.GetActions().Get(attackMode.ChargedAttack, "")
-	profitDetect(神里绫华, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
+	profitDetect(神里绫华, 挨揍的, func(player *character.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, elementals.Ice).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Ice), replaceArtifacts)
@@ -108,7 +109,7 @@ func 神里绫华() error {
 }
 
 func 绽放队() {
-	草主 := model.CharacterFactory草主(1, 1, 1, 6)
+	草主 := character.Factory草主(1, 1, 1, 6)
 	草主.Weapon(weapon.Factory原木刀(1))
 	草主.Apply(buff.AddElementalMastery(1000))
 	草主.GetActions().Loop(func(index int, action *action.Action) bool {
@@ -119,14 +120,14 @@ func 绽放队() {
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Attach(elemental.Electric, 12)
 	挨揍的.Attach(elementals.Water, 12)
-	profitDetect(草主, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
+	profitDetect(草主, 挨揍的, func(player *character.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Grass), nil)
 }
 
 func 超绽放队() {
-	久岐忍 := model.CharacterFactory久岐忍(1, 6, 1, 0)
+	久岐忍 := character.Factory久岐忍(1, 6, 1, 0)
 	久岐忍.Weapon(weapon.Factory原木刀(1))
 	久岐忍.Apply(buff.AddElementalMastery(860))
 	久岐忍.GetActions().Loop(func(index int, action *action.Action) bool {
@@ -139,32 +140,32 @@ func 超绽放队() {
 	挨揍的.Attach(elementals.Grass, 12)
 	挨揍的.AttachState(states.Bloom, 12)
 	挨揍的.AttachState(states.Quicken, 12)
-	profitDetect(久岐忍, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
+	profitDetect(久岐忍, 挨揍的, func(player *character.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Electric), nil)
 }
 
 func 迪卢克1() error {
-	迪卢克 := model.CharacterFactory迪卢克(10, 9, 9, 0)
+	迪卢克 := character.Factory迪卢克(10, 9, 9, 0)
 
 	if _, err := 迪卢克.Weapon(weapon.Factory螭骨剑(3)); err != nil {
 		return err
 		//} else if _, err := 迪卢克.Weapon(weapon.Factory无工之剑(1)); err != nil {
 		//	return err
-	} else if 生之花, err := model.ArtifactsFactory生之花(5, "魔女的炎之花", 20, model.FloatEntries{
+	} else if 生之花, err := artifacts.Factory生之花(5, "魔女的炎之花", 20, artifacts.FloatEntries{
 		entry.Atk: 51, entry.AtkPercentage: 12.8, entry.CriticalRate: 3.1, entry.DefPercentage: 6.6}); err != nil {
 		return err
-	} else if 死之羽, err := model.ArtifactsFactory死之羽(5, "魔女常燃之羽", 20, model.FloatEntries{
+	} else if 死之羽, err := artifacts.Factory死之羽(5, "魔女常燃之羽", 20, artifacts.FloatEntries{
 		entry.CriticalRate: 7.8, entry.Hp: 239, entry.CriticalDamage: 14, entry.ElementalMastery: 54}); err != nil {
 		return err
-	} else if 时之沙, err := model.ArtifactsFactory时之沙(5, "魔女破灭之时", entry.AtkPercentage, 20, model.FloatEntries{
+	} else if 时之沙, err := artifacts.Factory时之沙(5, "魔女破灭之时", entry.AtkPercentage, 20, artifacts.FloatEntries{
 		entry.CriticalDamage: 11.7, entry.ElementalMastery: 61, entry.EnergyRecharge: 15.5, entry.CriticalRate: 3.1}); err != nil {
 		return err
-	} else if 空之杯, err := model.ArtifactsFactory空之杯(5, "魔女的心之火", entry.FireDamageBonus, 20, model.FloatEntries{
+	} else if 空之杯, err := artifacts.Factory空之杯(5, "魔女的心之火", entry.FireDamageBonus, 20, artifacts.FloatEntries{
 		entry.Hp: 986, entry.HpPercentage: 9.3, entry.CriticalRate: 3.9, entry.Def: 35}); err != nil {
 		return err
-	} else if 理之冠, err := model.ArtifactsFactory理之冠(5, "渡火者的智慧", entry.CriticalDamage, 20, model.FloatEntries{
+	} else if 理之冠, err := artifacts.Factory理之冠(5, "渡火者的智慧", entry.CriticalDamage, 20, artifacts.FloatEntries{
 		entry.AtkPercentage: 15.2, entry.CriticalRate: 6.6, entry.EnergyRecharge: 11.7, entry.Hp: 269}); err != nil {
 		return err
 	} else {
@@ -186,7 +187,7 @@ func 迪卢克1() error {
 	挨揍的.Attach(elementals.Water, 12)
 
 	action := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
-	profitDetect(迪卢克, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
+	profitDetect(迪卢克, 挨揍的, func(player *character.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Fire), nil)
@@ -194,29 +195,29 @@ func 迪卢克1() error {
 }
 
 func 迪卢克2() error {
-	迪卢克 := model.CharacterFactory迪卢克(10, 9, 9, 0)
+	迪卢克 := character.Factory迪卢克(10, 9, 9, 0)
 
 	if _, err := 迪卢克.Weapon(weapon.Factory无工之剑(1)); err != nil {
 		return err
-	} else if 生之花, err := model.ArtifactsFactory生之花(5, "明威之镡", 20, model.FloatEntries{
+	} else if 生之花, err := artifacts.Factory生之花(5, "明威之镡", 20, artifacts.FloatEntries{
 		entry.CriticalDamage: 26.4, entry.AtkPercentage: 4.1, entry.CriticalRate: 3.9, entry.Def: 42}); err != nil {
 		return err
-	} else if 生之花2, err := model.ArtifactsFactory生之花(5, "魔女的炎之花", 20, model.FloatEntries{
+	} else if 生之花2, err := artifacts.Factory生之花(5, "魔女的炎之花", 20, artifacts.FloatEntries{
 		entry.Atk: 51, entry.AtkPercentage: 12.8, entry.CriticalRate: 3.1, entry.DefPercentage: 6.6}); err != nil {
 		return err
-	} else if 死之羽, err := model.ArtifactsFactory死之羽(5, "魔女常燃之羽", 20, model.FloatEntries{
+	} else if 死之羽, err := artifacts.Factory死之羽(5, "魔女常燃之羽", 20, artifacts.FloatEntries{
 		entry.CriticalRate: 7.8, entry.Hp: 239, entry.CriticalDamage: 14, entry.ElementalMastery: 54}); err != nil {
 		return err
-	} else if 时之沙, err := model.ArtifactsFactory时之沙(5, "魔女破灭之时", entry.AtkPercentage, 20, model.FloatEntries{
+	} else if 时之沙, err := artifacts.Factory时之沙(5, "魔女破灭之时", entry.AtkPercentage, 20, artifacts.FloatEntries{
 		entry.CriticalDamage: 11.7, entry.ElementalMastery: 61, entry.EnergyRecharge: 15.5, entry.CriticalRate: 3.1}); err != nil {
 		return err
-	} else if 空之杯, err := model.ArtifactsFactory空之杯(5, "魔女的心之火", entry.FireDamageBonus, 20, model.FloatEntries{
+	} else if 空之杯, err := artifacts.Factory空之杯(5, "魔女的心之火", entry.FireDamageBonus, 20, artifacts.FloatEntries{
 		entry.Hp: 986, entry.HpPercentage: 9.3, entry.CriticalRate: 3.9, entry.Def: 35}); err != nil {
 		return err
-	} else if 空之杯2, err := model.ArtifactsFactory空之杯(5, "超越之盏", entry.FireDamageBonus, 20, model.FloatEntries{
+	} else if 空之杯2, err := artifacts.Factory空之杯(5, "超越之盏", entry.FireDamageBonus, 20, artifacts.FloatEntries{
 		entry.EnergyRecharge: 14.2, entry.ElementalMastery: 16, entry.CriticalDamage: 12.4, entry.Hp: 448}); err != nil {
 		return err
-	} else if 理之冠, err := model.ArtifactsFactory理之冠(5, "焦灼的魔女帽", entry.CriticalRate, 20, model.FloatEntries{
+	} else if 理之冠, err := artifacts.Factory理之冠(5, "焦灼的魔女帽", entry.CriticalRate, 20, artifacts.FloatEntries{
 		entry.AtkPercentage: 9.9, entry.Atk: 18, entry.ElementalMastery: 35, entry.CriticalDamage: 20.2}); err != nil {
 		return err
 	} else {
@@ -238,20 +239,20 @@ func 迪卢克2() error {
 	挨揍的 := enemy.New(enemy.Base(90))
 	挨揍的.Attach(elementals.Water, 12)
 
-	replaceArtifacts := make(map[position.Position]*model.Artifacts)
-	if 生之花, err := model.ArtifactsFactory生之花(5, "明威之镡", 20, model.IntEntries{
+	replaceArtifacts := make(map[position.Position]*artifacts.Artifacts)
+	if 生之花, err := artifacts.Factory生之花(5, "明威之镡", 20, artifacts.IntEntries{
 		entry.CriticalDamage: 6, entry.ElementalMastery: 1, entry.CriticalRate: 1, entry.AtkPercentage: 1}); err != nil {
 		return err
-	} else if 死之羽, err := model.ArtifactsFactory死之羽(5, "魔女常燃之羽", 20, model.IntEntries{
+	} else if 死之羽, err := artifacts.Factory死之羽(5, "魔女常燃之羽", 20, artifacts.IntEntries{
 		entry.CriticalDamage: 5, entry.ElementalMastery: 2, entry.CriticalRate: 1, entry.AtkPercentage: 1}); err != nil {
 		return err
-	} else if 时之沙, err := model.ArtifactsFactory时之沙(5, "魔女破灭之时", entry.ElementalMastery, 20, model.IntEntries{
+	} else if 时之沙, err := artifacts.Factory时之沙(5, "魔女破灭之时", entry.ElementalMastery, 20, artifacts.IntEntries{
 		entry.CriticalDamage: 5, entry.Atk: 1, entry.CriticalRate: 2, entry.AtkPercentage: 1}); err != nil {
 		return err
-	} else if 空之杯, err := model.ArtifactsFactory空之杯(5, "魔女的心之火", entry.FireDamageBonus, 20, model.IntEntries{
+	} else if 空之杯, err := artifacts.Factory空之杯(5, "魔女的心之火", entry.FireDamageBonus, 20, artifacts.IntEntries{
 		entry.CriticalDamage: 5, entry.ElementalMastery: 1, entry.CriticalRate: 2, entry.AtkPercentage: 1}); err != nil {
 		return err
-	} else if 理之冠, err := model.ArtifactsFactory理之冠(5, "焦灼的魔女帽", entry.CriticalRate, 20, model.IntEntries{
+	} else if 理之冠, err := artifacts.Factory理之冠(5, "焦灼的魔女帽", entry.CriticalRate, 20, artifacts.IntEntries{
 		entry.CriticalDamage: 6, entry.ElementalMastery: 1, entry.Atk: 1, entry.AtkPercentage: 1}); err != nil {
 		return err
 	} else {
@@ -263,7 +264,7 @@ func 迪卢克2() error {
 	}
 
 	action := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
-	profitDetect(迪卢克, 挨揍的, func(player *model.Character, enemy *enemy.Enemy, debug bool) float64 {
+	profitDetect(迪卢克, 挨揍的, func(player *character.Character, enemy *enemy.Enemy, debug bool) float64 {
 		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Fire), replaceArtifacts)
@@ -290,8 +291,8 @@ func CustomDetects(dye elementals.Elemental) map[string]*attr.Modifier {
 	}
 }
 
-func profitDetect(character *model.Character, enemy *enemy.Enemy, fn detect.FinalDamage,
-	customDetects map[string]*attr.Modifier, replaceArtifacts map[position.Position]*model.Artifacts) {
+func profitDetect(character *character.Character, enemy *enemy.Enemy, fn detect.FinalDamage,
+	customDetects map[string]*attr.Modifier, replaceArtifacts map[position.Position]*artifacts.Artifacts) {
 	fmt.Printf("base: %f\n", fn(character, enemy, true))
 	profits := detect.ProfitDetect(character, enemy, true, fn, nil)
 	fmt.Printf("素质增益:\n")

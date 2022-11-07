@@ -1,4 +1,4 @@
-package model
+package character
 
 import (
 	"fmt"

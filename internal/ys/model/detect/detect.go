@@ -2,8 +2,8 @@ package detect
 
 import (
 	"github.com/dbstarll/game/internal/ys/dimension/artifacts/entry"
-	"github.com/dbstarll/game/internal/ys/model"
 	"github.com/dbstarll/game/internal/ys/model/attr"
+	"github.com/dbstarll/game/internal/ys/model/character"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
 	"sort"
 )
@@ -13,7 +13,7 @@ type Profit struct {
 	Value float64
 }
 
-type FinalDamage func(character *model.Character, enemy *enemy.Enemy, debug bool) float64
+type FinalDamage func(character *character.Character, enemy *enemy.Enemy, debug bool) float64
 
 var (
 	baseDetects = initBaseDetects(map[string]*attr.Modifier{})
@@ -32,7 +32,7 @@ func initBaseDetects(detects map[string]*attr.Modifier) map[string]*attr.Modifie
 	return detects
 }
 
-func ProfitDetect(character *model.Character, enemy *enemy.Enemy, baseDetect bool, fn FinalDamage, customDetects map[string]*attr.Modifier) []*Profit {
+func ProfitDetect(character *character.Character, enemy *enemy.Enemy, baseDetect bool, fn FinalDamage, customDetects map[string]*attr.Modifier) []*Profit {
 	base := fn(character, enemy, false)
 	var profits []*Profit
 	if baseDetect {

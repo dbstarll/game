@@ -1,4 +1,4 @@
-package model
+package artifacts
 
 import (
 	"fmt"
@@ -11,20 +11,20 @@ import (
 )
 
 var (
-	ArtifactsFactory生之花 = func(star int, name string, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return newArtifacts(star, position.FlowerOfLife, entry.Hp, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
+	Factory生之花 = func(star int, name string, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
+		return New(star, position.FlowerOfLife, entry.Hp, name, base(level), secondary(secondaryEntries))
 	}
-	ArtifactsFactory死之羽 = func(star int, name string, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return newArtifacts(star, position.PlumeOfDeath, entry.Atk, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
+	Factory死之羽 = func(star int, name string, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
+		return New(star, position.PlumeOfDeath, entry.Atk, name, base(level), secondary(secondaryEntries))
 	}
-	ArtifactsFactory时之沙 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return newArtifacts(star, position.SandsOfEon, primaryEntry, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
+	Factory时之沙 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
+		return New(star, position.SandsOfEon, primaryEntry, name, base(level), secondary(secondaryEntries))
 	}
-	ArtifactsFactory空之杯 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return newArtifacts(star, position.GobletOfEonothem, primaryEntry, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
+	Factory空之杯 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
+		return New(star, position.GobletOfEonothem, primaryEntry, name, base(level), secondary(secondaryEntries))
 	}
-	ArtifactsFactory理之冠 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return newArtifacts(star, position.CircletOfLogos, primaryEntry, name, baseArtifacts(level), secondaryArtifacts(secondaryEntries))
+	Factory理之冠 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
+		return New(star, position.CircletOfLogos, primaryEntry, name, base(level), secondary(secondaryEntries))
 	}
 	starHpRect = [][]float64{
 		{0, 1, 1, 0, 0, 0, 0, 0, 0},
@@ -85,9 +85,9 @@ type Artifacts struct {
 	secondary        *attr.Attributes
 }
 
-type ArtifactsModifier func(artifacts *Artifacts) (func(), error)
+type Modifier func(artifacts *Artifacts) (func(), error)
 
-func baseArtifacts(level int) ArtifactsModifier {
+func base(level int) Modifier {
 	return func(artifacts *Artifacts) (func(), error) {
 		if level < 0 {
 			return nil, errors.Errorf("圣遗物等级[%d]不能为负数", level)
@@ -112,7 +112,7 @@ func baseArtifacts(level int) ArtifactsModifier {
 	}
 }
 
-func secondaryArtifacts(secondaryEntries EntriesLooper) ArtifactsModifier {
+func secondary(secondaryEntries EntriesLooper) Modifier {
 	return func(artifacts *Artifacts) (f func(), err error) {
 		total, secondaryFactors, secondaryModifiers := 0, artifacts.secondaryFactors(), make([]attr.AttributeModifier, 0)
 		if err := secondaryEntries.LoopEntries(func(entry entry.Entry, value interface{}) error {
@@ -209,7 +209,7 @@ func detectSecondaryEntry(entry entry.Entry, value, ratio float64, secondaryFact
 	}
 }
 
-func newArtifacts(star int, position position.Position, primaryEntry entry.Entry, name string, baseModifier, secondaryModifier ArtifactsModifier) (*Artifacts, error) {
+func New(star int, position position.Position, primaryEntry entry.Entry, name string, baseModifier, secondaryModifier Modifier) (*Artifacts, error) {
 	if star < 3 || star > 5 {
 		return nil, errors.Errorf("不支持的星级: %d", star)
 	} else if !primaryEntry.Primary(position) {
