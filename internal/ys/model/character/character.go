@@ -10,7 +10,6 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/artifacts"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
-	"github.com/dbstarll/game/internal/ys/model/enemy"
 	"github.com/dbstarll/game/internal/ys/model/talent"
 	"github.com/dbstarll/game/internal/ys/model/weapon"
 	"github.com/pkg/errors"
@@ -69,6 +68,18 @@ func New(star int, elemental elementals.Elemental, weaponType weaponType.WeaponT
 	return c
 }
 
+func (c *Character) Level() int {
+	return c.level
+}
+
+func (c *Character) BaseAttr(point point.Point) float64 {
+	return c.base.Get(point)
+}
+
+func (c *Character) WeaponAttr(point point.Point) float64 {
+	return c.weapon.Get(point)
+}
+
 func (c *Character) Weapon(newWeapon *weapon.Weapon) (*weapon.Weapon, error) {
 	if oldWeapon := c.weapon; newWeapon == nil {
 		// 卸下武器
@@ -113,7 +124,7 @@ func (c *Character) basicAttributes() *attr.Attributes {
 	return basic
 }
 
-func (c *Character) finalAttributes() *attr.Attributes {
+func (c *Character) FinalAttributes() *attr.Attributes {
 	final := attr.NewAttributes()
 	c.basicAttributes().Accumulation(false)(final)
 	final.Clear(point.Hp, point.Atk, point.Def)
@@ -127,10 +138,6 @@ func (c *Character) finalAttributes() *attr.Attributes {
 
 func (c *Character) String() string {
 	return fmt.Sprintf("%s\n", c.base)
-}
-
-func (c *Character) Calculate(enemy *enemy.Enemy, action *action.Action, infusionElemental elementals.Elemental) *Calculator {
-	return NewCalculator(c, enemy, action, infusionElemental)
 }
 
 func (c *Character) Evaluate(replaceArtifacts map[position.Position]*artifacts.Artifacts) map[string]*attr.Modifier {

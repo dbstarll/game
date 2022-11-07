@@ -13,6 +13,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/artifacts"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/buff"
+	"github.com/dbstarll/game/internal/ys/model/calculator"
 	"github.com/dbstarll/game/internal/ys/model/character"
 	"github.com/dbstarll/game/internal/ys/model/detect"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
@@ -102,7 +103,7 @@ func 神里绫华() error {
 
 	action := 神里绫华.GetActions().Get(attackMode.ChargedAttack, "")
 	profitDetect(神里绫华, 挨揍的, func(player *character.Character, enemy *enemy.Enemy, debug bool) float64 {
-		_, avg, _ := player.Calculate(enemy, action, elementals.Ice).Calculate(debug)
+		_, avg, _ := calculator.New(player, enemy, action, elementals.Ice).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Ice), replaceArtifacts)
 	return nil
@@ -121,7 +122,7 @@ func 绽放队() {
 	//挨揍的.Attach(elemental.Electric, 12)
 	挨揍的.Attach(elementals.Water, 12)
 	profitDetect(草主, 挨揍的, func(player *character.Character, enemy *enemy.Enemy, debug bool) float64 {
-		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
+		_, avg, _ := calculator.New(player, enemy, action, -1).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Grass), nil)
 }
@@ -141,7 +142,7 @@ func 超绽放队() {
 	挨揍的.AttachState(states.Bloom, 12)
 	挨揍的.AttachState(states.Quicken, 12)
 	profitDetect(久岐忍, 挨揍的, func(player *character.Character, enemy *enemy.Enemy, debug bool) float64 {
-		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
+		_, avg, _ := calculator.New(player, enemy, action, -1).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Electric), nil)
 }
@@ -188,7 +189,7 @@ func 迪卢克1() error {
 
 	action := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
 	profitDetect(迪卢克, 挨揍的, func(player *character.Character, enemy *enemy.Enemy, debug bool) float64 {
-		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
+		_, avg, _ := calculator.New(player, enemy, action, -1).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Fire), nil)
 	return nil
@@ -265,7 +266,7 @@ func 迪卢克2() error {
 
 	action := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
 	profitDetect(迪卢克, 挨揍的, func(player *character.Character, enemy *enemy.Enemy, debug bool) float64 {
-		_, avg, _ := player.Calculate(enemy, action, -1).Calculate(debug)
+		_, avg, _ := calculator.New(player, enemy, action, -1).Calculate(debug)
 		return avg.Value()
 	}, CustomDetects(elementals.Fire), replaceArtifacts)
 	return nil

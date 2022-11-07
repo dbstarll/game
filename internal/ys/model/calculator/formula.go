@@ -1,4 +1,4 @@
-package character
+package calculator
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package character
+package calculator
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions/classifies"
 	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
+	"github.com/dbstarll/game/internal/ys/model/character"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
 	"go.uber.org/zap"
 )
@@ -22,16 +23,16 @@ type Calculator struct {
 	init            map[string]float64
 }
 
-func NewCalculator(character *Character, enemy *enemy.Enemy, action *action.Action, infusionElemental elementals.Elemental) *Calculator {
+func New(character *character.Character, enemy *enemy.Enemy, action *action.Action, infusionElemental elementals.Elemental) *Calculator {
 	calculator := &Calculator{
-		finalAttributes: character.finalAttributes(),
+		finalAttributes: character.FinalAttributes(),
 		enemy:           enemy,
 		action:          action,
 		elemental:       action.Elemental(),
 		init: map[string]float64{
-			"人物等级":  float64(character.level),
-			"人物攻击力": character.base.Get(point.Atk),
-			"武器攻击力": character.weapon.Get(point.Atk),
+			"人物等级":  float64(character.Level()),
+			"人物攻击力": character.BaseAttr(point.Atk),
+			"武器攻击力": character.WeaponAttr(point.Atk),
 		},
 	}
 	switch action.Mode() {
@@ -71,7 +72,7 @@ func (c *Calculator) divide(totalKey string, objs ...interface{}) *Formula {
 }
 
 func (c *Calculator) prepare(putZero bool) {
-	c.values = NewValues()
+	c.values = newValues()
 	for _, p := range point.Points {
 		if v := c.finalAttributes.Get(p); putZero || v != 0 {
 			if p.IsPercentage() {

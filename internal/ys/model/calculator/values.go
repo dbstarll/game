@@ -1,4 +1,4 @@
-package character
+package calculator
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ type Values struct {
 	values map[string]*Formula
 }
 
-func NewValues() *Values {
+func newValues() *Values {
 	return &Values{values: make(map[string]*Formula)}
 }
 
