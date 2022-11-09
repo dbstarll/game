@@ -140,10 +140,10 @@ func (c *Character) String() string {
 	return fmt.Sprintf("%s\n", c.base)
 }
 
-func (c *Character) Evaluate(replaceArtifacts map[position.Position]*artifacts.Artifacts) map[string]*attr.Modifier {
+func (c *Character) Evaluate(replaceArtifacts ...*artifacts.Artifacts) map[string]*attr.Modifier {
 	detects := make(map[string]*attr.Modifier)
 	for _, artifact := range c.artifacts {
-		for n, m := range artifact.Evaluate(replaceArtifacts[artifact.Position()]) {
+		for n, m := range artifact.Evaluate(replaceArtifacts...) {
 			detects[n] = m
 		}
 	}

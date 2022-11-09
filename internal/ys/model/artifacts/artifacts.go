@@ -242,16 +242,19 @@ func (a *Artifacts) Accumulation(unload bool) attr.AttributeModifier {
 	return attr.MergeAttributes(a.primary.Accumulation(unload), a.secondary.Accumulation(unload))
 }
 
-func (a *Artifacts) Evaluate(replace *Artifacts) map[string]*attr.Modifier {
+func (a *Artifacts) Evaluate(replaceArtifacts ...*Artifacts) map[string]*attr.Modifier {
 	detects := make(map[string]*attr.Modifier)
 	detects[a.position.String()] = attr.NewCharacterModifier(a.Accumulation(true))
-	if replace != nil {
-		detects[fmt.Sprintf("%s - [替换]%s", a.position, replace)] = attr.NewCharacterModifier(a.Accumulation(true), replace.Accumulation(false))
-		detects[fmt.Sprintf("[替换]%s", a.position)] = attr.NewCharacterModifier(a.Accumulation(true), replace.Accumulation(false))
-	}
 	detects[fmt.Sprintf("%s - [主]%s: %.2f", a.position, a.primaryEntry.entry, a.primaryEntry.value)] = attr.NewCharacterModifier(a.primaryEntry.unload)
 	for ent, secondaryEntry := range a.secondaryEntries {
 		detects[fmt.Sprintf("%s - [副]%s%v: %.2f", a.position, ent, secondaryEntry.rect, secondaryEntry.value)] = attr.NewCharacterModifier(secondaryEntry.unload)
+	}
+	for _, replace := range replaceArtifacts {
+		if replace.position == a.position {
+			modifier := attr.NewCharacterModifier(a.Accumulation(true), replace.Accumulation(false))
+			detects[fmt.Sprintf("%s - [替换]%s", a.position, replace)] = modifier
+			detects[fmt.Sprintf("[替换]%s = %s", a.position, replace)] = modifier
+		}
 	}
 	return detects
 }

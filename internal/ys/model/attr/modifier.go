@@ -131,3 +131,7 @@ func (m *Modifier) Apply(character Appliable, enemy Appliable) func() {
 		}
 	}
 }
+
+func (m *Modifier) EnemyModifier() AttributeModifier {
+	return m.enemyModifier
+}
