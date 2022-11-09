@@ -11,20 +11,20 @@ import (
 )
 
 var (
-	Factory生之花 = func(star int, name string, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return New(star, position.FlowerOfLife, entry.Hp, name, base(level), secondary(secondaryEntries))
+	Factory生之花 = func(star int, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
+		return New(star, position.FlowerOfLife, entry.Hp, base(level), secondary(secondaryEntries))
 	}
-	Factory死之羽 = func(star int, name string, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return New(star, position.PlumeOfDeath, entry.Atk, name, base(level), secondary(secondaryEntries))
+	Factory死之羽 = func(star int, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
+		return New(star, position.PlumeOfDeath, entry.Atk, base(level), secondary(secondaryEntries))
 	}
-	Factory时之沙 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return New(star, position.SandsOfEon, primaryEntry, name, base(level), secondary(secondaryEntries))
+	Factory时之沙 = func(star int, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
+		return New(star, position.SandsOfEon, primaryEntry, base(level), secondary(secondaryEntries))
 	}
-	Factory空之杯 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return New(star, position.GobletOfEonothem, primaryEntry, name, base(level), secondary(secondaryEntries))
+	Factory空之杯 = func(star int, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
+		return New(star, position.GobletOfEonothem, primaryEntry, base(level), secondary(secondaryEntries))
 	}
-	Factory理之冠 = func(star int, name string, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return New(star, position.CircletOfLogos, primaryEntry, name, base(level), secondary(secondaryEntries))
+	Factory理之冠 = func(star int, primaryEntry entry.Entry, level int, secondaryEntries EntriesLooper) (*Artifacts, error) {
+		return New(star, position.CircletOfLogos, primaryEntry, base(level), secondary(secondaryEntries))
 	}
 	starHpRect = [][]float64{
 		{0, 1, 1, 0, 0, 0, 0, 0, 0},
@@ -209,7 +209,7 @@ func detectSecondaryEntry(entry entry.Entry, value, ratio float64, secondaryFact
 	}
 }
 
-func New(star int, position position.Position, primaryEntry entry.Entry, name string, baseModifier, secondaryModifier Modifier) (*Artifacts, error) {
+func New(star int, position position.Position, primaryEntry entry.Entry, baseModifier, secondaryModifier Modifier) (*Artifacts, error) {
 	if star < 3 || star > 5 {
 		return nil, errors.Errorf("不支持的星级: %d", star)
 	} else if !primaryEntry.Primary(position) {
@@ -218,7 +218,6 @@ func New(star int, position position.Position, primaryEntry entry.Entry, name st
 	a := &Artifacts{
 		star:             star,
 		position:         position,
-		name:             name,
 		level:            0,
 		primaryEntry:     &PrimaryEntry{entry: primaryEntry},
 		secondaryEntries: make(map[entry.Entry]*SecondaryEntry),
@@ -295,5 +294,5 @@ func (a *Artifacts) secondaryFactors() []float64 {
 }
 
 func (a *Artifacts) String() string {
-	return fmt.Sprintf("%s: %s{star:%d level:%d primary:%s secondary:%s}", a.name, a.position, a.star, a.level, a.primary, a.secondary)
+	return fmt.Sprintf("%s{star:%d level:%d primary:%s secondary:%s}", a.position, a.star, a.level, a.primary, a.secondary)
 }
