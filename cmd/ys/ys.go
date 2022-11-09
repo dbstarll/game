@@ -39,19 +39,19 @@ func 神里绫华() error {
 
 	if _, err := 神里绫华.Weapon(weapon.Factory雾切之回光(1, 3, elementals.Ice)); err != nil {
 		return err
-	} else if 生之花, err := artifacts.Factory生之花(5, 20, artifacts.FloatEntries{
+	} else if 生之花, err := artifacts.Factory生之花(5, artifacts.FloatEntries{
 		entry.AtkPercentage: 14, entry.CriticalRate: 7, entry.Atk: 54, entry.Def: 16}); err != nil {
 		return err
-	} else if 死之羽, err := artifacts.Factory死之羽(5, 20, artifacts.FloatEntries{
+	} else if 死之羽, err := artifacts.Factory死之羽(5, artifacts.FloatEntries{
 		entry.CriticalRate: 11.7, entry.Def: 23, entry.DefPercentage: 13.1, entry.CriticalDamage: 7.8}); err != nil {
 		return err
-	} else if 时之沙, err := artifacts.Factory时之沙(5, entry.AtkPercentage, 20, artifacts.FloatEntries{
+	} else if 时之沙, err := artifacts.Factory时之沙(5, entry.AtkPercentage, artifacts.FloatEntries{
 		entry.Atk: 18, entry.CriticalRate: 8.9, entry.CriticalDamage: 21, entry.Def: 23}); err != nil {
 		return err
-	} else if 空之杯, err := artifacts.Factory空之杯(5, entry.IceDamageBonus, 20, artifacts.FloatEntries{
+	} else if 空之杯, err := artifacts.Factory空之杯(5, entry.IceDamageBonus, artifacts.FloatEntries{
 		entry.CriticalRate: 2.7, entry.EnergyRecharge: 5.2, entry.ElementalMastery: 63, entry.AtkPercentage: 16.3}); err != nil {
 		return err
-	} else if 理之冠, err := artifacts.Factory理之冠(5, entry.CriticalDamage, 20, artifacts.FloatEntries{
+	} else if 理之冠, err := artifacts.Factory理之冠(5, entry.CriticalDamage, artifacts.FloatEntries{
 		entry.Def: 44, entry.EnergyRecharge: 11.7, entry.HpPercentage: 15.7, entry.Atk: 18}); err != nil {
 		return err
 	} else {
@@ -76,16 +76,16 @@ func 神里绫华() error {
 	//buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的)
 
 	var replaceArtifacts []*artifacts.Artifacts
-	if 生之花, err := artifacts.Factory生之花(5, 20, artifacts.FloatEntries{
+	if 生之花, err := artifacts.Factory生之花(5, artifacts.FloatEntries{
 		entry.Def: 42, entry.AtkPercentage: 15.2, entry.HpPercentage: 9.3, entry.CriticalDamage: 12.4}); err != nil {
 		return err
-	} else if 死之羽, err := artifacts.Factory死之羽(5, 20, artifacts.FloatEntries{
+	} else if 死之羽, err := artifacts.Factory死之羽(5, artifacts.FloatEntries{
 		entry.DefPercentage: 27, entry.EnergyRecharge: 6.5, entry.CriticalDamage: 12.4, entry.AtkPercentage: 5.3}); err != nil {
 		return err
-	} else if 空之杯, err := artifacts.Factory空之杯(5, entry.IceDamageBonus, 20, artifacts.FloatEntries{
+	} else if 空之杯, err := artifacts.Factory空之杯(5, entry.IceDamageBonus, artifacts.FloatEntries{
 		entry.Hp: 538, entry.Def: 35, entry.EnergyRecharge: 16.8, entry.HpPercentage: 5.8}); err != nil {
 		return err
-	} else if 理之冠, err := artifacts.Factory理之冠(5, entry.CriticalDamage, 20, artifacts.FloatEntries{
+	} else if 理之冠, err := artifacts.Factory理之冠(5, entry.CriticalDamage, artifacts.FloatEntries{
 		entry.EnergyRecharge: 10.4, entry.DefPercentage: 13.9, entry.CriticalRate: 3.5, entry.AtkPercentage: 15.7}); err != nil {
 		return err
 	} else {
@@ -145,19 +145,19 @@ func 迪卢克1() error {
 		return err
 		//} else if _, err := 迪卢克.Weapon(weapon.Factory无工之剑(1)); err != nil {
 		//	return err
-	} else if 生之花, err := artifacts.Factory生之花(5, 20, artifacts.FloatEntries{
+	} else if 生之花, err := artifacts.Factory生之花(5, artifacts.FloatEntries{
 		entry.Atk: 51, entry.AtkPercentage: 12.8, entry.CriticalRate: 3.1, entry.DefPercentage: 6.6}); err != nil {
 		return err
-	} else if 死之羽, err := artifacts.Factory死之羽(5, 20, artifacts.FloatEntries{
+	} else if 死之羽, err := artifacts.Factory死之羽(5, artifacts.FloatEntries{
 		entry.CriticalRate: 7.8, entry.Hp: 239, entry.CriticalDamage: 14, entry.ElementalMastery: 54}); err != nil {
 		return err
-	} else if 时之沙, err := artifacts.Factory时之沙(5, entry.AtkPercentage, 20, artifacts.FloatEntries{
+	} else if 时之沙, err := artifacts.Factory时之沙(5, entry.AtkPercentage, artifacts.FloatEntries{
 		entry.CriticalDamage: 11.7, entry.ElementalMastery: 61, entry.EnergyRecharge: 15.5, entry.CriticalRate: 3.1}); err != nil {
 		return err
-	} else if 空之杯, err := artifacts.Factory空之杯(5, entry.FireDamageBonus, 20, artifacts.FloatEntries{
+	} else if 空之杯, err := artifacts.Factory空之杯(5, entry.FireDamageBonus, artifacts.FloatEntries{
 		entry.Hp: 986, entry.HpPercentage: 9.3, entry.CriticalRate: 3.9, entry.Def: 35}); err != nil {
 		return err
-	} else if 理之冠, err := artifacts.Factory理之冠(5, entry.CriticalDamage, 20, artifacts.FloatEntries{
+	} else if 理之冠, err := artifacts.Factory理之冠(5, entry.CriticalDamage, artifacts.FloatEntries{
 		entry.AtkPercentage: 15.2, entry.CriticalRate: 6.6, entry.EnergyRecharge: 11.7, entry.Hp: 269}); err != nil {
 		return err
 	} else {
@@ -191,25 +191,25 @@ func 迪卢克2() error {
 
 	if _, err := 迪卢克.Weapon(weapon.Factory无工之剑(1)); err != nil {
 		return err
-	} else if 生之花, err := artifacts.Factory生之花(5, 20, artifacts.FloatEntries{
+	} else if 生之花, err := artifacts.Factory生之花(5, artifacts.FloatEntries{
 		entry.CriticalDamage: 26.4, entry.AtkPercentage: 4.1, entry.CriticalRate: 3.9, entry.Def: 42}); err != nil {
 		return err
-	} else if 生之花2, err := artifacts.Factory生之花(5, 20, artifacts.FloatEntries{
+	} else if 生之花2, err := artifacts.Factory生之花(5, artifacts.FloatEntries{
 		entry.Atk: 51, entry.AtkPercentage: 12.8, entry.CriticalRate: 3.1, entry.DefPercentage: 6.6}); err != nil {
 		return err
-	} else if 死之羽, err := artifacts.Factory死之羽(5, 20, artifacts.FloatEntries{
+	} else if 死之羽, err := artifacts.Factory死之羽(5, artifacts.FloatEntries{
 		entry.CriticalRate: 7.8, entry.Hp: 239, entry.CriticalDamage: 14, entry.ElementalMastery: 54}); err != nil {
 		return err
-	} else if 时之沙, err := artifacts.Factory时之沙(5, entry.AtkPercentage, 20, artifacts.FloatEntries{
+	} else if 时之沙, err := artifacts.Factory时之沙(5, entry.AtkPercentage, artifacts.FloatEntries{
 		entry.CriticalDamage: 11.7, entry.ElementalMastery: 61, entry.EnergyRecharge: 15.5, entry.CriticalRate: 3.1}); err != nil {
 		return err
-	} else if 空之杯, err := artifacts.Factory空之杯(5, entry.FireDamageBonus, 20, artifacts.FloatEntries{
+	} else if 空之杯, err := artifacts.Factory空之杯(5, entry.FireDamageBonus, artifacts.FloatEntries{
 		entry.Hp: 986, entry.HpPercentage: 9.3, entry.CriticalRate: 3.9, entry.Def: 35}); err != nil {
 		return err
-	} else if 空之杯2, err := artifacts.Factory空之杯(5, entry.FireDamageBonus, 20, artifacts.FloatEntries{
+	} else if 空之杯2, err := artifacts.Factory空之杯(5, entry.FireDamageBonus, artifacts.FloatEntries{
 		entry.EnergyRecharge: 14.2, entry.ElementalMastery: 16, entry.CriticalDamage: 12.4, entry.Hp: 448}); err != nil {
 		return err
-	} else if 理之冠, err := artifacts.Factory理之冠(5, entry.CriticalRate, 20, artifacts.FloatEntries{
+	} else if 理之冠, err := artifacts.Factory理之冠(5, entry.CriticalRate, artifacts.FloatEntries{
 		entry.AtkPercentage: 9.9, entry.Atk: 18, entry.ElementalMastery: 35, entry.CriticalDamage: 20.2}); err != nil {
 		return err
 	} else {
@@ -232,19 +232,19 @@ func 迪卢克2() error {
 	挨揍的.Attach(elementals.Water, 12)
 
 	var replaceArtifacts []*artifacts.Artifacts
-	if 生之花, err := artifacts.Factory生之花(5, 20, artifacts.IntEntries{
+	if 生之花, err := artifacts.Factory生之花(5, artifacts.IntEntries{
 		entry.CriticalDamage: 6, entry.ElementalMastery: 1, entry.CriticalRate: 1, entry.AtkPercentage: 1}); err != nil {
 		return err
-	} else if 死之羽, err := artifacts.Factory死之羽(5, 20, artifacts.IntEntries{
+	} else if 死之羽, err := artifacts.Factory死之羽(5, artifacts.IntEntries{
 		entry.CriticalDamage: 5, entry.ElementalMastery: 2, entry.CriticalRate: 1, entry.AtkPercentage: 1}); err != nil {
 		return err
-	} else if 时之沙, err := artifacts.Factory时之沙(5, entry.ElementalMastery, 20, artifacts.IntEntries{
+	} else if 时之沙, err := artifacts.Factory时之沙(5, entry.ElementalMastery, artifacts.IntEntries{
 		entry.CriticalDamage: 5, entry.Atk: 1, entry.CriticalRate: 2, entry.AtkPercentage: 1}); err != nil {
 		return err
-	} else if 空之杯, err := artifacts.Factory空之杯(5, entry.FireDamageBonus, 20, artifacts.IntEntries{
+	} else if 空之杯, err := artifacts.Factory空之杯(5, entry.FireDamageBonus, artifacts.IntEntries{
 		entry.CriticalDamage: 5, entry.ElementalMastery: 1, entry.CriticalRate: 2, entry.AtkPercentage: 1}); err != nil {
 		return err
-	} else if 理之冠, err := artifacts.Factory理之冠(5, entry.CriticalRate, 20, artifacts.IntEntries{
+	} else if 理之冠, err := artifacts.Factory理之冠(5, entry.CriticalRate, artifacts.IntEntries{
 		entry.CriticalDamage: 6, entry.ElementalMastery: 1, entry.Atk: 1, entry.AtkPercentage: 1}); err != nil {
 		return err
 	} else {
