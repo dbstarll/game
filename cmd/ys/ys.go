@@ -32,8 +32,8 @@ func main() {
 }
 
 var (
-	damage detect.FinalDamage = func(character *character.Character, enemy *enemy.Enemy, action *action.Action, debug bool) float64 {
-		_, avg, _ := calculator.New(character, enemy, action).Calculate(debug)
+	damage detect.FinalDamage = func(character *character.Character, enemy *enemy.Enemy, action *action.Action, debug bool, finalModifiers ...attr.AttributeModifier) float64 {
+		_, avg, _ := calculator.New(character, enemy, action, finalModifiers...).Calculate(debug)
 		return avg.Value()
 	}
 	Weapon = func(character *character.Character, weapon *weapon.Weapon) {
@@ -83,7 +83,7 @@ func 神里绫华() {
 
 	攻击 := 神里绫华.GetActions().Get(attackMode.ChargedAttack, "")
 	攻击.Apply(action.Infusion(elementals.Ice))
-	profitDetect(神里绫华, 挨揍的, 攻击, damage, CustomDetects(elementals.Ice), replaceArtifacts...)
+	profitDetect(神里绫华, 挨揍的, 攻击, damage, CustomDetects(elementals.Ice), replaceArtifacts)
 }
 
 func 绽放队() {
@@ -142,20 +142,31 @@ func 迪卢克() {
 
 	攻击 := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
 	//攻击.Apply(action.Infusion(elementals.Fire))
-	profitDetect(迪卢克, 挨揍的, 攻击, damage, CustomDetects(elementals.Fire), replaceArtifacts...)
+	profitDetect(迪卢克, 挨揍的, 攻击, damage, CustomDetects(elementals.Fire), replaceArtifacts)
 }
 
 func 纳西妲() {
 	纳西妲 := character.Factory纳西妲(1, 9, 9, 0)
 	Weapon(纳西妲, weapon.Factory祭礼残章(5))
-	//纳西妲.Apply(buff.AddElementalMastery(860))
+	纳西妲.Artifacts(Artifacts(artifacts.Factory生之花(5, artifacts.FloatEntries{entry.AtkPercentage: 14, entry.CriticalRate: 7, entry.Atk: 54, entry.Def: 16})))
+	纳西妲.Artifacts(Artifacts(artifacts.Factory死之羽(5, artifacts.FloatEntries{entry.CriticalRate: 11.7, entry.Def: 23, entry.DefPercentage: 13.1, entry.CriticalDamage: 7.8})))
+	纳西妲.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.ElementalMastery, artifacts.IntEntries{entry.CriticalRate: 1, entry.CriticalDamage: 6, entry.AtkPercentage: 1, entry.Atk: 1})))
+	纳西妲.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.ElementalMastery, artifacts.IntEntries{entry.CriticalRate: 3, entry.CriticalDamage: 3, entry.AtkPercentage: 1, entry.Atk: 1})))
+	纳西妲.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.ElementalMastery, artifacts.IntEntries{entry.CriticalRate: 3, entry.CriticalDamage: 3, entry.AtkPercentage: 1, entry.Atk: 1})))
+
+	actions := 纳西妲.GetActions()
+	actionQ := actions.Get(attackMode.ElementalBurst, "伤害1")
+	纳西妲.Apply(
+		buff.Character纳西妲净善摄受明论(1000),                                       // 草神固有天赋4
+		buff.AddAttackDamageBonus(actionQ.DMG(), attackMode.ElementalSkill), // Q增伤
+	)
+
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Apply(buff.AddElementalResist(-30, elementals.Grass))
-	//挨揍的.Attach(elementals.Grass, 12)
-	//挨揍的.AttachState(states.Bloom, 12)
-	//挨揍的.AttachState(states.Quicken, 12)
-	攻击 := 纳西妲.GetActions().Get(attackMode.ElementalSkill, "")
-	profitDetect(纳西妲, 挨揍的, 攻击, damage, CustomDetects(elementals.Grass), nil)
+	挨揍的.Attach(elementals.Water, 12)
+	挨揍的.AttachState(states.Quicken, 12)
+	攻击 := actions.Get(attackMode.ElementalSkill, "灭净三业")
+	profitDetect(纳西妲, 挨揍的, 攻击, damage, CustomDetects(elementals.Grass), nil, buff.Character纳西妲慧明缘觉智论())
 }
 
 func CustomDetects(dye elementals.Elemental) map[string]*attr.Modifier {
@@ -182,23 +193,23 @@ func CustomDetects(dye elementals.Elemental) map[string]*attr.Modifier {
 }
 
 func profitDetect(character *character.Character, enemy *enemy.Enemy, action *action.Action, fn detect.FinalDamage,
-	customDetects map[string]*attr.Modifier, replaceArtifacts ...*artifacts.Artifacts) {
+	customDetects map[string]*attr.Modifier, replaceArtifacts []*artifacts.Artifacts, finalModifiers ...attr.AttributeModifier) {
 	fmt.Printf("action: %s\n", action)
-	fmt.Printf("base: %f\n", fn(character, enemy, action, true))
-	profits := detect.ProfitDetect(character, enemy, action, true, fn, nil)
+	fmt.Printf("base: %f\n", fn(character, enemy, action, true, finalModifiers...))
+	profits := detect.ProfitDetect(character, enemy, action, true, fn, nil, finalModifiers...)
 	fmt.Printf("素质增益:\n")
 	for _, p := range profits {
 		fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
 	}
 	if len(customDetects) > 0 {
-		profits = detect.ProfitDetect(character, enemy, action, false, fn, customDetects)
+		profits = detect.ProfitDetect(character, enemy, action, false, fn, customDetects, finalModifiers...)
 		fmt.Printf("队友增益:\n")
 		for _, p := range profits {
 			fmt.Printf("\t增幅：%2.4f%% - %s\n", p.Value, p.Name)
 		}
 	}
 	if evaluateDetects := character.Evaluate(replaceArtifacts...); len(evaluateDetects) > 0 {
-		profits = detect.ProfitDetect(character, enemy, action, false, fn, evaluateDetects)
+		profits = detect.ProfitDetect(character, enemy, action, false, fn, evaluateDetects, finalModifiers...)
 		fmt.Printf("角色增益:\n")
 		for _, p := range profits {
 			if strings.Index(p.Name, "-") < 0 {

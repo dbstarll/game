@@ -23,7 +23,7 @@ type Calculator struct {
 	init            map[string]float64
 }
 
-func New(character *character.Character, enemy *enemy.Enemy, action *action.Action) *Calculator {
+func New(character *character.Character, enemy *enemy.Enemy, action *action.Action, finalModifiers ...attr.AttributeModifier) *Calculator {
 	calculator := &Calculator{
 		finalAttributes: character.FinalAttributes(),
 		enemy:           enemy,
@@ -35,6 +35,7 @@ func New(character *character.Character, enemy *enemy.Enemy, action *action.Acti
 			"武器攻击力": character.WeaponAttr(point.Atk),
 		},
 	}
+	attr.MergeAttributes(finalModifiers...)(calculator.finalAttributes)
 	return calculator
 }
 
@@ -170,7 +171,15 @@ func (c *Calculator) 倍率区() *Formula {
 }
 
 func (c *Calculator) 基础倍率区() *Formula {
-	return c.攻击区().multiply("基础倍率", c.倍率区())
+	攻击区 := c.攻击区()
+	switch c.action.Name() {
+	case "所闻遍计·灭净三业":
+		攻击力 := c.set("灭净三业·攻击力倍率", c.action.DMG()/100).multiply("灭净三业·攻击力", 攻击区)
+		元素精通 := c.set("灭净三业·元素精通倍率", c.action.DMG()*2/100).multiply("灭净三业·元素精通", "元素精通")
+		return 攻击力.add("灭净三业·基础倍率", 元素精通)
+	default:
+		return 攻击区.multiply("基础倍率", c.倍率区())
+	}
 }
 
 func (c *Calculator) 激化区() *Formula {

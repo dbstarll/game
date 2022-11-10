@@ -55,6 +55,10 @@ func (a *Action) Mode() attackMode.AttackMode {
 	return a.mode
 }
 
+func (a *Action) Name() string {
+	return a.name
+}
+
 func (a *Action) DMG() float64 {
 	return a.dmg
 }
