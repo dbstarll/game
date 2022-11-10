@@ -34,6 +34,11 @@ func main() {
 	//绽放队()
 }
 
+var damage detect.FinalDamage = func(character *character.Character, enemy *enemy.Enemy, action *action.Action, debug bool) float64 {
+	_, avg, _ := calculator.New(character, enemy, action).Calculate(debug)
+	return avg.Value()
+}
+
 func 神里绫华() error {
 	神里绫华 := character.Factory神里绫华(9, 9, 9, 0)
 
@@ -92,11 +97,9 @@ func 神里绫华() error {
 		replaceArtifacts = append(replaceArtifacts, 生之花, 死之羽, 空之杯, 理之冠)
 	}
 
-	profitDetect(神里绫华, 挨揍的, 神里绫华.GetActions().Get(attackMode.ChargedAttack, ""),
-		func(player *character.Character, enemy *enemy.Enemy, action *action.Action, debug bool) float64 {
-			_, avg, _ := calculator.New(player, enemy, action, elementals.Ice).Calculate(debug)
-			return avg.Value()
-		}, CustomDetects(elementals.Ice), replaceArtifacts...)
+	攻击 := 神里绫华.GetActions().Get(attackMode.ChargedAttack, "")
+	攻击.Apply(action.Infusion(elementals.Ice))
+	profitDetect(神里绫华, 挨揍的, 攻击, damage, CustomDetects(elementals.Ice), replaceArtifacts...)
 	return nil
 }
 
@@ -111,11 +114,8 @@ func 绽放队() {
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Attach(elemental.Electric, 12)
 	挨揍的.Attach(elementals.Water, 12)
-	profitDetect(草主, 挨揍的, 草主.GetActions().Get(attackMode.ElementalSkill, "技能伤害"),
-		func(player *character.Character, enemy *enemy.Enemy, action *action.Action, debug bool) float64 {
-			_, avg, _ := calculator.New(player, enemy, action, -1).Calculate(debug)
-			return avg.Value()
-		}, CustomDetects(elementals.Grass), nil)
+	攻击 := 草主.GetActions().Get(attackMode.ElementalSkill, "技能伤害")
+	profitDetect(草主, 挨揍的, 攻击, damage, CustomDetects(elementals.Grass), nil)
 }
 
 func 超绽放队() {
@@ -131,11 +131,8 @@ func 超绽放队() {
 	挨揍的.Attach(elementals.Grass, 12)
 	挨揍的.AttachState(states.Bloom, 12)
 	挨揍的.AttachState(states.Quicken, 12)
-	profitDetect(久岐忍, 挨揍的, 久岐忍.GetActions().Get(attackMode.ElementalSkill, ""),
-		func(player *character.Character, enemy *enemy.Enemy, action *action.Action, debug bool) float64 {
-			_, avg, _ := calculator.New(player, enemy, action, -1).Calculate(debug)
-			return avg.Value()
-		}, CustomDetects(elementals.Electric), nil)
+	攻击 := 久岐忍.GetActions().Get(attackMode.ElementalSkill, "")
+	profitDetect(久岐忍, 挨揍的, 攻击, damage, CustomDetects(elementals.Electric), nil)
 }
 
 func 迪卢克1() error {
@@ -178,11 +175,8 @@ func 迪卢克1() error {
 	//挨揍的.Attach(elemental.Electric, 12)
 	挨揍的.Attach(elementals.Water, 12)
 
-	profitDetect(迪卢克, 挨揍的, 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段"),
-		func(player *character.Character, enemy *enemy.Enemy, action *action.Action, debug bool) float64 {
-			_, avg, _ := calculator.New(player, enemy, action, -1).Calculate(debug)
-			return avg.Value()
-		}, CustomDetects(elementals.Fire), nil)
+	攻击 := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
+	profitDetect(迪卢克, 挨揍的, 攻击, damage, CustomDetects(elementals.Fire), nil)
 	return nil
 }
 
@@ -251,11 +245,8 @@ func 迪卢克2() error {
 		replaceArtifacts = append(replaceArtifacts, 生之花, 死之羽, 时之沙, 空之杯, 理之冠)
 	}
 
-	profitDetect(迪卢克, 挨揍的, 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段"),
-		func(player *character.Character, enemy *enemy.Enemy, action *action.Action, debug bool) float64 {
-			_, avg, _ := calculator.New(player, enemy, action, -1).Calculate(debug)
-			return avg.Value()
-		}, CustomDetects(elementals.Fire), replaceArtifacts...)
+	攻击 := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
+	profitDetect(迪卢克, 挨揍的, 攻击, damage, CustomDetects(elementals.Fire), replaceArtifacts...)
 	return nil
 }
 

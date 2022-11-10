@@ -23,7 +23,7 @@ type Calculator struct {
 	init            map[string]float64
 }
 
-func New(character *character.Character, enemy *enemy.Enemy, action *action.Action, infusionElemental elementals.Elemental) *Calculator {
+func New(character *character.Character, enemy *enemy.Enemy, action *action.Action) *Calculator {
 	calculator := &Calculator{
 		finalAttributes: character.FinalAttributes(),
 		enemy:           enemy,
@@ -34,11 +34,6 @@ func New(character *character.Character, enemy *enemy.Enemy, action *action.Acti
 			"人物攻击力": character.BaseAttr(point.Atk),
 			"武器攻击力": character.WeaponAttr(point.Atk),
 		},
-	}
-	switch action.Mode() {
-	case attackMode.NormalAttack, attackMode.ChargedAttack, attackMode.PlungeAttack:
-		calculator.elemental = calculator.elemental.Infusion(infusionElemental)
-		break
 	}
 	return calculator
 }

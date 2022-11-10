@@ -21,13 +21,18 @@ type Modifier func(action *Action) func()
 
 func Infusion(elemental elementals.Elemental) Modifier {
 	return func(action *Action) func() {
-		if infusion := action.elemental.Infusion(elemental); infusion != action.elemental {
-			old := action.elemental
-			action.elemental = infusion
-			return func() {
-				action.elemental = old
+		switch action.Mode() {
+		case attackMode.NormalAttack, attackMode.ChargedAttack, attackMode.PlungeAttack:
+			if infusion := action.elemental.Infusion(elemental); infusion != action.elemental {
+				old := action.elemental
+				action.elemental = infusion
+				return func() {
+					action.elemental = old
+				}
+			} else {
+				return NopCallBack
 			}
-		} else {
+		default:
 			return NopCallBack
 		}
 	}
