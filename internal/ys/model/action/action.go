@@ -6,11 +6,31 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 )
 
+var (
+	NopCallBack = func() {}
+)
+
 type Action struct {
 	mode      attackMode.AttackMode
 	dmg       float64
 	name      string
 	elemental elementals.Elemental
+}
+
+type Modifier func(action *Action) func()
+
+func Infusion(elemental elementals.Elemental) Modifier {
+	return func(action *Action) func() {
+		if infusion := action.elemental.Infusion(elemental); infusion != action.elemental {
+			old := action.elemental
+			action.elemental = infusion
+			return func() {
+				action.elemental = old
+			}
+		} else {
+			return NopCallBack
+		}
+	}
 }
 
 func New(mode attackMode.AttackMode, dmg float64, elemental elementals.Elemental, name string) *Action {
@@ -20,6 +40,10 @@ func New(mode attackMode.AttackMode, dmg float64, elemental elementals.Elemental
 		elemental: elemental,
 		name:      name,
 	}
+}
+
+func (a *Action) Apply(modifier Modifier) func() {
+	return modifier(a)
 }
 
 func (a *Action) Mode() attackMode.AttackMode {

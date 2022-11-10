@@ -4,6 +4,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
+	"github.com/dbstarll/game/internal/ys/model/action"
 )
 
 var (
@@ -86,6 +87,7 @@ func AddAttackFactorBonus(r attackMode.AttackMode, add float64) AttributeModifie
 type Modifier struct {
 	characterModifier AttributeModifier
 	enemyModifier     AttributeModifier
+	actionModifier    action.Modifier
 }
 
 func NewCharacterModifier(characterModifiers ...AttributeModifier) *Modifier {
@@ -117,7 +119,7 @@ func NewModifier(characterModifier, enemyModifier AttributeModifier) *Modifier {
 	}
 }
 
-func (m *Modifier) Apply(character Appliable, enemy Appliable) func() {
+func (m *Modifier) Apply(character Appliable, enemy Appliable, action *action.Action) func() {
 	var cancels []func()
 	if m.characterModifier != nil && character != nil {
 		cancels = append(cancels, character.Apply(m.characterModifier))
@@ -125,11 +127,19 @@ func (m *Modifier) Apply(character Appliable, enemy Appliable) func() {
 	if m.enemyModifier != nil && enemy != nil {
 		cancels = append(cancels, enemy.Apply(m.enemyModifier))
 	}
+	if m.actionModifier != nil && action != nil {
+		cancels = append(cancels, action.Apply(m.actionModifier))
+	}
 	return func() {
 		for _, cancel := range cancels {
 			cancel()
 		}
 	}
+}
+
+func (m *Modifier) Action(modifier action.Modifier) *Modifier {
+	m.actionModifier = modifier
+	return m
 }
 
 func (m *Modifier) EnemyModifier() AttributeModifier {

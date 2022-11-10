@@ -2,6 +2,7 @@ package detect
 
 import (
 	"github.com/dbstarll/game/internal/ys/dimension/artifacts/entry"
+	"github.com/dbstarll/game/internal/ys/model/action"
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/character"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
@@ -13,7 +14,7 @@ type Profit struct {
 	Value float64
 }
 
-type FinalDamage func(character *character.Character, enemy *enemy.Enemy, debug bool) float64
+type FinalDamage func(character *character.Character, enemy *enemy.Enemy, action *action.Action, debug bool) float64
 
 var (
 	baseDetects = initBaseDetects(map[string]*attr.Modifier{})
@@ -32,13 +33,13 @@ func initBaseDetects(detects map[string]*attr.Modifier) map[string]*attr.Modifie
 	return detects
 }
 
-func ProfitDetect(character *character.Character, enemy *enemy.Enemy, baseDetect bool, fn FinalDamage, customDetects map[string]*attr.Modifier) []*Profit {
-	base := fn(character, enemy, false)
+func ProfitDetect(character *character.Character, enemy *enemy.Enemy, action *action.Action, baseDetect bool, fn FinalDamage, customDetects map[string]*attr.Modifier) []*Profit {
+	base := fn(character, enemy, action, false)
 	var profits []*Profit
 	if baseDetect {
 		for name, modifier := range baseDetects {
-			cancel := modifier.Apply(character, enemy)
-			value := fn(character, enemy, false)
+			cancel := modifier.Apply(character, enemy, action)
+			value := fn(character, enemy, action, false)
 			if value != base {
 				profits = append(profits, &Profit{
 					Name:  name,
@@ -49,8 +50,8 @@ func ProfitDetect(character *character.Character, enemy *enemy.Enemy, baseDetect
 		}
 	}
 	for name, modifier := range customDetects {
-		cancel := modifier.Apply(character, enemy)
-		value := fn(character, enemy, false)
+		cancel := modifier.Apply(character, enemy, action)
+		value := fn(character, enemy, action, false)
 		profits = append(profits, &Profit{
 			Name:  name,
 			Value: 100 * (value - base) / base,
