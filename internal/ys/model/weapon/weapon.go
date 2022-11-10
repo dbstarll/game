@@ -37,6 +37,9 @@ var (
 			buff.AddElementalDamageBonus(float64([]int{0, 6, 12, 21}[layers]+refine*[]int{0, 2, 4, 7}[layers]), elemental), // 巴印层数
 		)
 	}
+	Factory祭礼残章 = func(refine int) *Weapon {
+		return New(4, weaponType.Catalyst, "祭礼残章", Base(90, 454, buff.AddElementalMastery(221)))
+	}
 )
 
 type Weapon struct {

@@ -128,7 +128,7 @@ func (c *Calculator) prepare(putZero bool) {
 func (c *Calculator) Calculate(debug bool) (*Formula, *Formula, *Formula) {
 	c.prepare(true)
 
-	基础伤害区, 增伤区, 防御区, 抗性区, 增幅区 := c.基础伤害区(), c.增伤区(), c.防御区(), c.抗性区(c.elemental), c.增幅区()
+	基础倍率区, 基础伤害区, 增伤区, 防御区, 抗性区, 增幅区 := c.基础倍率区(), c.基础伤害区(), c.增伤区(), c.防御区(), c.抗性区(c.elemental), c.增幅区()
 	暴击收益, 暴伤倍率 := c.暴击区()
 	增幅总伤害 := 基础伤害区.multiply("增幅总伤害", 增伤区, 防御区, 抗性区, 增幅区)
 	增幅总伤害平均 := 增幅总伤害.multiply("增幅总伤害(平均)", 暴击收益)
@@ -141,6 +141,7 @@ func (c *Calculator) Calculate(debug bool) (*Formula, *Formula, *Formula) {
 	if debug {
 		zap.S().Debugf("Action: %s", c.action)
 		zap.S().Debugf("Attributes: %s", c.finalAttributes)
+		zap.S().Debugf("基础倍率区: %s", 基础倍率区.Algorithm())
 		zap.S().Debugf("基础伤害区: %s", 基础伤害区.Algorithm())
 		zap.S().Debugf("增伤区: %s", 增伤区.Algorithm())
 		zap.S().Debugf("暴击区: %s, %s", 暴击收益.Algorithm(), 暴伤倍率.Algorithm())

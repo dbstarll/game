@@ -14,12 +14,17 @@ type ElementalSkill struct {
 	dmgs           map[string]float64
 	cure           int
 	curePercentage float64
-	duration       time.Duration // 附魔持续时间
+	duration       time.Duration // 持续时间
 	cd             time.Duration // 冷却时间
+	interval       time.Duration // 间隔时间
 }
 
 func BaseElementalSkill(name string, maxLv int, cd, duration time.Duration) *ElementalSkill {
 	return &ElementalSkill{name: name, lv: maxLv, cd: cd, duration: duration}
+}
+
+func BaseElementalSkillWithInterval(name string, maxLv int, cd, duration, interval time.Duration) *ElementalSkill {
+	return &ElementalSkill{name: name, lv: maxLv, cd: cd, duration: duration, interval: interval}
 }
 
 func LevelElementalSkill(lv int, dmgs map[string]float64) *ElementalSkill {

@@ -25,9 +25,10 @@ import (
 
 func main() {
 	//迪卢克()
-	神里绫华()
+	//神里绫华()
 	//超绽放队()
 	//绽放队()
+	纳西妲()
 }
 
 var (
@@ -142,6 +143,19 @@ func 迪卢克() {
 	攻击 := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
 	//攻击.Apply(action.Infusion(elementals.Fire))
 	profitDetect(迪卢克, 挨揍的, 攻击, damage, CustomDetects(elementals.Fire), replaceArtifacts...)
+}
+
+func 纳西妲() {
+	纳西妲 := character.Factory纳西妲(1, 9, 9, 0)
+	Weapon(纳西妲, weapon.Factory祭礼残章(5))
+	//纳西妲.Apply(buff.AddElementalMastery(860))
+	挨揍的 := enemy.New(enemy.Base(90))
+	//挨揍的.Apply(buff.AddElementalResist(-30, elementals.Grass))
+	//挨揍的.Attach(elementals.Grass, 12)
+	//挨揍的.AttachState(states.Bloom, 12)
+	//挨揍的.AttachState(states.Quicken, 12)
+	攻击 := 纳西妲.GetActions().Get(attackMode.ElementalSkill, "")
+	profitDetect(纳西妲, 挨揍的, 攻击, damage, CustomDetects(elementals.Grass), nil)
 }
 
 func CustomDetects(dye elementals.Elemental) map[string]*attr.Modifier {
