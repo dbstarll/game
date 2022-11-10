@@ -76,6 +76,7 @@ func 神里绫华() error {
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
+	//挨揍的.Apply(buff.AddDefPercentage(-30))
 	//挨揍的.Attach(elementals.Ice, 12)
 	//挨揍的.AttachState(states.Frozen, 12)
 	//buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的)
@@ -268,6 +269,7 @@ func CustomDetects(dye elementals.Elemental) map[string]*attr.Modifier {
 		"岩四件套":    attr.NewCharacterModifier(buff.AddAtkPercentage(20)),
 		"岩主Q":     attr.NewCharacterModifier(buff.AddCriticalRate(15)),
 		"深林四件套":   attr.NewEnemyModifier(buff.AddElementalResist(-30, elementals.Grass)),
+		"减防30":    attr.NewEnemyModifier(buff.AddDefPercentage(-30)),
 		"如雷四件套":   attr.NewCharacterModifier(buff.AddReactionDamageBonus(40, reactions.Overload, reactions.ElectroCharged, reactions.Superconduct, reactions.Hyperbloom)),
 	}
 }

@@ -94,11 +94,6 @@ func AddIgnoreDefence(add float64) attr.AttributeModifier {
 	return attr.New(point.IgnoreDefence, add).Accumulation()
 }
 
-// 防御减免
-func AddDefenceReduction(add float64) attr.AttributeModifier {
-	return attr.New(point.DefenceReduction, add).Accumulation()
-}
-
 // 全元素伤害加成
 func AddAllElementalDamageBonus(add float64) attr.AttributeModifier {
 	return AddElementalDamageBonus(add, elementals.Elementals[1:]...)

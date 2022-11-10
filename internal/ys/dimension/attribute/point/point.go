@@ -20,7 +20,6 @@ const (
 	DamageBonus                       // 伤害加成
 	IncomingDamageBonus               // 受到的伤害加成
 	IgnoreDefence                     // 无视防御
-	DefenceReduction                  // 防御减免
 )
 
 var Points = []Point{
@@ -41,7 +40,6 @@ var Points = []Point{
 	DamageBonus,
 	IncomingDamageBonus,
 	IgnoreDefence,
-	DefenceReduction,
 }
 
 func (p Point) IsPercentage() bool {
@@ -89,8 +87,6 @@ func (p Point) String() string {
 		return "受到的伤害加成"
 	case IgnoreDefence:
 		return "无视防御"
-	case DefenceReduction:
-		return "防御减免"
 	default:
 		if p < 0 {
 			return "不限"
