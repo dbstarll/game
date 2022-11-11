@@ -150,6 +150,9 @@ func (c *Calculator) Calculate(debug bool) (*Formula, *Formula, *Formula) {
 		zap.S().Debugf("抗性区: %s", 抗性区.Algorithm())
 		zap.S().Debugf("增幅区: %s", 增幅区.Algorithm())
 		zap.S().Debugf("剧变区: %s", 剧变区)
+		for _, 剧变区伤害 := range 剧变区 {
+			zap.S().Debugf("\t%s", 剧变区伤害.(*Formula).Algorithm())
+		}
 		zap.S().Debugf("%s", 增幅总伤害.Algorithm())
 		zap.S().Debugf("%s", 增幅总伤害平均.Algorithm())
 		zap.S().Debugf("%s", 增幅总伤害最大.Algorithm())
