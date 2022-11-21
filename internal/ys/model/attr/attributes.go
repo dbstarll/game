@@ -6,6 +6,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
+	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions/classifies"
 	"reflect"
 )
 
@@ -223,15 +224,44 @@ func (a *Attributes) String() string {
 	values = a.append(values, "元素伤害加成", a.elementalDamageBonus)
 	values = a.append(values, "元素抗性", a.elementalResist)
 	values = a.append(values, "元素影响下增伤", a.elementalAttachedDamageBonus)
-	values = a.append(values, "元素反应系数提高", a.elementalAttachedDamageBonus)
-	values = a.append(values, "攻击模式伤害加成", a.attackModeDamageBonus)
-	values = a.append(values, "攻击模式技能倍率加成", a.attackModeFactorBonus)
+	values = a.append(values, "元素反应系数提高", a.reactionDamageBonus)
+	values = a.append(values, "伤害加成", a.attackModeDamageBonus)
+	values = a.append(values, "技能倍率加成", a.attackModeFactorBonus)
 	return fmt.Sprintf("%s", values)
 }
 
 func (a *Attributes) append(values []string, title string, field interface{}) []string {
 	if reflect.ValueOf(field).Len() == 0 {
 		return values
+	} else if items, ok := field.(map[elementals.Elemental]float64); ok {
+		var sub []string
+		for ele, val := range items {
+			sub = append(sub, fmt.Sprintf("%s%s[%.1f%%]", ele, title, val))
+		}
+		return append(values, sub...)
+	} else if items, ok := field.(map[attackMode.AttackMode]float64); ok {
+		var sub []string
+		for mode, val := range items {
+			sub = append(sub, fmt.Sprintf("%s%s[%.1f%%]", mode, title, val))
+		}
+		return append(values, sub...)
+	} else if items, ok := field.(map[reactions.Reaction]float64); ok {
+		var sub []string
+		for reaction, val := range items {
+			switch reaction.Classify() {
+			case classifies.Amplify, classifies.Intensify:
+				sub = append(sub, fmt.Sprintf("%s反应系数提高[%.1f%%]", reaction, val))
+				break
+			case classifies.Upheaval:
+				sub = append(sub, fmt.Sprintf("%s反应伤害提升[%.1f%%]", reaction, val))
+				break
+			default:
+				//TODO
+				// Crystal                   // 结晶
+				// Intensify                 // 激化
+			}
+		}
+		return append(values, sub...)
 	} else {
 		return append(values, fmt.Sprintf("%s: %v", title, field))
 	}

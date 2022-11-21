@@ -40,5 +40,9 @@ func (a *Attribute) add(value float64) *Attribute {
 }
 
 func (a Attribute) String() string {
-	return fmt.Sprintf("%s[%v]", a.point, a.value)
+	if a.point.IsPercentage() {
+		return fmt.Sprintf("%s[%.1f%%]", a.point, a.value)
+	} else {
+		return fmt.Sprintf("%s[%.0f]", a.point, a.value)
+	}
 }
