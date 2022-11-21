@@ -11,21 +11,6 @@ import (
 )
 
 var (
-	Factory生之花 = func(star int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return New(star, position.FlowerOfLife, entry.Hp, base(int(starHpRect[star-1][0])), secondary(secondaryEntries))
-	}
-	Factory死之羽 = func(star int, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return New(star, position.PlumeOfDeath, entry.Atk, base(int(starHpRect[star-1][0])), secondary(secondaryEntries))
-	}
-	Factory时之沙 = func(star int, primaryEntry entry.Entry, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return New(star, position.SandsOfEon, primaryEntry, base(int(starHpRect[star-1][0])), secondary(secondaryEntries))
-	}
-	Factory空之杯 = func(star int, primaryEntry entry.Entry, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return New(star, position.GobletOfEonothem, primaryEntry, base(int(starHpRect[star-1][0])), secondary(secondaryEntries))
-	}
-	Factory理之冠 = func(star int, primaryEntry entry.Entry, secondaryEntries EntriesLooper) (*Artifacts, error) {
-		return New(star, position.CircletOfLogos, primaryEntry, base(int(starHpRect[star-1][0])), secondary(secondaryEntries))
-	}
 	starHpRect = [][]float64{
 		{0, 1, 1, 0, 0, 0, 0, 0, 0},
 		{4, 551, 258, 0, 0, 0, 0, 0, 0},
@@ -35,29 +20,8 @@ var (
 	}
 )
 
-type FloatEntries map[entry.Entry]float64
-type IntEntries map[entry.Entry]int
-
 type EntriesLooper interface {
 	LoopEntries(looper func(entry entry.Entry, value interface{}) error) error
-}
-
-func (e FloatEntries) LoopEntries(looper func(entry entry.Entry, value interface{}) error) error {
-	for entry, value := range e {
-		if err := looper(entry, value); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func (e IntEntries) LoopEntries(looper func(entry entry.Entry, value interface{}) error) error {
-	for entry, value := range e {
-		if err := looper(entry, value); err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 type PrimaryEntry struct {
@@ -68,10 +32,8 @@ type PrimaryEntry struct {
 }
 
 type SecondaryEntry struct {
-	rect   []int
-	value  float64
-	load   attr.AttributeModifier
-	unload attr.AttributeModifier
+	PrimaryEntry
+	rect []int
 }
 
 type Artifacts struct {
@@ -80,7 +42,7 @@ type Artifacts struct {
 	name             string
 	level            int
 	primaryEntry     *PrimaryEntry
-	secondaryEntries map[entry.Entry]*SecondaryEntry
+	secondaryEntries []*SecondaryEntry
 	primary          *attr.Attributes
 	secondary        *attr.Attributes
 }
@@ -114,7 +76,8 @@ func base(level int) Modifier {
 
 func secondary(secondaryEntries EntriesLooper) Modifier {
 	return func(artifacts *Artifacts) (f func(), err error) {
-		total, secondaryFactors, secondaryModifiers := 0, artifacts.secondaryFactors(), make([]attr.AttributeModifier, 0)
+		oldSecondaryEntries, total := artifacts.secondaryEntries, 0
+		secondaryFactors, secondaryModifiers := artifacts.secondaryFactors(), make([]attr.AttributeModifier, 0)
 		if err := secondaryEntries.LoopEntries(func(entry entry.Entry, value interface{}) error {
 			if artifacts.primaryEntry.entry == entry {
 				return errors.Errorf("圣遗物主副词条[%s]不能相同", entry)
@@ -128,13 +91,16 @@ func secondary(secondaryEntries EntriesLooper) Modifier {
 					matchRect[intValue-1] = 3
 				}
 				secondaryEntry := &SecondaryEntry{
-					rect:   matchRect,
-					value:  matchFactor * rate,
-					load:   fn(matchFactor * rate),
-					unload: fn(-matchFactor * rate),
+					PrimaryEntry: PrimaryEntry{
+						entry:  entry,
+						value:  matchFactor * rate,
+						load:   fn(matchFactor * rate),
+						unload: fn(-matchFactor * rate),
+					},
+					rect: matchRect,
 				}
 				total, secondaryModifiers = total+len(matchRect), append(secondaryModifiers, secondaryEntry.load)
-				artifacts.secondaryEntries[entry] = secondaryEntry
+				artifacts.secondaryEntries = append(artifacts.secondaryEntries, secondaryEntry)
 				return nil
 			} else if floatValue, ok := value.(float64); !ok {
 				return errors.Errorf("不支持的圣遗物副词条[%s]增幅类型: %s", entry, reflect.TypeOf(value))
@@ -142,13 +108,16 @@ func secondary(secondaryEntries EntriesLooper) Modifier {
 				return err
 			} else {
 				secondaryEntry := &SecondaryEntry{
-					rect:   matchRect,
-					value:  matchFactor * rate,
-					load:   fn(matchFactor * rate),
-					unload: fn(-matchFactor * rate),
+					PrimaryEntry: PrimaryEntry{
+						entry:  entry,
+						value:  matchFactor * rate,
+						load:   fn(matchFactor * rate),
+						unload: fn(-matchFactor * rate),
+					},
+					rect: matchRect,
 				}
 				total, secondaryModifiers = total+len(matchRect), append(secondaryModifiers, secondaryEntry.load)
-				artifacts.secondaryEntries[entry] = secondaryEntry
+				artifacts.secondaryEntries = append(artifacts.secondaryEntries, secondaryEntry)
 				return nil
 			}
 		}); err != nil {
@@ -159,10 +128,7 @@ func secondary(secondaryEntries EntriesLooper) Modifier {
 		callback := attr.MergeAttributes(secondaryModifiers...)(artifacts.secondary)
 		return func() {
 			callback()
-			secondaryEntries.LoopEntries(func(entry entry.Entry, value interface{}) error {
-				delete(artifacts.secondaryEntries, entry)
-				return nil
-			})
+			artifacts.secondaryEntries = oldSecondaryEntries
 		}, nil
 	}
 }
@@ -220,7 +186,7 @@ func New(star int, position position.Position, primaryEntry entry.Entry, baseMod
 		position:         position,
 		level:            0,
 		primaryEntry:     &PrimaryEntry{entry: primaryEntry},
-		secondaryEntries: make(map[entry.Entry]*SecondaryEntry),
+		secondaryEntries: make([]*SecondaryEntry, 0),
 		primary:          attr.NewAttributes(),
 		secondary:        attr.NewAttributes(),
 	}
@@ -245,8 +211,8 @@ func (a *Artifacts) Evaluate(replaceArtifacts ...*Artifacts) map[string]*attr.Mo
 	detects := make(map[string]*attr.Modifier)
 	detects[a.position.String()] = attr.NewCharacterModifier(a.Accumulation(true))
 	detects[fmt.Sprintf("%s - [主]%s: %.2f", a.position, a.primaryEntry.entry, a.primaryEntry.value)] = attr.NewCharacterModifier(a.primaryEntry.unload)
-	for ent, secondaryEntry := range a.secondaryEntries {
-		detects[fmt.Sprintf("%s - [副]%s%v: %.2f", a.position, ent, secondaryEntry.rect, secondaryEntry.value)] = attr.NewCharacterModifier(secondaryEntry.unload)
+	for _, secondaryEntry := range a.secondaryEntries {
+		detects[fmt.Sprintf("%s - [副]%s%v: %.2f", a.position, secondaryEntry.entry, secondaryEntry.rect, secondaryEntry.value)] = attr.NewCharacterModifier(secondaryEntry.unload)
 	}
 	for _, replace := range replaceArtifacts {
 		if replace.position == a.position {
@@ -294,5 +260,13 @@ func (a *Artifacts) secondaryFactors() []float64 {
 }
 
 func (a *Artifacts) String() string {
-	return fmt.Sprintf("%s{star:%d level:%d primary:%s secondary:%s}", a.position, a.star, a.level, a.primary, a.secondary)
+	return fmt.Sprintf("%s{star:%d level:%d primary:%s secondary:%s}", a.position, a.star, a.level, a.primaryEntry, a.secondaryEntries)
+}
+
+func (e *PrimaryEntry) String() string {
+	if e.entry.IsPercentage() {
+		return fmt.Sprintf("%s[%.1f%%]", e.entry, e.value)
+	} else {
+		return fmt.Sprintf("%s[%.0f]", e.entry, e.value)
+	}
 }

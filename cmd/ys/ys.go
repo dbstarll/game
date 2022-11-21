@@ -25,10 +25,10 @@ import (
 
 func main() {
 	//迪卢克()
-	//神里绫华()
+	神里绫华()
 	//超绽放队()
 	//绽放队()
-	纳西妲()
+	//纳西妲()
 }
 
 var (
@@ -54,11 +54,11 @@ func 神里绫华() {
 
 	Weapon(神里绫华, weapon.Factory雾切之回光(1, 2, elementals.Ice))
 
-	神里绫华.Artifacts(Artifacts(artifacts.Factory生之花(5, artifacts.FloatEntries{entry.AtkPercentage: 14, entry.CriticalRate: 7, entry.Atk: 54, entry.Def: 16})))
-	神里绫华.Artifacts(Artifacts(artifacts.Factory死之羽(5, artifacts.FloatEntries{entry.CriticalRate: 11.7, entry.Def: 23, entry.DefPercentage: 13.1, entry.CriticalDamage: 7.8})))
-	神里绫华.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.AtkPercentage, artifacts.FloatEntries{entry.Atk: 18, entry.CriticalRate: 8.9, entry.CriticalDamage: 21, entry.Def: 23})))
-	神里绫华.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, artifacts.FloatEntries{entry.CriticalRate: 2.7, entry.EnergyRecharge: 5.2, entry.ElementalMastery: 63, entry.AtkPercentage: 16.3})))
-	神里绫华.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, artifacts.FloatEntries{entry.Def: 44, entry.EnergyRecharge: 11.7, entry.HpPercentage: 15.7, entry.Atk: 18})))
+	神里绫华.Artifacts(Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.AtkPercentage, 14}, {entry.CriticalRate, 7}, {entry.Atk, 54}, {entry.Def, 16}})))
+	神里绫华.Artifacts(Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 7.4}, {entry.Def, 32}, {entry.AtkPercentage, 14.6}, {entry.EnergyRecharge, 6.5}})))
+	神里绫华.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.AtkPercentage, &artifacts.FloatEntries{{entry.Atk, 18}, {entry.CriticalRate, 8.9}, {entry.CriticalDamage, 21}, {entry.Def, 23}})))
+	神里绫华.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.CriticalRate, 2.7}, {entry.EnergyRecharge, 5.2}, {entry.ElementalMastery, 63}, {entry.AtkPercentage, 16.3}})))
+	神里绫华.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.Def, 44}, {entry.EnergyRecharge, 11.7}, {entry.HpPercentage, 15.7}, {entry.Atk, 18}})))
 
 	神里绫华.Apply(
 		buff.AddAttackDamageBonus(30, attackMode.NormalAttack, attackMode.ChargedAttack), // 绫华固有天赋5
@@ -75,10 +75,13 @@ func 神里绫华() {
 	//buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的)
 
 	replaceArtifacts := []*artifacts.Artifacts{
-		Artifacts(artifacts.Factory生之花(5, artifacts.FloatEntries{entry.Def: 42, entry.AtkPercentage: 15.2, entry.HpPercentage: 9.3, entry.CriticalDamage: 12.4})),
-		Artifacts(artifacts.Factory死之羽(5, artifacts.FloatEntries{entry.DefPercentage: 27, entry.EnergyRecharge: 6.5, entry.CriticalDamage: 12.4, entry.AtkPercentage: 5.3})),
-		Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, artifacts.FloatEntries{entry.Hp: 538, entry.Def: 35, entry.EnergyRecharge: 16.8, entry.HpPercentage: 5.8})),
-		Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, artifacts.FloatEntries{entry.EnergyRecharge: 10.4, entry.DefPercentage: 13.9, entry.CriticalRate: 3.5, entry.AtkPercentage: 15.7})),
+		Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.Def, 42}, {entry.AtkPercentage, 15.2}, {entry.HpPercentage, 9.3}, {entry.CriticalDamage, 12.4}})),
+		Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.DefPercentage, 27}, {entry.EnergyRecharge, 6.5}, {entry.CriticalDamage, 12.4}, {entry.AtkPercentage, 5.3}})),
+		Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 6.6}, {entry.AtkPercentage, 15.7}, {entry.EnergyRecharge, 4.5}, {entry.Def, 32}})),
+		Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalDamage, 12.4}, {entry.CriticalRate, 6.6}, {entry.HpPercentage, 15.7}, {entry.ElementalMastery, 16}})),
+		Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 11.7}, {entry.Def, 23}, {entry.DefPercentage, 13.1}, {entry.CriticalDamage, 7.8}})),
+		Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.Hp, 538}, {entry.Def, 35}, {entry.EnergyRecharge, 16.8}, {entry.HpPercentage, 5.8}})),
+		Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.EnergyRecharge, 10.4}, {entry.DefPercentage, 13.9}, {entry.CriticalRate, 3.5}, {entry.AtkPercentage, 15.7}})),
 	}
 
 	攻击 := 神里绫华.GetActions().Get(attackMode.ChargedAttack, "")
@@ -115,11 +118,11 @@ func 迪卢克() {
 
 	Weapon(迪卢克, weapon.Factory无工之剑(1))
 
-	迪卢克.Artifacts(Artifacts(artifacts.Factory生之花(5, artifacts.FloatEntries{entry.Atk: 51, entry.AtkPercentage: 12.8, entry.CriticalRate: 3.1, entry.DefPercentage: 6.6})))
-	迪卢克.Artifacts(Artifacts(artifacts.Factory死之羽(5, artifacts.FloatEntries{entry.CriticalRate: 7.8, entry.Hp: 239, entry.CriticalDamage: 14, entry.ElementalMastery: 54})))
-	迪卢克.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.AtkPercentage, artifacts.FloatEntries{entry.CriticalDamage: 11.7, entry.ElementalMastery: 61, entry.EnergyRecharge: 15.5, entry.CriticalRate: 3.1})))
-	迪卢克.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, artifacts.FloatEntries{entry.EnergyRecharge: 14.2, entry.ElementalMastery: 16, entry.CriticalDamage: 12.4, entry.Hp: 448})))
-	迪卢克.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalRate, artifacts.FloatEntries{entry.AtkPercentage: 9.9, entry.Atk: 18, entry.ElementalMastery: 35, entry.CriticalDamage: 20.2})))
+	迪卢克.Artifacts(Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.Atk, 51}, {entry.AtkPercentage, 12.8}, {entry.CriticalRate, 3.1}, {entry.DefPercentage, 6.6}})))
+	迪卢克.Artifacts(Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 7.8}, {entry.Hp, 239}, {entry.CriticalDamage, 14}, {entry.ElementalMastery, 54}})))
+	迪卢克.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.AtkPercentage, &artifacts.FloatEntries{{entry.CriticalDamage, 11.7}, {entry.ElementalMastery, 61}, {entry.EnergyRecharge, 15.5}, {entry.CriticalRate, 3.1}})))
+	迪卢克.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, &artifacts.FloatEntries{{entry.EnergyRecharge, 14.2}, {entry.ElementalMastery, 16}, {entry.CriticalDamage, 12.4}, {entry.Hp, 448}})))
+	迪卢克.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalRate, &artifacts.FloatEntries{{entry.AtkPercentage, 9.9}, {entry.Atk, 18}, {entry.ElementalMastery, 35}, {entry.CriticalDamage, 20.2}})))
 
 	迪卢克.Apply(
 		buff.AddElementalDamageBonus(20, elementals.Fire), // 卢姥爷大招
@@ -131,13 +134,13 @@ func 迪卢克() {
 	挨揍的.Attach(elementals.Water, 12)
 
 	replaceArtifacts := []*artifacts.Artifacts{
-		Artifacts(artifacts.Factory生之花(5, artifacts.IntEntries{entry.CriticalDamage: 6, entry.ElementalMastery: 1, entry.CriticalRate: 1, entry.AtkPercentage: 1})),
-		Artifacts(artifacts.Factory死之羽(5, artifacts.IntEntries{entry.CriticalDamage: 5, entry.ElementalMastery: 2, entry.CriticalRate: 1, entry.AtkPercentage: 1})),
-		Artifacts(artifacts.Factory时之沙(5, entry.ElementalMastery, artifacts.IntEntries{entry.CriticalDamage: 5, entry.Atk: 1, entry.CriticalRate: 2, entry.AtkPercentage: 1})),
-		Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, artifacts.IntEntries{entry.CriticalDamage: 5, entry.ElementalMastery: 1, entry.CriticalRate: 2, entry.AtkPercentage: 1})),
-		Artifacts(artifacts.Factory理之冠(5, entry.CriticalRate, artifacts.IntEntries{entry.CriticalDamage: 6, entry.ElementalMastery: 1, entry.Atk: 1, entry.AtkPercentage: 1})),
-		Artifacts(artifacts.Factory生之花(5, artifacts.FloatEntries{entry.CriticalDamage: 26.4, entry.AtkPercentage: 4.1, entry.CriticalRate: 3.9, entry.Def: 42})),
-		Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, artifacts.FloatEntries{entry.Hp: 986, entry.HpPercentage: 9.3, entry.CriticalRate: 3.9, entry.Def: 35})),
+		Artifacts(artifacts.Factory生之花(5, &artifacts.IntEntries{{entry.CriticalDamage, 6}, {entry.ElementalMastery, 1}, {entry.CriticalRate, 1}, {entry.AtkPercentage, 1}})),
+		Artifacts(artifacts.Factory死之羽(5, &artifacts.IntEntries{{entry.CriticalDamage, 5}, {entry.ElementalMastery, 2}, {entry.CriticalRate, 1}, {entry.AtkPercentage, 1}})),
+		Artifacts(artifacts.Factory时之沙(5, entry.ElementalMastery, &artifacts.IntEntries{{entry.CriticalDamage, 5}, {entry.Atk, 1}, {entry.CriticalRate, 2}, {entry.AtkPercentage, 1}})),
+		Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, &artifacts.IntEntries{{entry.CriticalDamage, 5}, {entry.ElementalMastery, 1}, {entry.CriticalRate, 2}, {entry.AtkPercentage, 1}})),
+		Artifacts(artifacts.Factory理之冠(5, entry.CriticalRate, &artifacts.IntEntries{{entry.CriticalDamage, 6}, {entry.ElementalMastery, 1}, {entry.Atk, 1}, {entry.AtkPercentage, 1}})),
+		Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.CriticalDamage, 26.4}, {entry.AtkPercentage, 4.1}, {entry.CriticalRate, 3.9}, {entry.Def, 42}})),
+		Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, &artifacts.FloatEntries{{entry.Hp, 986}, {entry.HpPercentage, 9.3}, {entry.CriticalRate, 3.9}, {entry.Def, 35}})),
 	}
 
 	攻击 := 迪卢克.GetActions().Get(attackMode.ElementalSkill, "1段")
@@ -148,11 +151,11 @@ func 迪卢克() {
 func 纳西妲() {
 	纳西妲 := character.Factory纳西妲(1, 9, 9, 0)
 	Weapon(纳西妲, weapon.Factory祭礼残章(5))
-	纳西妲.Artifacts(Artifacts(artifacts.Factory生之花(5, artifacts.FloatEntries{entry.AtkPercentage: 14, entry.CriticalRate: 7, entry.Atk: 54, entry.Def: 16})))
-	纳西妲.Artifacts(Artifacts(artifacts.Factory死之羽(5, artifacts.FloatEntries{entry.CriticalRate: 11.7, entry.Def: 23, entry.DefPercentage: 13.1, entry.CriticalDamage: 7.8})))
-	纳西妲.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.ElementalMastery, artifacts.IntEntries{entry.CriticalRate: 1, entry.CriticalDamage: 6, entry.AtkPercentage: 1, entry.Atk: 1})))
-	纳西妲.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.ElementalMastery, artifacts.IntEntries{entry.CriticalRate: 3, entry.CriticalDamage: 3, entry.AtkPercentage: 1, entry.Atk: 1})))
-	纳西妲.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.ElementalMastery, artifacts.IntEntries{entry.CriticalRate: 3, entry.CriticalDamage: 3, entry.AtkPercentage: 1, entry.Atk: 1})))
+	纳西妲.Artifacts(Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.AtkPercentage, 14}, {entry.CriticalRate, 7}, {entry.Atk, 54}, {entry.Def, 16}})))
+	纳西妲.Artifacts(Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 11.7}, {entry.Def, 23}, {entry.DefPercentage, 13.1}, {entry.CriticalDamage, 7.8}})))
+	纳西妲.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.ElementalMastery, &artifacts.IntEntries{{entry.CriticalRate, 1}, {entry.CriticalDamage, 6}, {entry.AtkPercentage, 1}, {entry.Atk, 1}})))
+	纳西妲.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.ElementalMastery, &artifacts.IntEntries{{entry.CriticalRate, 3}, {entry.CriticalDamage, 3}, {entry.AtkPercentage, 1}, {entry.Atk, 1}})))
+	纳西妲.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.ElementalMastery, &artifacts.IntEntries{{entry.CriticalRate, 3}, {entry.CriticalDamage, 3}, {entry.AtkPercentage, 1}, {entry.Atk, 1}})))
 
 	actions := 纳西妲.GetActions()
 	actionQ := actions.Get(attackMode.ElementalBurst, "伤害1")
@@ -164,7 +167,7 @@ func 纳西妲() {
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Apply(buff.AddElementalResist(-30, elementals.Grass))
 	挨揍的.Attach(elementals.Water, 12)
-	挨揍的.AttachState(states.Quicken, 12)
+	//挨揍的.AttachState(states.Quicken, 12)
 	攻击 := actions.Get(attackMode.ElementalSkill, "灭净三业")
 	profitDetect(纳西妲, 挨揍的, 攻击, damage, CustomDetects(elementals.Grass), nil, buff.Character纳西妲慧明缘觉智论())
 }

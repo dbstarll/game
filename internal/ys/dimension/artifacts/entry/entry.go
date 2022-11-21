@@ -226,3 +226,12 @@ func (e Entry) Multiple() (float64, func(add float64) attr.AttributeModifier) {
 		return 0, nil
 	}
 }
+
+func (e Entry) IsPercentage() bool {
+	switch e {
+	case Hp, Atk, Def, ElementalMastery:
+		return false
+	default:
+		return true
+	}
+}
