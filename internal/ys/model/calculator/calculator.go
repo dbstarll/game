@@ -11,6 +11,7 @@ import (
 	"github.com/dbstarll/game/internal/ys/model/attr"
 	"github.com/dbstarll/game/internal/ys/model/character"
 	"github.com/dbstarll/game/internal/ys/model/enemy"
+	"github.com/dbstarll/game/internal/ys/model/weapon"
 	"go.uber.org/zap"
 )
 
@@ -18,6 +19,7 @@ type Calculator struct {
 	finalAttributes *attr.Attributes
 	enemy           *enemy.Enemy
 	action          *action.Action
+	weapon          *weapon.Weapon
 	elemental       elementals.Elemental
 	values          *Values
 	init            map[string]float64
@@ -28,6 +30,7 @@ func New(character *character.Character, enemy *enemy.Enemy, action *action.Acti
 		finalAttributes: character.FinalAttributes(),
 		enemy:           enemy,
 		action:          action,
+		weapon:          character.GetWeapon(),
 		elemental:       action.Elemental(),
 		init: map[string]float64{
 			"人物等级":  float64(character.Level()),
@@ -140,6 +143,7 @@ func (c *Calculator) Calculate(debug bool) (*Formula, *Formula, *Formula) {
 	总伤害平均 := 增幅总伤害平均.add("总伤害(平均)", 剧变区...)
 	总伤害最大 := 增幅总伤害最大.add("总伤害(暴击)", 剧变区...)
 	if debug {
+		zap.S().Debugf("Weapon: %s", c.weapon)
 		zap.S().Debugf("Action: %s", c.action)
 		zap.S().Debugf("Attributes: %s", c.finalAttributes)
 		zap.S().Debugf("基础倍率区: %s", 基础倍率区.Algorithm())

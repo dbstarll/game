@@ -11,6 +11,7 @@ var (
 )
 
 type Action struct {
+	lv        int
 	mode      attackMode.AttackMode
 	dmg       float64
 	name      string
@@ -38,8 +39,9 @@ func Infusion(elemental elementals.Elemental) Modifier {
 	}
 }
 
-func New(mode attackMode.AttackMode, dmg float64, elemental elementals.Elemental, name string) *Action {
+func New(lv int, mode attackMode.AttackMode, dmg float64, elemental elementals.Elemental, name string) *Action {
 	return &Action{
+		lv:        lv,
 		mode:      mode,
 		dmg:       dmg,
 		elemental: elemental,
@@ -68,5 +70,5 @@ func (a *Action) Elemental() elementals.Elemental {
 }
 
 func (a *Action) String() string {
-	return fmt.Sprintf("%s[%s][%s][技能倍率: %+v%%]", a.name, a.mode, a.elemental.Name(), a.dmg)
+	return fmt.Sprintf("%s[%s][%d][%s][技能倍率: %+v%%]", a.name, a.mode, a.lv, a.elemental.Name(), a.dmg)
 }

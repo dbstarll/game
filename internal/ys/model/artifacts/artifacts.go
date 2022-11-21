@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"math"
 	"reflect"
+	"strings"
 )
 
 var (
@@ -260,7 +261,7 @@ func (a *Artifacts) secondaryFactors() []float64 {
 }
 
 func (a *Artifacts) String() string {
-	return fmt.Sprintf("%s{star:%d level:%d primary:%s secondary:%s}", a.position, a.star, a.level, a.primaryEntry, a.secondaryEntries)
+	return fmt.Sprintf("%s{%s[%d] primary:%s secondary:%s}", a.position, strings.Repeat("⭐", a.star), a.level, a.primaryEntry, a.secondaryEntries)
 }
 
 func (e *PrimaryEntry) String() string {

@@ -94,6 +94,10 @@ func (c *Character) Weapon(newWeapon *weapon.Weapon) (*weapon.Weapon, error) {
 	}
 }
 
+func (c *Character) GetWeapon() *weapon.Weapon {
+	return c.weapon
+}
+
 func (c *Character) Artifacts(newArtifacts *artifacts.Artifacts) *artifacts.Artifacts {
 	if newArtifacts == nil {
 		return nil

@@ -28,7 +28,7 @@ func LevelElementalBurst(lv int, dmgs map[string]float64) *ElementalBurst {
 func (a *ElementalBurst) DMGs(elemental elementals.Elemental) *action.Actions {
 	actions := action.NewActions()
 	for name, dmg := range a.dmgs {
-		actions.Add(action.New(attackMode.ElementalBurst, dmg, elemental, fmt.Sprintf("%s·%s", a.name, name)))
+		actions.Add(action.New(a.lv, attackMode.ElementalBurst, dmg, elemental, fmt.Sprintf("%s·%s", a.name, name)))
 	}
 	return actions
 }

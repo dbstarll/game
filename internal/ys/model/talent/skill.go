@@ -38,7 +38,7 @@ func LevelElementalSkillWithCure(lv int, dmgs map[string]float64, curePercentage
 func (a *ElementalSkill) DMGs(elemental elementals.Elemental) *action.Actions {
 	actions := action.NewActions()
 	for name, dmg := range a.dmgs {
-		actions.Add(action.New(attackMode.ElementalSkill, dmg, elemental, fmt.Sprintf("%s·%s", a.name, name)))
+		actions.Add(action.New(a.lv, attackMode.ElementalSkill, dmg, elemental, fmt.Sprintf("%s·%s", a.name, name)))
 	}
 	return actions
 }

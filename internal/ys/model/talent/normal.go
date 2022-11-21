@@ -60,41 +60,41 @@ func LevelNormalAttackByCyclic(lv int, hits []float64, plungeDmg, chargedCyclic,
 func (a *NormalAttack) DMGs(weaponType weaponType.WeaponType, elemental elementals.Elemental) *action.Actions {
 	actions, hitElemental := action.NewActions(), attackMode.NormalAttack.Elemental(weaponType, elemental)
 	for idx, dmg := range a.hits {
-		actions.Add(action.New(attackMode.NormalAttack, dmg, hitElemental, fmt.Sprintf("%s·%d段", a.name, idx+1)))
+		actions.Add(action.New(a.lv, attackMode.NormalAttack, dmg, hitElemental, fmt.Sprintf("%s·%d段", a.name, idx+1)))
 	}
-	actions.AddAll(a.charged.DMGs(a.name, attackMode.ChargedAttack.Elemental(weaponType, elemental)))
-	actions.AddAll(a.plunge.DMGs(a.name, attackMode.PlungeAttack.Elemental(weaponType, elemental)))
+	actions.AddAll(a.charged.DMGs(a.lv, a.name, attackMode.ChargedAttack.Elemental(weaponType, elemental)))
+	actions.AddAll(a.plunge.DMGs(a.lv, a.name, attackMode.PlungeAttack.Elemental(weaponType, elemental)))
 	return actions
 }
 
-func (a *ChargedAttack) DMGs(name string, elemental elementals.Elemental) *action.Actions {
+func (a *ChargedAttack) DMGs(lv int, name string, elemental elementals.Elemental) *action.Actions {
 	actions := action.NewActions()
 	if a.cyclic > 0 {
-		actions.Add(action.New(attackMode.ChargedAttack, a.cyclic, elemental, fmt.Sprintf("%s·重击持续", name)))
+		actions.Add(action.New(lv, attackMode.ChargedAttack, a.cyclic, elemental, fmt.Sprintf("%s·重击持续", name)))
 	}
 	if a.final > 0 {
-		actions.Add(action.New(attackMode.ChargedAttack, a.final, elemental, fmt.Sprintf("%s·重击终结", name)))
+		actions.Add(action.New(lv, attackMode.ChargedAttack, a.final, elemental, fmt.Sprintf("%s·重击终结", name)))
 	}
 	hits := 0.0
 	for _, hit := range a.hits {
 		hits += hit
 	}
 	if hits > 0 {
-		actions.Add(action.New(attackMode.ChargedAttack, hits, elemental, fmt.Sprintf("%s·重击伤害", name)))
+		actions.Add(action.New(lv, attackMode.ChargedAttack, hits, elemental, fmt.Sprintf("%s·重击伤害", name)))
 	}
 	return actions
 }
 
-func (a *PlungeAttack) DMGs(name string, elemental elementals.Elemental) *action.Actions {
+func (a *PlungeAttack) DMGs(lv int, name string, elemental elementals.Elemental) *action.Actions {
 	actions := action.NewActions()
 	if a.dmg > 0 {
-		actions.Add(action.New(attackMode.PlungeAttack, a.dmg, elemental, fmt.Sprintf("%s·下坠期间", name)))
+		actions.Add(action.New(lv, attackMode.PlungeAttack, a.dmg, elemental, fmt.Sprintf("%s·下坠期间", name)))
 	}
 	if a.low > 0 {
-		actions.Add(action.New(attackMode.PlungeAttack, a.low, elemental, fmt.Sprintf("%s·低空坠地冲击", name)))
+		actions.Add(action.New(lv, attackMode.PlungeAttack, a.low, elemental, fmt.Sprintf("%s·低空坠地冲击", name)))
 	}
 	if a.high > 0 {
-		actions.Add(action.New(attackMode.PlungeAttack, a.high, elemental, fmt.Sprintf("%s·高空坠地冲击", name)))
+		actions.Add(action.New(lv, attackMode.PlungeAttack, a.high, elemental, fmt.Sprintf("%s·高空坠地冲击", name)))
 	}
 	return actions
 }
