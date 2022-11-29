@@ -54,11 +54,11 @@ func 神里绫华() {
 
 	Weapon(神里绫华, weapon.Factory雾切之回光(1, 2, elementals.Ice))
 
-	神里绫华.Artifacts(Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.EnergyRecharge, 4.5}, {entry.CriticalRate, 10.5}, {entry.CriticalDamage, 19.4}, {entry.Def, 39}})))
+	神里绫华.Artifacts(Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.AtkPercentage, 14}, {entry.CriticalRate, 7}, {entry.Atk, 54}, {entry.Def, 16}})))
 	神里绫华.Artifacts(Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 7.4}, {entry.Def, 32}, {entry.AtkPercentage, 14.6}, {entry.EnergyRecharge, 6.5}})))
 	神里绫华.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.AtkPercentage, &artifacts.FloatEntries{{entry.Atk, 18}, {entry.CriticalRate, 8.9}, {entry.CriticalDamage, 21}, {entry.Def, 23}})))
-	神里绫华.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.CriticalRate, 2.7}, {entry.EnergyRecharge, 5.2}, {entry.ElementalMastery, 63}, {entry.AtkPercentage, 16.3}})))
-	神里绫华.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.Def, 44}, {entry.EnergyRecharge, 11.7}, {entry.HpPercentage, 15.7}, {entry.Atk, 18}})))
+	神里绫华.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.Def, 35}, {entry.CriticalDamage, 22.5}, {entry.HpPercentage, 5.3}, {entry.CriticalRate, 6.6}})))
+	神里绫华.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.AtkPercentage, 15.2}, {entry.CriticalRate, 6.6}, {entry.EnergyRecharge, 11.7}, {entry.Hp, 269}})))
 
 	神里绫华.Apply(
 		buff.AddAttackDamageBonus(30, attackMode.NormalAttack, attackMode.ChargedAttack), // 绫华固有天赋5
@@ -75,12 +75,15 @@ func 神里绫华() {
 	//buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的)
 
 	replaceArtifacts := []*artifacts.Artifacts{
-		Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.AtkPercentage, 14}, {entry.CriticalRate, 7}, {entry.Atk, 54}, {entry.Def, 16}})),
+		Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.EnergyRecharge, 4.5}, {entry.CriticalRate, 10.5}, {entry.CriticalDamage, 19.4}, {entry.Def, 39}})),
 		Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 6.6}, {entry.AtkPercentage, 15.7}, {entry.EnergyRecharge, 4.5}, {entry.Def, 32}})),
 		Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalDamage, 12.4}, {entry.CriticalRate, 6.6}, {entry.HpPercentage, 15.7}, {entry.ElementalMastery, 16}})),
 		Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 11.7}, {entry.Def, 23}, {entry.DefPercentage, 13.1}, {entry.CriticalDamage, 7.8}})),
 		Artifacts(artifacts.Factory时之沙(5, entry.AtkPercentage, &artifacts.FloatEntries{{entry.CriticalRate, 6.6}, {entry.CriticalDamage, 6.2}, {entry.EnergyRecharge, 20.1}, {entry.Def, 21}})),
-		Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.Hp, 538}, {entry.Def, 35}, {entry.EnergyRecharge, 16.8}, {entry.HpPercentage, 5.8}})),
+		Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.Atk, 29}, {entry.CriticalDamage, 14}, {entry.AtkPercentage, 9.9}, {entry.Hp, 807}})),
+		Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.CriticalRate, 2.7}, {entry.EnergyRecharge, 5.2}, {entry.ElementalMastery, 63}, {entry.AtkPercentage, 16.3}})),
+		Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.CriticalRate, 6.6}, {entry.Def, 37}, {entry.AtkPercentage, 9.3}, {entry.EnergyRecharge, 11.7}})),
+		Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.Def, 44}, {entry.EnergyRecharge, 11.7}, {entry.HpPercentage, 15.7}, {entry.Atk, 18}})),
 		Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.EnergyRecharge, 10.4}, {entry.DefPercentage, 13.9}, {entry.CriticalRate, 3.5}, {entry.AtkPercentage, 15.7}})),
 	}
 
