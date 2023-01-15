@@ -23,11 +23,14 @@ func Artifacts冰风迷途的勇士2() attr.AttributeModifier {
 	return AddElementalDamageBonus(15, elementals.Ice)
 }
 
-func Artifacts冰风迷途的勇士4() attr.AttributeModifier {
+func Artifacts冰风迷途的勇士4(frozen bool) attr.AttributeModifier {
+	criticalRate := 20.0
+	if frozen {
+		criticalRate += 20.0
+	}
 	return attr.MergeAttributes(
 		Artifacts冰风迷途的勇士2(),
-		AddCriticalRate(20),
-		AddCriticalRate(20),
+		AddCriticalRate(criticalRate),
 	)
 }
 

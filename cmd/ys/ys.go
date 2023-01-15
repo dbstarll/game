@@ -50,9 +50,9 @@ var (
 )
 
 func 神里绫华() {
-	神里绫华 := character.Factory神里绫华(9, 9, 9, 0)
+	神里绫华 := character.Factory神里绫华(9, 9, 10, 0)
 
-	Weapon(神里绫华, weapon.Factory雾切之回光(1, 2, elementals.Ice))
+	Weapon(神里绫华, weapon.Factory雾切之回光(1, 3, elementals.Ice))
 
 	神里绫华.Artifacts(Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.AtkPercentage, 14}, {entry.CriticalRate, 7}, {entry.Atk, 54}, {entry.Def, 16}})))
 	神里绫华.Artifacts(Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 7.4}, {entry.Def, 32}, {entry.AtkPercentage, 14.6}, {entry.EnergyRecharge, 6.5}})))
@@ -63,16 +63,19 @@ func 神里绫华() {
 	神里绫华.Apply(
 		buff.AddAttackDamageBonus(30, attackMode.NormalAttack, attackMode.ChargedAttack), // 绫华固有天赋5
 		buff.AddElementalDamageBonus(18, elementals.Ice),                                 // 绫华固有天赋6
-		buff.Artifacts冰风迷途的勇士4(),
+		buff.Artifacts冰风迷途的勇士4(true),
 		buff.TeamIce(),
-		//buff.Character万叶扩散(1000, elementals.Ice),
+		buff.Character万叶扩散(1000, elementals.Ice),
+		buff.AddAtkPercentage(48), // 讨龙英杰谭
+		buff.AddAtkPercentage(20), // 岩四件套 or 宗室
+		buff.AddDamageBonus(60),   // 莫娜星异
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Apply(buff.AddDefPercentage(-30))
 	//挨揍的.Attach(elementals.Ice, 12)
 	//挨揍的.AttachState(states.Frozen, 12)
-	//buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的)
+	buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的, nil)
 
 	replaceArtifacts := []*artifacts.Artifacts{
 		Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.EnergyRecharge, 4.5}, {entry.CriticalRate, 10.5}, {entry.CriticalDamage, 19.4}, {entry.Def, 39}})),
@@ -87,7 +90,7 @@ func 神里绫华() {
 		Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.EnergyRecharge, 10.4}, {entry.DefPercentage, 13.9}, {entry.CriticalRate, 3.5}, {entry.AtkPercentage, 15.7}})),
 	}
 
-	攻击 := 神里绫华.GetActions().Get(attackMode.ChargedAttack, "")
+	攻击 := 神里绫华.GetActions().Get(attackMode.ElementalBurst, "切割")
 	攻击.Apply(action.Infusion(elementals.Ice))
 	profitDetect(神里绫华, 挨揍的, 攻击, damage, CustomDetects(elementals.Ice), replaceArtifacts)
 }
