@@ -1,9 +1,12 @@
 package buff
 
 import (
+	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
+	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 	"github.com/dbstarll/game/internal/ys/model/attr"
+	"math"
 )
 
 func Artifacts炽烈的炎之魔女2() attr.AttributeModifier {
@@ -45,5 +48,19 @@ func Artifacts翠绿之影4(dye elementals.Elemental) *attr.Modifier {
 			AddReactionDamageBonus(60, reactions.Swirl),
 		),
 		AddElementalResist(-40, dye),
+	)
+}
+
+func Artifacts绝缘之旗印2() attr.AttributeModifier {
+	return AddEnergyRecharge(20)
+}
+
+func Artifacts绝缘之旗印4() attr.AttributeModifier {
+	return attr.MergeAttributes(
+		Artifacts绝缘之旗印2(),
+		func(attributes *attr.Attributes) func() {
+			recharge := attributes.Get(point.EnergyRecharge)
+			return AddAttackDamageBonus(math.Min(recharge*0.25, 75), attackMode.ElementalBurst)(attributes)
+		},
 	)
 }

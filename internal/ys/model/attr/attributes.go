@@ -17,7 +17,8 @@ type Attributes struct {
 	elementalAttachedDamageBonus map[elementals.Elemental]float64  // 元素影响下增伤
 	reactionDamageBonus          map[reactions.Reaction]float64    // 元素反应系数提高/元素反应伤害提升
 	attackModeDamageBonus        map[attackMode.AttackMode]float64 // 攻击模式伤害加成
-	attackModeFactorBonus        map[attackMode.AttackMode]float64 // 攻击模式技能倍率加成
+	attackModeFactorMultiBonus   map[attackMode.AttackMode]float64 // 攻击模式技能倍率乘算加成
+	attackModeFactorAddBonus     map[attackMode.AttackMode]float64 // 攻击模式技能倍率加算加成
 }
 
 func NewAttributes(modifiers ...AttributeModifier) *Attributes {
@@ -28,7 +29,8 @@ func NewAttributes(modifiers ...AttributeModifier) *Attributes {
 		elementalAttachedDamageBonus: make(map[elementals.Elemental]float64),
 		reactionDamageBonus:          make(map[reactions.Reaction]float64),
 		attackModeDamageBonus:        make(map[attackMode.AttackMode]float64),
-		attackModeFactorBonus:        make(map[attackMode.AttackMode]float64),
+		attackModeFactorMultiBonus:   make(map[attackMode.AttackMode]float64),
+		attackModeFactorAddBonus:     make(map[attackMode.AttackMode]float64),
 	}
 	MergeAttributes(modifiers...)(a)
 	return a
@@ -99,8 +101,12 @@ func (a *Attributes) addAttackDamageBonus(mode attackMode.AttackMode, add float6
 	return addAttackModeMap(mode, add, a.attackModeDamageBonus, a.addAttackDamageBonus)
 }
 
-func (a *Attributes) addAttackFactorBonus(mode attackMode.AttackMode, add float64) func() {
-	return addAttackModeMap(mode, add, a.attackModeFactorBonus, a.addAttackFactorBonus)
+func (a *Attributes) addAttackFactorMultiBonus(mode attackMode.AttackMode, add float64) func() {
+	return addAttackModeMap(mode, add, a.attackModeFactorMultiBonus, a.addAttackFactorMultiBonus)
+}
+
+func (a *Attributes) addAttackFactorAddBonus(mode attackMode.AttackMode, add float64) func() {
+	return addAttackModeMap(mode, add, a.attackModeFactorAddBonus, a.addAttackFactorAddBonus)
 }
 
 func addAttackModeMap(e attackMode.AttackMode, v float64, values map[attackMode.AttackMode]float64, cancel func(attackMode.AttackMode, float64) func()) func() {
@@ -146,8 +152,11 @@ func (a *Attributes) Accumulation(unload bool) AttributeModifier {
 	for r, val := range a.attackModeDamageBonus {
 		modifiers = append(modifiers, AddAttackDamageBonus(r, val*sign))
 	}
-	for r, val := range a.attackModeFactorBonus {
-		modifiers = append(modifiers, AddAttackFactorBonus(r, val*sign))
+	for r, val := range a.attackModeFactorMultiBonus {
+		modifiers = append(modifiers, AddAttackFactorMultiBonus(r, val*sign))
+	}
+	for r, val := range a.attackModeFactorAddBonus {
+		modifiers = append(modifiers, AddAttackFactorAddBonus(r, val*sign))
 	}
 	return MergeAttributes(modifiers...)
 }
@@ -206,8 +215,16 @@ func (a *Attributes) GetAttackDamageBonus(mode attackMode.AttackMode) float64 {
 	}
 }
 
-func (a *Attributes) GetAttackFactorBonus(mode attackMode.AttackMode) float64 {
-	if value, exist := a.attackModeFactorBonus[mode]; exist {
+func (a *Attributes) GetAttackFactorMultiBonus(mode attackMode.AttackMode) float64 {
+	if value, exist := a.attackModeFactorMultiBonus[mode]; exist {
+		return value
+	} else {
+		return 0
+	}
+}
+
+func (a *Attributes) GetAttackFactorAddBonus(mode attackMode.AttackMode) float64 {
+	if value, exist := a.attackModeFactorAddBonus[mode]; exist {
 		return value
 	} else {
 		return 0
@@ -226,7 +243,8 @@ func (a *Attributes) String() string {
 	values = a.append(values, "元素影响下增伤", a.elementalAttachedDamageBonus)
 	values = a.append(values, "元素反应系数提高", a.reactionDamageBonus)
 	values = a.append(values, "伤害加成", a.attackModeDamageBonus)
-	values = a.append(values, "技能倍率加成", a.attackModeFactorBonus)
+	values = a.append(values, "技能倍率乘算加成", a.attackModeFactorMultiBonus)
+	values = a.append(values, "技能倍率加算加成", a.attackModeFactorAddBonus)
 	return fmt.Sprintf("%s", values)
 }
 

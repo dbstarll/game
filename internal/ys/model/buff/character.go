@@ -43,3 +43,11 @@ func Character雷电将军殊胜之御体() attr.AttributeModifier {
 func Character雷电将军恶曜开眼(energyCost int, add float64) attr.AttributeModifier {
 	return AddAttackDamageBonus(float64(energyCost)*add, attackMode.ElementalBurst)
 }
+
+func Character九条裟罗六命(dye elementals.Elemental) attr.AttributeModifier {
+	if dye == elementals.Electric {
+		return AddCriticalDamage(60)
+	} else {
+		return attr.NopAttributeModifier
+	}
+}

@@ -77,10 +77,17 @@ func AddAttackDamageBonus(r attackMode.AttackMode, add float64) AttributeModifie
 	}
 }
 
-// 攻击模式技能倍率加成
-func AddAttackFactorBonus(r attackMode.AttackMode, add float64) AttributeModifier {
+// 攻击模式技能倍率乘算加成
+func AddAttackFactorMultiBonus(r attackMode.AttackMode, add float64) AttributeModifier {
 	return func(attributes *Attributes) func() {
-		return attributes.addAttackFactorBonus(r, add)
+		return attributes.addAttackFactorMultiBonus(r, add)
+	}
+}
+
+// 攻击模式技能倍率加算加成
+func AddAttackFactorAddBonus(r attackMode.AttackMode, add float64) AttributeModifier {
+	return func(attributes *Attributes) func() {
+		return attributes.addAttackFactorAddBonus(r, add)
 	}
 }
 

@@ -114,8 +114,11 @@ func (c *Calculator) prepare(putZero bool) {
 		if v := c.finalAttributes.GetAttackDamageBonus(mode); putZero || v != 0 {
 			c.set(fmt.Sprintf("%s伤害加成", mode), v/100)
 		}
-		if v := c.finalAttributes.GetAttackFactorBonus(mode); putZero || v != 0 {
-			c.set(fmt.Sprintf("%s技能倍率加成", mode), v/100)
+		if v := c.finalAttributes.GetAttackFactorMultiBonus(mode); putZero || v != 0 {
+			c.set(fmt.Sprintf("%s技能倍率乘算加成", mode), v/100)
+		}
+		if v := c.finalAttributes.GetAttackFactorAddBonus(mode); putZero || v != 0 {
+			c.set(fmt.Sprintf("%s技能倍率加算加成", mode), v/100)
 		}
 	}
 
@@ -174,7 +177,14 @@ func (c *Calculator) 攻击区() *Formula {
 
 func (c *Calculator) 倍率区() *Formula {
 	prefix := c.action.Mode().String()
-	return c.set(prefix+"技能倍率", c.action.DMG()/100).multiply(prefix+"伤害倍率", c.add(prefix+"技能倍率增伤", 1, prefix+"技能倍率加成"))
+	技能倍率 := c.set(prefix+"技能倍率", c.action.DMG()/100)
+	if 技能倍率加算加成 := c.Get(prefix + "技能倍率加算加成"); 技能倍率加算加成 != 0 {
+		技能倍率 = 技能倍率.add(prefix+"伤害加算倍率", prefix+"技能倍率加算加成")
+	}
+	if 技能倍率乘算加成 := c.Get(prefix + "技能倍率乘算加成"); 技能倍率乘算加成 != 0 {
+		技能倍率 = 技能倍率.multiply(prefix+"伤害乘算倍率", c.add(prefix+"技能倍率增伤", 1, prefix+"技能倍率乘算加成"))
+	}
+	return 技能倍率
 }
 
 func (c *Calculator) 基础倍率区() *Formula {

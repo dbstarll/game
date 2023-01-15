@@ -149,11 +149,20 @@ func AddAttackDamageBonus(add float64, rs ...attackMode.AttackMode) attr.Attribu
 	return attr.MergeAttributes(modifiers...)
 }
 
-// 攻击模式的技能倍率加成
-func AddAttackFactorBonus(add float64, rs ...attackMode.AttackMode) attr.AttributeModifier {
+// 攻击模式的技能倍率乘算加成
+func AddAttackFactorMultiBonus(add float64, rs ...attackMode.AttackMode) attr.AttributeModifier {
 	var modifiers []attr.AttributeModifier
 	for _, r := range rs {
-		modifiers = append(modifiers, attr.AddAttackFactorBonus(r, add))
+		modifiers = append(modifiers, attr.AddAttackFactorMultiBonus(r, add))
+	}
+	return attr.MergeAttributes(modifiers...)
+}
+
+// 攻击模式的技能倍率加算加成
+func AddAttackFactorAddBonus(add float64, rs ...attackMode.AttackMode) attr.AttributeModifier {
+	var modifiers []attr.AttributeModifier
+	for _, r := range rs {
+		modifiers = append(modifiers, attr.AddAttackFactorAddBonus(r, add))
 	}
 	return attr.MergeAttributes(modifiers...)
 }
