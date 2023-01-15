@@ -29,3 +29,17 @@ func Character纳西妲慧明缘觉智论() attr.AttributeModifier {
 		}
 	}
 }
+
+func Character雷电将军殊胜之御体() attr.AttributeModifier {
+	return func(attributes *attr.Attributes) func() {
+		if recharge := attributes.Get(point.EnergyRecharge); recharge > 100 {
+			return AddElementalDamageBonus((recharge-100)*0.4, elementals.Electric)(attributes)
+		} else {
+			return attr.NopCallBack
+		}
+	}
+}
+
+func Character雷电将军恶曜开眼(energyCost int, add float64) attr.AttributeModifier {
+	return AddAttackDamageBonus(float64(energyCost)*add, attackMode.ElementalBurst)
+}

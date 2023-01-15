@@ -25,10 +25,11 @@ import (
 
 func main() {
 	//迪卢克()
-	神里绫华()
+	//神里绫华()
 	//超绽放队()
 	//绽放队()
 	//纳西妲()
+	雷神一刀队()
 }
 
 var (
@@ -48,6 +49,53 @@ var (
 		return artifacts
 	}
 )
+
+func 雷神一刀队() {
+	雷电将军 := character.Factory雷电将军(9, 10, 10, 0)
+
+	Weapon(雷电将军, weapon.Factory渔获(5))
+
+	//雷电将军.Artifacts(Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.AtkPercentage, 14}, {entry.CriticalRate, 7}, {entry.Atk, 54}, {entry.Def, 16}})))
+	//雷电将军.Artifacts(Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 7.4}, {entry.Def, 32}, {entry.AtkPercentage, 14.6}, {entry.EnergyRecharge, 6.5}})))
+	//雷电将军.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.AtkPercentage, &artifacts.FloatEntries{{entry.Atk, 18}, {entry.CriticalRate, 8.9}, {entry.CriticalDamage, 21}, {entry.Def, 23}})))
+	//雷电将军.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.Def, 35}, {entry.CriticalDamage, 22.5}, {entry.HpPercentage, 5.3}, {entry.CriticalRate, 6.6}})))
+	//雷电将军.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.AtkPercentage, 15.2}, {entry.CriticalRate, 6.6}, {entry.EnergyRecharge, 11.7}, {entry.Hp, 269}})))
+
+	雷电将军.Apply(
+		buff.Character雷电将军恶曜开眼(90, 雷电将军.GetActions().Get(attackMode.ElementalSkill, "元素爆发伤害提高").DMG()),
+		//buff.AddAttackDamageBonus(30, attackMode.NormalAttack, attackMode.ChargedAttack), // 绫华固有天赋5
+		//buff.AddElementalDamageBonus(18, elementals.Ice),                                 // 绫华固有天赋6
+		//buff.Artifacts冰风迷途的勇士4(true),
+		//buff.TeamIce(),
+		buff.Character万叶扩散(1000, elementals.Electric),
+		//buff.AddAtkPercentage(48), // 讨龙英杰谭
+		//buff.AddAtkPercentage(20), // 岩四件套 or 宗室
+		//buff.AddDamageBonus(60),   // 莫娜星异
+	)
+
+	挨揍的 := enemy.New(enemy.Base(90))
+	//挨揍的.Apply(buff.AddDefPercentage(-30))
+	//挨揍的.Attach(elementals.Ice, 12)
+	挨揍的.AttachState(states.Quicken, 12)
+	buff.Artifacts翠绿之影4(elementals.Electric).Apply(nil, 挨揍的, nil)
+
+	replaceArtifacts := []*artifacts.Artifacts{
+		//Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.EnergyRecharge, 4.5}, {entry.CriticalRate, 10.5}, {entry.CriticalDamage, 19.4}, {entry.Def, 39}})),
+		//Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 6.6}, {entry.AtkPercentage, 15.7}, {entry.EnergyRecharge, 4.5}, {entry.Def, 32}})),
+		//Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalDamage, 12.4}, {entry.CriticalRate, 6.6}, {entry.HpPercentage, 15.7}, {entry.ElementalMastery, 16}})),
+		//Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 11.7}, {entry.Def, 23}, {entry.DefPercentage, 13.1}, {entry.CriticalDamage, 7.8}})),
+		//Artifacts(artifacts.Factory时之沙(5, entry.AtkPercentage, &artifacts.FloatEntries{{entry.CriticalRate, 6.6}, {entry.CriticalDamage, 6.2}, {entry.EnergyRecharge, 20.1}, {entry.Def, 21}})),
+		//Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.Atk, 29}, {entry.CriticalDamage, 14}, {entry.AtkPercentage, 9.9}, {entry.Hp, 807}})),
+		//Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.CriticalRate, 2.7}, {entry.EnergyRecharge, 5.2}, {entry.ElementalMastery, 63}, {entry.AtkPercentage, 16.3}})),
+		//Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.CriticalRate, 6.6}, {entry.Def, 37}, {entry.AtkPercentage, 9.3}, {entry.EnergyRecharge, 11.7}})),
+		//Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.Def, 44}, {entry.EnergyRecharge, 11.7}, {entry.HpPercentage, 15.7}, {entry.Atk, 18}})),
+		//Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.EnergyRecharge, 10.4}, {entry.DefPercentage, 13.9}, {entry.CriticalRate, 3.5}, {entry.AtkPercentage, 15.7}})),
+	}
+
+	攻击 := 雷电将军.GetActions().Get(attackMode.ElementalBurst, "梦想一刀")
+	//攻击.Apply(action.Infusion(elementals.Ice))
+	profitDetect(雷电将军, 挨揍的, 攻击, damage, CustomDetects(elementals.Ice), replaceArtifacts, buff.Character雷电将军殊胜之御体())
+}
 
 func 神里绫华() {
 	神里绫华 := character.Factory神里绫华(9, 9, 10, 0)

@@ -1,6 +1,7 @@
 package weapon
 
 import (
+	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
 	"github.com/dbstarll/game/internal/ys/model/buff"
@@ -36,5 +37,11 @@ var (
 	}
 	Factory祭礼残章 = func(refine int) *Weapon {
 		return New(4, weaponType.Catalyst, "祭礼残章", Base(90, refine, 454, buff.AddElementalMastery(221)))
+	}
+	Factory渔获 = func(refine int) *Weapon {
+		return New(4, weaponType.Polearm, "渔获", Base(90, refine, 510, buff.AddEnergyRecharge(45.9)),
+			buff.AddAttackDamageBonus(float64(12+refine*4), attackMode.ElementalBurst),
+			buff.AddCriticalRate(4.5+float64(refine)*1.5),
+		)
 	}
 )
