@@ -51,7 +51,7 @@ var (
 )
 
 func 雷神一刀队() {
-	雷电将军 := character.Factory雷电将军(9, 9, 9, 0)
+	雷电将军 := character.Factory雷电将军(9, 9, 10, 0)
 
 	Weapon(雷电将军, weapon.Factory渔获(5))
 
@@ -59,7 +59,7 @@ func 雷神一刀队() {
 	雷电将军.Artifacts(Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 7.4}, {entry.Def, 32}, {entry.AtkPercentage, 14.6}, {entry.EnergyRecharge, 6.5}})))
 	雷电将军.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.AtkPercentage, &artifacts.FloatEntries{{entry.Atk, 18}, {entry.CriticalRate, 8.9}, {entry.CriticalDamage, 21}, {entry.Def, 23}})))
 	雷电将军.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.ElectricDamageBonus, &artifacts.FloatEntries{{entry.Def, 35}, {entry.CriticalDamage, 22.5}, {entry.HpPercentage, 5.3}, {entry.CriticalRate, 6.6}})))
-	雷电将军.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.AtkPercentage, 15.2}, {entry.CriticalRate, 6.6}, {entry.EnergyRecharge, 11.7}, {entry.Hp, 269}})))
+	雷电将军.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalRate, &artifacts.FloatEntries{{entry.AtkPercentage, 15.2}, {entry.CriticalDamage, 13.2}, {entry.EnergyRecharge, 11.7}, {entry.Hp, 269}})))
 
 	actions := 雷电将军.GetActions()
 	梦想一刀愿力加成 := actions.Get(attackMode.ElementalBurst, "梦想一刀愿力加成")
@@ -68,17 +68,17 @@ func 雷神一刀队() {
 	雷电将军.Apply(
 		buff.Character雷电将军恶曜开眼(90, 元素爆发伤害提高.DMG()),                                 // 元素战技加成
 		buff.AddAttackFactorAddBonus(60*梦想一刀愿力加成.DMG(), attackMode.ElementalBurst), // 梦想一刀愿力加成
-		//buff.Character万叶扩散(1000, elementals.Electric),
-		//buff.AddAtkPercentage(48), // 讨龙英杰谭
-		//buff.AddAtkPercentage(20), // 岩四件套 or 宗室
-		//buff.AddDamageBonus(60),   // 莫娜星异
+		buff.AddIgnoreDefence(60), // 雷神2命
+		buff.Character万叶扩散(1000, elementals.Electric),
+		attr.MergeAttributes(buff.AddAtk(600), buff.Character九条裟罗六命(elementals.Electric)),             // 九条6命
+		attr.MergeAttributes(buff.AddAtkPercentage(20), buff.AddAtk(int(math.Round(1.19*(191+565))))), // 班尼特+宗室四件套
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Apply(buff.AddDefPercentage(-30))
-	//挨揍的.Attach(elementals.Ice, 12)
+	//挨揍的.Attach(elementals.Water, 12)
 	//挨揍的.AttachState(states.Quicken, 12)
-	//buff.Artifacts翠绿之影4(elementals.Electric).Apply(nil, 挨揍的, nil)
+	buff.Artifacts翠绿之影4(elementals.Electric).Apply(nil, 挨揍的, nil)
 
 	replaceArtifacts := []*artifacts.Artifacts{
 		Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.EnergyRecharge, 4.5}, {entry.CriticalRate, 10.5}, {entry.CriticalDamage, 19.4}, {entry.Def, 39}})),
