@@ -44,4 +44,9 @@ var (
 			buff.AddCriticalRate(4.5+float64(refine)*1.5),
 		)
 	}
+	Factory匣里灭辰 = func(refine int) *Weapon {
+		return New(4, weaponType.Polearm, "匣里灭辰", Base(90, refine, 454, buff.AddElementalMastery(221)),
+			buff.AddElementalAttachedDamageBonus(float64(16+refine*4), elementals.Water, elementals.Fire),
+		)
+	}
 )
