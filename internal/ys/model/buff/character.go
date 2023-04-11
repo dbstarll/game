@@ -51,3 +51,10 @@ func Character九条裟罗六命(dye elementals.Elemental) attr.AttributeModifie
 		return attr.NopAttributeModifier
 	}
 }
+
+func Character胡桃彼岸蝶舞(baseHp, baseAtk, atkPreMaxHp float64) attr.AttributeModifier {
+	return func(attributes *attr.Attributes) func() {
+		finalHp := baseHp*(1.0+attributes.Get(point.HpPercentage)/100) + attributes.Get(point.Hp)
+		return AddAtk(int(math.Round(math.Min(finalHp*atkPreMaxHp/100, baseAtk*4))))(attributes)
+	}
+}

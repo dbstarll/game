@@ -13,3 +13,8 @@ func TeamFire() attr.AttributeModifier {
 func TeamIce() attr.AttributeModifier {
 	return AddCriticalRate(15)
 }
+
+// 双水共鸣
+func TeamWater() attr.AttributeModifier {
+	return AddHpPercentage(25)
+}
