@@ -57,4 +57,9 @@ var (
 	Factory赤沙之杖 = func(refine int) *Weapon {
 		return New(5, weaponType.Polearm, "赤沙之杖", Base(90, refine, 542, buff.AddCriticalRate(44.1)))
 	}
+	Factory风信之锋 = func(refine int) *Weapon {
+		return New(4, weaponType.Polearm, "风信之锋", Base(90, refine, 510, buff.AddAtkPercentage(41.3)),
+			buff.AddAtkPercentage(float64(9+refine*3)), buff.AddElementalMastery(float64(36+refine*12)),
+		)
+	}
 )

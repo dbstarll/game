@@ -66,3 +66,36 @@ func Character神里绫华天罪国罪镇词() attr.AttributeModifier {
 func Character神里绫华寒天宣命祝词() attr.AttributeModifier {
 	return AddElementalDamageBonus(18, elementals.Ice)
 }
+
+func Character申鹤大洞弥罗尊法() attr.AttributeModifier {
+	return AddElementalDamageBonus(15, elementals.Ice)
+}
+
+func Character申鹤缚灵通真法印(longPress bool) attr.AttributeModifier {
+	if longPress {
+		return AddAttackDamageBonus(15, attackMode.NormalAttack, attackMode.ChargedAttack, attackMode.PlungeAttack)
+	} else {
+		return AddAttackDamageBonus(15, attackMode.ElementalSkill, attackMode.ElementalBurst)
+	}
+}
+
+func Character申鹤Q(character attr.Character) *attr.Modifier {
+	if character != nil {
+		if 抗性降低 := character.GetAction(attackMode.ElementalBurst, "抗性降低"); 抗性降低 != nil {
+			return attr.NewModifier(Character申鹤大洞弥罗尊法(), AddElementalResist(-抗性降低.DMG(), elementals.Ice, elementals.Physical))
+		}
+	}
+	return attr.NewCharacterModifier(Character申鹤大洞弥罗尊法())
+}
+
+func Character申鹤E(character attr.Character, longPress bool, attackElement elementals.Elemental) attr.AttributeModifier {
+	if character != nil && attackElement == elementals.Ice {
+		if 伤害值提升 := character.GetAction(attackMode.ElementalSkill, "伤害值提升"); 伤害值提升 != nil {
+			baseAtk, final := character.BaseAttr(point.Atk)+character.WeaponAttr(point.Atk), character.FinalAttributes()
+			addAtk, addAtkPercentage := final.Get(point.Atk), final.Get(point.AtkPercentage)
+			finalAtk := baseAtk*(1+addAtkPercentage/100) + addAtk
+			return attr.MergeAttributes(AddAtk(int(finalAtk*伤害值提升.DMG()/100)), Character申鹤缚灵通真法印(longPress))
+		}
+	}
+	return Character申鹤缚灵通真法印(longPress)
+}

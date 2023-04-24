@@ -2,6 +2,7 @@ package attr
 
 import (
 	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
+	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/reactions"
 	"github.com/dbstarll/game/internal/ys/model/action"
@@ -18,6 +19,13 @@ type AttributeModifier func(attributes *Attributes) func()
 
 type Appliable interface {
 	Apply(modifiers ...AttributeModifier) func()
+}
+
+type Character interface {
+	GetAction(mode attackMode.AttackMode, name string) *action.Action
+	BaseAttr(point point.Point) float64
+	WeaponAttr(point point.Point) float64
+	FinalAttributes() *Attributes
 }
 
 func MergeAttributes(modifiers ...AttributeModifier) AttributeModifier {
@@ -151,4 +159,8 @@ func (m *Modifier) Action(modifier action.Modifier) *Modifier {
 
 func (m *Modifier) EnemyModifier() AttributeModifier {
 	return m.enemyModifier
+}
+
+func (m *Modifier) CharacterModifier() AttributeModifier {
+	return m.characterModifier
 }

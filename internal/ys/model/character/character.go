@@ -3,6 +3,7 @@ package character
 import (
 	"fmt"
 	"github.com/dbstarll/game/internal/ys/dimension/artifacts/position"
+	"github.com/dbstarll/game/internal/ys/dimension/attackMode"
 	"github.com/dbstarll/game/internal/ys/dimension/attribute/point"
 	"github.com/dbstarll/game/internal/ys/dimension/elementalism/elementals"
 	"github.com/dbstarll/game/internal/ys/dimension/weaponType"
@@ -119,6 +120,10 @@ func (c *Character) Apply(modifiers ...attr.AttributeModifier) func() {
 
 func (c *Character) GetActions() *action.Actions {
 	return c.talents.DMGs(c.weaponType, c.elemental)
+}
+
+func (c *Character) GetAction(mode attackMode.AttackMode, name string) *action.Action {
+	return c.GetActions().Get(mode, name)
 }
 
 func (c *Character) basicAttributes() *attr.Attributes {
