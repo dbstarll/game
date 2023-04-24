@@ -26,13 +26,13 @@ import (
 
 func main() {
 	//迪卢克()
-	//神里绫华()
+	神里绫华()
 	//超绽放队()
 	//绽放队()
 	//纳西妲()
 	//雷神一刀队()
 	//雷神绽放队()
-	胡桃蒸发队()
+	//胡桃蒸发队()
 }
 
 var (
@@ -54,19 +54,31 @@ var (
 )
 
 func 胡桃蒸发队() {
-	胡桃 := character.Factory胡桃(9, 9, 9, 0)
-	Weapon(胡桃, weapon.Factory匣里灭辰(5))
+	胡桃 := character.Factory胡桃(6, 8, 6, 0)
+	//Weapon(胡桃, weapon.Factory匣里灭辰(5))
+	Weapon(胡桃, weapon.Factory赤沙之杖(1))
+	//Weapon(胡桃, weapon.Factory决斗之枪(5))
 
-	胡桃.Artifacts(Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.HpPercentage, 4.1}, {entry.AtkPercentage, 15.2}, {entry.ElementalMastery, 61}, {entry.DefPercentage, 6.6}})))
-	胡桃.Artifacts(Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.HpPercentage, 10.5}, {entry.EnergyRecharge, 11}, {entry.ElementalMastery, 37}, {entry.Hp, 598}})))
-	胡桃.Artifacts(Artifacts(artifacts.Factory时之沙(4, entry.ElementalMastery, &artifacts.FloatEntries{{entry.Hp, 215}, {entry.AtkPercentage, 4.7}, {entry.DefPercentage, 14}, {entry.Atk, 28}})))
-	胡桃.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, &artifacts.FloatEntries{{entry.Hp, 508}, {entry.CriticalRate, 13.2}, {entry.CriticalDamage, 5.4}, {entry.Def, 39}})))
-	胡桃.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalRate, &artifacts.FloatEntries{{entry.HpPercentage, 11.7}, {entry.AtkPercentage, 11.1}, {entry.Def, 60}, {entry.Hp, 239}})))
+	胡桃.Artifacts(Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.AtkPercentage, 5.3}, {entry.CriticalRate, 7.4}, {entry.ElementalMastery, 58}, {entry.CriticalDamage, 14}})))
+	胡桃.Artifacts(Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.AtkPercentage, 11.1}, {entry.DefPercentage, 11.7}, {entry.ElementalMastery, 44}, {entry.HpPercentage, 9.9}})))
+	胡桃.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.HpPercentage, &artifacts.FloatEntries{{entry.ElementalMastery, 61}, {entry.EnergyRecharge, 5.8}, {entry.Atk, 47}, {entry.CriticalRate, 3.1}})))
+	胡桃.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, &artifacts.FloatEntries{{entry.Hp, 448}, {entry.DefPercentage, 13.1}, {entry.AtkPercentage, 19.2}, {entry.CriticalRate, 3.1}})))
+	胡桃.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.HpPercentage, &artifacts.FloatEntries{{entry.CriticalDamage, 19.4}, {entry.ElementalMastery, 40}, {entry.CriticalRate, 10.5}, {entry.EnergyRecharge, 5.2}})))
+
+	//胡桃.Artifacts(Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.CriticalDamage, 7.0}, {entry.Atk, 75}, {entry.CriticalRate, 7.0}, {entry.HpPercentage, 9.9}})))
+	//胡桃.Artifacts(Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.HpPercentage, 5.8}, {entry.Def, 42}, {entry.CriticalRate, 6.6}, {entry.CriticalDamage, 21}})))
+	//胡桃.Artifacts(Artifacts(artifacts.Factory时之沙(5, entry.HpPercentage, &artifacts.FloatEntries{{entry.Def, 46}, {entry.Atk, 70}, {entry.CriticalRate, 2.7}, {entry.CriticalDamage, 14}})))
+	//胡桃.Artifacts(Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, &artifacts.FloatEntries{{entry.Hp, 448}, {entry.DefPercentage, 13.1}, {entry.AtkPercentage, 19.2}, {entry.CriticalRate, 3.1}})))
+	//胡桃.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.AtkPercentage, 9.3}, {entry.Atk, 47}, {entry.HpPercentage, 10.5}, {entry.Hp, 269}})))
 
 	胡桃.Apply(
+		//buff.AddAtkPercentage(18),
+		//buff.AddAttackDamageBonus(50, attackMode.NormalAttack, attackMode.ChargedAttack, attackMode.PlungeAttack),
 		buff.Artifacts炽烈的炎之魔女4(3),
+		//buff.Artifacts炽烈的炎之魔女2(),
 		buff.AddElementalDamageBonus(33, elementals.Fire), // 固有天赋5：血之灶火
 		buff.TeamWater(),
+		//buff.TeamFire(),
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
@@ -77,22 +89,21 @@ func 胡桃蒸发队() {
 	//buff.Artifacts翠绿之影4(elementals.Fire).Apply(nil, 挨揍的, nil)
 
 	replaceArtifacts := []*artifacts.Artifacts{
-		//Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.EnergyRecharge, 4.5}, {entry.CriticalRate, 10.5}, {entry.CriticalDamage, 19.4}, {entry.Def, 39}})),
-		//Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 6.6}, {entry.AtkPercentage, 15.7}, {entry.EnergyRecharge, 4.5}, {entry.Def, 32}})),
-		//Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalDamage, 12.4}, {entry.CriticalRate, 6.6}, {entry.HpPercentage, 15.7}, {entry.ElementalMastery, 16}})),
-		//Artifacts(artifacts.Factory死之羽(5, &artifacts.FloatEntries{{entry.CriticalRate, 11.7}, {entry.Def, 23}, {entry.DefPercentage, 13.1}, {entry.CriticalDamage, 7.8}})),
-		//Artifacts(artifacts.Factory时之沙(5, entry.AtkPercentage, &artifacts.FloatEntries{{entry.CriticalRate, 6.6}, {entry.CriticalDamage, 6.2}, {entry.EnergyRecharge, 20.1}, {entry.Def, 21}})),
-		//Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.Atk, 29}, {entry.CriticalDamage, 14}, {entry.AtkPercentage, 9.9}, {entry.Hp, 807}})),
-		//Artifacts(artifacts.Factory空之杯(5, entry.IceDamageBonus, &artifacts.FloatEntries{{entry.CriticalRate, 2.7}, {entry.EnergyRecharge, 5.2}, {entry.ElementalMastery, 63}, {entry.AtkPercentage, 16.3}})),
-		//Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.CriticalRate, 6.6}, {entry.Def, 37}, {entry.AtkPercentage, 9.3}, {entry.EnergyRecharge, 11.7}})),
-		//Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.Def, 44}, {entry.EnergyRecharge, 11.7}, {entry.HpPercentage, 15.7}, {entry.Atk, 18}})),
-		//Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.EnergyRecharge, 10.4}, {entry.DefPercentage, 13.9}, {entry.CriticalRate, 3.5}, {entry.AtkPercentage, 15.7}})),
+		//Artifacts(artifacts.Factory生之花(5, &artifacts.IntEntries{{entry.CriticalDamage, 6}, {entry.ElementalMastery, 1}, {entry.CriticalRate, 1}, {entry.AtkPercentage, 1}})),
+		//Artifacts(artifacts.Factory死之羽(5, &artifacts.IntEntries{{entry.CriticalDamage, 5}, {entry.ElementalMastery, 2}, {entry.CriticalRate, 1}, {entry.AtkPercentage, 1}})),
+		//Artifacts(artifacts.Factory时之沙(5, entry.ElementalMastery, &artifacts.IntEntries{{entry.CriticalDamage, 5}, {entry.Atk, 1}, {entry.CriticalRate, 2}, {entry.AtkPercentage, 1}})),
+		//Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, &artifacts.IntEntries{{entry.CriticalDamage, 5}, {entry.ElementalMastery, 1}, {entry.CriticalRate, 2}, {entry.AtkPercentage, 1}})),
+		//Artifacts(artifacts.Factory理之冠(5, entry.CriticalRate, &artifacts.IntEntries{{entry.CriticalDamage, 6}, {entry.ElementalMastery, 1}, {entry.Atk, 1}, {entry.AtkPercentage, 1}})),
+		//Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.CriticalDamage, 26.4}, {entry.AtkPercentage, 4.1}, {entry.CriticalRate, 3.9}, {entry.Def, 42}})),
+		//Artifacts(artifacts.Factory空之杯(5, entry.FireDamageBonus, &artifacts.FloatEntries{{entry.Hp, 986}, {entry.HpPercentage, 9.3}, {entry.CriticalRate, 3.9}, {entry.Def, 35}})),
 	}
 	攻击, 攻击力提高 := 胡桃.GetActions().Get(attackMode.ChargedAttack, ""), 胡桃.GetActions().Get(attackMode.ElementalSkill, "攻击力提高")
 	攻击.Apply(action.Infusion(elementals.Fire))
 	baseHp, baseAtk := 胡桃.BaseAttr(point.Hp), 胡桃.BaseAttr(point.Atk)+胡桃.WeaponAttr(point.Atk)
 	fmt.Printf("baseHp: %f, baseAtk: %f, %s\n", baseHp, baseAtk, 攻击力提高)
-	profitDetect(胡桃, 挨揍的, 攻击, damage, CustomDetects(elementals.Fire), replaceArtifacts, buff.Character胡桃彼岸蝶舞(baseHp, baseAtk, 攻击力提高.DMG()))
+	profitDetect(胡桃, 挨揍的, 攻击, damage, CustomDetects(elementals.Fire), replaceArtifacts,
+		buff.Weapon赤沙之杖(1, 3),
+		buff.Character胡桃彼岸蝶舞(baseHp, baseAtk, 攻击力提高.DMG()))
 }
 
 func 雷神绽放队() {
@@ -194,21 +205,21 @@ func 神里绫华() {
 	神里绫华.Artifacts(Artifacts(artifacts.Factory理之冠(5, entry.CriticalDamage, &artifacts.FloatEntries{{entry.AtkPercentage, 15.2}, {entry.CriticalRate, 6.6}, {entry.EnergyRecharge, 11.7}, {entry.Hp, 269}})))
 
 	神里绫华.Apply(
-		buff.AddAttackDamageBonus(30, attackMode.NormalAttack, attackMode.ChargedAttack), // 绫华固有天赋5
-		buff.AddElementalDamageBonus(18, elementals.Ice),                                 // 绫华固有天赋6
+		buff.Character神里绫华天罪国罪镇词(), // 绫华固有天赋5
+		buff.Character神里绫华寒天宣命祝词(), // 绫华固有天赋6
 		buff.Artifacts冰风迷途的勇士4(true),
 		buff.TeamIce(),
-		buff.Character万叶扩散(1000, elementals.Ice),
-		buff.AddAtkPercentage(48), // 讨龙英杰谭
-		buff.AddAtkPercentage(20), // 岩四件套 or 宗室
-		buff.AddDamageBonus(60),   // 莫娜星异
+		//buff.Character万叶扩散(1000, elementals.Ice),
+		//buff.AddAtkPercentage(48), // 讨龙英杰谭
+		//buff.AddAtkPercentage(20), // 岩四件套 or 宗室
+		//buff.AddDamageBonus(60),   // 莫娜星异
 	)
 
 	挨揍的 := enemy.New(enemy.Base(90))
 	//挨揍的.Apply(buff.AddDefPercentage(-30))
 	//挨揍的.Attach(elementals.Ice, 12)
 	//挨揍的.AttachState(states.Frozen, 12)
-	buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的, nil)
+	//buff.Artifacts翠绿之影4(elementals.Ice).Apply(nil, 挨揍的, nil)
 
 	replaceArtifacts := []*artifacts.Artifacts{
 		Artifacts(artifacts.Factory生之花(5, &artifacts.FloatEntries{{entry.EnergyRecharge, 4.5}, {entry.CriticalRate, 10.5}, {entry.CriticalDamage, 19.4}, {entry.Def, 39}})),
