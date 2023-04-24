@@ -49,4 +49,12 @@ var (
 			buff.AddElementalAttachedDamageBonus(float64(16+refine*4), elementals.Water, elementals.Fire),
 		)
 	}
+	Factory决斗之枪 = func(refine int) *Weapon {
+		return New(4, weaponType.Polearm, "决斗之枪", Base(90, refine, 454, buff.AddCriticalRate(36.8)),
+			buff.AddAtkPercentage(float64(18+refine*6)),
+		)
+	}
+	Factory赤沙之杖 = func(refine int) *Weapon {
+		return New(5, weaponType.Polearm, "赤沙之杖", Base(90, refine, 542, buff.AddCriticalRate(44.1)))
+	}
 )

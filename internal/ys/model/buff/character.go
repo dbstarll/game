@@ -58,3 +58,11 @@ func Character胡桃彼岸蝶舞(baseHp, baseAtk, atkPreMaxHp float64) attr.Attr
 		return AddAtk(int(math.Round(math.Min(finalHp*atkPreMaxHp/100, baseAtk*4))))(attributes)
 	}
 }
+
+func Character神里绫华天罪国罪镇词() attr.AttributeModifier {
+	return AddAttackDamageBonus(30, attackMode.NormalAttack, attackMode.ChargedAttack)
+}
+
+func Character神里绫华寒天宣命祝词() attr.AttributeModifier {
+	return AddElementalDamageBonus(18, elementals.Ice)
+}
