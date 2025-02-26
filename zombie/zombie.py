@@ -5,7 +5,7 @@ import datetime
 import sys
 
 pyscreeze.USE_IMAGE_NOT_FOUND_EXCEPTION = False
-LOCATE_OPTIONS = {'grayscale': True, 'confidence': 0.95}
+LOCATE_OPTIONS = {'grayscale': False, 'confidence': 0.98}
 CLICK_INTERVAL = 0.3
 DISTRIBUTE = 'mp'
 ROOM_WAIT_TIMEOUT = 15
@@ -20,7 +20,7 @@ def click(location, offsetX = 0, offsetY = 0):
 
 def debug_image(im,window,file):
   gim = im.crop((window.left, window.top, window.left + window.width, window.top + window.height))
-  gim.save(file + '-' + str(time.time()) + '.png')
+  gim.save('tmp/' + file + '-' + str(int(time.time())) + '.png',dpi=(144, 144))
 
 def get_game_left(screen,locationShop):
   for x in range(locationShop.left,0,-1):
