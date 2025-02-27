@@ -1,23 +1,39 @@
 import datetime
+import os
+import subprocess
 import sys
+import tempfile
 import time
 
 import pyautogui
 import pyscreeze
+from PIL import Image
 
 pyscreeze.USE_IMAGE_NOT_FOUND_EXCEPTION = False
 pyscreeze.GRAYSCALE_DEFAULT = False
 
 LOCATE_OPTIONS = {'confidence': 0.98}
+GAME_WINDOW_ID = None
 CLICK_INTERVAL = 0.3
 DISTRIBUTE = 'mp'
 ROOM_WAIT_TIMEOUT = 15
 
 
+def screenshot_osx():
+  fh, filepath = tempfile.mkstemp(".png")
+  os.close(fh)
+  args = ["screencapture"]
+  subprocess.call(args + ["-l", GAME_WINDOW_ID, "-x", filepath])
+  im = Image.open(filepath)
+  im.load()
+  os.unlink(filepath)
+  return im
+
+
 def screenshot():
   start = time.time()
   try:
-    return pyautogui.screenshot()
+    return screenshot_osx()
   finally:
     print('screenshot took %.2f seconds' % (time.time() - start))
 
@@ -205,10 +221,23 @@ def detect_team_invite(window):
     time.sleep(1)
 
 
+def get_window_id_of_game():
+  args = ["osascript"]
+  return subprocess.run(args + ["get-window-id-of-zombie.scpt"], capture_output=True)
+
+
 if __name__ == "__main__":
   if len(sys.argv) > 1:
     DISTRIBUTE = sys.argv[1]
   print(f'游戏发行版本: {DISTRIBUTE}')
+
+  wid = get_window_id_of_game().stdout.decode()
+  if wid:
+    GAME_WINDOW_ID = wid.rstrip('\n')
+    print(f'获得游戏窗口ID: {GAME_WINDOW_ID}')
+  else:
+    print('游戏未启动')
+    exit(1)
 
   window = get_game_window(screenshot())
   if window:
