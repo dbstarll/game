@@ -128,6 +128,11 @@ def fighting(window):
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
       debug_image(im, window, 'skills')
 
+    location_elite_skills = pyautogui.locate(img('elite-skill-close.png'), im, **LOCATE_OPTIONS)
+    if location_elite_skills:
+      print(f'{now()} - 精英掉落技能: {time.time() - start}')
+      debug_image(im, window, 'elite-skills')
+
     time.sleep(5)
 
 
