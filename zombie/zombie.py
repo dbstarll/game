@@ -79,6 +79,22 @@ def get_game_window(screen):
     print(f'{now()} - not found: locationShop')
 
 
+def check_reconnect(im):
+  location_offline = pyautogui.locate(img('offline-confirm.png'), im, **LOCATE_OPTIONS)
+  if location_offline:
+    print(f'{now()} - 断线重连')
+    click(location_offline)
+    return True
+
+  location_reconnect = pyautogui.locate(img('reconnect.png'), im, **LOCATE_OPTIONS)
+  if location_reconnect:
+    print(f'{now()} - 网络断开，重新连接')
+    click(location_reconnect)
+    return True
+  else:
+    return False
+
+
 def select_fight(im, window, fights):
   if len(fights) > 0:
     print(len(fights))
@@ -96,17 +112,14 @@ def fighting(window):
   while True:
     im = pyautogui.screenshot()
 
+    if check_reconnect(im):
+      continue
+
     location_end = pyautogui.locate(img('fight-end.png'), im, **LOCATE_OPTIONS)
     if location_end:
       print(f'{now()} - 战斗结束: {time.time() - start}')
       click(location_end)
       break
-
-    location_offline = pyautogui.locate(img('offline-confirm.png'), im, **LOCATE_OPTIONS)
-    if location_offline:
-      print(f'{now()} - 断线重连: {time.time() - start}')
-      click(location_offline)
-      continue
 
     location_skills = pyautogui.locate(img('select-skill.png'), im, **LOCATE_OPTIONS)
     if location_skills:
@@ -146,6 +159,10 @@ def find_fight(window):
   print(f'{now()} - 查看副本列表...')
   while True:
     im = pyautogui.screenshot()
+
+    if check_reconnect(im):
+      continue
+
     location_fight_list = pyautogui.locate(img('fight-list.png'), im, **LOCATE_OPTIONS)
     if location_fight_list:
       fight = select_fight(im, window, list(pyautogui.locateAll(img('rescue.png'), im, **LOCATE_OPTIONS)))
@@ -159,12 +176,18 @@ def find_fight(window):
 def detect_team_invite(window):
   print(f'{now()} - 检测副本邀请...')
   while True:
-    location_invite = pyautogui.locateOnScreen(img('team-invite.png'), **LOCATE_OPTIONS)
+    im = pyautogui.screenshot()
+
+    if check_reconnect(im):
+      continue
+
+    location_invite = pyautogui.locate(img('team-invite.png'), im, **LOCATE_OPTIONS)
     if location_invite:
       print(f'{now()} - 检测到副本邀请,进入副本列表...')
       click(location_invite)
       find_fight(window)
       print(f'{now()} - 回到主界面')
+
     time.sleep(1)
 
 
