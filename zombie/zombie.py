@@ -22,9 +22,9 @@ def img(file):
   return DISTRIBUTE + '/' + file
 
 
-def click(location, offsetX=0, offsetY=0):
+def click(location, offset_x=0, offset_y=0):
   center = pyautogui.center(location)
-  pyautogui.click(x=center.x // 2 + offsetX, y=center.y // 2 + offsetY)
+  pyautogui.click(x=center.x // 2 + offset_x, y=center.y // 2 + offset_y)
   time.sleep(CLICK_INTERVAL)
 
 
@@ -33,39 +33,39 @@ def debug_image(im, window, file):
   gim.save('tmp/' + file + '-' + str(int(time.time())) + '.png', dpi=(144, 144))
 
 
-def get_game_left(screen, locationShop):
-  for x in range(locationShop.left, 0, -1):
-    if screen.getpixel((x, locationShop.top)) == (0, 0, 0, 255):
+def get_game_left(screen, location_shop):
+  for x in range(location_shop.left, 0, -1):
+    if screen.getpixel((x, location_shop.top)) == (0, 0, 0, 255):
       return x + 1
 
 
-def get_game_top(screen, locationShop, left):
-  for y in range(locationShop.top, 0, -1):
+def get_game_top(screen, location_shop, left):
+  for y in range(location_shop.top, 0, -1):
     if screen.getpixel((left - 1, y)) != (0, 0, 0, 255):
       return y + 1
 
 
-def get_game_bottom(screen, locationShop, left):
-  for y in range(locationShop.top + locationShop.height, screen.height):
+def get_game_bottom(screen, location_shop, left):
+  for y in range(location_shop.top + location_shop.height, screen.height):
     if screen.getpixel((left - 1, y)) != (0, 0, 0, 255):
       return y - 1
 
 
-def get_game_right(screen, locationShop, bottom):
-  for x in range(locationShop.left + locationShop.width, screen.width):
+def get_game_right(screen, location_shop, bottom):
+  for x in range(location_shop.left + location_shop.width, screen.width):
     if screen.getpixel((x, bottom)) == (0, 0, 0, 255):
       return x - 1
 
 
 def get_game_window(screen):
-  locationShop = pyautogui.locate(img('rescue-return.png'), screen, **LOCATE_OPTIONS)
-  if locationShop:
-    left = get_game_left(screen, locationShop)
+  location_shop = pyautogui.locate(img('rescue-return.png'), screen, **LOCATE_OPTIONS)
+  if location_shop:
+    left = get_game_left(screen, location_shop)
     if left:
-      top = get_game_top(screen, locationShop, left)
-      bottom = get_game_bottom(screen, locationShop, left)
+      top = get_game_top(screen, location_shop, left)
+      bottom = get_game_bottom(screen, location_shop, left)
       if top and bottom:
-        right = get_game_right(screen, locationShop, bottom)
+        right = get_game_right(screen, location_shop, bottom)
         if right:
           print(f"{now()} - 检测到游戏窗口: left: {left}, top: {top}, right: {right}, bottom: {bottom}")
           return pyscreeze.Box(left, top, right - left + 1, bottom - top + 1)
@@ -96,20 +96,20 @@ def fighting(window):
   while True:
     im = pyautogui.screenshot()
 
-    locationEnd = pyautogui.locate(img('fight-end.png'), im, **LOCATE_OPTIONS)
-    if locationEnd:
+    location_end = pyautogui.locate(img('fight-end.png'), im, **LOCATE_OPTIONS)
+    if location_end:
       print(f'{now()} - 战斗结束: {time.time() - start}')
-      click(locationEnd)
+      click(location_end)
       break
 
-    locationOffline = pyautogui.locate(img('offline-confirm.png'), im, **LOCATE_OPTIONS)
-    if locationOffline:
+    location_offline = pyautogui.locate(img('offline-confirm.png'), im, **LOCATE_OPTIONS)
+    if location_offline:
       print(f'{now()} - 断线重连: {time.time() - start}')
-      click(locationOffline)
+      click(location_offline)
       continue
 
-    locationSkills = pyautogui.locate(img('select-skill.png'), im, **LOCATE_OPTIONS)
-    if locationSkills:
+    location_skills = pyautogui.locate(img('select-skill.png'), im, **LOCATE_OPTIONS)
+    if location_skills:
       match_left_bottoms = list(pyautogui.locateAll('left-bottom-2.png', im, **LOCATE_OPTIONS))
       match_right_tops = list(pyautogui.locateAll('right-top-2.png', im, **LOCATE_OPTIONS))
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
@@ -124,17 +124,17 @@ def fight_prepare(fight, window):
   start = time.time()
   while True:
     im = pyautogui.screenshot()
-    locationLeave = pyautogui.locate(img('room-leave.png'), im, **LOCATE_OPTIONS)
-    if locationLeave:
+    location_leave = pyautogui.locate(img('room-leave.png'), im, **LOCATE_OPTIONS)
+    if location_leave:
       if time.time() - start > ROOM_WAIT_TIMEOUT:
         print(f"{now()} - 等待超时, 退出战斗: {time.time() - start}")
-        click(locationLeave)
+        click(location_leave)
         break
       else:
         print(f'{now()} - 等待队友开始: {time.time() - start}')
     else:
-      locationInviting = pyautogui.locate(img('inviting.png'), im, **LOCATE_OPTIONS)
-      if locationInviting:
+      location_inviting = pyautogui.locate(img('inviting.png'), im, **LOCATE_OPTIONS)
+      if location_inviting:
         print(f'{now()} - 队友已退出: {time.time() - start}')
       else:
         fighting(window)
@@ -146,8 +146,8 @@ def find_fight(window):
   print(f'{now()} - 查看副本列表...')
   while True:
     im = pyautogui.screenshot()
-    locationFightList = pyautogui.locate(img('fight-list.png'), im, **LOCATE_OPTIONS)
-    if locationFightList:
+    location_fight_list = pyautogui.locate(img('fight-list.png'), im, **LOCATE_OPTIONS)
+    if location_fight_list:
       fight = select_fight(im, window, list(pyautogui.locateAll(img('rescue.png'), im, **LOCATE_OPTIONS)))
       if fight:
         fight_prepare(fight, window)
@@ -159,10 +159,10 @@ def find_fight(window):
 def find_invite(window):
   print(f'{now()} - 检测副本邀请...')
   while True:
-    locationInvite = pyautogui.locateOnScreen(img('rescue-invite.png'), **LOCATE_OPTIONS)
-    if locationInvite:
+    location_invite = pyautogui.locateOnScreen(img('rescue-invite.png'), **LOCATE_OPTIONS)
+    if location_invite:
       print(f'{now()} - 检测到副本邀请,进入副本列表...')
-      click(locationInvite)
+      click(location_invite)
       find_fight(window)
       print(f'{now()} - 回到主界面')
     time.sleep(1)
