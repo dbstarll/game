@@ -14,6 +14,7 @@ pyscreeze.GRAYSCALE_DEFAULT = False
 
 LOCATE_OPTIONS = {'confidence': 0.98}
 GAME_WINDOW_ID = None
+GAME_WINDOW_POS = None
 CLICK_INTERVAL = 0.3
 DISTRIBUTE = 'mp'
 ROOM_WAIT_TIMEOUT = 15
@@ -23,7 +24,7 @@ def screenshot_osx():
   fh, filepath = tempfile.mkstemp(".png")
   os.close(fh)
   args = ["screencapture"]
-  subprocess.call(args + ["-l", GAME_WINDOW_ID, "-x", filepath])
+  subprocess.call(args + ["-l", GAME_WINDOW_ID, "-o", "-x", filepath])
   im = Image.open(filepath)
   im.load()
   os.unlink(filepath)
@@ -31,11 +32,7 @@ def screenshot_osx():
 
 
 def screenshot():
-  start = time.time()
-  try:
-    return screenshot_osx()
-  finally:
-    print('screenshot took %.2f seconds' % (time.time() - start))
+  return screenshot_osx()
 
 
 def now():
@@ -48,7 +45,7 @@ def img(file):
 
 def click(location, offset_x=0, offset_y=0):
   center = pyautogui.center(location)
-  pyautogui.click(x=center.x // 2 + offset_x, y=center.y // 2 + offset_y)
+  pyautogui.click(x=GAME_WINDOW_POS[0] + center.x // 2 + offset_x, y=GAME_WINDOW_POS[1] + center.y // 2 + offset_y)
   time.sleep(CLICK_INTERVAL)
 
 
@@ -73,6 +70,7 @@ def get_game_window_bottom(screen, location_back, left):
   for y in range(location_back.top + location_back.height, screen.height):
     if screen.getpixel((left - 1, y)) != (0, 0, 0, 255):
       return y - 1
+  return screen.height - 1
 
 
 def get_game_window_right(screen, location_back, bottom):
@@ -226,6 +224,11 @@ def get_window_id_of_game():
   return subprocess.run(args + ["get-window-id-of-zombie.scpt"], capture_output=True)
 
 
+def get_bounds_of_game():
+  args = ["osascript"]
+  return subprocess.run(args + ["get-bounds-of-zombie.scpt"], capture_output=True)
+
+
 if __name__ == "__main__":
   if len(sys.argv) > 1:
     DISTRIBUTE = sys.argv[1]
@@ -234,7 +237,8 @@ if __name__ == "__main__":
   wid = get_window_id_of_game().stdout.decode()
   if wid:
     GAME_WINDOW_ID = wid.rstrip('\n')
-    print(f'获得游戏窗口ID: {GAME_WINDOW_ID}')
+    GAME_WINDOW_POS = tuple(map(int, get_bounds_of_game().stdout.decode().rstrip('\n').split(', ')))
+    print(f'获得游戏窗口: ID={GAME_WINDOW_ID}, POS={GAME_WINDOW_POS}')
   else:
     print('游戏未启动')
     exit(1)
