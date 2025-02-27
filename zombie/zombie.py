@@ -14,6 +14,14 @@ DISTRIBUTE = 'mp'
 ROOM_WAIT_TIMEOUT = 15
 
 
+def screenshot():
+  start = time.time()
+  try:
+    return pyautogui.screenshot()
+  finally:
+    print('screenshot took %.2f seconds' % (time.time() - start))
+
+
 def now():
   return datetime.datetime.now()
 
@@ -58,6 +66,7 @@ def get_game_window_right(screen, location_back, bottom):
 
 
 def get_game_window(screen):
+  print(screen)
   location_back = pyautogui.locate(img('back.png'), screen, **LOCATE_OPTIONS)
   if location_back:
     left = get_game_window_left(screen, location_back)
@@ -110,7 +119,7 @@ def fighting(window):
   print(f"{now()} - 开始战斗...")
   start = time.time()
   while True:
-    im = pyautogui.screenshot()
+    im = screenshot()
 
     if check_reconnect(im):
       continue
@@ -123,8 +132,8 @@ def fighting(window):
 
     location_skills = pyautogui.locate(img('select-skill.png'), im, **LOCATE_OPTIONS)
     if location_skills:
-      match_left_bottoms = list(pyautogui.locateAll('skill-left-bottom.png', im, **LOCATE_OPTIONS))
-      match_right_tops = list(pyautogui.locateAll('skill-right-top.png', im, **LOCATE_OPTIONS))
+      match_left_bottoms = list(pyautogui.locateAll(img('skill-left-bottom.png'), im, **LOCATE_OPTIONS))
+      match_right_tops = list(pyautogui.locateAll(img('skill-right-top.png'), im, **LOCATE_OPTIONS))
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
       debug_image(im, window, 'skills')
 
@@ -141,7 +150,7 @@ def fight_prepare(fight, window):
   click(fight, 160, -35)
   start = time.time()
   while True:
-    im = pyautogui.screenshot()
+    im = screenshot()
     location_leave = pyautogui.locate(img('room-leave.png'), im, **LOCATE_OPTIONS)
     if location_leave:
       if time.time() - start > ROOM_WAIT_TIMEOUT:
@@ -163,7 +172,7 @@ def fight_prepare(fight, window):
 def find_fight(window):
   print(f'{now()} - 查看副本列表...')
   while True:
-    im = pyautogui.screenshot()
+    im = screenshot()
 
     if check_reconnect(im):
       continue
@@ -181,7 +190,7 @@ def find_fight(window):
 def detect_team_invite(window):
   print(f'{now()} - 检测副本邀请...')
   while True:
-    im = pyautogui.screenshot()
+    im = screenshot()
 
     if check_reconnect(im):
       continue
@@ -201,7 +210,7 @@ if __name__ == "__main__":
     DISTRIBUTE = sys.argv[1]
   print(f'游戏发行版本: {DISTRIBUTE}')
 
-  window = get_game_window(pyautogui.screenshot())
+  window = get_game_window(screenshot())
   if window:
     print(f"{now()} - 游戏窗口位置: {window}")
     LOCATE_OPTIONS['region'] = window
