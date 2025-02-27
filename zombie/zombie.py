@@ -1,17 +1,19 @@
+import datetime
 import pyautogui
 import pyscreeze
-import time
-import datetime
 import sys
+import time
 
 pyscreeze.USE_IMAGE_NOT_FOUND_EXCEPTION = False
-LOCATE_OPTIONS = {'grayscale': False, 'confidence': 0.98}
+pyscreeze.GRAYSCALE_DEFAULT = False
+
+LOCATE_OPTIONS = {'confidence': 0.98}
 CLICK_INTERVAL = 0.3
 DISTRIBUTE = 'mp'
 ROOM_WAIT_TIMEOUT = 15
 
 def img(file):
- return DISTRIBUTE + '/' + file
+  return DISTRIBUTE + '/' + file
 
 def click(location, offsetX = 0, offsetY = 0):
   center = pyautogui.center(location)
@@ -64,8 +66,8 @@ def get_game_window(screen):
     print(f'{datetime.datetime.now()} - not found: locationShop')
 
 def select_fight(im,window,fights):
-  print(len(fights))
   if len(fights) > 0:
+    print(len(fights))
     debug_image(im,window,'fights')
   
   for pos in fights:
@@ -93,7 +95,10 @@ def fighting(window):
 
     locationSkills = pyautogui.locate(img('select-skill.png'),im,**LOCATE_OPTIONS)
     if locationSkills:
-      print(f'{datetime.datetime.now()} - 选择技能: {time.time() - start}')
+      match_left_bottoms = list(pyautogui.locateAll('left-bottom-2.png', im, **LOCATE_OPTIONS))
+      match_right_tops = list(pyautogui.locateAll('right-top-2.png', im, **LOCATE_OPTIONS))
+      print(
+        f'{datetime.datetime.now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
       debug_image(im,window,'skills')
 
     time.sleep(5)
