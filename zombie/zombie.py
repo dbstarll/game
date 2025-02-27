@@ -33,39 +33,39 @@ def debug_image(im, window, file):
   gim.save('tmp/' + file + '-' + str(int(time.time())) + '.png', dpi=(144, 144))
 
 
-def get_game_left(screen, location_shop):
-  for x in range(location_shop.left, 0, -1):
-    if screen.getpixel((x, location_shop.top)) == (0, 0, 0, 255):
+def get_game_window_left(screen, location_back):
+  for x in range(location_back.left, 0, -1):
+    if screen.getpixel((x, location_back.top)) == (0, 0, 0, 255):
       return x + 1
 
 
-def get_game_top(screen, location_shop, left):
-  for y in range(location_shop.top, 0, -1):
+def get_game_window_top(screen, location_back, left):
+  for y in range(location_back.top, 0, -1):
     if screen.getpixel((left - 1, y)) != (0, 0, 0, 255):
       return y + 1
 
 
-def get_game_bottom(screen, location_shop, left):
-  for y in range(location_shop.top + location_shop.height, screen.height):
+def get_game_window_bottom(screen, location_back, left):
+  for y in range(location_back.top + location_back.height, screen.height):
     if screen.getpixel((left - 1, y)) != (0, 0, 0, 255):
       return y - 1
 
 
-def get_game_right(screen, location_shop, bottom):
-  for x in range(location_shop.left + location_shop.width, screen.width):
+def get_game_window_right(screen, location_back, bottom):
+  for x in range(location_back.left + location_back.width, screen.width):
     if screen.getpixel((x, bottom)) == (0, 0, 0, 255):
       return x - 1
 
 
 def get_game_window(screen):
-  location_shop = pyautogui.locate(img('rescue-return.png'), screen, **LOCATE_OPTIONS)
-  if location_shop:
-    left = get_game_left(screen, location_shop)
+  location_back = pyautogui.locate(img('back.png'), screen, **LOCATE_OPTIONS)
+  if location_back:
+    left = get_game_window_left(screen, location_back)
     if left:
-      top = get_game_top(screen, location_shop, left)
-      bottom = get_game_bottom(screen, location_shop, left)
+      top = get_game_window_top(screen, location_back, left)
+      bottom = get_game_window_bottom(screen, location_back, left)
       if top and bottom:
-        right = get_game_right(screen, location_shop, bottom)
+        right = get_game_window_right(screen, location_back, bottom)
         if right:
           print(f"{now()} - 检测到游戏窗口: left: {left}, top: {top}, right: {right}, bottom: {bottom}")
           return pyscreeze.Box(left, top, right - left + 1, bottom - top + 1)
@@ -119,7 +119,7 @@ def fighting(window):
 
 
 def fight_prepare(fight, window):
-  print(f"{now()} - 进入战斗预备, 等待队友开始...: {fight}")
+  print(f"{now()} - 进入战斗预备, 等待队友开始...")
   click(fight, 160, -35)
   start = time.time()
   while True:
@@ -133,7 +133,7 @@ def fight_prepare(fight, window):
       else:
         print(f'{now()} - 等待队友开始: {time.time() - start}')
     else:
-      location_inviting = pyautogui.locate(img('inviting.png'), im, **LOCATE_OPTIONS)
+      location_inviting = pyautogui.locate(img('room-inviting.png'), im, **LOCATE_OPTIONS)
       if location_inviting:
         print(f'{now()} - 队友已退出: {time.time() - start}')
       else:
@@ -156,10 +156,10 @@ def find_fight(window):
       break
 
 
-def find_invite(window):
+def detect_team_invite(window):
   print(f'{now()} - 检测副本邀请...')
   while True:
-    location_invite = pyautogui.locateOnScreen(img('rescue-invite.png'), **LOCATE_OPTIONS)
+    location_invite = pyautogui.locateOnScreen(img('team-invite.png'), **LOCATE_OPTIONS)
     if location_invite:
       print(f'{now()} - 检测到副本邀请,进入副本列表...')
       click(location_invite)
@@ -177,4 +177,4 @@ if __name__ == "__main__":
   if window:
     print(f"{now()} - 游戏窗口位置: {window}")
     LOCATE_OPTIONS['region'] = window
-    find_invite(window)
+    detect_team_invite(window)
