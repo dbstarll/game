@@ -39,29 +39,41 @@ def match(file):
     match_rt = list(pyautogui.locateAll(RIGHT_TOP_IMG, im, **LOCATE_OPTIONS))
     if len(match_lb) != 3 or len(match_rt) != 3:
       print(f'mismatch: {len(match_lb)} - {len(match_rt)}, file: {file}')
-      return False
     else:
-      print(f'{file}')
-      for i in range(0, 3):
+      for i in (0, 2):
         match_left_bottom = match_lb[i]
         match_right_top = match_rt[i]
         box = pyscreeze.Box(match_left_bottom.left + LEFT_OFFSET, match_right_top.top + TOP_OFFSET,
                             match_right_top.left + match_right_top.width - match_left_bottom.left - LEFT_OFFSET + RIGHT_OFFSET,
                             match_left_bottom.top + match_left_bottom.height - match_right_top.top - TOP_OFFSET + BOTTOM_OFFSET)
-        print(f'\t{box}')
-        debug_image(im, box, 'skill')
         # detect_corner(im, box)
-      return True
+        yield im.crop((box.left, box.top, box.left + box.width, box.top + box.height))
+
+
+def detect_skills(skills, skill):
+  for each in skills:
+    if pyautogui.locate(each, skill, **LOCATE_OPTIONS):
+      return False
+  skills.append(skill)
+  print(f'\tdetect skill: {skill}')
+  skill.save('tmp/skill-' + str(time.time()) + '.png', dpi=(144, 144))
+  return True
 
 
 if __name__ == "__main__":
   total = 0
   matches = 0
+  skills = []
   for file in os.listdir('tmp'):
     if file.startswith('skills-') and file.endswith('.png'):
-      if total >= 100:
+      if total >= 1000:
         break
       total += 1
-      if match('tmp/' + file):
-        matches += 1
+      first = True
+      for box in match('tmp/' + file):
+        if first:
+          first = False
+          matches += 1
+        detect_skills(skills, box)
   print(f'matches: {matches}/{total}')
+  print(f'skills: {len(skills)}')
