@@ -24,6 +24,15 @@ def debug_image(im, window, file):
   return gim
 
 
+def detect_corner(im, box):
+  lb = debug_image(im, pyscreeze.Box(box.left - LEFT_OFFSET, box.top + box.height - 50 - BOTTOM_OFFSET, 50, 50),
+                   'left-bottom')
+  rt = debug_image(im, pyscreeze.Box(box.left + box.width - 50 - RIGHT_OFFSET, box.top - TOP_OFFSET, 50, 75),
+                   'right-top')
+  print(len(list(pyautogui.locateAll(lb, im, **LOCATE_OPTIONS))))
+  print(len(list(pyautogui.locateAll(rt, im, **LOCATE_OPTIONS))))
+
+
 def match(file):
   with Image.open(file) as im:
     match_lb = list(pyautogui.locateAll(LEFT_BOTTOM_IMG, im, **LOCATE_OPTIONS))
@@ -41,10 +50,7 @@ def match(file):
                             match_left_bottom.top + match_left_bottom.height - match_right_top.top - TOP_OFFSET + BOTTOM_OFFSET)
         print(f'\t{box}')
         debug_image(im, box, 'skill')
-        # lb = debug_image(im, pyscreeze.Box(box.left - 1, box.top + box.height - 50 + 1, 50, 50), 'left-bottom')
-        # rt = debug_image(im, pyscreeze.Box(box.left + box.width - 50 + 1, box.top - 1, 50, 75), 'right-top')
-        # print(len(list(pyautogui.locateAll(lb, im, **LOCATE_OPTIONS))))
-        # print(len(list(pyautogui.locateAll(rt, im, **LOCATE_OPTIONS))))
+        # detect_corner(im, box)
       return True
 
 
