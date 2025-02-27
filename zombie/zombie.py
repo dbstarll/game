@@ -123,8 +123,8 @@ def fighting(window):
 
     location_skills = pyautogui.locate(img('select-skill.png'), im, **LOCATE_OPTIONS)
     if location_skills:
-      match_left_bottoms = list(pyautogui.locateAll('left-bottom-2.png', im, **LOCATE_OPTIONS))
-      match_right_tops = list(pyautogui.locateAll('right-top-2.png', im, **LOCATE_OPTIONS))
+      match_left_bottoms = list(pyautogui.locateAll('skill-left-bottom.png', im, **LOCATE_OPTIONS))
+      match_right_tops = list(pyautogui.locateAll('skill-right-top.png', im, **LOCATE_OPTIONS))
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
       debug_image(im, window, 'skills')
 
