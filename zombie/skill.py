@@ -13,6 +13,8 @@ LEFT_OFFSET = 1
 RIGHT_OFFSET = -1
 TOP_OFFSET = 1
 BOTTOM_OFFSET = -1
+KIND_OFFSET_WIDTH = 38
+KIND_OFFSET_HEIGHT = 76
 
 LEFT_BOTTOM_IMG = Image.open('mp/skill-left-bottom.png')
 RIGHT_TOP_IMG = Image.open('mp/skill-right-top.png')
@@ -50,20 +52,46 @@ def match(file):
         yield im.crop((box.left, box.top, box.left + box.width, box.top + box.height))
 
 
-def detect_skills(skills, skill):
-  for each in skills:
+def detect_kinds(kinds, skill):
+  kind = skill.crop((KIND_OFFSET_WIDTH, KIND_OFFSET_HEIGHT, skill.width - KIND_OFFSET_WIDTH,
+                     KIND_OFFSET_HEIGHT + skill.width - 2 * KIND_OFFSET_WIDTH))
+
+  for key, value in kinds.items():
+    if pyautogui.locate(value, kind, **LOCATE_OPTIONS):
+      return key
+  key = f'kind-{len(kinds)}'
+  print(f'\tdetect kind: {key} - {kind}')
+  kinds[key] = kind
+
+  if not os.path.exists(f'skills/{key}'):
+    os.mkdir(f'skills/{key}')
+  kind.save(f'skills/{key}/kind-{time.time()}.png', dpi=(144, 144))
+
+  return key
+
+
+def detect_skills(kinds, skills, skill):
+  kind = detect_kinds(kinds, skill)
+  kind_skills = skills.get(kind)
+  if kind_skills is None:
+    kind_skills = []
+    skills[kind] = kind_skills
+
+  for each in kind_skills:
     if pyautogui.locate(each, skill, **LOCATE_OPTIONS):
       return False
-  skills.append(skill)
-  print(f'\tdetect skill: {skill}')
-  skill.save('tmp/skill-' + str(time.time()) + '.png', dpi=(144, 144))
+  print(f'\tdetect skill: {kind} - {skill}')
+  kind_skills.append(skill)
+
+  skill.save(f'skills/{kind}/skill-{time.time()}.png', dpi=(144, 144))
   return True
 
 
 if __name__ == "__main__":
   total = 0
   matches = 0
-  skills = []
+  kinds = {}
+  skills = {}
   for file in os.listdir('tmp'):
     if file.startswith('skills-') and file.endswith('.png'):
       if total >= 1000:
@@ -74,6 +102,8 @@ if __name__ == "__main__":
         if first:
           first = False
           matches += 1
-        detect_skills(skills, box)
+        detect_skills(kinds, skills, box)
   print(f'matches: {matches}/{total}')
-  print(f'skills: {len(skills)}')
+  print(f'kinds: {len(kinds)}')
+  for kind, kind_skills in skills.items():
+    print(f'skills: {kind} - {len(kind_skills)}')
