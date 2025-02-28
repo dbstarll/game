@@ -1,4 +1,4 @@
-LOCATE_OPTIONS = {'confidence': 0.99}
+LOCATE_OPTIONS = {'confidence': 0.98}
 
 import pyscreeze
 
