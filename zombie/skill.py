@@ -16,6 +16,8 @@ BOTTOM_OFFSET = -1
 KIND_OFFSET_WIDTH = 38
 KIND_OFFSET_HEIGHT = 76
 
+SKILL_ROOT_DIR = 'skills'
+
 LEFT_BOTTOM_IMG = Image.open('mp/skill-left-bottom.png')
 RIGHT_TOP_IMG = Image.open('mp/skill-right-top.png')
 
@@ -56,42 +58,64 @@ def detect_kinds(kinds, skill):
   kind = skill.crop((KIND_OFFSET_WIDTH, KIND_OFFSET_HEIGHT, skill.width - KIND_OFFSET_WIDTH,
                      KIND_OFFSET_HEIGHT + skill.width - 2 * KIND_OFFSET_WIDTH))
 
-  for key, value in kinds.items():
-    if pyautogui.locate(value, kind, **LOCATE_OPTIONS):
-      return key
-  key = f'kind-{len(kinds)}'
-  print(f'\tdetect kind: {key} - {kind}')
-  kinds[key] = kind
+  for kind_name, item in kinds.items():
+    if pyautogui.locate(item, kind, **LOCATE_OPTIONS):
+      return kind_name, False
+  kind_name = f'logo-{time.time()}'
+  print(f'\tdetect kind: {kind_name} - {kind}')
+  kinds[kind_name] = kind
 
-  if not os.path.exists(f'skills/{key}'):
-    os.mkdir(f'skills/{key}')
-  kind.save(f'skills/{key}/kind-{time.time()}.png', dpi=(144, 144))
+  if not os.path.exists(f'{SKILL_ROOT_DIR}/{kind_name}'):
+    os.mkdir(f'{SKILL_ROOT_DIR}/{kind_name}')
+  kind.save(f'{SKILL_ROOT_DIR}/{kind_name}/{kind_name}.png', dpi=(144, 144))
 
-  return key
+  return kind_name, True
 
 
 def detect_skills(kinds, skills, skill):
-  kind = detect_kinds(kinds, skill)
-  kind_skills = skills.get(kind)
+  kind_name, _ = detect_kinds(kinds, skill)
+  kind_skills = skills.get(kind_name)
   if kind_skills is None:
-    kind_skills = []
-    skills[kind] = kind_skills
+    kind_skills = {}
+    skills[kind_name] = kind_skills
 
-  for each in kind_skills:
-    if pyautogui.locate(each, skill, **LOCATE_OPTIONS):
-      return False
-  print(f'\tdetect skill: {kind} - {skill}')
-  kind_skills.append(skill)
+  for skill_name, item in kind_skills.items():
+    if pyautogui.locate(item, skill, **LOCATE_OPTIONS):
+      return kind_name, skill_name, False
+  skill_name = f'skill-{time.time()}'
+  print(f'\tdetect skill: {kind_name} - {skill_name} - {skill}')
+  kind_skills[skill_name] = skill
 
-  skill.save(f'skills/{kind}/skill-{time.time()}.png', dpi=(144, 144))
-  return True
+  skill.save(f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}.png', dpi=(144, 144))
+  return kind_name, skill_name, True
+
+
+def load_skills():
+  kinds = {}
+  skills = {}
+  for kind_name in os.listdir(SKILL_ROOT_DIR):
+    if os.path.isdir(f'{SKILL_ROOT_DIR}/{kind_name}'):
+      print(f'\tloading kind: {kind_name}')
+      for skill_name in os.listdir(f'{SKILL_ROOT_DIR}/{kind_name}'):
+        if skill_name.endswith('.png'):
+          if skill_name.startswith('logo'):
+            print(f'\t\tloading logo: {skill_name}')
+            kinds[kind_name] = Image.open(f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}')
+          else:
+            print(f'\t\tloading skill: {skill_name}')
+            kind_skills = skills.get(kind_name)
+            if kind_skills is None:
+              kind_skills = {}
+              skills[kind_name] = kind_skills
+            kind_skills[skill_name] = Image.open(f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}')
+
+  return kinds, skills
 
 
 if __name__ == "__main__":
   total = 0
   matches = 0
-  kinds = {}
-  skills = {}
+  kinds, skills = load_skills()
   for file in os.listdir('tmp'):
     if file.startswith('skills-') and file.endswith('.png'):
       if total >= 1000:
@@ -102,7 +126,7 @@ if __name__ == "__main__":
         if first:
           first = False
           matches += 1
-        detect_skills(kinds, skills, box)
+        kind_name, skill_name, new_skill = detect_skills(kinds, skills, box)
   print(f'matches: {matches}/{total}')
   print(f'kinds: {len(kinds)}')
   for kind, kind_skills in skills.items():
