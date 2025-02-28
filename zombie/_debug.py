@@ -10,5 +10,5 @@ def now():
 
 def debug_image(im, rect, prefix):
   gim = im.crop((rect.left, rect.top, rect.left + rect.width, rect.top + rect.height))
-  save_image(im, f'tmp/{prefix}-{time.time()}.png')
+  save_image(gim, f'tmp/{prefix}-{time.time()}.png')
   return gim

@@ -3,6 +3,7 @@ import time
 
 from PIL import Image
 
+from _image import save_image
 from _locate import locate
 
 KIND_OFFSET_WIDTH = 38
@@ -23,7 +24,7 @@ def _detect_kinds(kinds, skill):
 
   if not os.path.exists(f'{SKILL_ROOT_DIR}/{kind_name}'):
     os.mkdir(f'{SKILL_ROOT_DIR}/{kind_name}')
-  kind.save(f'{SKILL_ROOT_DIR}/{kind_name}/{kind_name}.png', dpi=(144, 144))
+  save_image(kind, f'{SKILL_ROOT_DIR}/{kind_name}/{kind_name}.png')
 
   return kind_name, True
 
@@ -42,7 +43,7 @@ def detect_skills(kinds, skills, skill):
   print(f'\tdetect skill: {kind_name} - {skill_name} - {skill}')
   kind_skills[skill_name] = skill
 
-  skill.save(f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}.png', dpi=(144, 144))
+  save_image(skill, f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}.png')
   return kind_name, skill_name, True
 
 
@@ -60,14 +61,14 @@ def _load_kind(kinds, skills, kind_name):
   for skill_name in os.listdir(f'{SKILL_ROOT_DIR}/{kind_name}'):
     if skill_name.endswith('.png'):
       if skill_name.startswith('logo'):
-        _load_logo(kinds, kind_name, skill_name)
+        _load_logo(kinds, kind_name, skill_name[:len(skill_name) - 4])
       else:
-        _load_skill(skills, kind_name, skill_name)
+        _load_skill(skills, kind_name, skill_name[:len(skill_name) - 4])
 
 
 def _load_logo(kinds, kind_name, skill_name):
   print(f'\t\tloading logo: {skill_name}')
-  kinds[kind_name] = Image.open(f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}')
+  kinds[kind_name] = Image.open(f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}.png')
 
 
 def _load_skill(skills, kind_name, skill_name):
@@ -76,4 +77,4 @@ def _load_skill(skills, kind_name, skill_name):
   if kind_skills is None:
     kind_skills = {}
     skills[kind_name] = kind_skills
-  kind_skills[skill_name] = Image.open(f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}')
+  kind_skills[skill_name] = Image.open(f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}.png')

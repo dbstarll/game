@@ -4,7 +4,7 @@ from PIL import Image
 
 from _debug import debug_image
 from _locate import locate_all, Box
-from _skills import load_skills, detect_skills
+from _skill import load_skills, detect_skills
 
 LEFT_OFFSET = 1
 RIGHT_OFFSET = -1
@@ -24,7 +24,7 @@ def detect_corner(im, box):
   print(len(list(locate_all(rt, im, ))))
 
 
-def match(file):
+def match_skills(file):
   with Image.open(file) as im:
     match_lb = list(locate_all(LEFT_BOTTOM_IMG, im))
     match_rt = list(locate_all(RIGHT_TOP_IMG, im))
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         break
       total += 1
       first = True
-      for box in match('tmp/' + file):
+      for box in match_skills('tmp/' + file):
         if first:
           first = False
           matches += 1
