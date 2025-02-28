@@ -16,7 +16,7 @@ def _detect_kinds(kinds, skill):
                      KIND_OFFSET_HEIGHT + skill.width - 2 * KIND_OFFSET_WIDTH))
 
   for kind_name, item in kinds.items():
-    if locate(item, kind):
+    if locate(kind, item):
       return kind_name, False
   kind_name = f'logo-{time.time()}'
   print(f'\tdetect kind: {kind_name} - {kind}')
@@ -37,7 +37,7 @@ def detect_skills(kinds, skills, skill):
     skills[kind_name] = kind_skills
 
   for skill_name, item in kind_skills.items():
-    if locate(item, skill):
+    if locate(skill, item):
       return kind_name, skill_name, False
   skill_name = f'skill-{time.time()}'
   print(f'\tdetect skill: {kind_name} - {skill_name} - {skill}')

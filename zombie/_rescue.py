@@ -11,7 +11,7 @@ RESCUE_ROOT_DIR = 'rescues'
 
 def detect_rescues(rescues, rescue):
   for rescue_name, item in rescues.items():
-    if locate(item, rescue):
+    if locate(rescue, item):
       return rescue_name, False
   rescue_name = f'rescue-{time.time()}'
   print(f'\tdetect rescue: {rescue_name} - {rescue}')

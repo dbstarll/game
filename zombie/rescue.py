@@ -11,7 +11,7 @@ rescue_img = Image.open('mp/rescue.png')
 def match_rescues(file):
   with Image.open(file) as im:
     for match in locate_all(rescue_img, im):
-      box = Box(match.left, match.top, match.width * 1.9, match.height)
+      box = Box(match.left + match.width, match.top, match.width * 0.9, match.height)
       yield im.crop((box.left, box.top, box.left + box.width, box.top + box.height))
 
 
