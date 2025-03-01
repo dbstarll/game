@@ -13,7 +13,7 @@ from _locate import locate, locate_all, LOCATE_OPTIONS
 
 GAME_WINDOW_ID = None
 GAME_WINDOW_POS = None
-CLICK_INTERVAL = 0.3
+CLICK_INTERVAL = 0.2
 DISTRIBUTE = 'mp'
 ROOM_WAIT_TIMEOUT = 15
 
@@ -39,6 +39,8 @@ def img(file):
 
 def click(location, offset_x=0, offset_y=0):
   center = pyautogui.center(location)
+  pyautogui.click(x=GAME_WINDOW_POS[0] + center.x // 2 + offset_x, y=GAME_WINDOW_POS[1] + center.y // 2 + offset_y)
+  time.sleep(CLICK_INTERVAL)
   pyautogui.click(x=GAME_WINDOW_POS[0] + center.x // 2 + offset_x, y=GAME_WINDOW_POS[1] + center.y // 2 + offset_y)
   time.sleep(CLICK_INTERVAL)
 

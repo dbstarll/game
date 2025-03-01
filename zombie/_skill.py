@@ -11,13 +11,20 @@ KIND_OFFSET_HEIGHT = 76
 SKILL_ROOT_DIR = 'skills'
 
 
-def _detect_kinds(kinds, skill):
+def _match_kinds(kinds, skill):
   kind = skill.crop((KIND_OFFSET_WIDTH, KIND_OFFSET_HEIGHT, skill.width - KIND_OFFSET_WIDTH,
                      KIND_OFFSET_HEIGHT + skill.width - 2 * KIND_OFFSET_WIDTH))
-
   for kind_name, item in kinds.items():
     if locate(kind, item):
-      return kind_name, False
+      return kind_name, kind
+  return None, kind
+
+
+def _detect_kinds(kinds, skill):
+  kind_name, kind = _match_kinds(kinds, skill)
+  if kind_name is not None:
+    return kind_name, True
+
   kind_name = f'logo-{time.time()}'
   print(f'\tdetect kind: {kind_name} - {kind}')
   kinds[kind_name] = kind
@@ -27,6 +34,17 @@ def _detect_kinds(kinds, skill):
   save_image(kind, f'{SKILL_ROOT_DIR}/{kind_name}/{kind_name}.png')
 
   return kind_name, True
+
+
+def match_skills(kinds, skills, skill):
+  kind_name, _ = _match_kinds(kinds, skill)
+  if kind_name is None:
+    return None, None
+
+  for skill_name, item in skills.get(kind_name).items():
+    if locate(skill, item):
+      return kind_name, skill_name
+  return kind_name, None
 
 
 def detect_skills(kinds, skills, skill):
