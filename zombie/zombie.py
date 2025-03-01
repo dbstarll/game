@@ -36,12 +36,13 @@ def screenshot():
   return screenshot_osx()
 
 
-def click(location, offset_x=0, offset_y=0):
+def click(location, offset_x=0, offset_y=0, once=False):
   center = pyautogui.center(location)
   pyautogui.click(x=GAME_WINDOW_POS[0] + center.x // 2 + offset_x, y=GAME_WINDOW_POS[1] + center.y // 2 + offset_y)
   time.sleep(CLICK_INTERVAL)
-  pyautogui.click(x=GAME_WINDOW_POS[0] + center.x // 2 + offset_x, y=GAME_WINDOW_POS[1] + center.y // 2 + offset_y)
-  time.sleep(CLICK_INTERVAL)
+  if not once:
+    pyautogui.click(x=GAME_WINDOW_POS[0] + center.x // 2 + offset_x, y=GAME_WINDOW_POS[1] + center.y // 2 + offset_y)
+    time.sleep(CLICK_INTERVAL)
 
 
 def get_game_window_left(screen, location_back):
@@ -110,10 +111,9 @@ def check_reconnect(im):
 
 def select_fight(im, window, fights):
   if len(fights) > 0:
-    print(len(fights))
     debug_image(im, window, 'fights')
 
-  _max = 0
+  _max = -1
   _max_pos = None
   for pos in fights:
     _, rescue = crop_rescue(im, pos)
@@ -123,7 +123,7 @@ def select_fight(im, window, fights):
     if level > _max:
       _max = level
       _max_pos = pos
-  return _max_pos
+  return _max, _max_pos
 
 
 def fighting(window):
@@ -190,9 +190,14 @@ def find_fight(window):
 
     location_fight_list = locate(img('fight-list.png'), im)
     if location_fight_list:
-      fight = select_fight(im, window, list(locate_all(img('rescue'), im)))
-      if fight:
-        fight_prepare(fight, window)
+      level, fight = select_fight(im, window, list(locate_all(img('rescue'), im)))
+      if fight is not None:
+        if level >= 5 or level == 0:
+          fight_prepare(fight, window)
+        else:
+          print(f"{now()} - 寰球等级[{level}]太低, 拒绝战斗")
+          click(fight, 160, 0, True)
+          continue
       time.sleep(1)
     else:
       break
