@@ -35,6 +35,6 @@ if __name__ == "__main__":
       files += 1
       for img in match_rescues(f'tmp/{dist}/{file}'):
         matches += 1
-        rescue_name, new_rescue = detect_rescues(rescues, img)
+        rescue_name, new_rescue = detect_rescues(img)
   print(f'rescues: {len(rescues)}')
   print(f'match: {matches} on {files} files')

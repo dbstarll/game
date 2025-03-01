@@ -9,25 +9,27 @@ from _locate import locate, Box
 
 RESCUE_ROOT_DIR = 'rescues'
 
+_RESCUES = {}
+
 
 def _rescue_img(rescue_name):
   return img(f'{RESCUE_ROOT_DIR}/{rescue_name}')
 
 
-def match_rescues(rescues, rescue):
-  for rescue_name, item in rescues.items():
+def match_rescues(rescue):
+  for rescue_name, item in _RESCUES.items():
     if locate(rescue, item, True):
       return rescue_name
   return None
 
 
-def detect_rescues(rescues, rescue):
-  rescue_name = match_rescues(rescues, rescue)
+def detect_rescues(rescue):
+  rescue_name = match_rescues(rescue)
   if rescue_name is not None:
     return rescue_name, False
   rescue_name = f'rescue-{time.time()}'
   print(f'\tdetect rescue: {rescue_name} - {rescue}')
-  rescues[rescue_name] = rescue
+  _RESCUES[rescue_name] = rescue
   save_image(rescue, _rescue_img(rescue_name))
   return rescue_name, True
 
@@ -38,11 +40,11 @@ def _load_rescue(rescues, rescue_name):
 
 
 def load_rescues():
-  rescues = {}
+  global _RESCUES
   for rescue_name in os.listdir(distribute_file(RESCUE_ROOT_DIR)):
     if rescue_name.endswith('.png'):
-      _load_rescue(rescues, rescue_name[:len(rescue_name) - 4])
-  return rescues
+      _load_rescue(_RESCUES, rescue_name[:len(rescue_name) - 4])
+  return _RESCUES
 
 
 def crop_rescue(im, rect):

@@ -18,7 +18,6 @@ GAME_WINDOW_ID = None
 GAME_WINDOW_POS = None
 CLICK_INTERVAL = 0.2
 ROOM_WAIT_TIMEOUT = 15
-rescues = {}
 
 
 def screenshot_osx():
@@ -71,7 +70,7 @@ def get_game_window_right(screen, location_back, bottom):
 
 
 def get_game_window(screen):
-  print(screen)
+  print(f"{now()} - 屏幕: {screen}")
   location_back = locate(img('back.png'), screen)
   if location_back:
     left = get_game_window_left(screen, location_back)
@@ -117,7 +116,7 @@ def select_fight(im, window, fights):
   _max_pos = None
   for pos in fights:
     _, rescue = crop_rescue(im, pos)
-    rescue_name = match_rescues(rescues, rescue)
+    rescue_name = match_rescues(rescue)
     level = int(rescue_name[7:]) if rescue_name is not None else 0
     print(f"{now()} - \t{level} - {rescue_name} - {pos}")
     if level > _max:
@@ -243,7 +242,7 @@ if __name__ == "__main__":
     print('游戏未启动')
     exit(1)
 
-  rescues = load_rescues()
+  load_rescues()
 
   window = get_game_window(screenshot())
   if window:
