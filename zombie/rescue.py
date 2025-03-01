@@ -5,8 +5,8 @@ from PIL import Image
 
 from _game import distribute
 from _image import img
-from _locate import locate, locate_all, Box
-from _rescue import load_rescues, detect_rescues
+from _locate import locate, locate_all
+from _rescue import load_rescues, detect_rescues, crop_rescue
 
 rescue_img = None
 fight_list_img = None
@@ -17,8 +17,8 @@ def match_rescues(file):
     if locate(fight_list_img, im) is None:
       raise ValueError('fight-list not found')
     for match in locate_all(rescue_img, im):
-      box = Box(match.left + match.width * 1.7 - 2, match.top, match.width * 0.3 - 2, match.height)
-      yield im.crop((box.left, box.top, box.left + box.width, box.top + box.height))
+      _, img = crop_rescue(im, match)
+      yield img
 
 
 if __name__ == "__main__":
@@ -28,8 +28,13 @@ if __name__ == "__main__":
   fight_list_img = Image.open(img('fight-list'))
 
   rescues = load_rescues()
+  files = 0
+  matches = 0
   for file in os.listdir(f'tmp/{dist}'):
     if file.startswith('fights-') and file.endswith('.png'):
+      files += 1
       for img in match_rescues(f'tmp/{dist}/{file}'):
+        matches += 1
         rescue_name, new_rescue = detect_rescues(rescues, img)
   print(f'rescues: {len(rescues)}')
+  print(f'match: {matches} on {files} files')

@@ -12,11 +12,13 @@ from _debug import now, debug_image
 from _game import distribute
 from _image import img
 from _locate import locate, locate_all, LOCATE_OPTIONS
+from _rescue import load_rescues, crop_rescue, match_rescues
 
 GAME_WINDOW_ID = None
 GAME_WINDOW_POS = None
 CLICK_INTERVAL = 0.2
 ROOM_WAIT_TIMEOUT = 15
+rescues = {}
 
 
 def screenshot_osx():
@@ -111,10 +113,17 @@ def select_fight(im, window, fights):
     print(len(fights))
     debug_image(im, window, 'fights')
 
+  _max = 0
+  _max_pos = None
   for pos in fights:
-    print(f"{now()} - \t{pos} - ({pos.left // 2 + 160},{pos.top // 2 - 35}) - {pyautogui.position()}")
-  for pos in fights:
-    return pos
+    _, rescue = crop_rescue(im, pos)
+    rescue_name = match_rescues(rescues, rescue)
+    level = int(rescue_name[7:]) if rescue_name is not None else 0
+    print(f"{now()} - \t{level} - {rescue_name} - {pos}")
+    if level > _max:
+      _max = level
+      _max_pos = pos
+  return _max_pos
 
 
 def fighting(window):
@@ -181,7 +190,7 @@ def find_fight(window):
 
     location_fight_list = locate(img('fight-list.png'), im)
     if location_fight_list:
-      fight = select_fight(im, window, list(locate_all(img('rescue.png'), im)))
+      fight = select_fight(im, window, list(locate_all(img('rescue'), im)))
       if fight:
         fight_prepare(fight, window)
       time.sleep(1)
@@ -228,6 +237,8 @@ if __name__ == "__main__":
   else:
     print('游戏未启动')
     exit(1)
+
+  rescues = load_rescues()
 
   window = get_game_window(screenshot())
   if window:

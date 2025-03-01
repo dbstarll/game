@@ -6,8 +6,11 @@ pyscreeze.USE_IMAGE_NOT_FOUND_EXCEPTION = False
 pyscreeze.GRAYSCALE_DEFAULT = False
 
 
-def locate(needle_image, haystack_image):
-  return pyscreeze.locate(needle_image, haystack_image, **LOCATE_OPTIONS)
+def locate(needle_image, haystack_image, default=False):
+  if default:
+    return pyscreeze.locate(needle_image, haystack_image)
+  else:
+    return pyscreeze.locate(needle_image, haystack_image, **LOCATE_OPTIONS)
 
 
 def locate_all(needle_image, haystack_image):
