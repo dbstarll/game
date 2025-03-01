@@ -22,15 +22,14 @@ def match_rescues(file):
 
 
 if __name__ == "__main__":
-  print(f'游戏发行版本: {distribute(sys.argv, "mp")}')
+  dist = distribute(sys.argv, "mp")
+  print(f'游戏发行版本: {dist}')
   rescue_img = Image.open(img('rescue'))
   fight_list_img = Image.open(img('fight-list'))
 
   rescues = load_rescues()
-  for file in os.listdir('tmp'):
+  for file in os.listdir(f'tmp/{dist}'):
     if file.startswith('fights-') and file.endswith('.png'):
-      print(file)
-      for img in match_rescues(f'tmp/{file}'):
+      for img in match_rescues(f'tmp/{dist}/{file}'):
         rescue_name, new_rescue = detect_rescues(rescues, img)
-        print(f'\trescue: {new_rescue} - {rescue_name}')
   print(f'rescues: {len(rescues)}')

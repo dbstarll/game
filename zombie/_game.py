@@ -1,18 +1,18 @@
-DISTRIBUTE = None
+_DISTRIBUTE = None
 
 
 def distribute(args, default=None):
-  global DISTRIBUTE
+  global _DISTRIBUTE
   if len(args) > 1:
-    DISTRIBUTE = args[1]
+    _DISTRIBUTE = args[1]
   elif default is not None:
-    DISTRIBUTE = default
+    _DISTRIBUTE = default
   else:
     raise ValueError('distribute not set')
-  return DISTRIBUTE
+  return _DISTRIBUTE
 
 
 def distribute_file(filename):
-  if DISTRIBUTE is None:
+  if _DISTRIBUTE is None:
     raise ValueError('distribute not set')
-  return f'{DISTRIBUTE}/{filename}'
+  return f'{_DISTRIBUTE}/{filename}'

@@ -6,7 +6,7 @@ import pyautogui
 import pyscreeze
 
 from _debug import now, debug_image
-from _game import DISTRIBUTE
+from _game import distribute
 from _image import img
 from _locate import locate, locate_all, LOCATE_OPTIONS
 
@@ -84,7 +84,7 @@ def check_reconnect(im):
 def select_fight(im, window, fights):
   if len(fights) > 0:
     print(len(fights))
-    debug_image(im, window, 'ios-fights')
+    debug_image(im, window, 'fights')
 
   for pos in fights:
     print(f"{now()} - \t{pos} - ({pos.left // 2 + 160},{pos.top // 2 - 35}) - {pyautogui.position()}")
@@ -112,12 +112,12 @@ def fighting(window):
       match_left_bottoms = list(locate_all(img('skill-left-bottom.png'), im))
       match_right_tops = list(locate_all(img('skill-right-top.png'), im, ))
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
-      debug_image(im, window, 'ios-skills')
+      debug_image(im, window, 'skills')
 
     location_elite_skills = locate(img('elite-skill-close.png'), im)
     if location_elite_skills:
       print(f'{now()} - 精英掉落技能: {time.time() - start}')
-      debug_image(im, window, 'ios-elite-skills')
+      debug_image(im, window, 'elite-skills')
 
     time.sleep(5)
 
@@ -128,7 +128,7 @@ def fight_prepare(fight, window):
   start = time.time()
   while True:
     im = screenshot()
-    debug_image(im, window, 'ios-prepare')
+    debug_image(im, window, 'prepare')
     location_leave = locate(img('room-leave.png'), im)
     if location_leave:
       if time.time() - start > ROOM_WAIT_TIMEOUT:
@@ -194,9 +194,7 @@ def get_bounds_of_game():
 
 
 if __name__ == "__main__":
-  if len(sys.argv) > 1:
-    DISTRIBUTE = sys.argv[1]
-  print(f'游戏发行版本: {DISTRIBUTE}')
+  print(f'游戏发行版本: {distribute(sys.argv, "mp")}')
 
   window = get_game_window(screenshot())
   if window:

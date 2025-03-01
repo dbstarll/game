@@ -3,12 +3,16 @@ import time
 
 from PIL import Image
 
-from _image import save_image
+from _image import save_image, img
 from _locate import locate
 
 KIND_OFFSET_WIDTH = 38
 KIND_OFFSET_HEIGHT = 76
 SKILL_ROOT_DIR = 'skills'
+
+
+def _skill_img(kind_name, skill_name):
+  return img(f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}')
 
 
 def _match_kinds(kinds, skill):
@@ -31,7 +35,7 @@ def _detect_kinds(kinds, skill):
 
   if not os.path.exists(f'{SKILL_ROOT_DIR}/{kind_name}'):
     os.mkdir(f'{SKILL_ROOT_DIR}/{kind_name}')
-  save_image(kind, f'{SKILL_ROOT_DIR}/{kind_name}/{kind_name}.png')
+  save_image(kind, _skill_img(kind_name, kind_name))
 
   return kind_name, True
 
@@ -61,7 +65,7 @@ def detect_skills(kinds, skills, skill):
   print(f'\tdetect skill: {kind_name} - {skill_name} - {skill}')
   kind_skills[skill_name] = skill
 
-  save_image(skill, f'{SKILL_ROOT_DIR}/{kind_name}/{skill_name}.png')
+  save_image(skill, _skill_img(kind_name, skill_name))
   return kind_name, skill_name, True
 
 

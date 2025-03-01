@@ -1,8 +1,10 @@
 import os
+import sys
 
 from PIL import Image
 
 from _debug import debug_image
+from _game import distribute
 from _locate import locate_all, Box
 from _skill import load_skills, detect_skills
 
@@ -42,6 +44,8 @@ def match_skills(file):
 
 
 if __name__ == "__main__":
+  print(f'游戏发行版本: {distribute(sys.argv, "mp")}')
+
   total = 0
   matches = 0
   kinds, skills = load_skills()

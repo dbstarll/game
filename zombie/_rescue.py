@@ -10,7 +10,7 @@ from _locate import locate
 RESCUE_ROOT_DIR = 'rescues'
 
 
-def rescue_img(rescue_name):
+def _rescue_img(rescue_name):
   return img(f'{RESCUE_ROOT_DIR}/{rescue_name}')
 
 
@@ -28,13 +28,13 @@ def detect_rescues(rescues, rescue):
   rescue_name = f'rescue-{time.time()}'
   print(f'\tdetect rescue: {rescue_name} - {rescue}')
   rescues[rescue_name] = rescue
-  save_image(rescue, rescue_img(rescue_name))
+  save_image(rescue, _rescue_img(rescue_name))
   return rescue_name, True
 
 
 def _load_rescue(rescues, rescue_name):
   print(f'\tloading rescue: {rescue_name}')
-  rescues[rescue_name] = Image.open(rescue_img(rescue_name))
+  rescues[rescue_name] = Image.open(_rescue_img(rescue_name))
 
 
 def load_rescues():

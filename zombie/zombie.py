@@ -9,12 +9,13 @@ import pyscreeze
 from PIL import Image
 
 from _debug import now, debug_image
+from _game import distribute
+from _image import img
 from _locate import locate, locate_all, LOCATE_OPTIONS
 
 GAME_WINDOW_ID = None
 GAME_WINDOW_POS = None
 CLICK_INTERVAL = 0.2
-DISTRIBUTE = 'mp'
 ROOM_WAIT_TIMEOUT = 15
 
 
@@ -31,10 +32,6 @@ def screenshot_osx():
 
 def screenshot():
   return screenshot_osx()
-
-
-def img(file):
-  return DISTRIBUTE + '/' + file
 
 
 def click(location, offset_x=0, offset_y=0):
@@ -221,9 +218,7 @@ def get_bounds_of_game():
 
 
 if __name__ == "__main__":
-  if len(sys.argv) > 1:
-    DISTRIBUTE = sys.argv[1]
-  print(f'游戏发行版本: {DISTRIBUTE}')
+  print(f'游戏发行版本: {distribute(sys.argv, "mp")}')
 
   wid = get_window_id_of_game().stdout.decode()
   if wid:
