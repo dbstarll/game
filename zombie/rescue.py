@@ -3,7 +3,7 @@ import sys
 
 from PIL import Image
 
-from _game import distribute
+from _game import distribute, distribute_file
 from _image import img
 from _locate import locate, locate_all
 from _rescue import load_rescues, detect_rescues, crop_rescue
@@ -33,7 +33,7 @@ if __name__ == "__main__":
   for file in os.listdir(f'tmp/{dist}'):
     if file.startswith('fights-') and file.endswith('.png'):
       files += 1
-      for img in match_rescues(f'tmp/{dist}/{file}'):
+      for img in match_rescues(f'tmp/{distribute_file(file)}'):
         matches += 1
         rescue_name, new_rescue = detect_rescues(img)
   print(f'rescues: {len(rescues)}')

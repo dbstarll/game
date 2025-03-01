@@ -4,7 +4,8 @@ import sys
 from PIL import Image
 
 from _debug import debug_image
-from _game import distribute
+from _game import distribute, distribute_file
+from _image import img
 from _locate import locate_all, Box
 from _skill import load_skills, detect_skills
 
@@ -13,8 +14,8 @@ RIGHT_OFFSET = -1
 TOP_OFFSET = 1
 BOTTOM_OFFSET = -1
 
-LEFT_BOTTOM_IMG = Image.open('mp/skill-left-bottom.png')
-RIGHT_TOP_IMG = Image.open('mp/skill-right-top.png')
+LEFT_BOTTOM_IMG = None
+RIGHT_TOP_IMG = None
 
 
 def detect_corner(im, box):
@@ -44,18 +45,19 @@ def match_skills(file):
 
 
 if __name__ == "__main__":
-  print(f'游戏发行版本: {distribute(sys.argv, "mp")}')
+  dist = distribute(sys.argv, "mp")
+  print(f'游戏发行版本: {dist}')
+  LEFT_BOTTOM_IMG = Image.open(img('skill-left-bottom'))
+  RIGHT_TOP_IMG = Image.open(img('skill-right-top.png'))
 
   total = 0
   matches = 0
   kinds, skills = load_skills()
-  for file in os.listdir('tmp'):
+  for file in os.listdir(f'tmp/{dist}'):
     if file.startswith('skills-') and file.endswith('.png'):
-      if total >= 1000:
-        break
       total += 1
       first = True
-      for box in match_skills('tmp/' + file):
+      for box in match_skills(f'tmp/{distribute_file(file)}'):
         if first:
           first = False
           matches += 1

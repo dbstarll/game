@@ -7,13 +7,12 @@ from _game import distribute_file
 from _image import save_image, img
 from _locate import locate, Box
 
-RESCUE_ROOT_DIR = 'rescues'
-
+_RESCUE_ROOT_DIR = 'rescues'
 _RESCUES = {}
 
 
 def _rescue_img(rescue_name):
-  return img(f'{RESCUE_ROOT_DIR}/{rescue_name}')
+  return img(f'{_RESCUE_ROOT_DIR}/{rescue_name}')
 
 
 def match_rescues(rescue):
@@ -41,7 +40,7 @@ def _load_rescue(rescues, rescue_name):
 
 def load_rescues():
   global _RESCUES
-  for rescue_name in os.listdir(distribute_file(RESCUE_ROOT_DIR)):
+  for rescue_name in os.listdir(distribute_file(_RESCUE_ROOT_DIR)):
     if rescue_name.endswith('.png'):
       _load_rescue(_RESCUES, rescue_name[:len(rescue_name) - 4])
   return _RESCUES
