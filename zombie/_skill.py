@@ -16,6 +16,7 @@ _SKILL_TOP_OFFSET = 1
 _SKILL_BOTTOM_OFFSET = -1
 _KIND_OFFSET_WIDTH = 38
 _KIND_OFFSET_HEIGHT = 76
+_SKILL_CONFIDENCE = 0.97
 
 _SKILL_KINDS = {}
 _SKILLS = {}
@@ -28,7 +29,7 @@ def _skill_img(kind_name, skill_name):
 def _match_kinds(kinds, skill):
   _, kind = _crop_kind(skill)
   for kind_name, item in kinds.items():
-    if locate(kind, item):
+    if locate(kind, item, confidence=_SKILL_CONFIDENCE, region=None):
       return kind_name, kind
   return None, kind
 
@@ -55,7 +56,7 @@ def match_skills(skill):
     return None, None
 
   for skill_name, item in _SKILLS.get(kind_name).items():
-    if locate(skill, item):
+    if locate(skill, item, confidence=_SKILL_CONFIDENCE, region=None):
       return kind_name, skill_name
   return kind_name, None
 
@@ -68,7 +69,7 @@ def detect_skills(skill, file):
     _SKILLS[kind_name] = kind_skills
 
   for skill_name, item in kind_skills.items():
-    if locate(skill, item):
+    if locate(skill, item, confidence=_SKILL_CONFIDENCE, region=None):
       return kind_name, skill_name, False
   skill_name = f'skill-{time.time()}'
   print(f'\tdetect skill: {kind_name} - {skill_name} - {file}')
