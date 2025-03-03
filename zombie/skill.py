@@ -3,28 +3,13 @@ import sys
 
 from PIL import Image
 
-from _debug import debug_image
 from _game import distribute, distribute_file
 from _image import img
-from _locate import locate_all, Box
-from _skill import load_skills, detect_skills
-
-LEFT_OFFSET = 1
-RIGHT_OFFSET = -1
-TOP_OFFSET = 1
-BOTTOM_OFFSET = -1
+from _locate import locate_all
+from _skill import load_skills, detect_skills, crop_image
 
 LEFT_BOTTOM_IMG = None
 RIGHT_TOP_IMG = None
-
-
-def detect_corner(im, box):
-  lb = debug_image(im, Box(box.left - LEFT_OFFSET, box.top + box.height - 50 - BOTTOM_OFFSET, 50, 50),
-                   'left-bottom')
-  rt = debug_image(im, Box(box.left + box.width - 50 - RIGHT_OFFSET, box.top - TOP_OFFSET, 50, 75),
-                   'right-top')
-  print(len(list(locate_all(lb, im))))
-  print(len(list(locate_all(rt, im, ))))
 
 
 def match_skills(file):
@@ -37,11 +22,8 @@ def match_skills(file):
       for i in (0, 2):
         match_left_bottom = match_lb[i]
         match_right_top = match_rt[i]
-        box = Box(match_left_bottom.left + LEFT_OFFSET, match_right_top.top + TOP_OFFSET,
-                  match_right_top.left + match_right_top.width - match_left_bottom.left - LEFT_OFFSET + RIGHT_OFFSET,
-                  match_left_bottom.top + match_left_bottom.height - match_right_top.top - TOP_OFFSET + BOTTOM_OFFSET)
-        # detect_corner(im, box)
-        yield im.crop((box.left, box.top, box.left + box.width, box.top + box.height))
+        _, skill = crop_image(im, match_left_bottom, match_right_top)
+        yield skill
 
 
 if __name__ == "__main__":
@@ -61,7 +43,7 @@ if __name__ == "__main__":
         if first:
           first = False
           matches += 1
-        kind_name, skill_name, new_skill = detect_skills(kinds, skills, box)
+        kind_name, skill_name, new_skill = detect_skills(box, f'tmp/{distribute_file(file)}')
   print(f'matches: {matches}/{total}')
   print(f'kinds: {len(kinds)}')
   for kind, kind_skills in skills.items():

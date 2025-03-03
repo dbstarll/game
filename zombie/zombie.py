@@ -13,6 +13,7 @@ from _game import distribute
 from _image import img
 from _locate import locate, locate_all, LOCATE_OPTIONS
 from _rescue import load_rescues, crop_rescue, match_rescues
+from _skill import load_skills
 
 GAME_WINDOW_ID = None
 GAME_WINDOW_POS = None
@@ -243,6 +244,7 @@ if __name__ == "__main__":
     exit(1)
 
   load_rescues()
+  load_skills()
 
   window = get_game_window(screenshot())
   if window:
