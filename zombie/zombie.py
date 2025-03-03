@@ -145,8 +145,7 @@ def fighting(window):
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
       for image_index, kind_name, skill_name, _, _, _ in match_skills_from_screenshot(im):
         print(f'{now()} - \t{image_index} - 技能[{kind_name} - {skill_name}]: {time.time() - start}')
-
-    debug_image(im, window, 'skills')
+      debug_image(im, window, 'skills')
 
     location_elite_skills = locate(img('elite-skill-close.png'), im)
     if location_elite_skills:
