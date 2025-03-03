@@ -16,7 +16,6 @@ def detect_skills(skills_file):
       else:
         print(f'\t{image_index}: {kind_name} - {skill_name}, {skill_rect}, {skills_file}')
         record_skill(image_index, kind_name, kind_image, skill_image)
-
   return detects == 3
 
 

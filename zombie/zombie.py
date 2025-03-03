@@ -13,7 +13,7 @@ from _game import distribute
 from _image import img
 from _locate import locate, locate_all, LOCATE_OPTIONS
 from _rescue import match_rescues, load_rescues
-from _skill import load_skills, crop_image, match_skills
+from _skill import load_skills, match_skills_from_screenshot
 
 GAME_WINDOW_ID = None
 GAME_WINDOW_POS = None
@@ -143,13 +143,8 @@ def fighting(window):
       match_left_bottoms = list(locate_all(img('skill-left-bottom.png'), im))
       match_right_tops = list(locate_all(img('skill-right-top.png'), im, ))
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
-      if len(match_left_bottoms) == 3 and len(match_right_tops) == 3:
-        for i in range(0, 3):
-          match_left_bottom = match_left_bottoms[i]
-          match_right_top = match_right_tops[i]
-          _, skill = crop_image(im, match_left_bottom, match_right_top)
-          kind_name, skill_name = match_skills(skill)
-          print(f'{now()} - \t技能[{kind_name} - {skill_name}]: {time.time() - start}')
+      for image_index, kind_name, skill_name, _, _, _ in match_skills_from_screenshot(im):
+        print(f'{now()} - \t{image_index} - 技能[{kind_name} - {skill_name}]: {time.time() - start}')
 
     debug_image(im, window, 'skills')
 
