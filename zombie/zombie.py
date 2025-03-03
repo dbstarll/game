@@ -11,7 +11,7 @@ from PIL import Image
 from _debug import now, debug_image
 from _game import distribute
 from _image import img
-from _locate import locate, locate_all, LOCATE_OPTIONS
+from _locate import locate, locate_all, set_game_window
 from _rescue import match_rescues, load_rescues
 from _skill import load_skills, match_skills_from_screenshot
 
@@ -248,5 +248,5 @@ if __name__ == "__main__":
   window = get_game_window(screenshot())
   if window:
     print(f"{now()} - 游戏窗口位置: {window}")
-    LOCATE_OPTIONS['region'] = window
+    set_game_window(window)
     detect_team_invite(window)

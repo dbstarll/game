@@ -8,7 +8,7 @@ import pyscreeze
 from _debug import now, debug_image
 from _game import distribute
 from _image import img
-from _locate import locate, locate_all, LOCATE_OPTIONS
+from _locate import locate, locate_all, set_game_window
 
 CLICK_INTERVAL = 0.2
 ROOM_WAIT_TIMEOUT = 15
@@ -199,5 +199,5 @@ if __name__ == "__main__":
   window = get_game_window(screenshot())
   if window:
     print(f"{now()} - 游戏窗口位置: {window}")
-    LOCATE_OPTIONS['region'] = window
+    set_game_window(window)
     detect_team_invite(window)
