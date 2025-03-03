@@ -16,70 +16,98 @@ _SKILL_TOP_OFFSET = 1
 _SKILL_BOTTOM_OFFSET = -1
 _KIND_OFFSET_WIDTH = 38
 _KIND_OFFSET_HEIGHT = 76
-_SKILL_CONFIDENCE = 0.97
+_SKILL_CONFIDENCE = 0.98
 
 _SKILL_KINDS = {}
 _SKILLS = {}
+_LEFT_BOTTOM_IMG = None
+_RIGHT_TOP_IMG = None
 
 
 def _skill_img(kind_name, skill_name):
   return img(f'{_SKILL_ROOT_DIR}/{kind_name}/{skill_name}')
 
 
-def _match_kinds(kinds, skill):
-  _, kind = _crop_kind(skill)
+def _crop_kind_image(skill_image):
+  rect = Box(_KIND_OFFSET_WIDTH, _KIND_OFFSET_HEIGHT, skill_image.width - 2 * _KIND_OFFSET_WIDTH,
+             skill_image.width - 2 * _KIND_OFFSET_WIDTH)
+  return rect, skill_image.crop((rect.left, rect.top, rect.left + rect.width, rect.top + rect.height))
+
+
+def _crop_image(screenshot, match_left_bottom, match_right_top):
+  box = Box(match_left_bottom.left + _SKILL_LEFT_OFFSET, match_right_top.top + _SKILL_TOP_OFFSET,
+            match_right_top.left + match_right_top.width - match_left_bottom.left - _SKILL_LEFT_OFFSET + _SKILL_RIGHT_OFFSET,
+            match_left_bottom.top + match_left_bottom.height - match_right_top.top - _SKILL_TOP_OFFSET + _SKILL_BOTTOM_OFFSET)
+  return box, screenshot.crop((box.left, box.top, box.left + box.width, box.top + box.height))
+
+
+def _match_kinds(kinds, kind_image):
   for kind_name, item in kinds.items():
-    if locate(kind, item, confidence=_SKILL_CONFIDENCE, region=None):
-      return kind_name, kind
-  return None, kind
+    if locate(kind_image, item, confidence=_SKILL_CONFIDENCE, region=None):
+      return kind_name
+  return None
 
 
-def _detect_kinds(kinds, skill, file):
-  kind_name, kind = _match_kinds(kinds, skill)
+def _match_kinds_from_skill(kinds, skill_image):
+  _, kind_image = _crop_kind_image(skill_image)
+  return _match_kinds(kinds, kind_image), kind_image
+
+
+def _match_skill(skill_image):
+  kind_name, kind_image = _match_kinds_from_skill(_SKILL_KINDS, skill_image)
+  if kind_name is None:
+    return None, None, kind_image
+
+  for skill_name, item in _SKILLS.get(kind_name).items():
+    if locate(skill_image, item, confidence=_SKILL_CONFIDENCE, region=None):
+      return kind_name, skill_name, kind_image
+  return kind_name, None, kind_image
+
+
+def _record_kinds(kinds, kind_image):
+  kind_name = _match_kinds(kinds, kind_image)
   if kind_name is not None:
-    return kind_name, True
+    return kind_name, False
 
   kind_name = f'logo-{time.time()}'
-  print(f'\tdetect kind: {kind_name} - {file}')
-  kinds[kind_name] = kind
+  print(f'\trecord kind: {kind_name} - {kind_image}')
+  kinds[kind_name] = kind_image
 
   if not os.path.exists(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}')):
     os.mkdir(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}'))
-  save_image(kind, _skill_img(kind_name, kind_name))
+  save_image(kind_image, _skill_img(kind_name, kind_name))
 
   return kind_name, True
 
 
-def match_skills(skill):
-  kind_name, _ = _match_kinds(_SKILL_KINDS, skill)
-  if kind_name is None:
-    return None, None
+def record_skill(image_index, kind_name, kind_image, skill_image):
+  if image_index == 1:
+    return None, None, False
+  else:
+    if kind_name is None:
+      kind_name, _ = _record_kinds(_SKILL_KINDS, kind_image)
 
-  for skill_name, item in _SKILLS.get(kind_name).items():
-    if locate(skill, item, confidence=_SKILL_CONFIDENCE, region=None):
-      return kind_name, skill_name
-  return kind_name, None
+    kind_skills = _SKILLS.get(kind_name)
+    if kind_skills is None:
+      kind_skills = {}
+      _SKILLS[kind_name] = kind_skills
 
+    for skill_name, item in kind_skills.items():
+      if locate(skill_image, item, confidence=_SKILL_CONFIDENCE, region=None):
+        return kind_name, skill_name, False
 
-def detect_skills(skill, file):
-  kind_name, _ = _detect_kinds(_SKILL_KINDS, skill, file)
-  kind_skills = _SKILLS.get(kind_name)
-  if kind_skills is None:
-    kind_skills = {}
-    _SKILLS[kind_name] = kind_skills
+    skill_name = f'skill-{time.time()}'
+    print(f'\trecord skill: {kind_name} - {skill_name} - {skill_image}')
+    kind_skills[skill_name] = skill_image
 
-  for skill_name, item in kind_skills.items():
-    if locate(skill, item, confidence=_SKILL_CONFIDENCE, region=None):
-      return kind_name, skill_name, False
-  skill_name = f'skill-{time.time()}'
-  print(f'\tdetect skill: {kind_name} - {skill_name} - {file}')
-  kind_skills[skill_name] = skill
-
-  save_image(skill, _skill_img(kind_name, skill_name))
-  return kind_name, skill_name, True
+    save_image(skill_image, _skill_img(kind_name, skill_name))
+    return kind_name, skill_name, True
 
 
 def load_skills():
+  global _LEFT_BOTTOM_IMG, _RIGHT_TOP_IMG
+  _LEFT_BOTTOM_IMG = Image.open(img('skill-left-bottom'))
+  _RIGHT_TOP_IMG = Image.open(img('skill-right-top.png'))
   _SKILL_KINDS.clear()
   _SKILLS.clear()
   for kind_name in os.listdir(distribute_file(_SKILL_ROOT_DIR)):
@@ -112,20 +140,6 @@ def _load_skill(skills, kind_name, skill_name):
   kind_skills[skill_name] = Image.open(_skill_img(kind_name, skill_name))
 
 
-def _crop_kind(skill):
-  box = Box(_KIND_OFFSET_WIDTH, _KIND_OFFSET_HEIGHT, skill.width - 2 * _KIND_OFFSET_WIDTH,
-            skill.width - 2 * _KIND_OFFSET_WIDTH)
-  return box, skill.crop((box.left, box.top, box.left + box.width, box.top + box.height))
-
-
-def crop_image(im, match_left_bottom, match_right_top):
-  box = Box(match_left_bottom.left + _SKILL_LEFT_OFFSET, match_right_top.top + _SKILL_TOP_OFFSET,
-            match_right_top.left + match_right_top.width - match_left_bottom.left - _SKILL_LEFT_OFFSET + _SKILL_RIGHT_OFFSET,
-            match_left_bottom.top + match_left_bottom.height - match_right_top.top - _SKILL_TOP_OFFSET + _SKILL_BOTTOM_OFFSET)
-  # _detect_corner(im, box)
-  return box, im.crop((box.left, box.top, box.left + box.width, box.top + box.height))
-
-
 def _detect_corner(im, box):
   lb = debug_image(im, Box(box.left - _SKILL_LEFT_OFFSET, box.top + box.height - 50 - _SKILL_BOTTOM_OFFSET, 50, 50),
                    'left-bottom')
@@ -133,3 +147,15 @@ def _detect_corner(im, box):
                    'right-top')
   print(len(list(locate_all(lb, im))))
   print(len(list(locate_all(rt, im))))
+
+
+def match_skills_from_screenshot(screenshot):
+  match_left_bottoms = list(locate_all(_LEFT_BOTTOM_IMG, screenshot))
+  match_right_tops = list(locate_all(_RIGHT_TOP_IMG, screenshot))
+  if len(match_left_bottoms) == 3 and len(match_right_tops) == 3:
+    for image_index in range(0, 3):
+      match_left_bottom = match_left_bottoms[image_index]
+      match_right_top = match_right_tops[image_index]
+      skill_rect, skill_image = _crop_image(screenshot, match_left_bottom, match_right_top)
+      kind_name, skill_name, kind_image = _match_skill(skill_image)
+      yield image_index, kind_name, skill_name, kind_image, skill_rect, skill_image
