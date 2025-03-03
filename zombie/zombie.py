@@ -12,8 +12,8 @@ from _debug import now, debug_image
 from _game import distribute
 from _image import img
 from _locate import locate, locate_all, LOCATE_OPTIONS
-from _rescue import load_rescues, crop_rescue, match_rescues
-from _skill import load_skills
+from _rescue import match_rescues, load_rescues
+from _skill import load_skills, crop_image, match_skills
 
 GAME_WINDOW_ID = None
 GAME_WINDOW_POS = None
@@ -115,14 +115,11 @@ def select_fight(im, window, fights):
 
   _max = -1
   _max_pos = None
-  for pos in fights:
-    _, rescue = crop_rescue(im, pos)
-    rescue_name = match_rescues(rescue)
-    level = int(rescue_name[7:]) if rescue_name is not None else 0
-    print(f"{now()} - \t{level} - {rescue_name} - {pos}")
-    if level > _max:
-      _max = level
-      _max_pos = pos
+  for rescue_level, rescue_name, rescue_rect, rescue_image in fights:
+    print(f"{now()} - \t{rescue_level} - {rescue_name} - {rescue_rect}")
+    if rescue_level > _max:
+      _max = rescue_level
+      _max_pos = rescue_rect
   return _max, _max_pos
 
 
@@ -146,7 +143,15 @@ def fighting(window):
       match_left_bottoms = list(locate_all(img('skill-left-bottom.png'), im))
       match_right_tops = list(locate_all(img('skill-right-top.png'), im, ))
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
-      debug_image(im, window, 'skills')
+      if len(match_left_bottoms) == 3 and len(match_right_tops) == 3:
+        for i in range(0, 3):
+          match_left_bottom = match_left_bottoms[i]
+          match_right_top = match_right_tops[i]
+          _, skill = crop_image(im, match_left_bottom, match_right_top)
+          kind_name, skill_name = match_skills(skill)
+          print(f'{now()} - \t技能[{kind_name} - {skill_name}]: {time.time() - start}')
+
+    debug_image(im, window, 'skills')
 
     location_elite_skills = locate(img('elite-skill-close.png'), im)
     if location_elite_skills:
@@ -190,7 +195,7 @@ def find_fight(window):
 
     location_fight_list = locate(img('fight-list.png'), im)
     if location_fight_list:
-      level, fight = select_fight(im, window, list(locate_all(img('rescue'), im)))
+      level, fight = select_fight(im, window, list(match_rescues(im)))
       if fight is not None:
         if level >= 5 or level == 0:
           fight_prepare(fight, window)
