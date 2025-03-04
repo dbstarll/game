@@ -20,6 +20,10 @@ GAME_WINDOW_POS = None
 CLICK_INTERVAL = 0.2
 ROOM_WAIT_TIMEOUT = 15
 
+PREFER_SKILLS = ['枪械:分裂冰片', '枪械:连发+', '枪械:齐射+', '枪械:急冻子弹+', '枪械:子弹爆炸',
+                 '枪械:伤害增幅', '枪械:分裂子弹', '枪械:分裂子弹四射', '枪械:分裂子弹爆炸', '枪械:全子弹增幅',
+                 '装甲车:装甲车', '装甲车:焦土策略']
+
 
 def screenshot_osx():
   fh, filepath = tempfile.mkstemp(".png")
@@ -142,9 +146,23 @@ def fighting(window):
     if location_skills:
       match_left_bottoms = list(locate_all(img('skill-left-bottom.png'), im))
       match_right_tops = list(locate_all(img('skill-right-top.png'), im, ))
-      print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
-      for image_index, kind_name, skill_name, _, _, _ in match_skills_from_screenshot(im):
+      print(f'{now()} - 可选技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
+      min_idx = 100
+      min_idx_rect = None
+      min_idx_name = None
+      for image_index, kind_name, skill_name, _, skill_rect, _ in match_skills_from_screenshot(im):
         print(f'{now()} - \t{image_index} - 技能[{kind_name} - {skill_name}]: {time.time() - start}')
+        kind_and_skill = f'{kind_name}:{skill_name}'
+        if PREFER_SKILLS.count(kind_and_skill) == 1:
+          idx = PREFER_SKILLS.index(kind_and_skill)
+          if idx < min_idx:
+            min_idx = idx
+            min_idx_rect = skill_rect
+            min_idx_name = kind_and_skill
+      if min_idx_rect is not None:
+        print(f'{now()} - 选择技能: {min_idx_name}: {time.time() - start}')
+        click(min_idx_rect)
+
       debug_image(im, window, 'skills')
 
     location_elite_skills = locate(img('elite-skill-close.png'), im)
