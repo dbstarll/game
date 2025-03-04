@@ -9,37 +9,50 @@ from _debug import now, debug_image
 from _game import distribute
 from _image import img
 from _locate import locate, locate_all, set_game_window
+from _rescue import match_rescues, load_rescues
+from _skill import load_skills, match_skills_from_screenshot
 
 CLICK_INTERVAL = 0.2
 ROOM_WAIT_TIMEOUT = 15
+
+NORMAL_LEFT_OFFSET = 17
+NORMAL_RIGHT_OFFSET = 536
+NORMAL_TOP_OFFSET = 1279
+NORMAL_BOTTOM_OFFSET = 20
+
+BIG_LEFT_OFFSET = 23
+BIG_RIGHT_OFFSET = 704
+BIG_TOP_OFFSET = 1550
+BIG_BOTTOM_OFFSET = 28
 
 
 def screenshot():
   return pyscreeze.screenshot()
 
 
-def click(location, offset_x=0, offset_y=0):
+def click(location, offset_x=0, offset_y=0, once=False):
   center = pyautogui.center(location)
   pyautogui.click(x=center.x // 2 + offset_x, y=center.y // 2 + offset_y)
   time.sleep(CLICK_INTERVAL)
-  pyautogui.click(x=center.x // 2 + offset_x, y=center.y // 2 + offset_y)
-  time.sleep(CLICK_INTERVAL)
+  if not once:
+    pyautogui.click(x=center.x // 2 + offset_x, y=center.y // 2 + offset_y)
+    time.sleep(CLICK_INTERVAL)
 
 
 def get_game_window_left(location_back):
-  return location_back.left - 33
+  return location_back.left - BIG_LEFT_OFFSET
 
 
 def get_game_window_top(location_back):
-  return location_back.top - 1650
+  return location_back.top - BIG_TOP_OFFSET
 
 
 def get_game_window_bottom(location_back):
-  return location_back.top + location_back.height + 37
+  return location_back.top + location_back.height + BIG_BOTTOM_OFFSET
 
 
 def get_game_window_right(location_back):
-  return location_back.left + location_back.width + 704
+  return location_back.left + location_back.width + BIG_RIGHT_OFFSET
 
 
 def get_game_window(screen):
@@ -83,13 +96,16 @@ def check_reconnect(im):
 
 def select_fight(im, window, fights):
   if len(fights) > 0:
-    print(len(fights))
     debug_image(im, window, 'fights')
 
-  for pos in fights:
-    print(f"{now()} - \t{pos} - ({pos.left // 2 + 160},{pos.top // 2 - 35}) - {pyautogui.position()}")
-  for pos in fights:
-    return pos
+  _max = -1
+  _max_pos = None
+  for rescue_level, rescue_name, rescue_rect, rescue_image in fights:
+    print(f"{now()} - \t{rescue_level} - {rescue_name} - {rescue_rect}")
+    if rescue_level > _max:
+      _max = rescue_level
+      _max_pos = rescue_rect
+  return _max, _max_pos
 
 
 def fighting(window):
@@ -112,6 +128,8 @@ def fighting(window):
       match_left_bottoms = list(locate_all(img('skill-left-bottom.png'), im))
       match_right_tops = list(locate_all(img('skill-right-top.png'), im, ))
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
+      for image_index, kind_name, skill_name, _, _, _ in match_skills_from_screenshot(im):
+        print(f'{now()} - \t{image_index} - 技能[{kind_name} - {skill_name}]: {time.time() - start}')
       debug_image(im, window, 'skills')
 
     location_elite_skills = locate(img('elite-skill-close.png'), im)
@@ -157,9 +175,14 @@ def find_fight(window):
 
     location_fight_list = locate(img('fight-list.png'), im)
     if location_fight_list:
-      fight = select_fight(im, window, list(locate_all(img('rescue.png'), im)))
-      if fight:
-        fight_prepare(fight, window)
+      level, fight = select_fight(im, window, list(match_rescues(im)))
+      if fight is not None:
+        if level >= 5 or level == 0:
+          fight_prepare(fight, window)
+        else:
+          print(f"{now()} - 寰球等级[{level}]太低, 拒绝战斗")
+          click(fight, 160, 0, True)
+          continue
       time.sleep(0.7)
     else:
       break
@@ -173,7 +196,7 @@ def detect_team_invite(window):
     if check_reconnect(im):
       continue
 
-    location_invite = locate(img('team-invite.png'), im)
+    location_invite = locate(img('team-invite'), im)
     if location_invite:
       print(f'{now()} - 检测到副本邀请,进入副本列表...')
       click(location_invite)
@@ -194,7 +217,10 @@ def get_bounds_of_game():
 
 
 if __name__ == "__main__":
-  print(f'游戏发行版本: {distribute(sys.argv, "mp")}')
+  print(f'游戏发行版本: {distribute(sys.argv, "ios")}')
+
+  load_rescues()
+  load_skills()
 
   window = get_game_window(screenshot())
   if window:
