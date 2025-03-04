@@ -57,7 +57,7 @@ def get_game_window_right(location_back):
 
 def get_game_window(screen):
   print(screen)
-  location_back = locate(img('back.png'), screen)
+  location_back = locate(img('back'), screen)
   if location_back:
     left = get_game_window_left(location_back)
     if left:
@@ -79,13 +79,13 @@ def get_game_window(screen):
 
 
 def check_reconnect(im):
-  location_offline = locate(img('offline-confirm.png'), im)
+  location_offline = locate(img('offline-confirm'), im)
   if location_offline:
     print(f'{now()} - 断线重连')
     click(location_offline)
     return True
 
-  location_reconnect = locate(img('reconnect.png'), im)
+  location_reconnect = locate(img('reconnect'), im)
   if location_reconnect:
     print(f'{now()} - 网络断开，重新连接')
     click(location_reconnect)
@@ -117,22 +117,22 @@ def fighting(window):
     if check_reconnect(im):
       continue
 
-    location_end = locate(img('fight-end.png'), im)
+    location_end = locate(img('fight-end'), im)
     if location_end:
       print(f'{now()} - 战斗结束: {time.time() - start}')
       click(location_end)
       break
 
-    location_skills = locate(img('select-skill.png'), im)
+    location_skills = locate(img('select-skill'), im)
     if location_skills:
-      match_left_bottoms = list(locate_all(img('skill-left-bottom.png'), im))
-      match_right_tops = list(locate_all(img('skill-right-top.png'), im, ))
+      match_left_bottoms = list(locate_all(img('skill-left-bottom'), im))
+      match_right_tops = list(locate_all(img('skill-right-top'), im, ))
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
       for image_index, kind_name, skill_name, _, _, _ in match_skills_from_screenshot(im):
         print(f'{now()} - \t{image_index} - 技能[{kind_name} - {skill_name}]: {time.time() - start}')
       debug_image(im, window, 'skills')
 
-    location_elite_skills = locate(img('elite-skill-close.png'), im)
+    location_elite_skills = locate(img('elite-skill-close'), im)
     if location_elite_skills:
       print(f'{now()} - 精英掉落技能: {time.time() - start}')
       debug_image(im, window, 'elite-skills')
@@ -146,8 +146,7 @@ def fight_prepare(fight, window):
   start = time.time()
   while True:
     im = screenshot()
-    debug_image(im, window, 'prepare')
-    location_leave = locate(img('room-leave.png'), im)
+    location_leave = locate(img('room-leave'), im)
     if location_leave:
       if time.time() - start > ROOM_WAIT_TIMEOUT:
         print(f"{now()} - 等待超时, 退出战斗: {time.time() - start}")
@@ -156,7 +155,7 @@ def fight_prepare(fight, window):
       else:
         print(f'{now()} - 等待队友开始: {time.time() - start}')
     else:
-      location_inviting = locate(img('room-inviting.png'), im)
+      location_inviting = locate(img('room-inviting'), im)
       if location_inviting:
         print(f'{now()} - 队友已退出: {time.time() - start}')
       else:
@@ -173,7 +172,7 @@ def find_fight(window):
     if check_reconnect(im):
       continue
 
-    location_fight_list = locate(img('fight-list.png'), im)
+    location_fight_list = locate(img('fight-list'), im)
     if location_fight_list:
       level, fight = select_fight(im, window, list(match_rescues(im)))
       if fight is not None:
