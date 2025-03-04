@@ -1,17 +1,15 @@
 import sys
 import time
 
-import pyautogui
 import pyscreeze
 
 from _debug import now, debug_image
-from _game import distribute, init_game, screenshot
+from _game import distribute, init_game, screenshot, click
 from _image import img
 from _locate import locate, locate_all, set_game_window
 from _rescue import match_rescues, load_rescues
 from _skill import load_skills, match_skills_from_screenshot
 
-CLICK_INTERVAL = 0.2
 ROOM_WAIT_TIMEOUT = 15
 
 NORMAL_LEFT_OFFSET = 17
@@ -23,15 +21,6 @@ BIG_LEFT_OFFSET = 23
 BIG_RIGHT_OFFSET = 704
 BIG_TOP_OFFSET = 1550
 BIG_BOTTOM_OFFSET = 28
-
-
-def click(location, offset_x=0, offset_y=0, once=False):
-  center = pyautogui.center(location)
-  pyautogui.click(x=center.x // 2 + offset_x, y=center.y // 2 + offset_y)
-  time.sleep(CLICK_INTERVAL)
-  if not once:
-    pyautogui.click(x=center.x // 2 + offset_x, y=center.y // 2 + offset_y)
-    time.sleep(CLICK_INTERVAL)
 
 
 def get_game_window_left(location_back):

@@ -1,7 +1,9 @@
 import os
 import subprocess
 import tempfile
+import time
 
+import pyautogui
 import pyscreeze
 from PIL import Image
 
@@ -9,7 +11,8 @@ from _locate import Box
 
 _DISTRIBUTE = None
 _GAME_WINDOW_ID = None
-_GAME_WINDOW_RECT: Box = None
+_GAME_WINDOW_RECT: pyscreeze.Box
+_CLICK_INTERVAL = 0.2
 
 
 def _raise_distribute_not_set():
@@ -43,11 +46,20 @@ def get_distribute():
   return _DISTRIBUTE
 
 
-def _screenshot_osx():
+def _screenshot_wid(window_id):
   fh, filepath = tempfile.mkstemp(".png")
   os.close(fh)
-  args = ["screencapture"]
-  subprocess.call(args + ["-l", _GAME_WINDOW_ID, "-o", "-x", filepath])
+  subprocess.call(["screencapture", "-l", window_id, "-o", "-x", filepath])
+  im = Image.open(filepath)
+  im.load()
+  os.unlink(filepath)
+  return im
+
+
+def _screenshot_rect(rect):
+  fh, filepath = tempfile.mkstemp(".png")
+  os.close(fh)
+  subprocess.call(["screencapture", "-R", f"{rect.left},{rect.top},{rect.width},{rect.height}", "-x", filepath])
   im = Image.open(filepath)
   im.load()
   os.unlink(filepath)
@@ -56,9 +68,9 @@ def _screenshot_osx():
 
 def screenshot():
   if _GAME_WINDOW_ID is not None:
-    return _screenshot_osx()
+    return _screenshot_wid(_GAME_WINDOW_ID)
   else:
-    return pyscreeze.screenshot()
+    return _screenshot_rect(_GAME_WINDOW_RECT)
 
 
 def _osascript(script_file):
@@ -104,3 +116,14 @@ def init_game():
     return _init_ios()
   else:
     raise_unknown_distribute()
+
+
+def click(location, offset_x=0, offset_y=0, once=False):
+  center = pyautogui.center(location)
+  pyautogui.click(x=_GAME_WINDOW_RECT.left + center.x // 2 + offset_x,
+                  y=_GAME_WINDOW_RECT.top + center.y // 2 + offset_y)
+  time.sleep(_CLICK_INTERVAL)
+  if not once:
+    pyautogui.click(x=_GAME_WINDOW_RECT.left + center.x // 2 + offset_x,
+                    y=_GAME_WINDOW_RECT.top + center.y // 2 + offset_y)
+    time.sleep(_CLICK_INTERVAL)
