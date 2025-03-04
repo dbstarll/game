@@ -126,7 +126,7 @@ def fighting(window):
     location_skills = locate(img('select-skill'), im)
     if location_skills:
       match_left_bottoms = list(locate_all(img('skill-left-bottom'), im))
-      match_right_tops = list(locate_all(img('skill-right-top'), im, ))
+      match_right_tops = list(locate_all(img('skill-right-top'), im))
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
       for image_index, kind_name, skill_name, _, _, _ in match_skills_from_screenshot(im):
         print(f'{now()} - \t{image_index} - 技能[{kind_name} - {skill_name}]: {time.time() - start}')

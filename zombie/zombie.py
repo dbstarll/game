@@ -145,7 +145,7 @@ def fighting(window):
     location_skills = locate(img('select-skill'), im)
     if location_skills:
       match_left_bottoms = list(locate_all(img('skill-left-bottom'), im))
-      match_right_tops = list(locate_all(img('skill-right-top'), im, ))
+      match_right_tops = list(locate_all(img('skill-right-top'), im))
       print(f'{now()} - 可选技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
       min_idx = 100
       min_idx_rect = None
