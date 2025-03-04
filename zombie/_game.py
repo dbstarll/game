@@ -16,3 +16,7 @@ def distribute_file(filename):
   if _DISTRIBUTE is None:
     raise ValueError('distribute not set')
   return f'{_DISTRIBUTE}/{filename}'
+
+
+def get_distribute():
+  return _DISTRIBUTE

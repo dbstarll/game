@@ -4,7 +4,7 @@ import time
 from PIL import Image
 
 from _debug import debug_image
-from _game import distribute_file
+from _game import distribute_file, get_distribute
 from _image import save_image, img
 from _locate import locate, Box, locate_all
 
@@ -14,8 +14,10 @@ _SKILL_LEFT_OFFSET = 1
 _SKILL_RIGHT_OFFSET = -1
 _SKILL_TOP_OFFSET = 1
 _SKILL_BOTTOM_OFFSET = -1
-_KIND_OFFSET_WIDTH = 38
-_KIND_OFFSET_HEIGHT = 76
+_MP_KIND_OFFSET_WIDTH = 38
+_MP_KIND_OFFSET_HEIGHT = 76
+_IOS_KIND_OFFSET_WIDTH = 39
+_IOS_KIND_OFFSET_HEIGHT = 79
 _SKILL_CONFIDENCE = 0.98
 
 _SKILL_KINDS = {}
@@ -28,9 +30,39 @@ def _skill_img(kind_name, skill_name):
   return img(f'{_SKILL_ROOT_DIR}/{kind_name}/{skill_name}')
 
 
+def kind_offset_width():
+  distribute = get_distribute()
+  if 'mp' == distribute:
+    return _MP_KIND_OFFSET_WIDTH
+  elif 'ios' == distribute:
+    return _IOS_KIND_OFFSET_WIDTH
+  else:
+    raise ValueError('Unknown distribution mode')
+
+
+def kind_offset_height():
+  distribute = get_distribute()
+  if 'mp' == distribute:
+    return _MP_KIND_OFFSET_HEIGHT
+  elif 'ios' == distribute:
+    return _IOS_KIND_OFFSET_HEIGHT
+  else:
+    raise ValueError('Unknown distribution mode')
+
+
+def recode_skip():
+  distribute = get_distribute()
+  if 'mp' == distribute:
+    return 1
+  elif 'ios' == distribute:
+    return 2
+  else:
+    raise ValueError('Unknown distribution mode')
+
+
 def _crop_kind_image(skill_image):
-  rect = Box(_KIND_OFFSET_WIDTH, _KIND_OFFSET_HEIGHT, skill_image.width - 2 * _KIND_OFFSET_WIDTH,
-             skill_image.width - 2 * _KIND_OFFSET_WIDTH)
+  rect = Box(kind_offset_width(), kind_offset_height(), skill_image.width - 2 * kind_offset_width(),
+             skill_image.width - 2 * kind_offset_width())
   return rect, skill_image.crop((rect.left, rect.top, rect.left + rect.width, rect.top + rect.height))
 
 
@@ -81,7 +113,7 @@ def _record_kinds(kinds, kind_image):
 
 
 def record_skill(image_index, kind_name, kind_image, skill_image):
-  if image_index == 1:
+  if image_index == recode_skip():
     return None, None, False
   else:
     if kind_name is None:
@@ -141,10 +173,10 @@ def _load_skill(skills, kind_name, skill_name):
 
 
 def _detect_corner(im, box):
-  lb = debug_image(im, Box(box.left - _SKILL_LEFT_OFFSET, box.top + box.height - 50 - _SKILL_BOTTOM_OFFSET, 50, 50),
-                   'left-bottom')
-  rt = debug_image(im, Box(box.left + box.width - 50 - _SKILL_RIGHT_OFFSET, box.top - _SKILL_TOP_OFFSET, 50, 75),
-                   'right-top')
+  lb = debug_image(im, Box(box.left - 1, box.top + box.height - 50 + 1, 50, 50),
+                   'skill-left-bottom')
+  rt = debug_image(im, Box(box.left + box.width - 50 + 1, box.top - 1, 50, 75),
+                   'skill-right-top')
   print(len(list(locate_all(lb, im))))
   print(len(list(locate_all(rt, im))))
 
@@ -156,6 +188,9 @@ def match_skills_from_screenshot(screenshot):
     for image_index in range(0, 3):
       match_left_bottom = match_left_bottoms[image_index]
       match_right_top = match_right_tops[image_index]
+      if match_left_bottom.left >= match_right_top.left or match_left_bottom.top <= match_right_top.top:
+        break
       skill_rect, skill_image = _crop_image(screenshot, match_left_bottom, match_right_top)
+      # _detect_corner(screenshot, skill_rect)
       kind_name, skill_name, kind_image = _match_skill(skill_image)
       yield image_index, kind_name, skill_name, kind_image, skill_rect, skill_image
