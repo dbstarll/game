@@ -4,7 +4,7 @@ import time
 from PIL import Image
 
 from _debug import debug_image
-from _game import distribute_file, get_distribute
+from _game import distribute_file, get_distribute, raise_unknown_distribute
 from _image import save_image, img
 from _locate import locate, Box, locate_all
 
@@ -37,7 +37,7 @@ def kind_offset_width():
   elif 'ios' == distribute:
     return _IOS_KIND_OFFSET_WIDTH
   else:
-    raise ValueError('Unknown distribution mode')
+    raise_unknown_distribute()
 
 
 def kind_offset_height():
@@ -47,7 +47,7 @@ def kind_offset_height():
   elif 'ios' == distribute:
     return _IOS_KIND_OFFSET_HEIGHT
   else:
-    raise ValueError('Unknown distribution mode')
+    raise_unknown_distribute()
 
 
 def recode_skip():
@@ -57,7 +57,7 @@ def recode_skip():
   elif 'ios' == distribute:
     return 2
   else:
-    raise ValueError('Unknown distribution mode')
+    raise_unknown_distribute()
 
 
 def _crop_kind_image(skill_image):
@@ -145,11 +145,14 @@ def load_skills():
   for kind_name in os.listdir(distribute_file(_SKILL_ROOT_DIR)):
     if os.path.isdir(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}')):
       _load_kind(_SKILL_KINDS, _SKILLS, kind_name)
+  total = 0
+  for item in _SKILLS.values():
+    total += len(item)
+  print(f'load {total} skills of {len(_SKILL_KINDS)} kinds')
   return _SKILL_KINDS, _SKILLS
 
 
 def _load_kind(kinds, skills, kind_name):
-  print(f'\tloading kind: {kind_name}')
   for skill_name in os.listdir(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}')):
     if skill_name.endswith('.png'):
       if skill_name.startswith('logo'):
@@ -159,12 +162,10 @@ def _load_kind(kinds, skills, kind_name):
 
 
 def _load_logo(kinds, kind_name, skill_name):
-  print(f'\t\tloading logo: {skill_name}')
   kinds[kind_name] = Image.open(_skill_img(kind_name, skill_name))
 
 
 def _load_skill(skills, kind_name, skill_name):
-  print(f'\t\tloading skill: {skill_name}')
   kind_skills = skills.get(kind_name)
   if kind_skills is None:
     kind_skills = {}

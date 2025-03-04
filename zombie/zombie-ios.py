@@ -1,4 +1,3 @@
-import subprocess
 import sys
 import time
 
@@ -6,7 +5,7 @@ import pyautogui
 import pyscreeze
 
 from _debug import now, debug_image
-from _game import distribute
+from _game import distribute, init_game, screenshot
 from _image import img
 from _locate import locate, locate_all, set_game_window
 from _rescue import match_rescues, load_rescues
@@ -24,10 +23,6 @@ BIG_LEFT_OFFSET = 23
 BIG_RIGHT_OFFSET = 704
 BIG_TOP_OFFSET = 1550
 BIG_BOTTOM_OFFSET = 28
-
-
-def screenshot():
-  return pyscreeze.screenshot()
 
 
 def click(location, offset_x=0, offset_y=0, once=False):
@@ -205,19 +200,9 @@ def detect_team_invite(window):
     time.sleep(0.7)
 
 
-def get_window_id_of_game():
-  args = ["osascript"]
-  return subprocess.run(args + ["get-window-id-of-zombie.scpt"], capture_output=True)
-
-
-def get_bounds_of_game():
-  args = ["osascript"]
-  return subprocess.run(args + ["get-bounds-of-zombie.scpt"], capture_output=True)
-
-
 if __name__ == "__main__":
   print(f'游戏发行版本: {distribute(sys.argv, "ios")}')
-
+  init_game()
   load_rescues()
   load_skills()
 

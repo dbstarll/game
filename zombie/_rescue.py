@@ -35,7 +35,6 @@ def detect_rescues(rescue):
 
 
 def _load_rescue(rescues, rescue_name):
-  print(f'\tloading rescue: {rescue_name}')
   rescues[rescue_name] = Image.open(_rescue_img(rescue_name))
 
 
@@ -45,6 +44,7 @@ def load_rescues():
   for rescue_name in os.listdir(distribute_file(_RESCUE_ROOT_DIR)):
     if rescue_name.endswith('.png'):
       _load_rescue(_RESCUES, rescue_name[:len(rescue_name) - 4])
+  print(f'load {len(_RESCUES)} rescues')
   return _RESCUES
 
 
