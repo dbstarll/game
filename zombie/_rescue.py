@@ -18,7 +18,7 @@ def _rescue_img(rescue_name):
 
 def match_rescue(rescue):
   for rescue_name, item in _RESCUES.items():
-    if locate(rescue, item, region=None):
+    if locate(rescue, item):
       return rescue_name
   return None
 

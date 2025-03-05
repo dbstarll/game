@@ -22,18 +22,19 @@ def detect_skills_from_file(skills_file):
         record_skill(image_index, kind_name, kind_image, skill_image)
 
   part = skills_file.split("-")
-  if len(part) == 2:
-    if matches == 0:
+  if matches == 0:
+    if len(part) == 2:
       part.insert(1, 'mismatch')
-      print(f'\tmismatch: {skills_file} -> {"-".join(part)}')
       os.rename(skills_file, "-".join(part))
-    elif detects == 3:
+    print(f'\tmismatch: {skills_file} -> {"-".join(part)}')
+  elif detects == 3:
+    if len(part) == 2:
       skill_names.insert(0, part[0])
       skill_names.insert(1, 'full_match')
       skill_names.append(part[1])
       os.rename(skills_file, "-".join(skill_names))
-    else:
-      print(f'\tpart detected:{skill_names} -  {skills_file}')
+  else:
+    print(f'\tpart detected:{skill_names} -  {skills_file}')
   return matches, detects
 
 
@@ -44,7 +45,7 @@ if __name__ == "__main__":
   files, full_matches, part_matches, mismatch = 0, 0, 0, 0
   kinds, skills = load_skills()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('skills-') and file.endswith('.png'):
+    if file.startswith('skills-17') and file.endswith('.png'):
       skills_file = f'tmp/{dist}/{file}'
       files += 1
       match_skills, detect_skills = detect_skills_from_file(skills_file)
