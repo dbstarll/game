@@ -148,7 +148,7 @@ def load_skills():
   total = 0
   for item in _SKILLS.values():
     total += len(item)
-  print(f'load {total} skills of {len(_SKILL_KINDS)} kinds')
+  print(f'加载技能: {total}, 类型: {len(_SKILL_KINDS)}')
   return _SKILL_KINDS, _SKILLS
 
 
@@ -174,8 +174,8 @@ def _load_skill(skills, kind_name, skill_name):
 
 
 def _detect_corner(im, box):
-  lb = debug_image(im,'skill-left-bottom', _box(box.left - 1, box.top + box.height - 50 + 1, 50, 50))
-  rt = debug_image(im,'skill-right-top', _box(box.left + box.width - 50 + 1, box.top - 1, 50, 75))
+  lb = debug_image(im, 'skill-left-bottom', _box(box.left - 1, box.top + box.height - 50 + 1, 50, 50))
+  rt = debug_image(im, 'skill-right-top', _box(box.left + box.width - 50 + 1, box.top - 1, 50, 75))
   print(len(list(locate_all(lb, im))))
   print(len(list(locate_all(rt, im))))
 

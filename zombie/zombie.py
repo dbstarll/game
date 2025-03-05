@@ -2,7 +2,7 @@ import sys
 import time
 
 from _debug import now, debug_image
-from _game import distribute, init_game, screenshot, click
+from _game import distribute, init_game_window, screenshot, click
 from _image import img
 from _locate import locate, locate_all
 from _rescue import match_rescues, load_rescues
@@ -158,7 +158,7 @@ def detect_team_invite():
 
 if __name__ == "__main__":
   print(f'游戏发行版本: {distribute(sys.argv, "mp")}')
-  init_game()
+  init_game_window()
   load_rescues()
   load_skills()
 

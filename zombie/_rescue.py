@@ -44,7 +44,7 @@ def load_rescues():
   for rescue_name in os.listdir(distribute_file(_RESCUE_ROOT_DIR)):
     if rescue_name.endswith('.png'):
       _load_rescue(_RESCUES, rescue_name[:len(rescue_name) - 4])
-  print(f'load {len(_RESCUES)} rescues')
+  print(f'加载寰球救援: {len(_RESCUES)}')
   return _RESCUES
 
 

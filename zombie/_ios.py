@@ -14,7 +14,7 @@ BIG_TOP_OFFSET = 180
 BIG_BOTTOM_OFFSET = 12
 
 
-def get_game_window_ios(screen: Image) -> Box:
+def obtain_game_ui_ios(screen: Image) -> Box:
   print(f"屏幕: {screen}")
   screen_width, screen_height = screen.width, screen.height
   left = BIG_LEFT_OFFSET

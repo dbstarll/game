@@ -31,7 +31,7 @@ def _get_game_window_bottom(screen: Image, location_back: Box, left: int) -> int
   return screen.height - 1
 
 
-def get_game_window_mp(screen: Image) -> Box:
+def obtain_game_ui_mp(screen: Image) -> Box:
   print(f"屏幕: {screen}")
   screen_width, screen_height = screen.width, screen.height
   box = _box(screen_width // 3, screen_height // 3, screen_width // 3, screen_height // 3)

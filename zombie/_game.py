@@ -8,9 +8,9 @@ import pyautogui
 from PIL import Image
 from pyscreeze import Box
 
-from _ios import get_game_window_ios
+from _ios import obtain_game_ui_ios
 from _locate import _box
-from _mp import get_game_window_mp
+from _mp import obtain_game_ui_mp
 
 _DISTRIBUTE: Optional[str] = None
 _GAME_WINDOW_ID: Optional[str] = None
@@ -82,7 +82,7 @@ def _osascript(script_file: str) -> str:
   return subprocess.run(["osascript", script_file], capture_output=True).stdout.decode().rstrip('\n')
 
 
-def _init_window() -> Optional[Box]:
+def _obtain_window() -> Optional[Box]:
   position_result = _osascript(f'get-position-of-{_DISTRIBUTE}.scpt')
   if position_result:
     position = tuple(map(int, position_result.split(', ')))
@@ -92,42 +92,42 @@ def _init_window() -> Optional[Box]:
       return _box(position[0], position[1], size[0], size[1])
 
 
-def _init_mp() -> (Box, Box):
+def _init_game_window_mp() -> (Box, Box):
   global _GAME_WINDOW_ID, _GAME_WINDOW_RECT, _GAME_UI_RECT
   wid = _osascript('get-window-id-of-zombie.scpt')
   if wid:
     _GAME_WINDOW_ID = wid
-    window = _init_window()
+    window = _obtain_window()
     if window:
       _GAME_WINDOW_RECT = window
       print(f'获得游戏窗口: id={_GAME_WINDOW_ID}, window={window}')
-      _GAME_UI_RECT = get_game_window_mp(screenshot())
+      _GAME_UI_RECT = obtain_game_ui_mp(screenshot())
       return window, _GAME_UI_RECT
   print('游戏未启动')
   exit(1)
 
 
-def _init_ios() -> (Box, Box):
+def _init_game_window_ios() -> (Box, Box):
   global _GAME_WINDOW_RECT, _GAME_UI_RECT
-  window = _init_window()
+  window = _obtain_window()
   if window:
     _GAME_WINDOW_RECT = window
     print(f'获得游戏窗口: window={window}')
-    _GAME_UI_RECT = get_game_window_ios(screenshot())
+    _GAME_UI_RECT = obtain_game_ui_ios(screenshot())
     return window, _GAME_UI_RECT
   print('游戏未启动')
   exit(1)
 
 
-def init_game() -> (Box, Box):
+def init_game_window() -> (Box, Box):
   if _DISTRIBUTE is None:
     raise _error_distribute_not_set()
   if 'mp' == _DISTRIBUTE:
     print('initializing mp...')
-    return _init_mp()
+    return _init_game_window_mp()
   elif 'ios' == _DISTRIBUTE:
     print('initializing ios...')
-    return _init_ios()
+    return _init_game_window_ios()
   else:
     raise error_unknown_distribute()
 
