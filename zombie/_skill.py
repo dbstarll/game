@@ -19,7 +19,6 @@ _MP_KIND_OFFSET_HEIGHT = 76
 _IOS_KIND_OFFSET_WIDTH = 39
 _IOS_KIND_OFFSET_HEIGHT = 79
 _SKILL_CONFIDENCE = 0.98
-_SKILL_GRAYSCALE = False
 
 _SKILL_KINDS = {}
 _SKILLS = {}
@@ -76,7 +75,7 @@ def _crop_image(screenshot, match_left_bottom, match_right_top):
 
 def _match_kinds(kinds, kind_image):
   for kind_name, item in kinds.items():
-    if locate(kind_image, item, grayscale=_SKILL_GRAYSCALE, confidence=_SKILL_CONFIDENCE):
+    if locate(kind_image, item, confidence=_SKILL_CONFIDENCE):
       return kind_name
   return None
 
@@ -92,7 +91,7 @@ def _match_skill(skill_image):
     return None, None, kind_image
 
   for skill_name, item in _SKILLS.get(kind_name).items():
-    if locate(skill_image, item, grayscale=_SKILL_GRAYSCALE, confidence=_SKILL_CONFIDENCE):
+    if locate(skill_image, item, confidence=_SKILL_CONFIDENCE):
       return kind_name, skill_name, kind_image
   return kind_name, None, kind_image
 
@@ -126,7 +125,7 @@ def record_skill(image_index, kind_name, kind_image, skill_image):
       _SKILLS[kind_name] = kind_skills
 
     for skill_name, item in kind_skills.items():
-      if locate(skill_image, item, grayscale=_SKILL_GRAYSCALE, confidence=_SKILL_CONFIDENCE):
+      if locate(skill_image, item, confidence=_SKILL_CONFIDENCE):
         return kind_name, skill_name, False
 
     skill_name = f'skill-{time.time()}'
