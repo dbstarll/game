@@ -80,7 +80,7 @@ def check_reconnect(im):
 
 def select_fight(im, window, fights):
   if len(fights) > 0:
-    debug_image(im, window, 'fights')
+    debug_image(im, 'fights', window)
 
   _max = -1
   _max_pos = None
@@ -114,12 +114,12 @@ def fighting(window):
       print(f'{now()} - 选择技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
       for image_index, kind_name, skill_name, _, _, _ in match_skills_from_screenshot(im):
         print(f'{now()} - \t{image_index} - 技能[{kind_name} - {skill_name}]: {time.time() - start}')
-      debug_image(im, window, 'skills')
+      debug_image(im, 'skills', window)
 
     location_elite_skills = locate(img('elite-skill-close'), im)
     if location_elite_skills:
       print(f'{now()} - 精英掉落技能: {time.time() - start}')
-      debug_image(im, window, 'elite-skills')
+      debug_image(im, 'elite-skills', window)
 
     time.sleep(5)
 

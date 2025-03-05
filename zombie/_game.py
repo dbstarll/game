@@ -23,7 +23,7 @@ def raise_unknown_distribute():
   raise ValueError(f'unknown distribute: {_DISTRIBUTE}')
 
 
-def distribute(args, default=None):
+def distribute(args, default=None) -> str:
   global _DISTRIBUTE
   if len(args) > 1:
     _DISTRIBUTE = args[1]
@@ -34,7 +34,7 @@ def distribute(args, default=None):
   return _DISTRIBUTE
 
 
-def distribute_file(filename):
+def distribute_file(filename: str) -> str:
   if _DISTRIBUTE is None:
     _raise_distribute_not_set()
   return f'{_DISTRIBUTE}/{filename}'

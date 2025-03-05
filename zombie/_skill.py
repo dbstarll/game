@@ -174,10 +174,8 @@ def _load_skill(skills, kind_name, skill_name):
 
 
 def _detect_corner(im, box):
-  lb = debug_image(im, Box(box.left - 1, box.top + box.height - 50 + 1, 50, 50),
-                   'skill-left-bottom')
-  rt = debug_image(im, Box(box.left + box.width - 50 + 1, box.top - 1, 50, 75),
-                   'skill-right-top')
+  lb = debug_image(im,'skill-left-bottom', Box(box.left - 1, box.top + box.height - 50 + 1, 50, 50))
+  rt = debug_image(im,'skill-right-top', Box(box.left + box.width - 50 + 1, box.top - 1, 50, 75))
   print(len(list(locate_all(lb, im))))
   print(len(list(locate_all(rt, im))))
 
