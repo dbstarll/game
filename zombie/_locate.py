@@ -26,9 +26,5 @@ def locate_all(needle_image, haystack_image, **kwargs):
     return pyscreeze.locateAll(needle_image, haystack_image, **custom_options)
 
 
-def set_game_window(window):
-  _LOCATE_OPTIONS['region'] = window
-
-
 def _box(left, top, width, height) -> pyscreeze.Box:
   return pyscreeze.Box(left, top, width, height)
