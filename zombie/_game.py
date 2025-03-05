@@ -2,51 +2,55 @@ import os
 import subprocess
 import tempfile
 import time
+from typing import Optional
 
 import pyautogui
-import pyscreeze
 from PIL import Image
+from pyscreeze import Box
 
-from _locate import Box
+from _ios import get_game_window_ios
+from _locate import _box
+from _mp import get_game_window_mp
 
-_DISTRIBUTE = None
-_GAME_WINDOW_ID = None
-_GAME_WINDOW_RECT: pyscreeze.Box
+_DISTRIBUTE: Optional[str] = None
+_GAME_WINDOW_ID: Optional[str] = None
+_GAME_WINDOW_RECT: Optional[Box] = None
+_GAME_UI_RECT: Optional[Box] = None
 _CLICK_INTERVAL = 0.2
 
 
-def _raise_distribute_not_set():
-  raise ValueError('distribute not set')
+def _error_distribute_not_set() -> ValueError:
+  return ValueError('distribute not set')
 
 
-def raise_unknown_distribute():
-  raise ValueError(f'unknown distribute: {_DISTRIBUTE}')
+def error_unknown_distribute() -> ValueError:
+  return ValueError(f'unknown distribute: {_DISTRIBUTE}')
 
 
-def distribute(args, default=None) -> str:
+def distribute(args, default=Optional[str]) -> str:
   global _DISTRIBUTE
   if len(args) > 1:
     _DISTRIBUTE = args[1]
   elif default is not None:
     _DISTRIBUTE = default
   else:
-    _raise_distribute_not_set()
+    raise _error_distribute_not_set()
   return _DISTRIBUTE
 
 
 def distribute_file(filename: str) -> str:
   if _DISTRIBUTE is None:
-    _raise_distribute_not_set()
+    raise _error_distribute_not_set()
   return f'{_DISTRIBUTE}/{filename}'
 
 
-def get_distribute():
+def get_distribute() -> str:
   if _DISTRIBUTE is None:
-    _raise_distribute_not_set()
+    raise _error_distribute_not_set()
   return _DISTRIBUTE
 
 
-def _screenshot_wid(window_id):
+def _screenshot_wid(window_id: str) -> Image:
   fh, filepath = tempfile.mkstemp(".png")
   os.close(fh)
   subprocess.call(["screencapture", "-l", window_id, "-o", "-x", filepath])
@@ -56,58 +60,68 @@ def _screenshot_wid(window_id):
   return im
 
 
-def _screenshot_rect(rect):
+def _screenshot_rect(rect: Box) -> Image:
   fh, filepath = tempfile.mkstemp(".png")
   os.close(fh)
-  subprocess.call(["screencapture", "-R", f"{rect.left},{rect.top},{rect.width},{rect.height}", "-x", filepath])
+  region = f"{rect.left},{rect.top},{rect.width},{rect.height}"
+  subprocess.call(["screencapture", "-R", region, "-x", filepath])
   im = Image.open(filepath)
   im.load()
   os.unlink(filepath)
   return im
 
 
-def screenshot():
-  if _GAME_WINDOW_ID is not None:
-    return _screenshot_wid(_GAME_WINDOW_ID)
-  else:
-    return _screenshot_rect(_GAME_WINDOW_RECT)
+def screenshot() -> Image:
+  ss = _screenshot_wid(_GAME_WINDOW_ID) if _GAME_WINDOW_ID is not None else _screenshot_rect(_GAME_WINDOW_RECT)
+  return ss if _GAME_UI_RECT is None else ss.crop((_GAME_UI_RECT.left, _GAME_UI_RECT.top,
+                                                   _GAME_UI_RECT.left + _GAME_UI_RECT.width,
+                                                   _GAME_UI_RECT.top + _GAME_UI_RECT.height))
 
 
-def _osascript(script_file):
+def _osascript(script_file: str) -> str:
   return subprocess.run(["osascript", script_file], capture_output=True).stdout.decode().rstrip('\n')
 
 
-def _init_window():
-  global _GAME_WINDOW_RECT
+def _init_window() -> Optional[Box]:
   position_result = _osascript(f'get-position-of-{_DISTRIBUTE}.scpt')
-  if not position_result:
-    print('游戏未启动')
-    exit(1)
-  position = tuple(map(int, position_result.split(', ')))
-  size = tuple(map(int, _osascript(f'get-size-of-{_DISTRIBUTE}.scpt').split(', ')))
-  _GAME_WINDOW_RECT = Box(position[0], position[1], size[0], size[1])
-  print(f'获得游戏窗口: ID={_GAME_WINDOW_ID}, POS={_GAME_WINDOW_RECT}')
-  return _GAME_WINDOW_RECT
+  if position_result:
+    position = tuple(map(int, position_result.split(', ')))
+    size_result = _osascript(f'get-size-of-{_DISTRIBUTE}.scpt')
+    if size_result:
+      size = tuple(map(int, size_result.split(', ')))
+      return _box(position[0], position[1], size[0], size[1])
 
 
-def _init_mp():
-  global _GAME_WINDOW_ID
+def _init_mp() -> (Box, Box):
+  global _GAME_WINDOW_ID, _GAME_WINDOW_RECT, _GAME_UI_RECT
   wid = _osascript('get-window-id-of-zombie.scpt')
   if wid:
     _GAME_WINDOW_ID = wid
-    return _init_window()
-  else:
-    print('游戏未启动')
-    exit(1)
+    window = _init_window()
+    if window:
+      _GAME_WINDOW_RECT = window
+      print(f'获得游戏窗口: id={_GAME_WINDOW_ID}, window={window}')
+      _GAME_UI_RECT = get_game_window_mp(screenshot())
+      return window, _GAME_UI_RECT
+  print('游戏未启动')
+  exit(1)
 
 
-def _init_ios():
-  return _init_window()
+def _init_ios() -> (Box, Box):
+  global _GAME_WINDOW_RECT, _GAME_UI_RECT
+  window = _init_window()
+  if window:
+    _GAME_WINDOW_RECT = window
+    print(f'获得游戏窗口: window={window}')
+    _GAME_UI_RECT = get_game_window_ios(screenshot())
+    return window, _GAME_UI_RECT
+  print('游戏未启动')
+  exit(1)
 
 
-def init_game():
+def init_game() -> (Box, Box):
   if _DISTRIBUTE is None:
-    _raise_distribute_not_set()
+    raise _error_distribute_not_set()
   if 'mp' == _DISTRIBUTE:
     print('initializing mp...')
     return _init_mp()
@@ -115,15 +129,15 @@ def init_game():
     print('initializing ios...')
     return _init_ios()
   else:
-    raise_unknown_distribute()
+    raise error_unknown_distribute()
 
 
 def click(location, offset_x=0, offset_y=0, once=False):
   center = pyautogui.center(location)
-  pyautogui.click(x=_GAME_WINDOW_RECT.left + center.x // 2 + offset_x,
-                  y=_GAME_WINDOW_RECT.top + center.y // 2 + offset_y)
+  pyautogui.click(x=_GAME_WINDOW_RECT.left + (_GAME_UI_RECT.left + center.x) // 2 + offset_x,
+                  y=_GAME_WINDOW_RECT.top + (_GAME_UI_RECT.top + center.y) // 2 + offset_y)
   time.sleep(_CLICK_INTERVAL)
   if not once:
-    pyautogui.click(x=_GAME_WINDOW_RECT.left + center.x // 2 + offset_x,
-                    y=_GAME_WINDOW_RECT.top + center.y // 2 + offset_y)
+    pyautogui.click(x=_GAME_WINDOW_RECT.left + (_GAME_UI_RECT.left + center.x) // 2 + offset_x,
+                    y=_GAME_WINDOW_RECT.top + (_GAME_UI_RECT.top + center.y) // 2 + offset_y)
     time.sleep(_CLICK_INTERVAL)

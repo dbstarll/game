@@ -4,9 +4,9 @@ import time
 from PIL import Image
 
 from _debug import debug_image
-from _game import distribute_file, get_distribute, raise_unknown_distribute
+from _game import distribute_file, get_distribute, error_unknown_distribute
 from _image import save_image, img
-from _locate import locate, Box, locate_all
+from _locate import locate, _box, locate_all
 
 _SKILL_ROOT_DIR = 'skills'
 
@@ -37,7 +37,7 @@ def kind_offset_width():
   elif 'ios' == distribute:
     return _IOS_KIND_OFFSET_WIDTH
   else:
-    raise_unknown_distribute()
+    raise error_unknown_distribute()
 
 
 def kind_offset_height():
@@ -47,7 +47,7 @@ def kind_offset_height():
   elif 'ios' == distribute:
     return _IOS_KIND_OFFSET_HEIGHT
   else:
-    raise_unknown_distribute()
+    raise error_unknown_distribute()
 
 
 def recode_skip():
@@ -57,19 +57,19 @@ def recode_skip():
   elif 'ios' == distribute:
     return 2
   else:
-    raise_unknown_distribute()
+    raise error_unknown_distribute()
 
 
 def _crop_kind_image(skill_image):
-  rect = Box(kind_offset_width(), kind_offset_height(), skill_image.width - 2 * kind_offset_width(),
-             skill_image.width - 2 * kind_offset_width())
+  rect = _box(kind_offset_width(), kind_offset_height(), skill_image.width - 2 * kind_offset_width(),
+              skill_image.width - 2 * kind_offset_width())
   return rect, skill_image.crop((rect.left, rect.top, rect.left + rect.width, rect.top + rect.height))
 
 
 def _crop_image(screenshot, match_left_bottom, match_right_top):
-  box = Box(match_left_bottom.left + _SKILL_LEFT_OFFSET, match_right_top.top + _SKILL_TOP_OFFSET,
-            match_right_top.left + match_right_top.width - match_left_bottom.left - _SKILL_LEFT_OFFSET + _SKILL_RIGHT_OFFSET,
-            match_left_bottom.top + match_left_bottom.height - match_right_top.top - _SKILL_TOP_OFFSET + _SKILL_BOTTOM_OFFSET)
+  box = _box(match_left_bottom.left + _SKILL_LEFT_OFFSET, match_right_top.top + _SKILL_TOP_OFFSET,
+             match_right_top.left + match_right_top.width - match_left_bottom.left - _SKILL_LEFT_OFFSET + _SKILL_RIGHT_OFFSET,
+             match_left_bottom.top + match_left_bottom.height - match_right_top.top - _SKILL_TOP_OFFSET + _SKILL_BOTTOM_OFFSET)
   return box, screenshot.crop((box.left, box.top, box.left + box.width, box.top + box.height))
 
 
@@ -174,8 +174,8 @@ def _load_skill(skills, kind_name, skill_name):
 
 
 def _detect_corner(im, box):
-  lb = debug_image(im,'skill-left-bottom', Box(box.left - 1, box.top + box.height - 50 + 1, 50, 50))
-  rt = debug_image(im,'skill-right-top', Box(box.left + box.width - 50 + 1, box.top - 1, 50, 75))
+  lb = debug_image(im,'skill-left-bottom', _box(box.left - 1, box.top + box.height - 50 + 1, 50, 50))
+  rt = debug_image(im,'skill-right-top', _box(box.left + box.width - 50 + 1, box.top - 1, 50, 75))
   print(len(list(locate_all(lb, im))))
   print(len(list(locate_all(rt, im))))
 

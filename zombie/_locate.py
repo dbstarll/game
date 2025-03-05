@@ -30,5 +30,5 @@ def set_game_window(window):
   _LOCATE_OPTIONS['region'] = window
 
 
-def Box(left, top, width, height) -> pyscreeze.Box:
+def _box(left, top, width, height) -> pyscreeze.Box:
   return pyscreeze.Box(left, top, width, height)

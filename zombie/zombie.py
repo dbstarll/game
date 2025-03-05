@@ -1,12 +1,10 @@
 import sys
 import time
 
-import pyscreeze
-
 from _debug import now, debug_image
 from _game import distribute, init_game, screenshot, click
 from _image import img
-from _locate import locate, locate_all, set_game_window
+from _locate import locate, locate_all
 from _rescue import match_rescues, load_rescues
 from _skill import load_skills, match_skills_from_screenshot
 
@@ -15,54 +13,6 @@ ROOM_WAIT_TIMEOUT = 15
 PREFER_SKILLS = ['枪械:分裂冰片', '枪械:连发+', '枪械:齐射+', '枪械:急冻子弹+', '枪械:子弹爆炸',
                  '枪械:伤害增幅', '枪械:分裂子弹', '枪械:分裂子弹四射', '枪械:分裂子弹爆炸', '枪械:全子弹增幅',
                  '装甲车:装甲车', '装甲车:焦土策略']
-
-
-def get_game_window_left(screen, location_back):
-  for x in range(location_back.left, 0, -1):
-    if screen.getpixel((x, location_back.top)) == (0, 0, 0, 255):
-      return x + 1
-
-
-def get_game_window_top(screen, location_back, left):
-  for y in range(location_back.top, 0, -1):
-    if screen.getpixel((left - 1, y)) != (0, 0, 0, 255):
-      return y + 1
-
-
-def get_game_window_bottom(screen, location_back, left):
-  for y in range(location_back.top + location_back.height, screen.height):
-    if screen.getpixel((left - 1, y)) != (0, 0, 0, 255):
-      return y - 1
-  return screen.height - 1
-
-
-def get_game_window_right(screen, location_back, bottom):
-  for x in range(location_back.left + location_back.width, screen.width):
-    if screen.getpixel((x, bottom)) == (0, 0, 0, 255):
-      return x - 1
-
-
-def get_game_window(screen):
-  print(f"{now()} - 屏幕: {screen}")
-  location_back = locate(img('back'), screen)
-  if location_back:
-    left = get_game_window_left(screen, location_back)
-    if left:
-      top = get_game_window_top(screen, location_back, left)
-      bottom = get_game_window_bottom(screen, location_back, left)
-      if top and bottom:
-        right = get_game_window_right(screen, location_back, bottom)
-        if right:
-          print(f"{now()} - 检测到游戏窗口: left: {left}, top: {top}, right: {right}, bottom: {bottom}")
-          return pyscreeze.Box(left, top, right - left + 1, bottom - top + 1)
-        else:
-          print(f'{now()} - not found: right')
-      else:
-        print(f'{now()} - not found: top or bottom')
-    else:
-      print(f'{now()} - not found: left')
-  else:
-    print(f'{now()} - not found: locationShop')
 
 
 def check_reconnect(im):
@@ -81,9 +31,9 @@ def check_reconnect(im):
     return False
 
 
-def select_fight(im, window, fights):
+def select_fight(im, fights):
   if len(fights) > 0:
-    debug_image(im, 'fights', window)
+    debug_image(im, 'fights')
 
   _max = -1
   _max_pos = None
@@ -95,7 +45,7 @@ def select_fight(im, window, fights):
   return _max, _max_pos
 
 
-def fighting(window):
+def fighting():
   print(f"{now()} - 开始战斗...")
   start = time.time()
   while True:
@@ -131,17 +81,17 @@ def fighting(window):
         print(f'{now()} - 选择技能: {min_idx_name}: {time.time() - start}')
         click(min_idx_rect)
 
-      debug_image(im, 'skills', window)
+      debug_image(im, 'skills')
 
     location_elite_skills = locate(img('elite-skill-close'), im)
     if location_elite_skills:
       print(f'{now()} - 精英掉落技能: {time.time() - start}')
-      debug_image(im, 'elite-skills', window)
+      debug_image(im, 'elite-skills')
 
     time.sleep(5)
 
 
-def fight_prepare(fight, window):
+def fight_prepare(fight):
   print(f"{now()} - 进入战斗预备, 等待队友开始...")
   click(fight, 160, -35)
   start = time.time()
@@ -160,12 +110,12 @@ def fight_prepare(fight, window):
       if location_inviting:
         print(f'{now()} - 队友已退出: {time.time() - start}')
       else:
-        fighting(window)
+        fighting()
       break
-    time.sleep(1)
+    time.sleep(0.7)
 
 
-def find_fight(window):
+def find_fight():
   print(f'{now()} - 查看副本列表...')
   while True:
     im = screenshot()
@@ -175,20 +125,20 @@ def find_fight(window):
 
     location_fight_list = locate(img('fight-list'), im)
     if location_fight_list:
-      level, fight = select_fight(im, window, list(match_rescues(im)))
+      level, fight = select_fight(im, list(match_rescues(im)))
       if fight is not None:
         if level >= 5 or level == 0:
-          fight_prepare(fight, window)
+          fight_prepare(fight)
         else:
           print(f"{now()} - 寰球等级[{level}]太低, 拒绝战斗")
           click(fight, 160, 0, True)
           continue
-      time.sleep(1)
+      time.sleep(0.7)
     else:
       break
 
 
-def detect_team_invite(window):
+def detect_team_invite():
   print(f'{now()} - 检测副本邀请...')
   while True:
     im = screenshot()
@@ -200,10 +150,10 @@ def detect_team_invite(window):
     if location_invite:
       print(f'{now()} - 检测到副本邀请,进入副本列表...')
       click(location_invite)
-      find_fight(window)
+      find_fight()
       print(f'{now()} - 回到主界面')
 
-    time.sleep(1)
+    time.sleep(0.7)
 
 
 if __name__ == "__main__":
@@ -212,8 +162,4 @@ if __name__ == "__main__":
   load_rescues()
   load_skills()
 
-  window = get_game_window(screenshot())
-  if window:
-    print(f"{now()} - 游戏窗口位置: {window}")
-    set_game_window(window)
-    detect_team_invite(window)
+  detect_team_invite()

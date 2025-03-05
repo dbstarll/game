@@ -5,7 +5,7 @@ from PIL import Image
 
 from _game import distribute_file
 from _image import save_image, img
-from _locate import locate, Box, locate_all
+from _locate import locate, _box, locate_all
 
 _RESCUE_ROOT_DIR = 'rescues'
 _RESCUES = {}
@@ -49,7 +49,7 @@ def load_rescues():
 
 
 def crop_rescue(im, rect):
-  box = Box(rect.left + rect.width * 1.7 - 2, rect.top, rect.width * 0.3 - 2, rect.height)
+  box = _box(rect.left + rect.width * 1.7 - 2, rect.top, rect.width * 0.3 - 2, rect.height)
   return box, im.crop((box.left, box.top, box.left + box.width, box.top + box.height))
 
 
