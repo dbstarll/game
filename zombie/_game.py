@@ -50,7 +50,7 @@ def get_distribute() -> str:
   return _DISTRIBUTE
 
 
-def _screenshot_wid(window_id: str) -> Image:
+def _screenshot_wid(window_id: str) -> Image.Image:
   fh, filepath = tempfile.mkstemp(".png")
   os.close(fh)
   subprocess.call(["screencapture", "-l", window_id, "-o", "-x", filepath])
@@ -60,7 +60,7 @@ def _screenshot_wid(window_id: str) -> Image:
   return im
 
 
-def _screenshot_rect(rect: Box) -> Image:
+def _screenshot_rect(rect: Box) -> Image.Image:
   fh, filepath = tempfile.mkstemp(".png")
   os.close(fh)
   region = f"{rect.left},{rect.top},{rect.width},{rect.height}"
@@ -71,7 +71,7 @@ def _screenshot_rect(rect: Box) -> Image:
   return im
 
 
-def screenshot() -> Image:
+def screenshot() -> Image.Image:
   ss = _screenshot_wid(_GAME_WINDOW_ID) if _GAME_WINDOW_ID is not None else _screenshot_rect(_GAME_WINDOW_RECT)
   return ss if _GAME_UI_RECT is None else ss.crop((_GAME_UI_RECT.left, _GAME_UI_RECT.top,
                                                    _GAME_UI_RECT.left + _GAME_UI_RECT.width,

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from PIL import Image
+from PIL.Image import Image
 from pyscreeze import Box
 
 from _locate import _box

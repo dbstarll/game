@@ -3,27 +3,56 @@ from typing import Optional, Dict, List
 from PIL import Image
 from pyscreeze import Box
 
-from _locate import locate, locate_all
+from _game import get_distribute, error_unknown_distribute
+from _locate import locate, locate_all, _box
 
 
 class SkillPack:
+  _MP_TITLE_OFFSET_HEIGHT: int = 20
+  _MP_TITLE_HEIGHT: int = 28
+  _IOS_TITLE_OFFSET_HEIGHT: int = 22
+  _IOS_TITLE_HEIGHT: int = 27
+
   def __init__(self, kind_name: str):
     self.kind_name: str = kind_name
-    self.skills: Dict[str, Image] = {}
+    self.skills: Dict[str, Image.Image] = {}
     self.width: int = 0
     self.height: int = 0
 
-  def set_kind_image(self, kind_image: Image):
+  def _title_offset_height(self) -> int:
+    distribute = get_distribute()
+    if 'mp' == distribute:
+      return SkillPack._MP_TITLE_OFFSET_HEIGHT
+    elif 'ios' == distribute:
+      return SkillPack._IOS_TITLE_OFFSET_HEIGHT
+    else:
+      raise error_unknown_distribute()
+
+  def _title_height(self) -> int:
+    distribute = get_distribute()
+    if 'mp' == distribute:
+      return SkillPack._MP_TITLE_HEIGHT
+    elif 'ios' == distribute:
+      return SkillPack._IOS_TITLE_HEIGHT
+    else:
+      raise error_unknown_distribute()
+
+  def _crop_desc_image(self, skill_image: Image.Image) -> Image.Image:
+    rect = _box(0, self._title_offset_height(), skill_image.width, self._title_height())
+    return skill_image.crop((rect.left, rect.top, rect.left + rect.width, rect.top + rect.height))
+
+  def set_kind_image(self, kind_image: Image.Image):
     self.kind_image = kind_image
     return self
 
-  def add_skill(self, skill_name: str, skill_image: Image):
-    self.skills[skill_name] = skill_image
-    self.width = max(self.width, skill_image.width)
-    self.height = max(self.height, skill_image.height)
+  def add_skill(self, skill_name: str, skill_image: Image.Image) -> None:
+    desc_image = self._crop_desc_image(skill_image)
+    self.skills[skill_name] = desc_image
+    self.width = max(self.width, desc_image.width)
+    self.height = max(self.height, desc_image.height)
 
   def summary(self) -> None:
-    self.image_all_in_one: Image = Image.new('RGBA', (self.width * self.size(), self.height))
+    self.image_all_in_one: Image.Image = Image.new('RGBA', (self.width * self.size(), self.height))
     self.names: List[str] = []
     for skill_name, skill_image in self.skills.items():
       self.image_all_in_one.paste(skill_image, (self.width * len(self.names), 0))
@@ -33,23 +62,23 @@ class SkillPack:
   def size(self) -> int:
     return len(self.skills)
 
-  def match_kind(self, kind_image: Image) -> Optional[Box]:
+  def match_kind(self, kind_image: Image.Image) -> Optional[Box]:
     return locate(kind_image, self.kind_image)
 
-  def match_skill(self, skill_image: str) -> Optional[str]:
-    return self._match_skill_from_all_in_one(skill_image)
+  def match_skill(self, skill_image: Image.Image) -> Optional[str]:
+    return self._match_skill_from_all_in_one(self._crop_desc_image(skill_image))
 
-  def _match_skill_from_skills(self, skill_image: str) -> Optional[str]:
+  def _match_skill_from_skills(self, skill_image: Image.Image) -> Optional[str]:
     for skill_name, item in self.skills.items():
       if locate(skill_image, item, grayscale=True) is not None:
         return skill_name
 
-  def _match_skill_from_all_in_one(self, skill_image: str) -> Optional[str]:
+  def _match_skill_from_all_in_one(self, skill_image: Image.Image) -> Optional[str]:
     match: List[int] = []
-    for box in locate_all(skill_image, self.image_all_in_one, grayscale=True):
+    for box in locate_all(skill_image, self.image_all_in_one, grayscale=True, confidence=0.97):
       index = int(round(box.left / self.width))
       if match.count(index) == 0:
         match.append(index)
         if len(match) > 1:
-          print(f'match more then one: {index} - {self.names[index]}')
+          print(f'match confuse[{self.kind_name}]: [{index}]{self.names[index]} - [{match[0]}]{self.names[match[0]]}')
     return self.names[match[0]] if len(match) >= 1 else None

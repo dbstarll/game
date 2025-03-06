@@ -1,5 +1,6 @@
 import os
 import time
+from typing import Optional
 
 from PIL import Image
 
@@ -9,7 +10,7 @@ from _locate import locate, _box, locate_all
 
 _RESCUE_ROOT_DIR = 'rescues'
 _RESCUES = {}
-_RESCUE_IMG = None
+_RESCUE_IMG:Image.Image = Optional[Image.Image]
 
 
 def _rescue_img(rescue_name):

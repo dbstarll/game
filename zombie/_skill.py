@@ -160,6 +160,8 @@ def _load_kind(kind_name: str) -> SkillPack:
       skill_name = skill_file_name[:-4]
       if skill_name.startswith('logo'):
         pack.set_kind_image(Image.open(_skill_img(kind_name, skill_name)))
+      elif skill_name.startswith('skill-'):
+        raise ValueError(f'临时技能文件需要被处理: {_SKILL_ROOT_DIR}/{kind_name}/{skill_file_name}')
       else:
         pack.add_skill(skill_name, Image.open(_skill_img(kind_name, skill_name)))
   pack.summary()
