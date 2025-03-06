@@ -104,9 +104,7 @@ def _record_kinds(kinds, kind_image):
 
   kind_name = f'logo-{time.time()}'
   print(f'\trecord kind: {kind_name} - {kind_image}')
-  pack = SkillPack(kind_name)
-  pack.set_kind_image(kind_image)
-  kinds[kind_name] = pack
+  kinds[kind_name] = SkillPack(kind_name).set_kind_image(kind_image)
 
   if not os.path.exists(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}')):
     os.mkdir(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}'))
@@ -124,8 +122,7 @@ def record_skill(image_index, kind_name, kind_image, skill_image):
 
     pack = _KINDS.get(kind_name)
     if pack is None:
-      pack = SkillPack(kind_name)
-      pack.set_kind_image(kind_image)
+      pack = SkillPack(kind_name).set_kind_image(kind_image)
       _KINDS[kind_name] = pack
 
     skill_name = pack.match_skill(skill_image)

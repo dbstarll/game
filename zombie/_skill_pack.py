@@ -15,6 +15,7 @@ class SkillPack:
 
   def set_kind_image(self, kind_image: Image):
     self.kind_image = kind_image
+    return self
 
   def add_skill(self, skill_name: str, skill_image: Image):
     self.skills[skill_name] = skill_image
@@ -51,4 +52,4 @@ class SkillPack:
         match.append(index)
         if len(match) > 1:
           print(f'match more then one: {index} - {self.names[index]}')
-    return self.names[match[0]] if len(match) == 1 else None
+    return self.names[match[0]] if len(match) >= 1 else None

@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 from PIL import Image
 
@@ -43,12 +44,13 @@ if __name__ == "__main__":
   print(f'游戏发行版本: {dist}')
 
   files, full_matches, part_matches, mismatch = 0, 0, 0, 0
-  kinds, skills = load_skills()
+  skills = load_skills()
+  start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('skills-17') and file.endswith('.png'):
+    if file.startswith('skills-full_match-') and file.endswith('.png'):
       skills_file = f'tmp/{dist}/{file}'
       if files > 0 and files % 100 == 0:
-        print(f'{files}')
+        print(f'{files} - {time.time() - start}')
       files += 1
       match_skills, detect_skills = detect_skills_from_file(skills_file)
       if detect_skills == 3:
@@ -58,6 +60,8 @@ if __name__ == "__main__":
       else:
         mismatch += 1
   print(f'files: {files}, full_matches: {full_matches}, part_matches: {part_matches}, mismatch: {mismatch}')
-  print(f'kinds: {len(kinds)}')
-  for kind, kind_skills in skills.items():
-    print(f'skills: {kind} - {len(kind_skills)}')
+  print(f'kinds: {len(skills)}')
+  for kind, skill_pack in skills.items():
+    print(f'skills: {kind} - {skill_pack.size()}')
+  print(f'cost - {time.time() - start}')
+  # cost - 407.6763346195221  files: 1745, full_matches: 1703, part_matches: 42, mismatch: 0
