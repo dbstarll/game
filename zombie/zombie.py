@@ -127,7 +127,7 @@ def find_fight():
     if location_fight_list:
       level, fight = select_fight(im, list(match_rescues(im)))
       if fight is not None:
-        if level >= 5 or level == 0:
+        if level >= mini_level or level == 0:
           fight_prepare(fight)
         else:
           print(f"{now()} - 寰球等级[{level}]太低, 拒绝战斗")
@@ -157,7 +157,9 @@ def detect_team_invite():
 
 
 if __name__ == "__main__":
-  print(f'游戏发行版本: {distribute(sys.argv, "mp")}')
+  dist = distribute(sys.argv, "mp")
+  mini_level = 5 if 'mp' == dist else 1
+  print(f'游戏发行版本: {dist}')
   init_game_window()
   load_rescues()
   load_skills()
