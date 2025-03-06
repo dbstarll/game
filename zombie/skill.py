@@ -47,6 +47,8 @@ if __name__ == "__main__":
   for file in os.listdir(f'tmp/{dist}'):
     if file.startswith('skills-17') and file.endswith('.png'):
       skills_file = f'tmp/{dist}/{file}'
+      if files > 0 and files % 100 == 0:
+        print(f'{files}')
       files += 1
       match_skills, detect_skills = detect_skills_from_file(skills_file)
       if detect_skills == 3:
