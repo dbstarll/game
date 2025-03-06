@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pyscreeze
 
 pyscreeze.USE_IMAGE_NOT_FOUND_EXCEPTION = False
@@ -6,7 +8,7 @@ pyscreeze.GRAYSCALE_DEFAULT = False
 _LOCATE_OPTIONS = {'grayscale': False, 'confidence': 0.98}
 
 
-def locate(needle_image, haystack_image, **kwargs):
+def locate(needle_image, haystack_image, **kwargs) -> Optional[pyscreeze.Box]:
   if len(kwargs) == 0:
     return pyscreeze.locate(needle_image, haystack_image, **_LOCATE_OPTIONS)
   else:

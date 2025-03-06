@@ -1,4 +1,4 @@
-from PIL.Image import Image
+from PIL import Image
 
 from _game import distribute_file
 

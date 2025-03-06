@@ -1,12 +1,14 @@
 import os
 import time
+from typing import Dict
 
 from PIL import Image
 
 from _debug import debug_image
 from _game import distribute_file, get_distribute, error_unknown_distribute
 from _image import save_image, img
-from _locate import locate, _box, locate_all
+from _locate import _box, locate_all
+from _skill_pack import SkillPack
 
 _SKILL_ROOT_DIR = 'skills'
 
@@ -20,8 +22,7 @@ _IOS_KIND_OFFSET_WIDTH = 39
 _IOS_KIND_OFFSET_HEIGHT = 79
 _SKILL_CONFIDENCE = 0.98
 
-_SKILL_KINDS = {}
-_SKILLS = {}
+_KINDS: Dict[str, SkillPack] = {}
 _LEFT_BOTTOM_IMG = None
 _RIGHT_TOP_IMG = None
 
@@ -74,8 +75,8 @@ def _crop_image(screenshot, match_left_bottom, match_right_top):
 
 
 def _match_kinds(kinds, kind_image):
-  for kind_name, item in kinds.items():
-    if locate(kind_image, item, confidence=_SKILL_CONFIDENCE):
+  for kind_name, pack in kinds.items():
+    if pack.match_kind(kind_image):
       return kind_name
   return None
 
@@ -86,13 +87,13 @@ def _match_kinds_from_skill(kinds, skill_image):
 
 
 def _match_skill(skill_image):
-  kind_name, kind_image = _match_kinds_from_skill(_SKILL_KINDS, skill_image)
+  kind_name, kind_image = _match_kinds_from_skill(_KINDS, skill_image)
   if kind_name is None:
     return None, None, kind_image
 
-  for skill_name, item in _SKILLS.get(kind_name).items():
-    if locate(skill_image, item, confidence=_SKILL_CONFIDENCE):
-      return kind_name, skill_name, kind_image
+  skill_name = _KINDS.get(kind_name).match_skill(skill_image)
+  if skill_name is not None:
+    return kind_name, skill_name, kind_image
   return kind_name, None, kind_image
 
 
@@ -103,7 +104,9 @@ def _record_kinds(kinds, kind_image):
 
   kind_name = f'logo-{time.time()}'
   print(f'\trecord kind: {kind_name} - {kind_image}')
-  kinds[kind_name] = kind_image
+  pack = SkillPack(kind_name)
+  pack.set_kind_image(kind_image)
+  kinds[kind_name] = pack
 
   if not os.path.exists(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}')):
     os.mkdir(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}'))
@@ -117,20 +120,22 @@ def record_skill(image_index, kind_name, kind_image, skill_image):
     return None, None, False
   else:
     if kind_name is None:
-      kind_name, _ = _record_kinds(_SKILL_KINDS, kind_image)
+      kind_name, _ = _record_kinds(_KINDS, kind_image)
 
-    kind_skills = _SKILLS.get(kind_name)
-    if kind_skills is None:
-      kind_skills = {}
-      _SKILLS[kind_name] = kind_skills
+    pack = _KINDS.get(kind_name)
+    if pack is None:
+      pack = SkillPack(kind_name)
+      pack.set_kind_image(kind_image)
+      _KINDS[kind_name] = pack
 
-    for skill_name, item in kind_skills.items():
-      if locate(skill_image, item, confidence=_SKILL_CONFIDENCE):
-        return kind_name, skill_name, False
+    skill_name = pack.match_skill(skill_image)
+    if skill_name is not None:
+      return kind_name, skill_name, False
 
     skill_name = f'skill-{time.time()}'
     print(f'\trecord skill: {kind_name} - {skill_name} - {skill_image}')
-    kind_skills[skill_name] = skill_image
+    pack.add_skill(skill_name, skill_image)
+    pack.summary()
 
     save_image(skill_image, _skill_img(kind_name, skill_name))
     return kind_name, skill_name, True
@@ -140,37 +145,28 @@ def load_skills():
   global _LEFT_BOTTOM_IMG, _RIGHT_TOP_IMG
   _LEFT_BOTTOM_IMG = Image.open(img('skill-left-bottom'))
   _RIGHT_TOP_IMG = Image.open(img('skill-right-top.png'))
-  _SKILL_KINDS.clear()
-  _SKILLS.clear()
+  _KINDS.clear()
+  total = 0
   for kind_name in os.listdir(distribute_file(_SKILL_ROOT_DIR)):
     if os.path.isdir(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}')):
-      _load_kind(_SKILL_KINDS, _SKILLS, kind_name)
-  total = 0
-  for item in _SKILLS.values():
-    total += len(item)
-  print(f'加载技能: {total}, 类型: {len(_SKILL_KINDS)}')
-  return _SKILL_KINDS, _SKILLS
+      pack = _load_kind(kind_name)
+      total += pack.size()
+      _KINDS[kind_name] = pack
+  print(f'加载技能: {total}, 类型: {len(_KINDS)}')
+  return _KINDS
 
 
-def _load_kind(kinds, skills, kind_name):
-  for skill_name in os.listdir(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}')):
-    if skill_name.endswith('.png'):
+def _load_kind(kind_name: str) -> SkillPack:
+  pack = SkillPack(kind_name)
+  for skill_file_name in os.listdir(distribute_file(f'{_SKILL_ROOT_DIR}/{kind_name}')):
+    if skill_file_name.endswith('.png'):
+      skill_name = skill_file_name[:-4]
       if skill_name.startswith('logo'):
-        _load_logo(kinds, kind_name, skill_name[:len(skill_name) - 4])
+        pack.set_kind_image(Image.open(_skill_img(kind_name, skill_name)))
       else:
-        _load_skill(skills, kind_name, skill_name[:len(skill_name) - 4])
-
-
-def _load_logo(kinds, kind_name, skill_name):
-  kinds[kind_name] = Image.open(_skill_img(kind_name, skill_name))
-
-
-def _load_skill(skills, kind_name, skill_name):
-  kind_skills = skills.get(kind_name)
-  if kind_skills is None:
-    kind_skills = {}
-    skills[kind_name] = kind_skills
-  kind_skills[skill_name] = Image.open(_skill_img(kind_name, skill_name))
+        pack.add_skill(skill_name, Image.open(_skill_img(kind_name, skill_name)))
+  pack.summary()
+  return pack
 
 
 def _detect_corner(im, box):
