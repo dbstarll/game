@@ -125,9 +125,10 @@ def record_skill(image_index, kind_name, kind_image, skill_image):
       pack = SkillPack(kind_name).set_kind_image(kind_image)
       _KINDS[kind_name] = pack
 
-    skill_name = pack.match_skill(skill_image)
-    if skill_name is not None:
-      return kind_name, skill_name, False
+    if pack.size() > 0:
+      skill_name = pack.match_skill(skill_image)
+      if skill_name is not None:
+        return kind_name, skill_name, False
 
     skill_name = f'skill-{time.time()}'
     print(f'\trecord skill: {kind_name} - {skill_name} - {skill_image}')
