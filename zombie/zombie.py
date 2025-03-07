@@ -1,8 +1,11 @@
 import sys
 import time
 
+from PIL import Image
+from pyscreeze import Box
+
 from _debug import now, debug_image
-from _game import distribute, init_game_window, screenshot, click
+from _game import distribute, init_game_window, screenshot, click, get_distribute
 from _image import img
 from _locate import locate, locate_all
 from _rescue import match_rescues, load_rescues
@@ -15,7 +18,24 @@ PREFER_SKILLS = ['枪械:分裂冰片', '枪械:连发+', '枪械:齐射+', '枪
                  '装甲车:装甲车', '装甲车:焦土策略']
 
 
-def check_reconnect(im):
+def check_unexpected(im: Image.Image) -> bool:
+  if get_distribute() == 'ios' and check_reconnect_ios(im):
+    return True
+
+  return check_reconnect(im)
+
+
+def check_reconnect_ios(im: Image.Image) -> bool:
+  btn_reconnect = locate(img('reconnect-ios'), im)
+  if btn_reconnect is not None:
+    print(f'{now()} - 重新连接iPhone镜像')
+    click(btn_reconnect)
+    return True
+  else:
+    return False
+
+
+def check_reconnect(im: Image.Image) -> bool:
   location_offline = locate(img('offline-confirm'), im)
   if location_offline:
     print(f'{now()} - 断线重连')
@@ -51,7 +71,7 @@ def fighting():
   while True:
     im = screenshot()
 
-    if check_reconnect(im):
+    if check_unexpected(im):
       continue
 
     location_end = locate(img('fight-end'), im)
@@ -110,7 +130,11 @@ def fight_prepare(fight):
       if location_inviting:
         print(f'{now()} - 队友已退出: {time.time() - start}')
       else:
-        fighting()
+        location_at_home = locate(img('at-home'), im)
+        if location_at_home:
+          print(f'{now()} - 房间满，回到首页: {time.time() - start}')
+        else:
+          fighting()
       break
     time.sleep(0.7)
 
@@ -120,7 +144,7 @@ def find_fight():
   while True:
     im = screenshot()
 
-    if check_reconnect(im):
+    if check_unexpected(im):
       continue
 
     location_fight_list = locate(img('fight-list'), im)
@@ -138,20 +162,28 @@ def find_fight():
       break
 
 
+def to_team_invite_list(invite: Box):
+  print(f'{now()} - 检测到副本邀请,进入副本列表...')
+  click(invite)
+  find_fight()
+  print(f'{now()} - 回到主界面')
+
+
 def detect_team_invite():
   print(f'{now()} - 检测副本邀请...')
   while True:
     im = screenshot()
 
-    if check_reconnect(im):
+    if check_unexpected(im):
       continue
 
-    location_invite = locate(img('team-invite'), im)
-    if location_invite:
-      print(f'{now()} - 检测到副本邀请,进入副本列表...')
-      click(location_invite)
-      find_fight()
-      print(f'{now()} - 回到主界面')
+    location_invite_at_fight = locate(img('team-invite-at-fight'), im)
+    if location_invite_at_fight is not None:
+      to_team_invite_list(location_invite_at_fight)
+    else:
+      location_invite = locate(img('team-invite'), im)
+      if location_invite is not None:
+        to_team_invite_list(location_invite)
 
     time.sleep(0.7)
 
