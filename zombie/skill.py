@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from typing import List
 
 from PIL import Image
 
@@ -8,7 +9,24 @@ from _game import distribute
 from _skill import load_skills, match_skills_from_screenshot, record_skill
 
 
-def detect_skills_from_file(skills_file):
+def detect_full_match(skills_file: str, detect_names: List[str]) -> int:
+  part = skills_file.split("-")
+  detects = 0
+  for i in range(0, 3):
+    detect = detect_names[i]
+    expect = part[i + 2]
+    if detect == expect:
+      detects += 1
+    else:
+      part[i + 2] = detect
+      print(f'expect: {expect}, detect: {detect} at {skills_file}')
+  if detects != 3:
+    print(f'\tre_full_match: {skills_file} -> {"-".join(part)}')
+    # os.rename(skills_file, "-".join(part))
+  return detects
+
+
+def detect_skills_from_file(skills_file: str) -> (int, int):
   matches = 0
   detects = 0
   skill_names = []
@@ -23,6 +41,9 @@ def detect_skills_from_file(skills_file):
         record_skill(image_index, kind_name, kind_image, skill_image)
 
   part = skills_file.split("-")
+  if matches == 3 and detects == 3 and len(part) == 6 and 'full_match' == part[1]:
+    return matches, detect_full_match(skills_file, skill_names)
+
   if matches == 0:
     if len(part) == 2:
       part.insert(1, 'mismatch')
@@ -35,7 +56,7 @@ def detect_skills_from_file(skills_file):
       skill_names.append(part[1])
       os.rename(skills_file, "-".join(skill_names))
   else:
-    print(f'\tpart detected:{skill_names} -  {skills_file}')
+    print(f'\tpart detected:{skill_names} - {skills_file}')
   return matches, detects
 
 
@@ -64,4 +85,3 @@ if __name__ == "__main__":
   for kind, skill_pack in skills.items():
     print(f'skills: {kind} - {skill_pack.size()}')
   print(f'cost - {time.time() - start}')
-  # cost - 407.6763346195221  files: 1745, full_matches: 1703, part_matches: 42, mismatch: 0
