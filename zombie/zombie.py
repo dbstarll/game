@@ -99,7 +99,7 @@ def fighting():
             min_idx_name = kind_and_skill
       if min_idx_rect is not None:
         print(f'{now()} - 选择技能: {min_idx_name}: {time.time() - start}')
-        click(min_idx_rect)
+        # click(min_idx_rect)
 
       debug_image(im, 'skills')
 
@@ -130,6 +130,7 @@ def fight_prepare(fight):
       if location_inviting:
         print(f'{now()} - 队友已退出: {time.time() - start}')
       else:
+        debug_image(im, 'fighting')
         location_at_home = locate(img('at-home'), im)
         if location_at_home:
           print(f'{now()} - 房间满，回到首页: {time.time() - start}')
@@ -189,7 +190,7 @@ def detect_team_invite():
 
 
 if __name__ == "__main__":
-  dist = distribute(sys.argv, "mp")
+  dist, _ = distribute(sys.argv, "mp")
   mini_level = 5 if 'mp' == dist else 1
   print(f'游戏发行版本: {dist}')
   init_game_window()

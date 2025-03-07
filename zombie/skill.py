@@ -61,7 +61,7 @@ def detect_skills_from_file(skills_file: str) -> (int, int):
 
 
 if __name__ == "__main__":
-  dist = distribute(sys.argv, "mp")
+  dist, _ = distribute(sys.argv, "mp")
   print(f'游戏发行版本: {dist}')
 
   files, full_matches, part_matches, mismatch = 0, 0, 0, 0

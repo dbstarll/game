@@ -19,7 +19,7 @@ def match_rescues_from_file(file):
 
 
 if __name__ == "__main__":
-  dist = distribute(sys.argv, "mp")
+  dist, _ = distribute(sys.argv, "mp")
   print(f'游戏发行版本: {dist}')
   fight_list_img = Image.open(img('fight-list'))
 
