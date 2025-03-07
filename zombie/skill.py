@@ -68,7 +68,7 @@ if __name__ == "__main__":
   skills = load_skills()
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('skills-full_match-') and file.endswith('.png'):
+    if file.startswith('skills-17') and file.endswith('.png'):
       skills_file = f'tmp/{dist}/{file}'
       if files > 0 and files % 100 == 0:
         print(f'{files} - {time.time() - start}')
