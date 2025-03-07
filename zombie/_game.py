@@ -2,9 +2,10 @@ import os
 import subprocess
 import tempfile
 import time
-from typing import Optional
+from typing import Optional, Dict, Any
 
 import pyautogui
+import yaml
 from PIL import Image
 from pyscreeze import Box
 
@@ -17,6 +18,7 @@ _GAME_WINDOW_ID: Optional[str] = None
 _GAME_WINDOW_RECT: Optional[Box] = None
 _GAME_UI_RECT: Optional[Box] = None
 _CLICK_INTERVAL = 0.2
+_CONFIG: Optional[Dict[str, Any]] = None
 
 
 def _error_distribute_not_set() -> ValueError:
@@ -27,15 +29,23 @@ def error_unknown_distribute() -> ValueError:
   return ValueError(f'unknown distribute: {_DISTRIBUTE}')
 
 
-def distribute(args, default=Optional[str]) -> str:
-  global _DISTRIBUTE
+def _load_game_config(config_file: str):
+  rf = open(file=distribute_file(config_file), mode='r', encoding='utf-8')
+  crf = rf.read()
+  rf.close()
+  return yaml.load(stream=crf, Loader=yaml.FullLoader)
+
+
+def distribute(args, default=Optional[str]) -> (str, Dict[str, Any]):
+  global _DISTRIBUTE, _CONFIG
   if len(args) > 1:
     _DISTRIBUTE = args[1]
   elif default is not None:
     _DISTRIBUTE = default
   else:
     raise _error_distribute_not_set()
-  return _DISTRIBUTE
+  _CONFIG = _load_game_config('config.yaml')
+  return _DISTRIBUTE, _CONFIG
 
 
 def distribute_file(filename: str) -> str:
@@ -141,3 +151,10 @@ def click(location, offset_x=0, offset_y=0, once=False):
     pyautogui.click(x=_GAME_WINDOW_RECT.left + (_GAME_UI_RECT.left + center.x) // 2 + offset_x,
                     y=_GAME_WINDOW_RECT.top + (_GAME_UI_RECT.top + center.y) // 2 + offset_y)
     time.sleep(_CLICK_INTERVAL)
+
+
+def config(path: str) -> Any:
+  data = _CONFIG
+  for part in path.split('.'):
+    data = data[part]
+  return data

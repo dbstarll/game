@@ -1,0 +1,25 @@
+team-invitation:
+  keep-alive-img: fight-list
+  invitation:
+    persistent-dir: invitations
+    locate-img: invitation-right-bottom
+    item:
+      offset-right: 0
+      offset-bottom: 1
+      width: 615
+      height: 154
+    btn-cancel:
+      left: 414
+      top: 80
+      width: 187
+      height: 62
+    btn-confirm:
+      left: 414
+      top: 11
+      width: 187
+      height: 62
+    title:
+      left: 147
+      top: 109
+      width: 211
+      height: 33
