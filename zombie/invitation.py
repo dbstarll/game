@@ -26,12 +26,12 @@ if __name__ == "__main__":
       full_path = f'tmp/{distribute_file(file)}'
       files += 1
       with Image.open(full_path) as im:
-        for invitation_name, is_rescue, _, invitation, _ in pack.match_from_screenshot(im):
+        for invitation_name, is_rescue, box, invitation, title in pack.match_from_screenshot(im):
           matches += 1
           if invitation_name is not None:
             detects += 1
             print(f'\t{invitation_name} - {is_rescue} - {full_path}')
-          else:
+          elif is_rescue:
             _, _, create = pack.record(invitation)
             if create:
               records += 1
