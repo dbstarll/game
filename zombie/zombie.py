@@ -64,7 +64,7 @@ def select_fight(im, invitations):
       _max = rescue_level
       _max_pos = box
 
-  if _max >= 0:
+  if _max_pos is not None:
     debug_image(im, 'fights')
 
   return _max, _max_pos
