@@ -7,8 +7,8 @@ from pyscreeze import Box
 from _debug import now, debug_image
 from _game import distribute, init_game_window, screenshot, click, get_distribute
 from _image import img
+from _invitation_pack import InvitationPack
 from _locate import locate, locate_all
-from _rescue import match_rescues, load_rescues
 from _skill import load_skills, match_skills_from_screenshot
 
 ROOM_WAIT_TIMEOUT = 15
@@ -51,17 +51,22 @@ def check_reconnect(im: Image.Image) -> bool:
     return False
 
 
-def select_fight(im, fights):
-  if len(fights) > 0:
-    debug_image(im, 'fights')
-
-  _max = -1
+def select_fight(im, invitations):
+  _max = -2
   _max_pos = None
-  for rescue_level, rescue_name, rescue_rect, rescue_image in fights:
-    print(f"{now()} - \t{rescue_level} - {rescue_name} - {rescue_rect}")
+  for invitation_name, is_rescue, box, _, _ in invitations:
+    print(f"{now()} - \t{invitation_name} - {is_rescue} - {box}")
+    if is_rescue:
+      rescue_level = 0 if invitation_name is None else int(invitation_name.split('-')[1])
+    else:
+      rescue_level = -1
     if rescue_level > _max:
       _max = rescue_level
-      _max_pos = rescue_rect
+      _max_pos = box
+
+  if _max >= 0:
+    debug_image(im, 'fights')
+
   return _max, _max_pos
 
 
@@ -113,7 +118,7 @@ def fighting():
 
 def fight_prepare(fight):
   print(f"{now()} - 进入战斗预备, 等待队友开始...")
-  click(fight, 160, -35)
+  click(invitation_pack.confirm(fight))
   start = time.time()
   while True:
     im = screenshot()
@@ -150,13 +155,17 @@ def find_fight():
 
     location_fight_list = locate(img('fight-list'), im)
     if location_fight_list:
-      level, fight = select_fight(im, list(match_rescues(im)))
-      if fight is not None:
+      level, invitation = select_fight(im, invitation_pack.match_from_screenshot(im))
+      if invitation is not None:
         if level >= mini_level or level == 0:
-          fight_prepare(fight)
+          fight_prepare(invitation)
+        elif level < 0:
+          print(f"{now()} - 非寰球救援, 拒绝战斗")
+          click(invitation_pack.cancel(invitation), once=True)
+          continue
         else:
           print(f"{now()} - 寰球等级[{level}]太低, 拒绝战斗")
-          click(fight, 160, 0, True)
+          click(invitation_pack.cancel(invitation), once=True)
           continue
       time.sleep(0.7)
     else:
@@ -194,7 +203,7 @@ if __name__ == "__main__":
   mini_level = 5 if 'mp' == dist else 1
   print(f'游戏发行版本: {dist}')
   init_game_window()
-  load_rescues()
   load_skills()
+  invitation_pack = InvitationPack()
 
   detect_team_invite()

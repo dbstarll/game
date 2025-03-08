@@ -3,6 +3,7 @@ import time
 from typing import Dict, Optional
 
 from PIL import Image
+from pyscreeze import Box
 
 from _game import config, distribute_file
 from _image import img, save_image
@@ -89,3 +90,11 @@ class InvitationPack:
     for box, invitation in self.split_from_screenshot(screenshot):
       invitation_name, is_rescue, title = self.detect(invitation)
       yield invitation_name, is_rescue, box, invitation, title
+
+  def cancel(self, invitation: Box) -> Box:
+    return _box(invitation.left + self._BTN_CANCEL.left, invitation.top + self._BTN_CANCEL.top,
+                self._BTN_CANCEL.width, self._BTN_CANCEL.height)
+
+  def confirm(self, invitation: Box) -> Box:
+    return _box(invitation.left + self._BTN_CONFIRM.left, invitation.top + self._BTN_CONFIRM.top,
+                self._BTN_CONFIRM.width, self._BTN_CONFIRM.height)
