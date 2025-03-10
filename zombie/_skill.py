@@ -5,7 +5,7 @@ from typing import Dict
 from PIL import Image
 
 from _debug import debug_image
-from _game import distribute_file, get_distribute, error_unknown_distribute
+from _game import distribute_file, get_distribute, error_unknown_distribute, config
 from _image import save_image, img
 from _locate import _box, locate_all
 from _skill_pack import SkillPack
@@ -116,27 +116,31 @@ def _record_kinds(kinds, kind_image):
 def record_skill(image_index, kind_name, kind_image, skill_image):
   if image_index == recode_skip():
     return None, None, False
-  else:
-    if kind_name is None:
-      kind_name, _ = _record_kinds(_KINDS, kind_image)
 
-    pack = _KINDS.get(kind_name)
-    if pack is None:
-      pack = SkillPack(kind_name).set_kind_image(kind_image)
-      _KINDS[kind_name] = pack
+  if kind_name is None and not config('skill.record.kind'):
+    return None, None, False
 
-    if pack.size() > 0:
-      skill_name = pack.match_skill(skill_image)
-      if skill_name is not None:
-        return kind_name, skill_name, False
+  kind_name, _ = _record_kinds(_KINDS, kind_image)
+  pack = _KINDS.get(kind_name)
+  if pack is None:
+    pack = SkillPack(kind_name).set_kind_image(kind_image)
+    _KINDS[kind_name] = pack
 
-    skill_name = f'skill-{time.time()}'
-    print(f'\trecord skill: {kind_name} - {skill_name} - {skill_image}')
-    pack.add_skill(skill_name, skill_image)
-    pack.summary()
+  if pack.size() > 0:
+    skill_name = pack.match_skill(skill_image)
+    if skill_name is not None:
+      return kind_name, skill_name, False
 
-    save_image(skill_image, _skill_img(kind_name, skill_name))
-    return kind_name, skill_name, True
+  if not config('skill.record.skill'):
+    return kind_name, None, False
+
+  skill_name = f'skill-{time.time()}'
+  print(f'\trecord skill: {kind_name} - {skill_name} - {skill_image}')
+  pack.add_skill(skill_name, skill_image)
+  pack.summary()
+
+  save_image(skill_image, _skill_img(kind_name, skill_name))
+  return kind_name, skill_name, True
 
 
 def load_skills():

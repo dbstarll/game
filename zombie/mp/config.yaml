@@ -1,3 +1,7 @@
+skill:
+  record:
+    kind: false
+    skill: true
 team-invitation:
   keep-alive-img: fight-list
   invitation:
