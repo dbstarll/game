@@ -142,15 +142,16 @@ def init_game_window() -> (Box, Box):
     raise error_unknown_distribute()
 
 
-def click(location, offset_x=0, offset_y=0, once=False):
+def click(location):
+  _activate()
   center = pyautogui.center(location)
-  pyautogui.click(x=_GAME_WINDOW_RECT.left + (_GAME_UI_RECT.left + center.x) // 2 + offset_x,
-                  y=_GAME_WINDOW_RECT.top + (_GAME_UI_RECT.top + center.y) // 2 + offset_y)
+  pyautogui.click(x=_GAME_WINDOW_RECT.left + (_GAME_UI_RECT.left + center.x) // 2,
+                  y=_GAME_WINDOW_RECT.top + (_GAME_UI_RECT.top + center.y) // 2)
   time.sleep(_CLICK_INTERVAL)
-  if not once:
-    pyautogui.click(x=_GAME_WINDOW_RECT.left + (_GAME_UI_RECT.left + center.x) // 2 + offset_x,
-                    y=_GAME_WINDOW_RECT.top + (_GAME_UI_RECT.top + center.y) // 2 + offset_y)
-    time.sleep(_CLICK_INTERVAL)
+
+
+def _activate() -> None:
+  _osascript(f'activate-{_DISTRIBUTE}.scpt')
 
 
 def config(path: str) -> Any:

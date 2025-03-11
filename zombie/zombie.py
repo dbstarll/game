@@ -172,11 +172,11 @@ def find_fight():
           fight_prepare(invitation)
         elif level < 0:
           print(f"{now()} - 非寰球救援, 拒绝战斗")
-          click(invitation_pack.cancel(invitation), once=True)
+          click(invitation_pack.cancel(invitation))
           continue
         else:
           print(f"{now()} - 寰球等级[{level}]太低, 拒绝战斗")
-          click(invitation_pack.cancel(invitation), once=True)
+          click(invitation_pack.cancel(invitation))
           continue
       time.sleep(0.7)
     else:
