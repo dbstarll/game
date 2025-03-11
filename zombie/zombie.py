@@ -1,14 +1,16 @@
 import sys
 import time
+from typing import List
 
 from PIL import Image
+from past.builtins import cmp
 from pyscreeze import Box
 
 from _debug import now, debug_image
-from _game import distribute, init_game_window, screenshot, click, get_distribute
+from _game import distribute, init_game_window, screenshot, click, get_distribute, config
 from _image import img
 from _invitation_pack import InvitationPack
-from _locate import locate, locate_all
+from _locate import locate
 from _skill import load_skills, match_skills_from_screenshot
 
 ROOM_WAIT_TIMEOUT = 15
@@ -73,6 +75,7 @@ def select_fight(im, invitations):
 def fighting():
   print(f"{now()} - 开始战斗...")
   start = time.time()
+  last_skills = []
   while True:
     im = screenshot()
 
@@ -87,26 +90,7 @@ def fighting():
 
     location_skills = locate(img('select-skill'), im)
     if location_skills:
-      match_left_bottoms = list(locate_all(img('skill-left-bottom'), im))
-      match_right_tops = list(locate_all(img('skill-right-top'), im))
-      print(f'{now()} - 可选技能({len(match_left_bottoms)} - {len(match_right_tops)}): {time.time() - start}')
-      min_idx = 100
-      min_idx_rect = None
-      min_idx_name = None
-      for image_index, kind_name, skill_name, _, skill_rect, _ in match_skills_from_screenshot(im):
-        print(f'{now()} - \t{image_index} - 技能[{kind_name} - {skill_name}]: {time.time() - start}')
-        kind_and_skill = f'{kind_name}:{skill_name}'
-        if PREFER_SKILLS.count(kind_and_skill) == 1:
-          idx = PREFER_SKILLS.index(kind_and_skill)
-          if idx < min_idx:
-            min_idx = idx
-            min_idx_rect = skill_rect
-            min_idx_name = kind_and_skill
-      if min_idx_rect is not None:
-        print(f'{now()} - 选择技能: {min_idx_name}: {time.time() - start}')
-        # click(min_idx_rect)
-
-      debug_image(im, 'skills')
+      last_skills = select_skill(im, last_skills)
 
     location_elite_skills = locate(img('elite-skill-close'), im)
     if location_elite_skills:
@@ -114,6 +98,33 @@ def fighting():
       debug_image(im, 'elite-skills')
 
     time.sleep(5)
+
+
+def select_skill(im: Image.Image, last_skills: List[str]) -> List[str]:
+  min_idx, min_idx_rect, min_idx_name = 100, None, None
+  skills, exist_unknown = [], False
+  for image_index, kind_name, skill_name, _, skill_rect, _ in match_skills_from_screenshot(im):
+    kind_and_skill = f'{kind_name}:{skill_name}'
+    skills.append(kind_and_skill)
+    if skill_name is None:
+      exist_unknown = True
+    if PREFER_SKILLS.count(kind_and_skill) == 1:
+      idx = PREFER_SKILLS.index(kind_and_skill)
+      if idx < min_idx:
+        min_idx = idx
+        min_idx_rect = skill_rect
+        min_idx_name = kind_and_skill
+  if len(skills) > 0 and cmp(last_skills, skills) != 0:
+    print(f'{now()} - \t可选技能: {skills}')
+    if exist_unknown:
+      debug_image(im, 'skills')
+    if min_idx_rect is not None:
+      print(f'{now()} - 选择技能: {min_idx_name}')
+      if config('skill.auto-select'):
+        click(min_idx_rect)
+    return skills
+  else:
+    return last_skills
 
 
 def fight_prepare(fight):
