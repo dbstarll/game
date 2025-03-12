@@ -1,3 +1,10 @@
+notification:
+  - title: 见面豪礼
+    close-img: notification-close-1
+  - title: 限时礼包
+    close-img: notification-close-2
+  - title: 荣耀战场
+    close-img: notification-close-3
 skill:
   auto-select: true
   record:

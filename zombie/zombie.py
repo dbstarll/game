@@ -23,8 +23,20 @@ PREFER_SKILLS = ['枪械:分裂冰片', '枪械:连发+', '枪械:齐射+', '枪
 def check_unexpected(im: Image.Image) -> bool:
   if get_distribute() == 'ios' and check_reconnect_ios(im):
     return True
+  elif check_notification(im):
+    return True
+  else:
+    return check_reconnect(im)
 
-  return check_reconnect(im)
+
+def check_notification(im: Image.Image) -> bool:
+  for notification in config('notification'):
+    btn_notification_close = locate(img(notification['close-img']), im)
+    if btn_notification_close is not None:
+      print(f'{now()} - 关闭弹窗通知: {notification["title"]}')
+      click(btn_notification_close)
+      return True
+  return False
 
 
 def check_reconnect_ios(im: Image.Image) -> bool:
