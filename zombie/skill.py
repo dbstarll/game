@@ -6,7 +6,7 @@ from typing import List
 from PIL import Image
 
 from _game import distribute
-from _skill import load_skills, match_skills_from_screenshot, record_skill
+from _skill_pack import SkillPack
 
 
 def detect_full_match(skills_file: str, detect_names: List[str]) -> int:
@@ -31,14 +31,14 @@ def detect_skills_from_file(skills_file: str) -> (int, int):
   detects = 0
   skill_names = []
   with Image.open(skills_file) as im:
-    for image_index, kind_name, skill_name, kind_image, skill_rect, skill_image in match_skills_from_screenshot(im):
+    for image_index, kind_name, skill_name, kind_image, skill_rect, skill_image in skill_pack.match_from_screenshot(im):
       matches += 1
       skill_names.append(skill_name)
       if skill_name is not None:
         detects += 1
       else:
         print(f'\t{image_index}: {kind_name} - {skill_name}, {skill_rect}, {skills_file}')
-        record_skill(image_index, kind_name, kind_image, skill_image)
+        skill_pack.record(image_index, skill_image)
 
   part = skills_file.split("-")
   if matches == 3 and detects == 3 and len(part) == 6 and 'full_match' == part[1]:
@@ -63,9 +63,9 @@ def detect_skills_from_file(skills_file: str) -> (int, int):
 if __name__ == "__main__":
   dist, _ = distribute(sys.argv, "mp")
   print(f'游戏发行版本: {dist}')
+  skill_pack = SkillPack()
 
   files, full_matches, part_matches, mismatch = 0, 0, 0, 0
-  skills = load_skills()
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
     if file.startswith('skills-17') and file.endswith('.png'):
@@ -81,7 +81,4 @@ if __name__ == "__main__":
       else:
         mismatch += 1
   print(f'files: {files}, full_matches: {full_matches}, part_matches: {part_matches}, mismatch: {mismatch}')
-  print(f'kinds: {len(skills)}')
-  for kind, skill_pack in skills.items():
-    print(f'skills: {kind} - {skill_pack.size()}')
   print(f'cost - {time.time() - start}')

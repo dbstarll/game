@@ -50,7 +50,7 @@ def detect_invitations_from_file(fights_file: str) -> (int, int, int):
 
 
 if __name__ == "__main__":
-  dist, _ = distribute(sys.argv, "ios")
+  dist, _ = distribute(sys.argv, "mp")
   print(f'游戏发行版本: {dist}')
 
   pack = InvitationPack()

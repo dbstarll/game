@@ -7,9 +7,26 @@ notification:
     close-img: notification-close-3
 skill:
   auto-select: true
-  record:
-    kind: false
-    skill: true
+  detect:
+    persistent-dir: skills
+    normal:
+      left-bottom-img: skill-left-bottom
+      right-top-img: skill-right-top
+      skill-offset:
+        left: 1
+        right: -1
+        top: 1
+        bottom: -1
+      kind-offset:
+        width: 38
+        height: 76
+      title:
+        height: 27
+        offset-height: 22
+    record:
+      kind: false
+      skill: true
+      skip: 1
 team-invitation:
   keep-alive-img: fight-list
   invitation:

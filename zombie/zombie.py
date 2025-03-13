@@ -11,7 +11,7 @@ from _game import distribute, init_game_window, screenshot, click, get_distribut
 from _image import img
 from _invitation_pack import InvitationPack
 from _locate import locate
-from _skill import load_skills, match_skills_from_screenshot
+from _skill_pack import SkillPack
 
 ROOM_WAIT_TIMEOUT = 15
 
@@ -115,7 +115,7 @@ def fighting():
 def select_skill(im: Image.Image, last_skills: List[str]) -> List[str]:
   min_idx, min_idx_rect, min_idx_name = 100, None, None
   skills, exist_unknown = [], False
-  for image_index, kind_name, skill_name, _, skill_rect, _ in match_skills_from_screenshot(im):
+  for image_index, kind_name, skill_name, _, skill_rect, _ in skill_pack.match_from_screenshot(im):
     kind_and_skill = f'{kind_name}:{skill_name}'
     skills.append(kind_and_skill)
     if skill_name is None:
@@ -226,7 +226,7 @@ if __name__ == "__main__":
   mini_level = 5 if 'mp' == dist else 1
   print(f'游戏发行版本: {dist}')
   init_game_window()
-  load_skills()
   invitation_pack = InvitationPack()
+  skill_pack = SkillPack()
 
   detect_team_invite()

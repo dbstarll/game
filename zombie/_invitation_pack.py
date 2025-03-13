@@ -70,7 +70,7 @@ class InvitationPack:
   def _invitation_img(self, invitation_name: str) -> str:
     return img(f'{self._PERSISTENT_DIR}/{invitation_name}')
 
-  def record(self, invitation: Image.Image) -> (str, bool):
+  def record(self, invitation: Image.Image) -> (Optional[str], bool, bool):
     invitation_name, is_rescue, title = self.detect(invitation)
     if invitation_name is not None:
       return invitation_name, is_rescue, False
