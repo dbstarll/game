@@ -8,10 +8,10 @@ notification:
 skill:
   auto-select: false
   detect:
-    persistent-dir: skills
+    persistent-dir: skill/data
     normal:
-      left-bottom-img: skill-left-bottom
-      right-top-img: skill-right-top
+      left-bottom-img: skill/normal-left-bottom
+      right-top-img: skill/normal-right-top
       skill-offset:
         left: 1
         right: -1
@@ -30,9 +30,9 @@ skill:
 team-invitation:
   keep-alive-img: fight-list
   invitation:
-    persistent-dir: invitations
-    locate-img: invitation-right-bottom
-    title-end-img: invitation-title-end
+    persistent-dir: invitation/data
+    locate-img: invitation/right-bottom
+    title-end-img: invitation/title-end
     title-rescue-left-offset: 195
     title-rescue-top-offset: 8
     title-rescue-bottom-offset: 10
