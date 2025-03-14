@@ -28,7 +28,7 @@ skill:
       record:
         kind: false
         skill: true
-        skip: 1
+        skip: 2
     elite:
       persistent-dir: skill/elite/data
       left-bottom-img: skill/elite/left-bottom
