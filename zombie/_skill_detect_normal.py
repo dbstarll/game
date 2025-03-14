@@ -1,9 +1,9 @@
 import os
 import time
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
-from PIL import Image
-from pyscreeze import Box
+from PIL import Image, ImageDraw
+from pyscreeze import Box, Point
 
 from _game import config, distribute_file, get_distribute
 from _image import img, save_image
@@ -26,15 +26,26 @@ class SkillDetectNormal:
     self._SKILL_OFFSET_RIGHT = _cfg('skill-offset.right')
     self._SKILL_OFFSET_TOP = _cfg('skill-offset.top')
     self._SKILL_OFFSET_BOTTOM = _cfg('skill-offset.bottom')
-    self._KIND_OFFSET_LEFT = _cfg('kind.offset-left')
-    self._KIND_OFFSET_TOP = _cfg('kind.offset-top')
+    self._KIND_LEFT = _cfg('kind.left')
+    self._KIND_TOP = _cfg('kind.top')
     self._KIND_SIZE = _cfg('kind.size')
+    self._KIND_CORE_SIZE = _cfg('kind.core-size')
     self._RECORD_KIND = _cfg('record.kind')
     self._RECORD_SKILL = _cfg('record.skill')
     self._RECORD_SKIP = _cfg('record.skip')
 
     self._series: Dict[str, SkillSubset] = {}
+    self._kind_corner_points: List[Point] = self._calculate_kind_corner_points(self._KIND_SIZE, self._KIND_CORE_SIZE)
     self._load()
+
+  def _calculate_kind_corner_points(self, size: int, core_size: int) -> List[Point]:
+    r, pr = (size - 1) / 2, (core_size // 2) ** 2
+    points = []
+    for x in range(0, size):
+      for y in range(0, size):
+        if (x - r) ** 2 + (y - r) ** 2 > pr:
+          points.append(Point(x, y))
+    return points
 
   def _load(self) -> None:
     total = 0
@@ -68,10 +79,15 @@ class SkillDetectNormal:
                lb.top + lb.height - rt.top - self._SKILL_OFFSET_TOP + self._SKILL_OFFSET_BOTTOM)
     return box, screenshot.crop((box.left, box.top, box.left + box.width, box.top + box.height))
 
-  def _crop_kind_image(self, image_index: int, skill_image: Image.Image) -> (Box, Image.Image):
-    box = _box(self._KIND_OFFSET_LEFT + (1 if image_index == 0 and get_distribute() == 'mp' else 0),
-               self._KIND_OFFSET_TOP, self._KIND_SIZE, self._KIND_SIZE)
-    return box, skill_image.crop((box.left, box.top, box.left + box.width, box.top + box.height))
+  def _crop_kind_image(self, image_index: int, skill_image: Image.Image) -> Image.Image:
+    box = _box(self._KIND_LEFT - (1 if image_index == 1 and get_distribute() == 'mp' else 0),
+               self._KIND_TOP, self._KIND_SIZE, self._KIND_SIZE)
+    return self._fill_kind_corner(skill_image.crop((box.left, box.top, box.left + box.width, box.top + box.height)))
+
+  def _fill_kind_corner(self, kind_image: Image.Image) -> Image.Image:
+    draw = ImageDraw.Draw(kind_image)
+    draw.point(self._kind_corner_points)
+    return kind_image
 
   def _match_kinds(self, kind_image: Image.Image) -> Optional[str]:
     for kind_name, skill_set in self._series.items():
@@ -79,7 +95,7 @@ class SkillDetectNormal:
         return kind_name
 
   def _match_skill(self, image_index: int, skill_image: Image.Image) -> (Optional[str], Optional[str], Image.Image):
-    _, kind_image = self._crop_kind_image(image_index, skill_image)
+    kind_image = self._crop_kind_image(image_index, skill_image)
     kind_name = self._match_kinds(kind_image)
     if kind_name is None:
       return None, None, kind_image

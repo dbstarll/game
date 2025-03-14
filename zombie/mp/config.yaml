@@ -18,9 +18,10 @@ skill:
         top: 1
         bottom: -1
       kind:
-        offset-left: 69
-        offset-top: 107
-        size: 104
+        left: 52
+        top: 89
+        size: 140
+        core-size: 105
       title:
         height: 27
         offset-height: 22

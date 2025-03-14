@@ -27,8 +27,7 @@ def detect_full_match(skills_file: str, detect_names: List[str]) -> int:
 
 
 def detect_skills_from_file(skills_file: str) -> (int, int):
-  matches = 0
-  detects = 0
+  matches = detects = records = 0
   skill_names = []
   with Image.open(skills_file) as im:
     for image_index, kind_name, skill_name, kind_image, skill_rect, skill_image in skill_pack.match_from_screenshot(im):
@@ -38,11 +37,13 @@ def detect_skills_from_file(skills_file: str) -> (int, int):
         detects += 1
       else:
         print(f'\t{image_index}: {kind_name} - {skill_name}, {skill_rect}, {skills_file}')
-        skill_pack.record(image_index, skill_image)
+        _, _, new_skill = skill_pack.record(image_index, skill_image)
+        if new_skill:
+          records += 1
 
   part = skills_file.split("-")
   if matches == 3 and detects == 3 and len(part) == 6 and 'full_match' == part[1]:
-    return matches, detect_full_match(skills_file, skill_names)
+    return matches, detect_full_match(skills_file, skill_names), records
 
   if matches == 0:
     if len(part) == 2:
@@ -57,7 +58,7 @@ def detect_skills_from_file(skills_file: str) -> (int, int):
       os.rename(skills_file, "-".join(skill_names))
   else:
     print(f'\tpart detected:{skill_names} - {skills_file}')
-  return matches, detects
+  return matches, detects, records
 
 
 if __name__ == "__main__":
@@ -65,7 +66,7 @@ if __name__ == "__main__":
   print(f'游戏发行版本: {dist}')
   skill_pack = SkillPack()
 
-  files, full_matches, part_matches, mismatch = 0, 0, 0, 0
+  files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
     if file.startswith('skills-17') and file.endswith('.png'):
@@ -73,12 +74,14 @@ if __name__ == "__main__":
       if files > 0 and files % 100 == 0:
         print(f'{files} - {time.time() - start}')
       files += 1
-      match_skills, detect_skills = detect_skills_from_file(skills_file)
+      match_skills, detect_skills, record_skills = detect_skills_from_file(skills_file)
+      records += record_skills
       if detect_skills == 3:
         full_matches += 1
       elif match_skills == 3:
         part_matches += 1
       else:
         mismatch += 1
-  print(f'files: {files}, full_matches: {full_matches}, part_matches: {part_matches}, mismatch: {mismatch}')
+  print(
+    f'files: {files}, full_matches: {full_matches}, part_matches: {part_matches}, mismatch: {mismatch}, records: {records}')
   print(f'cost - {time.time() - start}')
