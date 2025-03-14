@@ -8,25 +8,41 @@ notification:
 skill:
   auto-select: false
   detect:
-    persistent-dir: skill/data
     normal:
-      left-bottom-img: skill/normal-left-bottom
-      right-top-img: skill/normal-right-top
+      persistent-dir: skill/normal/data
+      left-bottom-img: skill/normal/left-bottom
+      right-top-img: skill/normal/right-top
       skill-offset:
         left: 1
         right: -1
         top: 1
         bottom: -1
-      kind-offset:
-        width: 39
-        height: 79
+      kind:
+        offset-left: 74
+        offset-top: 114
+        size: 110
       title:
         height: 28
         offset-height: 20
-    record:
-      kind: false
-      skill: true
-      skip: 2
+      record:
+        kind: false
+        skill: true
+        skip: 1
+    elite:
+      persistent-dir: skill/elite/data
+      left-bottom-img: skill/elite/left-bottom
+      right-top-img: skill/elite/right-top
+      skill-offset:
+        left: 1
+        right: -1
+        top: 1
+        bottom: -1
+      kind:
+        offset-width: 33
+        offset-height: 23
+        width: 100
+      record:
+        kind: true
 team-invitation:
   keep-alive-img: fight-list
   invitation:

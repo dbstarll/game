@@ -1,0 +1,88 @@
+import os
+import sys
+import time
+from typing import List
+
+from PIL import Image
+
+from _game import distribute
+from _skill_pack import SkillPack
+
+
+def detect_full_match(skills_file: str, detect_names: List[str]) -> int:
+  part = skills_file.split("-")
+  detects = 0
+  for i in range(0, 3):
+    detect = detect_names[i]
+    expect = part[i + 2]
+    if detect == expect:
+      detects += 1
+    else:
+      part[i + 2] = detect
+      print(f'expect: {expect}, detect: {detect} at {skills_file}')
+  if detects != 3:
+    print(f'\tre_full_match: {skills_file} -> {"-".join(part)}')
+    # os.rename(skills_file, "-".join(part))
+  return detects
+
+
+def detect_skills_from_file(skills_file: str) -> (int, int, int):
+  matches, detects, records = 0, 0, 0
+  skill_names = []
+  with Image.open(skills_file) as im:
+    for image_index, kind_name, skill_name, kind_image, skill_rect, skill_image in skill_pack.match_elite_from_screenshot(
+        im):
+      matches += 1
+      # debug_image(kind_image, 'skill')
+      skill_names.append(skill_name)
+      if skill_name is not None:
+        detects += 1
+      else:
+        print(f'\t{image_index}: {kind_name} - {skill_name}, {skills_file}')
+        _, new_kind = skill_pack.record_elite(image_index, skill_image)
+        if new_kind:
+          records += 1
+
+  # part = skills_file.split("-")
+  # if matches == 3 and detects == 3 and len(part) == 6 and 'full_match' == part[1]:
+  #   return matches, detect_full_match(skills_file, skill_names)
+
+  # if matches == 0:
+  #   if len(part) == 2:
+  #     part.insert(1, 'mismatch')
+  #     os.rename(skills_file, "-".join(part))
+  #   print(f'\tmismatch: {skills_file} -> {"-".join(part)}')
+  # elif detects == 3:
+  #   if len(part) == 2:
+  #     skill_names.insert(0, part[0])
+  #     skill_names.insert(1, 'full_match')
+  #     skill_names.append(part[1])
+  #     os.rename(skills_file, "-".join(skill_names))
+  # else:
+  #   print(f'\tpart detected:{skill_names} - {skills_file}')
+  return matches, detects, records
+
+
+if __name__ == "__main__":
+  dist, _ = distribute(sys.argv, "mp")
+  print(f'游戏发行版本: {dist}')
+  skill_pack = SkillPack()
+
+  files, full_matches, part_matches, mismatch, records = 0, 0, 0, 0, 0
+  start = time.time()
+  for file in os.listdir(f'tmp/{dist}'):
+    if file.startswith('elite-skills-1741864590.3815181') and file.endswith('.png'):
+      skills_file = f'tmp/{dist}/{file}'
+      if files > 0 and files % 100 == 0:
+        print(f'{files} - {time.time() - start}')
+      files += 1
+      match_skills, detect_skills, record_skills = detect_skills_from_file(skills_file)
+      records += record_skills
+      if detect_skills > 0 and detect_skills == match_skills:
+        full_matches += 1
+      elif detect_skills > 0:
+        part_matches += 1
+      else:
+        mismatch += 1
+  print(f'files: {files}, full_matches: {full_matches}, part_matches: {part_matches}, mismatch: {mismatch}, records: {records}')
+  print(f'cost - {time.time() - start}')
