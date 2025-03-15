@@ -47,7 +47,7 @@ skill:
       title:
         left: 154
         top: 18
-        width: 180
+        width: 200
         height: 27
       record:
         kind: false

@@ -20,7 +20,7 @@ class SkillSubset:
     return skill_image.crop((rect.left, rect.top, rect.left + rect.width, rect.top + rect.height))
 
   def set_kind_image(self, kind_image: Image.Image):
-    self.kind_image = kind_image
+    self._kind_image = kind_image
     return self
 
   def add_skill(self, skill_name: str, skill_image: Image.Image) -> None:
@@ -41,7 +41,7 @@ class SkillSubset:
     return len(self.skills)
 
   def match_kind(self, kind_image: Image.Image) -> Optional[Box]:
-    return locate(kind_image, self.kind_image)
+    return locate(kind_image, self._kind_image)
 
   def match_skill(self, skill_image: Image.Image) -> Optional[str]:
     return self._match_skill_from_all_in_one(self._crop_desc_image(skill_image))

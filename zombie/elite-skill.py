@@ -12,17 +12,24 @@ from _skill_pack import SkillPack
 def detect_full_match(skills_file: str, detect_names: List[str]) -> int:
   part = skills_file.split("-")
   detects = 0
-  for i in range(0, 3):
-    detect = detect_names[i]
-    expect = part[i + 2]
-    if detect == expect:
-      detects += 1
-    else:
-      part[i + 2] = detect
-      print(f'expect: {expect}, detect: {detect} at {skills_file}')
-  if detects != 3:
-    print(f'\tre_full_match: {skills_file} -> {"-".join(part)}')
-    # os.rename(skills_file, "-".join(part))
+  if len(part) - 4 == len(detect_names):
+    for i in range(0, len(detect_names)):
+      detect = detect_names[i]
+      expect = part[i + 3]
+      if detect == expect:
+        detects += 1
+      else:
+        part[i + 3] = detect
+        print(f'expect: {expect}, detect: {detect} at {skills_file}')
+    if detects != len(detect_names):
+      print(f'\tre_full_match: {skills_file} -> {"-".join(part)}')
+      # os.rename(skills_file, "-".join(part))
+  else:
+    new_part = part[:3]
+    for i in range(0, len(detect_names)):
+      new_part.append(detect_names[i])
+    new_part.append(part[len(part) - 1])
+    print(f'\tre_full_match: {skills_file} -> {"-".join(new_part)}')
   return detects
 
 

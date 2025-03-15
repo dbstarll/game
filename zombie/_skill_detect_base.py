@@ -17,52 +17,60 @@ class SkillDetectBase:
     self._RECORD_SKILL = config(f'skill.detect.{style}.record.skill')
     self._RECORD_SKIP = config(f'skill.detect.{style}.record.skip')
     self._series: Dict[str, SkillSubset] = {}
-    self._load()
+    self.__load()
 
-  def _load(self) -> None:
+  def __load(self) -> None:
     total = 0
     for kind_name in os.listdir(distribute_file(self._PERSISTENT_DIR)):
       if os.path.isdir(distribute_file(f'{self._PERSISTENT_DIR}/{kind_name}')):
-        skill_set = self._load_kind(kind_name)
-        total += skill_set.size()
-        self._series[kind_name] = skill_set
+        subset = self.__load_kind(kind_name)
+        total += subset.size()
+        self._series[kind_name] = subset
     print(f'加载技能[{self._style}]: {total}, 类型: {len(self._series)}')
 
-  def _load_kind(self, kind_name: str) -> SkillSubset:
-    skill_set = SkillSubset(kind_name, self._style)
+  def __load_kind(self, kind_name: str) -> SkillSubset:
+    subset = SkillSubset(kind_name, self._style)
     for skill_file_name in os.listdir(distribute_file(f'{self._PERSISTENT_DIR}/{kind_name}')):
       if skill_file_name.endswith('.png'):
         skill_name = skill_file_name[:-4]
         if skill_name.startswith('logo'):
-          skill_set.set_kind_image(Image.open(self._skill_img(kind_name, skill_name)))
+          subset.set_kind_image(Image.open(self.__skill_img(kind_name, skill_name)))
         elif skill_name.startswith('skill-'):
           raise ValueError(f'临时技能文件需要被处理: {self._PERSISTENT_DIR}/{kind_name}/{skill_file_name}')
         else:
-          skill_set.add_skill(skill_name, Image.open(self._skill_img(kind_name, skill_name)))
-    skill_set.summary()
-    return skill_set
+          subset.add_skill(skill_name, Image.open(self.__skill_img(kind_name, skill_name)))
+    subset.summary()
+    return subset
 
-  def _skill_img(self, kind_name: str, skill_name: str) -> str:
+  def __skill_img(self, kind_name: str, skill_name: str) -> str:
     return img(f'{self._PERSISTENT_DIR}/{kind_name}/{skill_name}')
 
   def _crop_kind_image(self, image_index: int, skill_image: Image.Image) -> Image.Image:
     return skill_image
 
-  def _match_kinds(self, kind_image: Image.Image) -> Optional[str]:
-    for kind_name, skill_set in self._series.items():
-      if skill_set.match_kind(kind_image) is not None:
+  def __match_kinds(self, kind_image: Image.Image) -> Optional[str]:
+    for kind_name, subset in self._series.items():
+      if subset.match_kind(kind_image) is not None:
         return kind_name
 
   def _match_skill(self, image_index: int, skill_image: Image.Image) -> (Optional[str], Optional[str], Image.Image):
+    for kind_name, subset in self._series.items():
+      skill_name = subset.match_skill(skill_image)
+      if skill_name is not None:
+        return kind_name, skill_name, subset._kind_image
     kind_image = self._crop_kind_image(image_index, skill_image)
-    kind_name = self._match_kinds(kind_image)
+    return self.__match_kinds(kind_image), None, kind_image
+
+  def _match_skill2(self, image_index: int, skill_image: Image.Image) -> (Optional[str], Optional[str], Image.Image):
+    kind_image = self._crop_kind_image(image_index, skill_image)
+    kind_name = self.__match_kinds(kind_image)
     if kind_name is None:
       return None, None, kind_image
     else:
       return kind_name, self._series[kind_name].match_skill(skill_image), kind_image
 
-  def _record_kinds(self, kind_image) -> (str, bool):
-    kind_name = self._match_kinds(kind_image)
+  def __record_kinds(self, kind_image) -> (str, bool):
+    kind_name = self.__match_kinds(kind_image)
     if kind_name is not None:
       return kind_name, False
 
@@ -72,7 +80,7 @@ class SkillDetectBase:
 
     if not os.path.exists(distribute_file(f'{self._PERSISTENT_DIR}/{kind_name}')):
       os.mkdir(distribute_file(f'{self._PERSISTENT_DIR}/{kind_name}'))
-    save_image(kind_image, self._skill_img(kind_name, kind_name))
+    save_image(kind_image, self.__skill_img(kind_name, kind_name))
 
     return kind_name, True
 
@@ -84,17 +92,17 @@ class SkillDetectBase:
     if skill_name is not None:
       return kind_name, skill_name, False
 
-    skill_set: SkillSubset
+    subset: SkillSubset
     if kind_name is not None:
-      skill_set = self._series[kind_name]
+      subset = self._series[kind_name]
     elif not self._RECORD_KIND:
       return None, None, False
     else:
-      kind_name, _ = self._record_kinds(kind_image)
-      skill_set = self._series[kind_name]
+      kind_name, _ = self.__record_kinds(kind_image)
+      subset = self._series[kind_name]
 
-    if skill_set.size() > 0:
-      skill_name = skill_set.match_skill(skill_image)
+    if subset.size() > 0:
+      skill_name = subset.match_skill(skill_image)
       if skill_name is not None:
         return kind_name, skill_name, False
 
@@ -103,8 +111,8 @@ class SkillDetectBase:
 
     skill_name = f'skill-{time.time()}'
     print(f'\trecord skill: {kind_name} - {skill_name} - {skill_image}')
-    skill_set.add_skill(skill_name, skill_image)
-    skill_set.summary()
+    subset.add_skill(skill_name, skill_image)
+    subset.summary()
 
-    save_image(skill_image, self._skill_img(kind_name, skill_name))
+    save_image(skill_image, self.__skill_img(kind_name, skill_name))
     return kind_name, skill_name, True
