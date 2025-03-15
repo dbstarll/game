@@ -14,7 +14,7 @@ def _cfg(path: str):
 class SkillPack:
   def __init__(self):
     self.normal = SkillDetectNormal()
-    self.elite = SkillDetectElite()
+    self.elite = SkillDetectElite(self.normal)
 
   def match_from_screenshot(self, screenshot: Image.Image):
     return self.normal.match_from_screenshot(screenshot)

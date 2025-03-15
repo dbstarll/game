@@ -39,9 +39,9 @@ skill:
         top: 1
         bottom: -1
       kind:
-        offset-width: 33
-        offset-height: 23
-        width: 100
+        left: 38
+        top: 28
+        size: 90
       record:
         kind: true
 team-invitation:

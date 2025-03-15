@@ -33,7 +33,6 @@ def detect_skills_from_file(skills_file: str) -> (int, int, int):
     for image_index, kind_name, skill_name, kind_image, skill_rect, skill_image in skill_pack.match_elite_from_screenshot(
         im):
       matches += 1
-      # debug_image(kind_image, 'skill')
       skill_names.append(skill_name)
       if skill_name is not None:
         detects += 1
@@ -71,7 +70,7 @@ if __name__ == "__main__":
   files, full_matches, part_matches, mismatch, records = 0, 0, 0, 0, 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('elite-skills-1741864590.3815181') and file.endswith('.png'):
+    if file.startswith('elite-skills-17') and file.endswith('.png'):
       skills_file = f'tmp/{dist}/{file}'
       if files > 0 and files % 100 == 0:
         print(f'{files} - {time.time() - start}')
@@ -84,5 +83,6 @@ if __name__ == "__main__":
         part_matches += 1
       else:
         mismatch += 1
-  print(f'files: {files}, full_matches: {full_matches}, part_matches: {part_matches}, mismatch: {mismatch}, records: {records}')
+  print(
+    f'files: {files}, full_matches: {full_matches}, part_matches: {part_matches}, mismatch: {mismatch}, records: {records}')
   print(f'cost - {time.time() - start}')

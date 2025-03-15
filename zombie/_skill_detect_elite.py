@@ -1,12 +1,14 @@
+import os
 import time
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
-from PIL import Image
-from pyscreeze import Box
+from PIL import Image, ImageDraw
+from pyscreeze import Box, Point
 
-from _game import config
+from _game import config, distribute_file
 from _image import img, save_image
 from _locate import locate_all, _box, locate
+from _skill_detect_normal import SkillDetectNormal
 
 
 def _cfg(path: str):
@@ -14,7 +16,7 @@ def _cfg(path: str):
 
 
 class SkillDetectElite:
-  def __init__(self):
+  def __init__(self, normal: SkillDetectNormal):
     self._PERSISTENT_DIR = _cfg('persistent-dir')
 
     self._LEFT_BOTTOM_IMG = Image.open(img(_cfg('left-bottom-img')))
@@ -24,12 +26,31 @@ class SkillDetectElite:
     self._SKILL_OFFSET_RIGHT = _cfg('skill-offset.right')
     self._SKILL_OFFSET_TOP = _cfg('skill-offset.top')
     self._SKILL_OFFSET_BOTTOM = _cfg('skill-offset.bottom')
-    self._KIND_OFFSET_WIDTH = _cfg('kind.offset-width')
-    self._KIND_OFFSET_HEIGHT = _cfg('kind.offset-height')
-    self._KIND_WIDTH = _cfg('kind.width')
+    self._KIND_LEFT = _cfg('kind.left')
+    self._KIND_TOP = _cfg('kind.top')
+    self._KIND_SIZE = _cfg('kind.size')
     self._RECORD_KIND = _cfg('record.kind')
 
+    self._normal = normal
     self._series: Dict[str, Image.Image] = {}
+    self._kind_corner_points: List[Point] = self._calculate_kind_corner_points(self._KIND_SIZE)
+    self._load()
+
+  def _calculate_kind_corner_points(self, size: int) -> List[Point]:
+    r, pr = (size - 1) / 2, (size // 2) ** 2
+    points = []
+    for x in range(0, size):
+      for y in range(0, size):
+        if (x - r) ** 2 + (y - r) ** 2 > pr:
+          points.append(Point(x, y))
+    return points
+
+  def _load(self) -> None:
+    for kind_name in os.listdir(distribute_file(self._PERSISTENT_DIR)):
+      if kind_name.endswith('.png'):
+        kind_name = kind_name[:-4]
+        self._series[kind_name] = Image.open(self._kind_img(kind_name))
+    print(f'加载技能类型: {len(self._series)}')
 
   def _kind_img(self, kind_name: str) -> str:
     return img(f'{self._PERSISTENT_DIR}/{kind_name}')
@@ -41,8 +62,13 @@ class SkillDetectElite:
     return box, screenshot.crop((box.left, box.top, box.left + box.width, box.top + box.height))
 
   def _crop_kind_image(self, skill_image: Image.Image) -> (Box, Image.Image):
-    box = _box(self._KIND_OFFSET_WIDTH, self._KIND_OFFSET_HEIGHT, self._KIND_WIDTH, self._KIND_WIDTH)
-    return box, skill_image.crop((box.left, box.top, box.left + box.width, box.top + box.height))
+    box = _box(self._KIND_LEFT, self._KIND_TOP, self._KIND_SIZE, self._KIND_SIZE)
+    return self._fill_kind_corner(skill_image.crop((box.left, box.top, box.left + box.width, box.top + box.height)))
+
+  def _fill_kind_corner(self, kind_image: Image.Image) -> Image.Image:
+    draw = ImageDraw.Draw(kind_image)
+    draw.point(self._kind_corner_points)
+    return kind_image
 
   def _match_kinds(self, kind_image: Image.Image) -> Optional[str]:
     for kind_name, item in self._series.items():
@@ -50,7 +76,7 @@ class SkillDetectElite:
         return kind_name
 
   def _match_skill(self, skill_image: Image.Image) -> (Optional[str], Optional[str], Image.Image):
-    _, kind_image = self._crop_kind_image(skill_image)
+    kind_image = self._crop_kind_image(skill_image)
     kind_name = self._match_kinds(kind_image)
     if kind_name is None:
       return None, None, kind_image
