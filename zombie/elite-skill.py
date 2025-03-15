@@ -27,19 +27,19 @@ def detect_full_match(skills_file: str, detect_names: List[str]) -> int:
 
 
 def detect_skills_from_file(skills_file: str) -> (int, int, int):
-  matches, detects, records = 0, 0, 0
+  matches = detects = records = 0
   skill_names = []
   with Image.open(skills_file) as im:
-    for image_index, kind_name, skill_name, kind_image, skill_rect, skill_image in skill_pack.match_elite_from_screenshot(
+    for image_index, kind_name, skill_name, _, skill_rect, skill_image in skill_pack.match_elite_from_screenshot(
         im):
       matches += 1
       skill_names.append(skill_name)
       if skill_name is not None:
         detects += 1
       else:
-        print(f'\t{image_index}: {kind_name} - {skill_name}, {skills_file}')
-        _, new_kind = skill_pack.record_elite(image_index, skill_image)
-        if new_kind:
+        print(f'\t{image_index}: {kind_name} - {skill_name}, {skill_rect}, {skills_file}')
+        _, _, new_skill = skill_pack.record_elite(image_index, skill_image)
+        if new_skill:
           records += 1
 
   # part = skills_file.split("-")
@@ -67,10 +67,10 @@ if __name__ == "__main__":
   print(f'游戏发行版本: {dist}')
   skill_pack = SkillPack()
 
-  files, full_matches, part_matches, mismatch, records = 0, 0, 0, 0, 0
+  files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('elite-skills-17') and file.endswith('.png'):
+    if file.startswith('elite-skills-1740830598.5198169.png') and file.endswith('.png'):
       skills_file = f'tmp/{dist}/{file}'
       if files > 0 and files % 100 == 0:
         print(f'{files} - {time.time() - start}')

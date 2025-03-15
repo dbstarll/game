@@ -7,21 +7,16 @@ from _game import config
 from _locate import locate, locate_all, _box
 
 
-def _cfg(path: str):
-  return config(f'skill.detect.{path}')
-
-
 class SkillSubset:
-  def __init__(self, kind_name: str):
-    self._TITLE_HEIGHT = _cfg('normal.title.height')
-    self._TITLE_OFFSET_HEIGHT = _cfg('normal.title.offset-height')
+  def __init__(self, kind_name: str, style: str = 'normal'):
+    self._TITLE = _box(*tuple(config(f'skill.detect.{style}.title').values()))
     self.kind_name: str = kind_name
     self.skills: Dict[str, Image.Image] = {}
     self.width: int = 0
     self.height: int = 0
 
   def _crop_desc_image(self, skill_image: Image.Image) -> Image.Image:
-    rect = _box(0, self._TITLE_OFFSET_HEIGHT, skill_image.width, self._TITLE_HEIGHT)
+    rect = _box(self._TITLE.left, self._TITLE.top, min(skill_image.width, self._TITLE.width), self._TITLE.height)
     return skill_image.crop((rect.left, rect.top, rect.left + rect.width, rect.top + rect.height))
 
   def set_kind_image(self, kind_image: Image.Image):
