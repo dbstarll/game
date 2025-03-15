@@ -42,23 +42,24 @@ def detect_skills_from_file(skills_file: str) -> (int, int, int):
         if new_skill:
           records += 1
 
-  # part = skills_file.split("-")
-  # if matches == 3 and detects == 3 and len(part) == 6 and 'full_match' == part[1]:
-  #   return matches, detect_full_match(skills_file, skill_names)
+  part = skills_file.split("-")
+  if matches > 0 and matches == detects and 'full_match' == part[2]:
+    return matches, detect_full_match(skills_file, skill_names), records
 
-  # if matches == 0:
-  #   if len(part) == 2:
-  #     part.insert(1, 'mismatch')
-  #     os.rename(skills_file, "-".join(part))
-  #   print(f'\tmismatch: {skills_file} -> {"-".join(part)}')
-  # elif detects == 3:
-  #   if len(part) == 2:
-  #     skill_names.insert(0, part[0])
-  #     skill_names.insert(1, 'full_match')
-  #     skill_names.append(part[1])
-  #     os.rename(skills_file, "-".join(skill_names))
-  # else:
-  #   print(f'\tpart detected:{skill_names} - {skills_file}')
+  if matches == 0:
+    if len(part) == 3:
+      part.insert(2, 'mismatch')
+      os.rename(skills_file, "-".join(part))
+    print(f'\tmismatch: {skills_file} -> {"-".join(part)}')
+  elif detects == matches:
+    if len(part) == 3:
+      skill_names.insert(0, part[0])
+      skill_names.insert(1, part[1])
+      skill_names.insert(2, 'full_match')
+      skill_names.append(part[2])
+      os.rename(skills_file, "-".join(skill_names))
+  else:
+    print(f'\tpart detected:{skill_names} - {skills_file}')
   return matches, detects, records
 
 
@@ -70,7 +71,7 @@ if __name__ == "__main__":
   files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('elite-skills-1740830598.5198169.png') and file.endswith('.png'):
+    if file.startswith('elite-skills-17') and file.endswith('.png'):
       skills_file = f'tmp/{dist}/{file}'
       if files > 0 and files % 100 == 0:
         print(f'{files} - {time.time() - start}')
@@ -79,7 +80,7 @@ if __name__ == "__main__":
       records += record_skills
       if detect_skills > 0 and detect_skills == match_skills:
         full_matches += 1
-      elif detect_skills > 0:
+      elif match_skills > 0:
         part_matches += 1
       else:
         mismatch += 1
