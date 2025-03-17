@@ -26,7 +26,7 @@ skill:
         left: 0
         top: 22
         width: 243
-        height: 27
+        height: 22
       record:
         kind: false
         skill: true

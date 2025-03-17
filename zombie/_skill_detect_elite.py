@@ -62,6 +62,7 @@ class SkillDetectElite(SkillDetectBase):
         match_left_bottom = match_left_bottoms[image_index]
         match_right_top = match_right_tops[image_index]
         if match_left_bottom.left >= match_right_top.left or match_left_bottom.top <= match_right_top.top:
+          print(f'match_left_bottom: {match_left_bottom}, match_right_top: {match_right_top}')
           break
         skill_rect, skill_image = self._crop_skill_image(screenshot, match_left_bottom, match_right_top)
         kind_name, skill_name, kind_image = self._match_skill(image_index, skill_image)

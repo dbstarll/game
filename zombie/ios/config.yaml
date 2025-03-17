@@ -23,8 +23,10 @@ skill:
         size: 140
         core-size: 110
       title:
-        height: 28
-        offset-height: 20
+        left: 0
+        top: 23
+        width: 258
+        height: 25
       record:
         kind: false
         skill: true
@@ -36,14 +38,21 @@ skill:
       skill-offset:
         left: 1
         right: -1
-        top: 1
-        bottom: -1
+        top: 0
+        bottom: 0
       kind:
-        offset-width: 33
-        offset-height: 23
-        width: 100
+        left: 41
+        top: 29
+        size: 95
+      title:
+        left: 164
+        top: 19
+        width: 200
+        height: 29
       record:
         kind: true
+        skill: true
+        skip: -1
 team-invitation:
   keep-alive-img: fight-list
   invitation:
