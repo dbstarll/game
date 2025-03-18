@@ -56,7 +56,7 @@ def detect_skills_from_file(skills_file: str) -> (int, int, int):
   if matches == 0:
     if len(part) == 3:
       part.insert(2, 'mismatch')
-      os.rename(skills_file, "-".join(part))
+      # os.rename(skills_file, "-".join(part))
     print(f'\tmismatch: {skills_file} -> {"-".join(part)}')
   elif detects == matches:
     if len(part) == 3:
@@ -64,7 +64,7 @@ def detect_skills_from_file(skills_file: str) -> (int, int, int):
       skill_names.insert(1, part[1])
       skill_names.insert(2, 'full_match')
       skill_names.append(part[2])
-      os.rename(skills_file, "-".join(skill_names))
+      # os.rename(skills_file, "-".join(skill_names))
   else:
     print(f'\tpart detected:{skill_names} - {skills_file}')
   return matches, detects, records
@@ -78,8 +78,16 @@ if __name__ == "__main__":
   files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('elite-skills-17') and file.endswith('.png'):
+    if file.startswith('elite-skills') and file.endswith('.png'):
       skills_file = f'tmp/{dist}/{file}'
+      part = skills_file.split("-")
+      if len(part) > 3:
+        new_part = part[:2]
+        new_part.append(part[len(part) - 1])
+        print(f'\t{skills_file}: {new_part}')
+        # os.rename(skills_file, "-".join(new_part))
+        # continue
+
       if files > 0 and files % 100 == 0:
         print(f'{files} - {time.time() - start}')
       files += 1

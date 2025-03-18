@@ -81,7 +81,7 @@ class SkillDetectElite(SkillDetectBase):
       yield self.__match_one_by_left_of_kinds(screenshot, image_index, matches)
 
   def __match_one_by_left_of_kinds(self, screenshot: Image.Image, image_index: int, matches: List[Box]):
-    skill_rect, skill_image = self._crop_skill_image_by_left_of_kind(screenshot, matches[0])
+    skill_rect, skill_image = self._crop_skill_image_by_left_of_kind(screenshot, matches[len(matches) - 1])
     kind_name, skill_name, kind_image = self._match_skill(image_index, skill_image)
     return image_index, kind_name, skill_name, kind_image, skill_rect, skill_image
 

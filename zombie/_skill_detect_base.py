@@ -35,7 +35,7 @@ class SkillDetectBase:
         skill_name = skill_file_name[:-4]
         if skill_name.startswith('logo'):
           subset.set_kind_image(Image.open(self.__skill_img(kind_name, skill_name)))
-        elif skill_name.startswith('skill-'):
+        elif skill_name.startswith('skill_'):
           raise ValueError(f'临时技能文件需要被处理: {self._PERSISTENT_DIR}/{kind_name}/{skill_file_name}')
         else:
           subset.add_skill(skill_name, Image.open(self.__skill_img(kind_name, skill_name)))
@@ -74,7 +74,7 @@ class SkillDetectBase:
     if kind_name is not None:
       return kind_name, False
 
-    kind_name = f'logo-{time.time()}'
+    kind_name = f'logo_{time.time()}'
     print(f'\trecord kind: {kind_name} - {kind_image}')
     self._series[kind_name] = SkillSubset(kind_name, self._style).set_kind_image(kind_image)
 
@@ -109,7 +109,7 @@ class SkillDetectBase:
     if not self._RECORD_SKILL:
       return kind_name, None, False
 
-    skill_name = f'skill-{time.time()}'
+    skill_name = f'skill_{time.time()}'
     print(f'\trecord skill: {kind_name} - {skill_name} - {skill_image}')
     subset.add_skill(skill_name, skill_image)
     subset.summary()
