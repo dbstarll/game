@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from PIL import Image, ImageDraw
 from pyscreeze import Box, Point
@@ -47,8 +47,9 @@ class SkillDetectElite(SkillDetectBase):
                lb.top + lb.height - rt.top - self._SKILL_OFFSET_TOP + self._SKILL_OFFSET_BOTTOM)
     return box, screenshot.crop((box.left, box.top, box.left + box.width, box.top + box.height))
 
-  def _crop_skill_image_by_left_of_kind(self, screenshot: Image.Image, left_of_kind) -> (Box, Image.Image):
-    box = _box(left_of_kind.left + self._SKILL_OFFSET_LEFT, left_of_kind.top + self._SKILL_OFFSET_TOP,
+  def _crop_skill_image_by_left_of_kind(self, screenshot: Image.Image, left_of_kind: Box, top_offset: int) -> (
+      Box, Image.Image):
+    box = _box(left_of_kind.left + self._SKILL_OFFSET_LEFT, left_of_kind.top + self._SKILL_OFFSET_TOP + top_offset,
                left_of_kind.width + self._SKILL_OFFSET_RIGHT - self._SKILL_OFFSET_LEFT,
                left_of_kind.height + self._SKILL_OFFSET_BOTTOM - self._SKILL_OFFSET_TOP)
     return box, screenshot.crop((box.left, box.top, box.left + box.width, box.top + box.height))
@@ -73,17 +74,42 @@ class SkillDetectElite(SkillDetectBase):
     matches: List[Box] = []
     for match_left_of_kind in locate_all(self._LEFT_OF_KIND_IMG, screenshot):
       if len(matches) > 0 and match_left_of_kind.top - matches[len(matches) - 1].top > 5:
-        yield self.__match_one_by_left_of_kinds(screenshot, image_index, matches)
+        for image_index, kind_name, skill_name, kind_image, skill_rect, skill_image in self.__match_one_by_left_of_kinds(
+            screenshot, image_index, matches):
+          yield image_index, kind_name, skill_name, kind_image, skill_rect, skill_image
         image_index += 1
         matches.clear()
       matches.append(match_left_of_kind)
     if len(matches) > 0:
-      yield self.__match_one_by_left_of_kinds(screenshot, image_index, matches)
+      for image_index, kind_name, skill_name, kind_image, skill_rect, skill_image in self.__match_one_by_left_of_kinds(
+          screenshot, image_index, matches):
+        yield image_index, kind_name, skill_name, kind_image, skill_rect, skill_image
 
   def __match_one_by_left_of_kinds(self, screenshot: Image.Image, image_index: int, matches: List[Box]):
-    skill_rect, skill_image = self._crop_skill_image_by_left_of_kind(screenshot, matches[len(matches) - 1])
-    kind_name, skill_name, kind_image = self._match_skill(image_index, skill_image)
-    return image_index, kind_name, skill_name, kind_image, skill_rect, skill_image
+    selected: Optional[Box] = None
+    top_offset: int = 0
+    for match in matches:
+      # 496 497
+      if match.top == 334:  # 333 334
+        selected = match
+      # elif match.top == 252:  # 252
+      #   selected = match
+      #   top_offset = 1
+      elif match.top == 415:  # 415
+        selected = match
+      # elif match.top == 171:  # 170 171
+      #   selected = match
+      # elif match.top == 497:  # 496 497
+      #   selected = match
+    # else:
+    # selected = matches[0]
+    if selected is not None:
+      skill_rect, skill_image = self._crop_skill_image_by_left_of_kind(screenshot, selected, top_offset)
+      kind_name, skill_name, kind_image = self._match_skill(image_index, skill_image)
+      yield image_index, kind_name, skill_name, kind_image, skill_rect, skill_image
+    else:
+      for match in matches:
+        print(f'\timage_index={image_index}, matches={len(matches)} match={match}')
 
   def __match_by_left_bottom_and_right_top(self, screenshot: Image.Image):
     match_left_bottoms = list(locate_all(self._LEFT_BOTTOM_IMG, screenshot))
