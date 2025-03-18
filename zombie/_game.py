@@ -154,8 +154,8 @@ def _activate() -> None:
   _osascript(f'activate-{_DISTRIBUTE}.scpt')
 
 
-def config(path: str) -> Any:
+def config(path: str, default_none: bool = False) -> Any:
   data = _CONFIG
   for part in path.split('.'):
-    data = data[part]
+    data = data[part] if not default_none else data.get(part)
   return data

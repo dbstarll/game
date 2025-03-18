@@ -14,6 +14,7 @@ class SkillSubset:
     self.skills: Dict[str, Image.Image] = {}
     self.width: int = 0
     self.height: int = 0
+    self.style: str = style
 
   def _crop_desc_image(self, skill_image: Image.Image) -> Image.Image:
     rect = _box(self._TITLE.left, self._TITLE.top, min(skill_image.width, self._TITLE.width), self._TITLE.height)

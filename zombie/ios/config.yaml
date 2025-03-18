@@ -35,20 +35,21 @@ skill:
       persistent-dir: skill/elite/data
       left-bottom-img: skill/elite/left-bottom
       right-top-img: skill/elite/right-top
+      left-of-kind-img: skill/elite/left-of-kind
       skill-offset:
-        left: 1
-        right: -1
-        top: 0
-        bottom: 0
+        left: -34
+        right: 737
+        top: -53
+        bottom: 47
       kind:
         left: 41
         top: 29
         size: 95
       title:
         left: 164
-        top: 19
+        top: 22
         width: 200
-        height: 29
+        height: 26
       record:
         kind: true
         skill: true
