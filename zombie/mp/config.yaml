@@ -33,18 +33,18 @@ skill:
         skip: 1
     elite:
       persistent-dir: skill/elite/data
-      left-bottom-img: skill/elite/left-bottom
-      right-top-img: skill/elite/right-top
       left-of-kind-img: skill/elite/left-of-kind
+      left-of-kind-offset: 64
       skill-offset:
         left: -31
         right: 693
         top: -51
         bottom: 44
       kind:
-        left: 37
-        top: 27
-        size: 90
+        left: 22
+        top: 12
+        size: 120
+        core-size: 90
       title:
         left: 154
         top: 21
