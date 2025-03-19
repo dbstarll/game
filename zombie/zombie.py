@@ -88,6 +88,7 @@ def fighting():
   print(f"{now()} - 开始战斗...")
   start = time.time()
   last_skills = []
+  last_elite_skills = []
   while True:
     im = screenshot()
 
@@ -106,10 +107,25 @@ def fighting():
 
     location_elite_skills = locate(img('elite-skill-close'), im)
     if location_elite_skills:
-      print(f'{now()} - 精英掉落技能: {time.time() - start}')
-      debug_image(im, 'elite-skills')
+      last_elite_skills = elite_skill(im, last_elite_skills)
 
     time.sleep(5)
+
+
+def elite_skill(im: Image.Image, last_skills: List[str]) -> List[str]:
+  skills, exist_unknown = [], False
+  for image_index, kind_name, skill_name, _, _, _ in skill_pack.match_elite_from_screenshot(im):
+    kind_and_skill = f'{kind_name}:{skill_name}'
+    skills.append(kind_and_skill)
+    if skill_name is None or skill_name.endswith('-1'):
+      exist_unknown = True
+  if len(skills) > 0 and cmp(last_skills, skills) != 0:
+    print(f'{now()} - \t精英掉落技能: {skills}')
+    if exist_unknown:
+      debug_image(im, 'elite-skills')
+    return skills
+  else:
+    return last_skills
 
 
 def select_skill(im: Image.Image, last_skills: List[str]) -> List[str]:
