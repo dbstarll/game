@@ -116,7 +116,7 @@ def elite_skill(im: Image.Image, last_skills: List[str]) -> List[str]:
   skills, exist_unknown = [], False
   for image_index, kind_name, skill_name, _, _, _ in skill_pack.match_elite_from_screenshot(im):
     skills.append(f'{kind_name}:{skill_name}')
-    if skill_name is None or skill_name.endswith('-1'):
+    if skill_name is None or skill_name.endswith('_1'):
       exist_unknown = True
   if len(skills) == 0 or exist_unknown:
     debug_image(im, 'elite-skills')
