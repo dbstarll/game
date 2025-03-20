@@ -9,6 +9,11 @@ from _game import distribute
 from _skill_pack import SkillPack
 
 
+def rename(old_name: str, new_name: str):
+  if rename_file:
+    os.rename(old_name, new_name)
+
+
 def detect_full_match(skills_file: str, detect_names: List[str]) -> int:
   part = skills_file.split("-")
   detects = 0
@@ -23,13 +28,14 @@ def detect_full_match(skills_file: str, detect_names: List[str]) -> int:
         print(f'expect: {expect}, detect: {detect} at {skills_file}')
     if detects != len(detect_names):
       print(f'\tre_full_match: {skills_file} -> {"-".join(part)}')
-      # os.rename(skills_file, "-".join(part))
+      rename(skills_file, "-".join(part))
   else:
     new_part = part[:3]
     for i in range(0, len(detect_names)):
       new_part.append(detect_names[i])
     new_part.append(part[len(part) - 1])
     print(f'\tre_full_match: {skills_file} -> {"-".join(new_part)}')
+    rename(skills_file, "-".join(new_part))
   return detects
 
 
@@ -56,15 +62,16 @@ def detect_skills_from_file(skills_file: str) -> (int, int, int):
   if matches == 0:
     if len(part) == 3:
       part.insert(2, 'mismatch')
-      # os.rename(skills_file, "-".join(part))
-    print(f'\tmismatch: {skills_file} -> {"-".join(part)}')
+      rename(skills_file, "-".join(part))
+      print(f'\tmismatch: {skills_file} -> {"-".join(part)}')
   elif detects == matches:
     if len(part) == 3:
       skill_names.insert(0, part[0])
       skill_names.insert(1, part[1])
       skill_names.insert(2, 'full_match')
       skill_names.append(part[2])
-      # os.rename(skills_file, "-".join(skill_names))
+      rename(skills_file, "-".join(skill_names))
+      print(f'\tfull_match: {skills_file} -> {"-".join(skill_names)}')
   else:
     print(f'\tpart detected:{skill_names} - {skills_file}')
   return matches, detects, records
@@ -74,6 +81,7 @@ if __name__ == "__main__":
   dist, _ = distribute(sys.argv, "mp")
   print(f'游戏发行版本: {dist}')
   skill_pack = SkillPack()
+  rename_file = False
 
   files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
@@ -85,7 +93,7 @@ if __name__ == "__main__":
         new_part = part[:2]
         new_part.append(part[len(part) - 1])
         # print(f'\t{skills_file}: {new_part}')
-        # os.rename(skills_file, "-".join(new_part))
+        # rename(skills_file, "-".join(new_part))
         # continue
 
       if files > 0 and files % 100 == 0:
