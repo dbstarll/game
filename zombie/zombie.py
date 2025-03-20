@@ -115,14 +115,13 @@ def fighting():
 def elite_skill(im: Image.Image, last_skills: List[str]) -> List[str]:
   skills, exist_unknown = [], False
   for image_index, kind_name, skill_name, _, _, _ in skill_pack.match_elite_from_screenshot(im):
-    kind_and_skill = f'{kind_name}:{skill_name}'
-    skills.append(kind_and_skill)
+    skills.append(f'{kind_name}:{skill_name}')
     if skill_name is None or skill_name.endswith('-1'):
       exist_unknown = True
+  if len(skills) == 0 or exist_unknown:
+    debug_image(im, 'elite-skills')
   if len(skills) > 0 and cmp(last_skills, skills) != 0:
     print(f'{now()} - \t精英掉落技能: {skills}')
-    if exist_unknown:
-      debug_image(im, 'elite-skills')
     return skills
   else:
     return last_skills

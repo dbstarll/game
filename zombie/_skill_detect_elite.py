@@ -65,6 +65,8 @@ class SkillDetectElite(SkillDetectBase):
           image_index += 1
           matches.clear()
         matches.append(match_left_of_kind)
+      else:
+        print(f'left mismatch: {match_left_of_kind}')
     if len(matches) > 0:
       yield self.__match_one_by_left_of_kinds(screenshot, image_index, matches)
 

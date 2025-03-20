@@ -84,7 +84,7 @@ if __name__ == "__main__":
       if len(part) > 3:
         new_part = part[:2]
         new_part.append(part[len(part) - 1])
-        print(f'\t{skills_file}: {new_part}')
+        # print(f'\t{skills_file}: {new_part}')
         # os.rename(skills_file, "-".join(new_part))
         # continue
 
