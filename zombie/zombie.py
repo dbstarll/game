@@ -106,7 +106,8 @@ def fighting():
       last_skills = select_skill(im, last_skills)
 
     location_elite_skills = locate(img('elite-skill-close'), im)
-    if location_elite_skills:
+    location_elite_skills_10 = locate(img('elite-skill-close-10'), im)
+    if location_elite_skills is not None and location_elite_skills_10 is None:
       last_elite_skills = elite_skill(im, last_elite_skills)
 
     time.sleep(5)
@@ -158,6 +159,7 @@ def fight_prepare(fight):
   print(f"{now()} - 进入战斗预备, 等待队友开始...")
   click(invitation_pack.confirm(fight))
   start = time.time()
+  time.sleep(2)
   while True:
     im = screenshot()
     location_leave = locate(img('room-leave'), im)
