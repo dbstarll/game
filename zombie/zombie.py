@@ -89,6 +89,7 @@ def fighting():
   start = time.time()
   last_skills = []
   last_elite_skills = []
+  last_active_skill = []
   while True:
     im = screenshot()
 
@@ -110,6 +111,10 @@ def fighting():
     if location_elite_skills is not None and location_elite_skills_10 is None:
       last_elite_skills = elite_skill(im, last_elite_skills)
 
+    location_active_skills = locate(img('active-skill'), im)
+    if location_active_skills is not None:
+      last_active_skill = active_skill(im, last_active_skill)
+
     time.sleep(5)
 
 
@@ -126,6 +131,11 @@ def elite_skill(im: Image.Image, last_skills: List[str]) -> List[str]:
     return skills
   else:
     return last_skills
+
+
+def active_skill(im: Image.Image, last_skills: List[str]) -> List[str]:
+  debug_image(im, 'active_skills')
+  return last_skills
 
 
 def select_skill(im: Image.Image, last_skills: List[str]) -> List[str]:
