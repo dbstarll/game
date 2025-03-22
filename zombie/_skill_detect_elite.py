@@ -27,7 +27,7 @@ class SkillDetectElite(SkillDetectBase):
   def __init__(self):
     super().__init__('elite')
     self._LEFT_OF_KIND_IMG = Image.open(img(_cfg('left-of-kind-img')))
-    self._LEFT_OF_KIND_OFFSET: int = _cfg('left-of-kind-offset')
+    self._LEFT_OF_KIND_OFFSET: List[int] = _cfg('left-of-kind-offset')
 
     self._SKILL_OFFSET_LEFT = _cfg('skill-offset.left')
     self._SKILL_OFFSET_RIGHT = _cfg('skill-offset.right')
@@ -59,7 +59,7 @@ class SkillDetectElite(SkillDetectBase):
     image_index: int = 0
     matches: List[Box] = []
     for match_left_of_kind in locate_all(self._LEFT_OF_KIND_IMG, screenshot):
-      if match_left_of_kind.left == self._LEFT_OF_KIND_OFFSET:
+      if self._LEFT_OF_KIND_OFFSET.count(match_left_of_kind.left) == 1:
         if len(matches) > 0 and match_left_of_kind.top - matches[len(matches) - 1].top > 5:
           yield self.__match_one_by_left_of_kinds(screenshot, image_index, matches)
           image_index += 1

@@ -34,7 +34,8 @@ skill:
     elite:
       persistent-dir: skill/elite/data
       left-of-kind-img: skill/elite/left-of-kind
-      left-of-kind-offset: 64
+      left-of-kind-offset:
+        - 64
       skill-offset:
         left: -31
         right: 693
