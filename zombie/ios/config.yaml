@@ -5,6 +5,8 @@ notification:
     close-img: notification-close-2
   - title: 荣耀战场
     close-img: notification-close-3
+  - title: 一载同行
+    close-img: notification-close-4
 skill:
   auto-select: false
   detect:
