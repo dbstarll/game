@@ -129,6 +129,18 @@ def _init_game_window_ios() -> (Box, Box):
   exit(1)
 
 
+def _init_game_window_app() -> (Box, Box):
+  global _GAME_WINDOW_RECT, _GAME_UI_RECT
+  window = _obtain_window()
+  if window:
+    _GAME_WINDOW_RECT = window
+    print(f'获得游戏窗口: window={window}')
+    _GAME_UI_RECT = obtain_game_ui_mp(screenshot())
+    return window, _GAME_UI_RECT
+  print('游戏未启动')
+  exit(1)
+
+
 def init_game_window() -> (Box, Box):
   if _DISTRIBUTE is None:
     raise _error_distribute_not_set()
@@ -138,6 +150,9 @@ def init_game_window() -> (Box, Box):
   elif 'ios' == _DISTRIBUTE:
     print('initializing ios...')
     return _init_game_window_ios()
+  elif 'app' == _DISTRIBUTE:
+    print('initializing app...')
+    return _init_game_window_app()
   else:
     raise error_unknown_distribute()
 

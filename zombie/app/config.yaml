@@ -5,8 +5,10 @@ notification:
     close-img: notification-close-2
   - title: 荣耀战场
     close-img: notification-close-3
+  - title: 一载同行
+    close-img: notification-close-4
 skill:
-  auto-select: true
+  auto-select: false
   detect:
     normal:
       persistent-dir: skill/normal/data
@@ -18,41 +20,42 @@ skill:
         top: 1
         bottom: -1
       kind:
-        left: 52
-        top: 89
+        left: 59
+        top: 99
         size: 140
-        core-size: 105
+        core-size: 110
       title:
         left: 0
-        top: 22
-        width: 243
-        height: 22
+        top: 23
+        width: 258
+        height: 25
       record:
         kind: false
         skill: true
-        skip: 1
+        skip: 2
     elite:
       persistent-dir: skill/elite/data
       left-of-kind-img: skill/elite/left-of-kind
       left-of-kind-offset:
-        - 64
+        - 66
+        - 70
       skill-offset:
-        left: -31
-        right: 693
-        top: -51
-        bottom: 44
+        left: -34
+        right: 737
+        top: -53
+        bottom: 47
       kind:
-        left: 22
-        top: 12
-        size: 120
-        core-size: 90
+        left: 31
+        top: 19
+        size: 115
+        core-size: 95
       title:
-        left: 154
-        top: 21
+        left: 164
+        top: 22
         width: 200
-        height: 24
+        height: 26
       record:
-        kind: false
+        kind: true
         skill: true
         skip: -1
 team-invitation:
@@ -61,26 +64,26 @@ team-invitation:
     persistent-dir: invitation/data
     locate-img: invitation/right-bottom
     title-end-img: invitation/title-end
-    title-rescue-left-offset: 178
-    title-rescue-top-offset: 7
-    title-rescue-bottom-offset: 9
+    title-rescue-left-offset: 202
+    title-rescue-top-offset: 9
+    title-rescue-bottom-offset: 12
     item:
       offset-right: 0
-      offset-bottom: 1
-      width: 615
-      height: 154
+      offset-bottom: 0
+      width: 699
+      height: 175
     btn-cancel:
-      left: 414
-      top: 80
-      width: 187
-      height: 62
+      left: 471
+      top: 91
+      width: 212
+      height: 70
     btn-confirm:
-      left: 414
-      top: 11
-      width: 187
-      height: 62
+      left: 472
+      top: 13
+      width: 212
+      height: 70
     title:
-      left: 147
-      top: 0
-      width: 211
-      height: 34
+      left: 170
+      top: 1
+      width: 197
+      height: 39

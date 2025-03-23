@@ -51,15 +51,16 @@ class InvitationPack:
       width = title_end.left + title_end.width - self._BTN_TITLE.left
       if width > self._TITLE_RESCUE_LEFT_OFFSET:
         box = _box(self._BTN_TITLE.left + self._TITLE_RESCUE_LEFT_OFFSET - 1,
-                   title_end.top + self._TITLE_RESCUE_TOP_OFFSET, width - self._TITLE_RESCUE_LEFT_OFFSET + 1,
+                   title_end.top - self._BTN_TITLE.top + self._TITLE_RESCUE_TOP_OFFSET,
+                   width - self._TITLE_RESCUE_LEFT_OFFSET + 1,
                    self._BTN_TITLE.height - self._TITLE_RESCUE_TOP_OFFSET - self._TITLE_RESCUE_BOTTOM_OFFSET)
         return invitation.crop((box.left, box.top, box.left + box.width, box.top + box.height)), True
       else:
-        box = _box(self._BTN_TITLE.left, title_end.top, width, self._BTN_TITLE.height)
+        box = _box(self._BTN_TITLE.left, title_end.top - self._BTN_TITLE.top, width, self._BTN_TITLE.height)
         return invitation.crop((box.left, box.top, box.left + box.width, box.top + box.height)), False
     return None, False
 
-  def detect(self, invitation: Image.Image) -> (Optional[str], bool):
+  def detect(self, invitation: Image.Image) -> (Optional[str], bool, Optional[Image.Image]):
     title, is_rescue = self._title(invitation)
     if title is not None:
       for invitation_name, item in self.invitations.items():
