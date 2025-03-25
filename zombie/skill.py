@@ -9,6 +9,11 @@ from _game import distribute
 from _skill_pack import SkillPack
 
 
+def rename(old_name: str, new_name: str):
+  if rename_file:
+    os.rename(old_name, new_name)
+
+
 def detect_full_match(skills_file: str, detect_names: List[str]) -> int:
   part = skills_file.split("-")
   detects = 0
@@ -22,7 +27,7 @@ def detect_full_match(skills_file: str, detect_names: List[str]) -> int:
       print(f'expect: {expect}, detect: {detect} at {skills_file}')
   if detects != 3:
     print(f'\tre_full_match: {skills_file} -> {"-".join(part)}')
-    # os.rename(skills_file, "-".join(part))
+    rename(skills_file, "-".join(part))
   return detects
 
 
@@ -48,14 +53,14 @@ def detect_skills_from_file(skills_file: str) -> (int, int, int):
   if matches == 0:
     if len(part) == 2:
       part.insert(1, 'mismatch')
-      os.rename(skills_file, "-".join(part))
-    print(f'\tmismatch: {skills_file} -> {"-".join(part)}')
+      rename(skills_file, "-".join(part))
+      print(f'\tmismatch: {skills_file} -> {"-".join(part)}')
   elif detects == 3:
     if len(part) == 2:
       skill_names.insert(0, part[0])
       skill_names.insert(1, 'full_match')
       skill_names.append(part[1])
-      os.rename(skills_file, "-".join(skill_names))
+      rename(skills_file, "-".join(skill_names))
   else:
     print(f'\tpart detected:{skill_names} - {skills_file}')
   return matches, detects, records
@@ -65,12 +70,22 @@ if __name__ == "__main__":
   dist, _ = distribute(sys.argv, "mp")
   print(f'游戏发行版本: {dist}')
   skill_pack = SkillPack()
+  rename_file, reset = False, False
 
   files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('skills-full') and file.endswith('.png'):
+    if file.startswith('skills') and file.endswith('.png'):
       skills_file = f'tmp/{dist}/{file}'
+      if reset:
+        part = skills_file.split("-")
+        if len(part) > 2:
+          new_part = part[:1]
+          new_part.append(part[len(part) - 1])
+          print(f'\t{skills_file}: {"-".join(new_part)}')
+          os.rename(skills_file, "-".join(new_part))
+        continue
+
       if files > 0 and files % 100 == 0:
         print(f'{files} - {time.time() - start}')
       files += 1
