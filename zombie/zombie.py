@@ -71,7 +71,7 @@ def select_fight(im, invitations):
   for invitation_name, is_rescue, box, _, _ in invitations:
     print(f"{now()} - \t{invitation_name} - {is_rescue} - {box}")
     if is_rescue:
-      rescue_level = 0 if invitation_name is None else int(invitation_name.split('-')[1])
+      rescue_level = 0 if invitation_name is None else int(invitation_name.split('-')[0][4:])
     else:
       rescue_level = -1
     if rescue_level > _max:

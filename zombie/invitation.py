@@ -47,17 +47,17 @@ def detect_invitations_from_file(fights_file: str) -> (int, int, int):
   matches, detects, records = 0, 0, 0
   invitation_names = []
   with Image.open(fights_file) as im:
-    for invitation_name, is_rescue, box, invitation, title in pack.match_from_screenshot(im):
+    for invitation_name, is_rescue, _, invitation, _ in pack.match_from_screenshot(im):
       matches += 1
       if invitation_name is not None:
         detects += 1
-        invitation_names.append(''.join(invitation_name.split('-')[:2 if is_rescue else 1]))
+        invitation_names.append(invitation_name.split('-')[0])
       else:
         invitation_names.append('none')
-        if is_rescue:
-          _, _, create = pack.record(invitation)
-          if create:
-            records += 1
+        # if is_rescue:
+        _, _, create = pack.record(invitation)
+        if create:
+          records += 1
 
   part = fights_file.split("-")
   if matches > 0 and matches == detects and 'full_match' == part[1]:
@@ -90,7 +90,7 @@ if __name__ == "__main__":
   files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('fights-17') and file.endswith('.png'):
+    if file.startswith('fights') and file.endswith('.png'):
       fights_file = f'tmp/{distribute_file(file)}'
       if reset:
         part = fights_file.split("-")
