@@ -5,7 +5,7 @@ from typing import List
 
 from PIL import Image
 
-from _game import distribute
+from _game import distribute, distribute_file
 from _skill_pack import SkillPack
 
 
@@ -74,6 +74,7 @@ def detect_skills_from_file(skills_file: str) -> (int, int, int):
       print(f'\tfull_match: {skills_file} -> {"-".join(skill_names)}')
   else:
     print(f'\tpart detected:{skill_names} - {skills_file}')
+
   return matches, detects, records
 
 
@@ -81,20 +82,21 @@ if __name__ == "__main__":
   dist, _ = distribute(sys.argv, "mp")
   print(f'游戏发行版本: {dist}')
   skill_pack = SkillPack()
-  rename_file = False
+  rename_file, reset = False, False
 
   files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
     if file.startswith('elite-skills') and file.endswith('.png'):
-      skills_file = f'tmp/{dist}/{file}'
-      part = skills_file.split("-")
-      if len(part) > 3:
-        new_part = part[:2]
-        new_part.append(part[len(part) - 1])
-        # print(f'\t{skills_file}: {new_part}')
-        # rename(skills_file, "-".join(new_part))
-        # continue
+      skills_file = f'tmp/{distribute_file(file)}'
+      if reset:
+        part = skills_file.split("-")
+        if len(part) > 3:
+          new_part = part[:2]
+          new_part.append(part[len(part) - 1])
+          print(f'\t{skills_file}: {new_part}')
+          os.rename(skills_file, "-".join(new_part))
+        continue
 
       if files > 0 and files % 100 == 0:
         print(f'{files} - {time.time() - start}')

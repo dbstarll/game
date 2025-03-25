@@ -61,9 +61,6 @@ team-invitation:
     persistent-dir: invitation/data
     locate-img: invitation/right-bottom
     title-end-img: invitation/title-end
-    title-rescue-left-offset: 178
-    title-rescue-top-offset: 7
-    title-rescue-bottom-offset: 9
     item:
       offset-right: 0
       offset-bottom: 1
@@ -80,7 +77,10 @@ team-invitation:
       width: 187
       height: 62
     title:
-      left: 147
-      top: 0
-      width: 211
-      height: 34
+      left-in-invitation: 147
+      height: 33
+      top-offset: 1
+      width-offset: 0
+      padding-top: 7
+      padding-bottom: 9
+      rescue-left: 178
