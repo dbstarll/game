@@ -51,9 +51,9 @@ skill:
         core-size: 95
       title:
         left: 164
-        top: 22
+        top: 24
         width: 200
-        height: 26
+        height: 24
       record:
         kind: true
         skill: true
