@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from typing import List
 
 from PIL import Image
 
@@ -15,6 +16,31 @@ def _cfg(path: str):
 def rename(old_name: str, new_name: str):
   if rename_file:
     os.rename(old_name, new_name)
+
+
+def detect_full_match(fights_file: str, detect_names: List[str]) -> int:
+  part = fights_file.split("-")
+  detects = 0
+  if len(part) - 3 == len(detect_names):
+    for i in range(0, len(detect_names)):
+      detect = detect_names[i]
+      expect = part[i + 2]
+      if detect == expect:
+        detects += 1
+      else:
+        part[i + 2] = detect
+        print(f'expect: {expect}, detect: {detect} at {fights_file}')
+    if detects != len(detect_names):
+      print(f'\tre_full_match: {fights_file} -> {"-".join(part)}')
+      rename(fights_file, "-".join(part))
+  else:
+    new_part = part[:2]
+    for i in range(0, len(detect_names)):
+      new_part.append(detect_names[i])
+    new_part.append(part[len(part) - 1])
+    print(f'\tre_full_match: {fights_file} -> {"-".join(new_part)}')
+    rename(fights_file, "-".join(new_part))
+  return detects
 
 
 def detect_invitations_from_file(fights_file: str) -> (int, int, int):
@@ -34,6 +60,9 @@ def detect_invitations_from_file(fights_file: str) -> (int, int, int):
             records += 1
 
   part = fights_file.split("-")
+  if matches > 0 and matches == detects and 'full_match' == part[1]:
+    return matches, detect_full_match(fights_file, invitation_names), records
+
   if matches == 0:
     if len(part) == 2:
       part.insert(1, 'mismatch')
@@ -58,10 +87,10 @@ if __name__ == "__main__":
   pack = InvitationPack()
   rename_file, reset = False, False
 
-  files = matches = detects = records = 0
+  files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('fights') and file.endswith('.png'):  # -1740769503.3104131
+    if file.startswith('fights-17') and file.endswith('.png'):
       fights_file = f'tmp/{distribute_file(file)}'
       if reset:
         part = fights_file.split("-")
@@ -76,8 +105,13 @@ if __name__ == "__main__":
         print(f'{files} - {time.time() - start}')
       files += 1
       m, d, r = detect_invitations_from_file(fights_file)
-      matches += m
-      detects += d
       records += r
+      if d > 0 and d == m:
+        full_matches += 1
+      elif m > 0:
+        part_matches += 1
+      else:
+        mismatch += 1
 
-  print(f'match: {matches} on {files} files, detected: {detects}, records: {records}')
+  print(
+    f'files: {files}, full_matches: {full_matches}, part_matches: {part_matches}, mismatch: {mismatch}, records: {records}')
