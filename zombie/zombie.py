@@ -68,8 +68,11 @@ def check_reconnect(im: Image.Image) -> bool:
 def select_fight(im, invitations):
   _max = -2
   _max_pos = None
+  exist_unknown = False
   for invitation_name, is_rescue, box, _, _ in invitations:
     print(f"{now()} - \t{invitation_name} - {is_rescue} - {box}")
+    if invitation_name is None:
+      exist_unknown = True
     if is_rescue:
       rescue_level = 0 if invitation_name is None else int(invitation_name.split('-')[0][4:])
     else:
@@ -78,7 +81,7 @@ def select_fight(im, invitations):
       _max = rescue_level
       _max_pos = box
 
-  if _max_pos is not None:
+  if exist_unknown:
     debug_image(im, 'fights')
 
   return _max, _max_pos
