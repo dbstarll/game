@@ -75,7 +75,7 @@ if __name__ == "__main__":
   files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('skills') and file.endswith('.png'):
+    if file.startswith('skills-17') and file.endswith('.png'):
       skills_file = f'tmp/{dist}/{file}'
       if reset:
         part = skills_file.split("-")

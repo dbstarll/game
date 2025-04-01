@@ -90,7 +90,7 @@ if __name__ == "__main__":
   files = full_matches = part_matches = mismatch = records = 0
   start = time.time()
   for file in os.listdir(f'tmp/{dist}'):
-    if file.startswith('fights') and file.endswith('.png'):
+    if file.startswith('fights-17') and file.endswith('.png'):
       fights_file = f'tmp/{distribute_file(file)}'
       if reset:
         part = fights_file.split("-")
