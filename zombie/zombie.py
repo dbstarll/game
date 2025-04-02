@@ -253,7 +253,7 @@ def detect_team_invite():
 
 if __name__ == "__main__":
   dist, _ = distribute(sys.argv, "mp")
-  mini_level = 5 if 'mp' == dist else 1
+  mini_level = config('team-invitation.rescue-min')
   print(f'游戏发行版本: {dist}')
   init_game_window()
   invitation_pack = InvitationPack()

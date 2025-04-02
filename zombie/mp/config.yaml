@@ -36,6 +36,7 @@ skill:
       left-of-kind-img: skill/elite/left-of-kind
       left-of-kind-offset:
         - 64
+        - 110
       skill-offset:
         left: -31
         right: 693
@@ -57,6 +58,7 @@ skill:
         skip: -1
 team-invitation:
   keep-alive-img: fight-list
+  rescue-min: 1
   invitation:
     persistent-dir: invitation/data
     locate-img: invitation/right-bottom

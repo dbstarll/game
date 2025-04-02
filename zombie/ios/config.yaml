@@ -60,6 +60,7 @@ skill:
         skip: -1
 team-invitation:
   keep-alive-img: fight-list
+  rescue-min: 1
   invitation:
     persistent-dir: invitation/data
     locate-img: invitation/right-bottom
