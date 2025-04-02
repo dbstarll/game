@@ -34,7 +34,7 @@ def _get_game_window_bottom(screen: Image, location_back: Box, left: int) -> int
 def obtain_game_ui_mp(screen: Image) -> Box:
   print(f"屏幕: {screen}")
   screen_width, screen_height = screen.width, screen.height
-  box = _box(screen_width // 3, screen_height // 3, screen_width // 3, screen_height // 3)
+  box = _box(screen_width // 2 - 100, screen_height // 3, 200, screen_height // 3)
   left, right = _get_game_window_left(screen, box), _get_game_window_right(screen, box)
   if left is not None and right is not None:
     top, bottom = _get_game_window_top(screen, box, left), _get_game_window_bottom(screen, box, left)
